@@ -3273,8 +3273,20 @@ NACE.10.86.heading = 10.86 Manufacture of homogenised food preparations and diet
 NACE.10.86.intro = This class includes:
 NACE.10.86.b1 = manufacture of foods for particular nutritional uses: infant formulae; follow-up formulae milk and other follow-up foods; baby foods; low-energy and energy-reduced foods intended for weight control; foods for medical purposes
 
-NACE.10.89.heading = TODO
-NACE.10.89.intro =
+NACE.10.89.heading = 10.89 Manufacture of other food products not elsewhere classified
+NACE.10.89.intro = This class includes:
+NACE.10.89.b1 = manufacture of food products edible within a maximum of three days after production: soups and broths; perishable prepared foods, e.g. sandwiches and fresh (uncooked) pizza; quiche and croque-monsieur
+NACE.10.89.b2 = manufacture of yeast
+NACE.10.89.b3 = manufacture of extracts and juices of meat, fish, crustaceans or molluscs
+NACE.10.89.b4 = manufacture of meat and cheese substitutes
+NACE.10.89.b5 = manufacture of egg products (e.g. egg albumin)
+NACE.10.89.b6 = manufacture of artificial concentrates
+NACE.10.89.b7 = processing of purchased natural honey
+NACE.10.89.b8 = production of semi-finished products for ice cream and pastries
+NACE.10.89.b9 = manufacture of pre-cooked instant soups and instant noodles
+NACE.10.89.b10 = manufacture of artificial honey and caramel
+NACE.10.89.b11 = manufacture of malt extracts and syrups
+NACE.10.89.b12 = manufacture of insect meal and other insect-based preparations
 
 NACE.10.91.heading = 10.91 Manufacture of prepared feeds for farm animals
 NACE.10.91.intro = This class includes:
@@ -7109,11 +7121,11 @@ NACE.85.20.intro = This class includes:
 NACE.85.20.b1 = primary education: the furnishing of academic courses and associated coursework that give students a sound basic education in reading, writing and mathematics and an elementary understanding of other subjects (for example, history, geography, natural science, social science, art and music).
 NACE.85.20.b2 = the provision of education programmes within or outside the school system which are equivalent in content to programmes in primary education but are intended for those considered too old to enter primary schools. Examples of such programmes are adult literacy programmes, second chance or reintegration programmes
 
-NACE.85.31.heading = TODO
-NACE.85.31.intro =
-NACE.85.31.b1 =
-NACE.85.31.b2 =
-NACE.85.31.b3 =
+NACE.85.31.heading = 85.31 General secondary education
+NACE.85.31.intro = This class includes:
+NACE.85.31.b1 = the provision of education that lays the foundation for lifelong learning and human development and is capable of furthering education opportunities. Activities classified in this class are based on programmes that are usually on a more subject-oriented curriculum using more specialised teachers and more often employing several teachers conducting classes in their field of specialisation. Subject specialisation at this level often begins to have some influence even on the educational experience of those pursuing a general programme. Such programmes are designed to qualify students either for technical and vocational education or for entrance to higher education without any special subject prerequisite
+NACE.85.31.b2 = lower general secondary education corresponding more or less to compulsory school age
+NACE.85.31.b3 = upper general secondary education, whether granting access or not to higher education
 
 NACE.85.32.heading = 85.32 Vocational secondary education
 NACE.85.32.desc = This class includes the provision of education typically emphasising subject-matter specialisation and instruction in both a theoretical background and practical skills that are generally associated with present or prospective employment. The aim of a programme can vary from preparation for a general field of employment to a very specific job.
@@ -7195,15 +7207,9 @@ NACE.85.69.heading = 85.69 Educational support activities not elsewhere classifi
 NACE.85.69.intro = This class includes: provision of non-instructional activities that support educational processes or systems: educational consulting; vocational and career-related counselling activities; educational guidance counselling activities; educational testing evaluation activities; educational testing activities; organisation of student exchange programmes; examination and testing of regulated professions (e.g. pilots); development of curricula; expert and rehabilitation activities examining learning ability
 
 NACE.86.10.heading = 86.10 Hospital activities
-NACE.86.10.desc = This class includes activities for human health, performed by hospitals, legally recognised to treat patients.
 NACE.86.10.intro = This class includes:
-NACE.86.10.b1 =
-NACE.86.10.b2 = TODO
-NACE.86.10.b3 =
-NACE.86.10.b4 =
-NACE.86.10.b5 =
-NACE.86.10.b6 =
-NACE.86.10.b7 =
+NACE.86.10.b1 = activities for human health, performed by hospitals, legally recognised to treat patients
+NACE.86.10.b2 = short or long-term provision of medical, diagnostic and treatment services, including physician, nursing and other health services to inpatients and the specialised accommodation services required by inpatients, as provided by general hospitals and specialised hospitals (e.g. community and regional hospitals, hospitals of non-profit organisations, university hospitals, military and prison hospitals). The activities are chiefly directed to inpatients, are carried out under the direct supervision of medical doctors and include: activities of medical and paramedical staff; laboratory and technical facilities, including radiologic and anaesthesiologic activities; emergency room activities; provision of operating room services, pharmacy services, food and other hospital services; activities of family planning centres providing medical treatment (e.g. sterilisation, termination of pregnancy), with accommodation; activities of mental health or psychiatric hospitals, providing diagnostic and medical treatment
 
 NACE.86.21.heading = 86.21 General medical practice activities
 NACE.86.21.intro = This class includes: medical consultation and treatment in the field of general medicine carried out by general practitioners

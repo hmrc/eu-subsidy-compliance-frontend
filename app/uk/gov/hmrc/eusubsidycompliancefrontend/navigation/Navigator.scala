@@ -85,20 +85,34 @@ class Navigator @Inject(){
     case "25.5" => routes.MetalsChemicalsController.loadTreatmentCoatingMachiningLvl4Page
     case "20.4" => routes.MetalsChemicalsController.loadWashingLvl4Page
 
-      case "26.1" => routes.ComputersElectronicsController.loadComponentsBoardsLvl4Page
-      case "26" => routes.ComputersElectronicsController.loadComputersElectronicsOpticalLvl3Page
-      case "27.5" => routes.ComputersElectronicsController.loadDomesticAppliancesLvl4Page
-      case "27" => routes.ComputersElectronicsController.loadElectricalEquipmentLvl3Page
-      case "28.1" => routes.ComputersElectronicsController.loadGeneralPurposeLvl4Page
-      case "26.5" => routes.ComputersElectronicsController.loadMeasuringTestingInstrumentsLvl4Page
-      case "28.4" => routes.ComputersElectronicsController.loadMetalFormingLvl4Page
-      case "27.1" => routes.ComputersElectronicsController.loadMotorsGeneratorsLvl4Page
-      case "28.2" => routes.ComputersElectronicsController.loadOtherGeneralPurposeLvl4Page
-      case "28" => routes.ComputersElectronicsController.loadOtherMachineryLvl3Page
-      case "28.9" => routes.ComputersElectronicsController.loadOtherSpecialPurposeLvl4Page
-      case "33.1" => routes.ComputersElectronicsController.loadRepairMaintenanceLvl4Page
-      case "33" => routes.ComputersElectronicsController.loadRepairsMaintainInstallLvl3Page
-      case "27.3" => routes.ComputersElectronicsController.loadWiringAndDevicesLvl4Page
+    case "23" => routes.NonMetallicOtherController.loadNonMetallicMineralLvl3Page
+    case "23.1" => routes.NonMetallicOtherController.loadGlassProductsLvl4Page
+    case "23.3" => routes.NonMetallicOtherController.loadClayBuildingMaterialsLvl4Page
+    case "23.4" => routes.NonMetallicOtherController.loadOtherPorcelainAndCeramicsLvl4Page
+    case "23.5" => routes.NonMetallicOtherController.loadCementLimePlasterLvl4Page
+    case "23.6" => routes.NonMetallicOtherController.loadConcreteCementPlasterLvl4Page
+    case "23.9" => routes.NonMetallicOtherController.loadAnotherTypeLvl4Page
+
+    case "17.2" => routes.PaperPrintedController.loadArticlesPaperPaperboardLvl4Page
+     case "17" => routes.PaperPrintedController.loadPaperLvl3Page
+     case "18" => routes.PaperPrintedController.loadPrintedLvl3Page
+     case "18.1" => routes.PaperPrintedController.loadPrintingServicesLvl4Page
+     case "17.1" => routes.PaperPrintedController.loadPulpPaperPaperboardLvl4Page
+
+    case "26.1" => routes.ComputersElectronicsController.loadComponentsBoardsLvl4Page
+    case "26" => routes.ComputersElectronicsController.loadComputersElectronicsOpticalLvl3Page
+    case "27.5" => routes.ComputersElectronicsController.loadDomesticAppliancesLvl4Page
+    case "27" => routes.ComputersElectronicsController.loadElectricalEquipmentLvl3Page
+    case "28.1" => routes.ComputersElectronicsController.loadGeneralPurposeLvl4Page
+    case "26.5" => routes.ComputersElectronicsController.loadMeasuringTestingInstrumentsLvl4Page
+    case "28.4" => routes.ComputersElectronicsController.loadMetalFormingLvl4Page
+    case "27.1" => routes.ComputersElectronicsController.loadMotorsGeneratorsLvl4Page
+    case "28.2" => routes.ComputersElectronicsController.loadOtherGeneralPurposeLvl4Page
+    case "28" => routes.ComputersElectronicsController.loadOtherMachineryLvl3Page
+    case "28.9" => routes.ComputersElectronicsController.loadOtherSpecialPurposeLvl4Page
+    case "33.1" => routes.ComputersElectronicsController.loadRepairMaintenanceLvl4Page
+    case "33" => routes.ComputersElectronicsController.loadRepairsMaintainInstallLvl3Page
+    case "27.3" => routes.ComputersElectronicsController.loadWiringAndDevicesLvl4Page
 
       case "30.3" => routes.VehiclesManuTransportController.loadAircraftSpacecraftLvl4Page
       case "29" => routes.VehiclesManuTransportController.loadMotorVehiclesLvl3Page
@@ -122,6 +136,10 @@ class Navigator @Inject(){
     case "INT05" => routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage
     case "INT06" => routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage
     case "INT07" => routes.GeneralTradeGroupsController.loadVehiclesTransportPage
+
+    case "32" => routes.NonMetallicOtherController.loadOtherManufacturingLvl3Page
+    case "32.1" => routes.NonMetallicOtherController.loadJewelleryCoinsLvl4Page
+    case "32.9" => routes.NonMetallicOtherController.loadOtherProductsLvl4Page
 
     case "35"  => routes.AccomodationUtilitiesController.loadElectricityLvl3Page()
     case "35.1"  => routes.AccomodationUtilitiesController.loadElectricityLvl4Page()

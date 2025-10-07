@@ -669,8 +669,8 @@ POST       /nace-level-four/metal-forming                                       
 GET        /nace-level-four/measuring-testing-instruments                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ComputersElectronicsController.loadMeasuringTestingInstrumentsLvl4Page
 POST       /nace-level-four/measuring-testing-instruments                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ComputersElectronicsController.submitMeasuringTestingInstrumentsLvl4Page
 
-GET        /nace-level-four/domestic-appliances                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ComputersElectronicsController.loadDomesticAppliancesLvl4Page
-POST       /nace-level-four/domestic-appliances                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ComputersElectronicsController.submitDomesticAppliancesLvl4Page
+GET        /nace-level-four/domestic-appliances                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ComputersElectronicsController.loadDomesticAppliancesLvl4Page
+POST       /nace-level-four/domestic-appliances                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ComputersElectronicsController.submitDomesticAppliancesLvl4Page
 
 GET        /nace-level-four/general-purpose                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ComputersElectronicsController.loadGeneralPurposeLvl4Page
 POST       /nace-level-four/general-purpose                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ComputersElectronicsController.submitGeneralPurposeLvl4Page
@@ -678,19 +678,54 @@ POST       /nace-level-four/general-purpose                                     
 GET        /nace-level-four/components-boards                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ComputersElectronicsController.loadComponentsBoardsLvl4Page
 POST       /nace-level-four/components-boards                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ComputersElectronicsController.submitComponentsBoardsLvl4Page
 
+GET        /nace-level-three/non-metallic-mineral                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.loadNonMetallicMineralLvl3Page
+POST       /nace-level-three/non-metallic-mineral                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.submitNonMetallicMineralLvl3Page
+
+GET        /nace-level-three/other-non-metallic                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.loadOtherManufacturingLvl3Page
+POST       /nace-level-three/other-non-metallic                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.submitOtherManufacturingLvl3Page
+
+GET        /nace-level-four/another-non-metallic                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.loadAnotherTypeLvl4Page
+POST       /nace-level-four/another-non-metallic                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.submitAnotherTypeLvl4Page
+
+GET        /nace-level-four/cement-lime-plaster                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.loadCementLimePlasterLvl4Page
+POST       /nace-level-four/cement-lime-plaster                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.submitCementLimePlasterLvl4Page
+
+GET        /nace-level-four/clay-building-mats                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.loadClayBuildingMaterialsLvl4Page
+POST       /nace-level-four/clay-building-mats                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.submitClayBuildingMaterialsLvl4Page
+
+GET        /nace-level-four/concrete-cement-plaster                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.loadConcreteCementPlasterLvl4Page
+POST       /nace-level-four/concrete-cement-plaster                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.submitConcreteCementPlasterLvl4Page
+
+GET        /nace-level-four/glass-products                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.loadGlassProductsLvl4Page
+POST       /nace-level-four/glass-products                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.submitGlassProductsLvl4Page
+
+GET        /nace-level-four/jewellery-coins                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.loadJewelleryCoinsLvl4Page
+POST       /nace-level-four/jewellery-coins                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.submitJewelleryCoinsLvl4Page
+
+GET        /nace-level-four/porcelain-ceramics                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.loadOtherPorcelainAndCeramicsLvl4Page
+POST       /nace-level-four/porcelain-ceramics                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.submitOtherPorcelainAndCeramicsLvl4Page
+
+GET        /nace-level-four/non-metallic-other                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.loadOtherProductsLvl4Page
+POST       /nace-level-four/non-metallic-other                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NonMetallicOtherController.submitOtherProductsLvl4Page
+
 GET        /nace-level-three/manu-motor-vehicles                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.loadMotorVehiclesLvl3Page
 POST       /nace-level-three/manu-motor-vehicles                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.submitMotorVehiclesLvl3Page
 
 GET        /nace-level-three/other-transport-equipment                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.loadOtherTransportEquipmentLvl3Page
 POST       /nace-level-three/other-transport-equipment                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.submitOtherTransportEquipmentLvl3Page
+
 GET        /nace-level-four/aircraft-spacecraft                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.loadAircraftSpacecraftLvl4Page
 POST       /nace-level-four/aircraft-spacecraft                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.submitAircraftSpacecraftLvl4Page
+
 GET        /nace-level-four/other-transport-equipment                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.loadOtherTransportEquipmentLvl4Page
 POST       /nace-level-four/other-transport-equipment                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.submitOtherTransportEquipmentLvl4Page
+
 GET        /nace-level-four/parts-accessories                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.loadPartsAccessoriesLvl4Page
 POST       /nace-level-four/parts-accessories                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.submitPartsAccessoriesLvl4Page
+
 GET        /nace-level-four/ships-boats                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.loadShipsBoatsLvl4Page
 POST       /nace-level-four/ships-boats                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.submitShipsBoatsLvl4Page
+
 
 
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
