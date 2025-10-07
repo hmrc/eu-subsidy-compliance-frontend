@@ -71,6 +71,9 @@
     RadioItem(
       content = HtmlContent(radioText("sector-label-warehousingStorageTransportSupportActivities", messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport"))),
       value = Some(Sector.warehousingStorageTransportSupportActivities.toString),
+hint = Some(Hint(
+content = Text(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint"))
+)),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.warehousingStorageTransportSupportActivities.toString)
     )
   )
@@ -78,7 +81,7 @@
 
 
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl1.title")),
 backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -96,17 +99,34 @@ backLinkEnabled = false,
       ))
     }
 
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getAboutUndertaking.toString>@messages("common.home")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("NACE.Lvl1.transportStorage")</a>
+        </li>
+    </ol>
+</nav>
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("undertakingSector.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl1.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
       )),
+        hint = Some(Hint(
+        content = Text(messages("NACE.general.hint"))
+        )),
       idPrefix = Some(fieldName),
       name = fieldName,
       items = radioOptions
