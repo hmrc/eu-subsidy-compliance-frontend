@@ -1247,6 +1247,7 @@ NACE.Manufacturing.Lvl3.RubberProducts = Rubber products
 NACE.Manufacturing.Rubber.title = What type of rubber products does your undertaking manufacture?
 NACE.Manufacturing.Rubber.error = Select the type of rubber products your undertaking manufactures
 NACE.Manufacturing.Lvl4.RubberTyresTubes = Rubber tyres and tubes
+NACE.Manufacturing.Lvl4.RubberTyresTubes.hint = Includes retreading and rebuilding of tyres.
 NACE.Manufacturing.Lvl4.OtherRubberProducts = Another type of rubber products
 
 NACE.Manufacturing.Lvl3.PlasticProducts = Plastic products
@@ -1273,6 +1274,7 @@ NACE.Manufacturing.Lvl4.ShapedFlatGlass = My undertaking carries out shaping and
 NACE.Manufacturing.Lvl4.HollowGlass = Hollow glass
 NACE.Manufacturing.Lvl4.GlassFibres = Glass fibres
 NACE.Manufacturing.Lvl4.OtherGlass = Another type of glass product
+NACE.Manufacturing.Lvl4.OtherGlass.hint = Includes technical glassware and processing of glass (except of flat glass).
 
 NACE.Manufacturing.Lvl3.RefractoryProducts = Refractory products
 NACE.Manufacturing.Lvl4.RefractoryProducts = Manufacture of refractory products

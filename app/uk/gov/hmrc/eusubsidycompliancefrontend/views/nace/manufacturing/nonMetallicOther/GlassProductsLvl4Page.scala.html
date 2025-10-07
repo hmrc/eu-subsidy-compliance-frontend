@@ -67,6 +67,9 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherGlass"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherGlass.hint")))
+            )),
             value = Some(Sector.otherGlassProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherGlassProducts.toString)
         ),
