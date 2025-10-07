@@ -52,6 +52,9 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-tyres-tubes", messages("NACE.Manufacturing.Lvl4.RubberTyresTubes"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-tyres-tubes", messages("NACE.Manufacturing.Lvl4.RubberTyresTubes.hint")))
+            )),
             value = Some(Sector.rubberTubes.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.rubberTubes.toString)
         ),
