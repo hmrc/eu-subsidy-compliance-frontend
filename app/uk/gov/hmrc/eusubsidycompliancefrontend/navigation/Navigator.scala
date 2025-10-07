@@ -94,10 +94,25 @@ class Navigator @Inject(){
     case "23.9" => routes.NonMetallicOtherController.loadAnotherTypeLvl4Page
 
     case "17.2" => routes.PaperPrintedController.loadArticlesPaperPaperboardLvl4Page
-    case "17" => routes.PaperPrintedController.loadPaperLvl3Page
-    case "18" => routes.PaperPrintedController.loadPrintedLvl3Page
-    case "18.1" => routes.PaperPrintedController.loadPrintingServicesLvl4Page
-    case "17.1" => routes.PaperPrintedController.loadPulpPaperPaperboardLvl4Page
+     case "17" => routes.PaperPrintedController.loadPaperLvl3Page
+     case "18" => routes.PaperPrintedController.loadPrintedLvl3Page
+     case "18.1" => routes.PaperPrintedController.loadPrintingServicesLvl4Page
+     case "17.1" => routes.PaperPrintedController.loadPulpPaperPaperboardLvl4Page
+
+    case "26.1" => routes.ComputersElectronicsController.loadComponentsBoardsLvl4Page
+    case "26" => routes.ComputersElectronicsController.loadComputersElectronicsOpticalLvl3Page
+    case "27.5" => routes.ComputersElectronicsController.loadDomesticAppliancesLvl4Page
+    case "27" => routes.ComputersElectronicsController.loadElectricalEquipmentLvl3Page
+    case "28.1" => routes.ComputersElectronicsController.loadGeneralPurposeLvl4Page
+    case "26.5" => routes.ComputersElectronicsController.loadMeasuringTestingInstrumentsLvl4Page
+    case "28.4" => routes.ComputersElectronicsController.loadMetalFormingLvl4Page
+    case "27.1" => routes.ComputersElectronicsController.loadMotorsGeneratorsLvl4Page
+    case "28.2" => routes.ComputersElectronicsController.loadOtherGeneralPurposeLvl4Page
+    case "28" => routes.ComputersElectronicsController.loadOtherMachineryLvl3Page
+    case "28.9" => routes.ComputersElectronicsController.loadOtherSpecialPurposeLvl4Page
+    case "33.1" => routes.ComputersElectronicsController.loadRepairMaintenanceLvl4Page
+    case "33" => routes.ComputersElectronicsController.loadRepairsMaintainInstallLvl3Page
+    case "27.3" => routes.ComputersElectronicsController.loadWiringAndDevicesLvl4Page
 
     case "0"     => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage
     case "INT00" => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage
@@ -244,6 +259,19 @@ class Navigator @Inject(){
 
     case "U"  => routes.HouseHealthEducationController.loadHouseholdsLvl2Page()
     case "98"  => routes.HouseHealthEducationController.loadUndifferentiatedProducingActivitiesLvl4Page()
+
+    case "T"  => routes.OtherServicesController.loadOtherLvl2Page()
+    case "94"  => routes.OtherServicesController.loadMembershipOrgActivitiesLvl3Page()
+    case "94.1"  => routes.OtherServicesController.loadMembershipOrgsLvl4Page()
+    case "94.9"  => routes.OtherServicesController.loadOtherMembershipOrgsLvl4Page()
+    case "95"  => routes.OtherServicesController.loadRepairsLvl3Page()
+    case "95.2"  => routes.OtherServicesController.loadHouseholdRepairLvl4Page()
+    case "95.3"  => routes.OtherServicesController.loadMotorVehiclesRepairLvl4Page()
+    case "96"  => routes.OtherServicesController.loadPersonalServicesLvl3Page()
+    case "96.2"  => routes.OtherServicesController.loadHairdressingLvl4Page()
+    case "96.9"  => routes.OtherServicesController.loadOtherPersonalServicesLvl4Page()
+
+    case "G"  => routes.RetailWholesaleController.loadRetailWholesaleLvl2Page()
 
     case _       => routes.UndertakingController.getSector
   }
