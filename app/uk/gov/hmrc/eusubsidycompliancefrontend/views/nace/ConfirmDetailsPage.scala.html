@@ -27,13 +27,12 @@
     layout: Layout,
     formHelper: FormWithCSRF,
     button: Button,
-    govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukSummaryList: GovukSummaryList,
-    govukInsetText: GovukInsetText
+    govukSummaryList: GovukSummaryList
 )
 
 @(
+    form: Form[_],
     sector: Sector,
     naceLevel1: String,
     naceLevel2: String,
@@ -42,7 +41,7 @@
     previous: Journey.Uri
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@key = @{"nace.cya"}
+@key = @{"NACE.check-details"}
 
 @layout(
     pageTitle = Some(messages(s"$key.title")),
@@ -71,15 +70,42 @@
             ),
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 1")),
-                value = Value(content = Text(naceLevel1))
+                value = Value(content = Text(naceLevel1)),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = routes.NACECheckDetailsController.getCheckDetails.url,
+                            content = Text(messages("common.cya.change")),
+                            visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl1"))
+                        )
+                    )
+                ))
             ),
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 2")),
-                value = Value(content = Text(naceLevel2))
+                value = Value(content = Text(naceLevel2)),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = routes.NACECheckDetailsController.getCheckDetails.url,
+                            content = Text(messages("common.cya.change")),
+                            visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl2"))
+                        )
+                    )
+                ))
             ),
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 3")),
-                value = Value(content = Text(naceLevel3))
+                value = Value(content = Text(naceLevel3)),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = routes.NACECheckDetailsController.getCheckDetails.url,
+                            content = Text(messages("common.cya.change")),
+                            visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl3"))
+                        )
+                    )
+                ))
             ),
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 4")),
@@ -89,7 +115,7 @@
                         ActionItem(
                             href = routes.NACECheckDetailsController.getCheckDetails.url,
                             content = Text(messages("common.cya.change")),
-                            visuallyHiddenText = Some(messages(s"$key.change.hidden.nace"))
+                            visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl4"))
                         )
                     )
                 ))
@@ -97,50 +123,42 @@
         )
     ))
 
-    <h2 class="govuk-heading-m">@messages(s"$key.nace-categories")</h2>
+    <h2 class="govuk-heading-m">@messages(s"$key.NACE-categories")</h2>
 
-    <p class="govuk-body">@messages(s"$key.nace-p1")</p>
+    <p class="govuk-body">@messages(s"$key.NACE-p1")</p>
 
-    <p class="govuk-body">@messages(s"$key.nace-p2")</p>
+    <p class="govuk-body">@messages(s"$key.NACE-p2")</p>
 
-    @govukInsetText(InsetText(
-        content = Text(messages(s"$key.inset-text"))
-    ))
+    <p class="govuk-body">
+        @messages(s"$key.NACE-p3-prefix")
+        <a href="@messages(s"$key.NACE-link-url")" class="govuk-link" target="_blank" rel="noopener noreferrer">@messages(s"$key.NACE-link-text")</a>.
+    </p>
 
     @govukSummaryList(SummaryList(
         rows = Seq(
             SummaryListRow(
-                key = Key(content = Text(messages(s"$key.nace-level-1"))),
-                value = Value(content = Text(messages(s"$key.x-nace-l1-category")))
+                key = Key(content = Text(messages(s"$key.NACE-level-1"))),
+                value = Value(content = Text("X NACE L1 category"))
             ),
             SummaryListRow(
-                key = Key(content = Text(messages(s"$key.nace-level-2"))),
-                value = Value(content = Text(messages(s"$key.nace-l2-category")))
+                key = Key(content = Text(messages(s"$key.NACE-level-2"))),
+                value = Value(content = Text("00 NACE L2 category"))
             ),
             SummaryListRow(
-                key = Key(content = Text(messages(s"$key.nace-level-3"))),
-                value = Value(content = Text(messages(s"$key.nace-l3-category")))
+                key = Key(content = Text(messages(s"$key.NACE-level-3"))),
+                value = Value(content = Text("00.0 NACE L3 category"))
             ),
             SummaryListRow(
-                key = Key(content = Text(messages(s"$key.nace-level-4"))),
-                value = Value(content = Text(messages(s"$key.nace-l4-category"))),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = "#",
-                            content = Text(messages("common.cya.change")),
-                            visuallyHiddenText = Some(messages(s"$key.change.hidden.nace-l4"))
-                        )
-                    )
+                key = Key(content = Text(messages(s"$key.NACE-level-4"))),
+                value = Value(content = HtmlContent(
+                    """00.00 NACE L4 category<br><br>Core content note playback here - only for L4"""
                 ))
             )
         ),
         classes = "govuk-!-margin-bottom-9"
     ))
 
-    <h2 class="govuk-heading-m">@messages(s"$key.confirm-details")</h2>
-
-    @formHelper(action = routes.NACEController.postCheckAnswers) {
+    @formHelper(action = routes.NACECheckDetailsController.postCheckDetails) {
         @govukRadios(Radios(
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
@@ -148,16 +166,20 @@
                     classes = "govuk-fieldset__legend--s"
                 ))
             )),
+            errorMessage = form.error("confirmDetails").map(err => ErrorMessage(content = Text(messages(s"$key.error")))),
             items = Seq(
                 RadioItem(
                     content = Text(messages(s"$key.radio-yes")),
                     value = Some("true"),
-                    id = Some("confirm-yes")
+                    id = Some("confirmDetails")
                 ),
                 RadioItem(
                     content = Text(messages(s"$key.radio-no")),
                     value = Some("false"),
-                    id = Some("confirm-no")
+                    id = Some("confirmDetails-no"),
+                    hint = Some(Hint(
+                        content = Text(messages(s"$key.radio-no-hint"))
+                    ))
                 )
             ),
             name = "confirmDetails"

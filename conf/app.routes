@@ -853,4 +853,5 @@ GET        /registration-already-submitted                                      
 
 GET        /access-denied-for-agents                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgentNotAllowedController.showPage
 
-GET        /check-details                                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.getCheckDetails
+GET        /confirm-undertaking-details                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.getCheckDetails
+POST       /confirm-undertaking-details                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.postCheckDetails
