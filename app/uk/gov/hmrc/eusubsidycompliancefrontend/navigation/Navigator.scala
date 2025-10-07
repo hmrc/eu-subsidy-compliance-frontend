@@ -233,6 +233,19 @@ class Navigator @Inject(){
     case "U"  => routes.HouseHealthEducationController.loadHouseholdsLvl2Page()
     case "98"  => routes.HouseHealthEducationController.loadUndifferentiatedProducingActivitiesLvl4Page()
 
+    case "T"  => routes.OtherServicesController.loadOtherLvl2Page()
+    case "94"  => routes.OtherServicesController.loadMembershipOrgActivitiesLvl3Page()
+    case "94.1"  => routes.OtherServicesController.loadMembershipOrgsLvl4Page()
+    case "94.9"  => routes.OtherServicesController.loadOtherMembershipOrgsLvl4Page()
+    case "95"  => routes.OtherServicesController.loadRepairsLvl3Page()
+    case "95.2"  => routes.OtherServicesController.loadHouseholdRepairLvl4Page()
+    case "95.3"  => routes.OtherServicesController.loadMotorVehiclesRepairLvl4Page()
+    case "96"  => routes.OtherServicesController.loadPersonalServicesLvl3Page()
+    case "96.2"  => routes.OtherServicesController.loadHairdressingLvl4Page()
+    case "96.9"  => routes.OtherServicesController.loadOtherPersonalServicesLvl4Page()
+
+    case "G"  => routes.RetailWholesaleController.loadRetailWholesaleLvl2Page()
+
     case _       => routes.UndertakingController.getSector
   }
 }
