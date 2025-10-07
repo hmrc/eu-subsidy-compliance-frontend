@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"telecommunication3"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.PublishingTelecomsController.submitTelecommunicationLvl3Page()
 }
 
 
@@ -51,17 +51,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl3.resellingTelecommunication"))),
-                value = Some(Sector.ResellingTelecommunication.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResellingTelecommunication.toString)
+                content = HtmlContent(radioText("sector-label-resellingTelecommunication", messages("NACE.telecommunicationsComputing.Lvl3.resellingTelecommunication"))),
+                value = Some(Sector.resellingTelecommunication.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.resellingTelecommunication.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl3.wiredTelecommunication"))),
-                value = Some(Sector.WiredTelecommunication.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.WiredTelecommunication.toString)
+                content = HtmlContent(radioText("sector-label-wiredTelecommunication", messages("NACE.telecommunicationsComputing.Lvl3.wiredTelecommunication"))),
+                value = Some(Sector.wiredTelecommunication.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.wiredTelecommunication.toString)
         ),
        RadioItem(
-                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl3.otherTelecommunications"))),
+                content = HtmlContent(radioText("sector-label-otherTelecommunications", messages("NACE.telecommunicationsComputing.Lvl3.otherTelecommunications"))),
                 value = Some(Sector.otherTelecommunications.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTelecommunications.toString)
         )
@@ -70,8 +70,7 @@
 
 @layout(
   pageTitle = Some(messages("NACE.telecommunicationsComputing.Lvl2.telecommunication.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -84,7 +83,7 @@
             content = Text(messages("NACE.telecommunicationsComputing.Lvl2.telecommunication.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

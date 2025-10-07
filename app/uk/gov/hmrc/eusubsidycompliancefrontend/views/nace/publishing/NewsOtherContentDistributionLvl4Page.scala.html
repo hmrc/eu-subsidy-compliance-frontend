@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"news4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.PublishingTelecomsController.submitNewsOtherContentDistributionLvl4Page()
 }
 
 
@@ -51,22 +51,21 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.newsAgency"))),
-            value = Some(Sector.NewsAgencyActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NewsAgencyActivities.toString)
+            content = HtmlContent(radioText("sector-label-newsAgencyActivities", messages("NACE.publishingBroadcasting.Lvl4.newsAgency"))),
+            value = Some(Sector.newsAgencyActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.newsAgencyActivities.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.otherContentDistributionActivities"))),
-            value = Some(Sector.OtherContentDistributionActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherContentDistributionActivities.toString)
+            content = HtmlContent(radioText("sector-label-otherContentDistributionActivities", messages("NACE.publishingBroadcasting.Lvl4.otherContentDistributionActivities"))),
+            value = Some(Sector.otherContentDistributionActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherContentDistributionActivities.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.publishingBroadcasting.Lvl3.newsAgency.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -79,7 +78,7 @@
             content = Text(messages("NACE.publishingBroadcasting.Lvl3.newsAgency.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

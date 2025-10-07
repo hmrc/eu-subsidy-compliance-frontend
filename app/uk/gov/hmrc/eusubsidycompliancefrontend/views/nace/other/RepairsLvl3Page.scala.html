@@ -33,13 +33,13 @@ govukRadios : GovukRadios
 
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"repairs3"}
 
 @actionUrl = @{
 if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+else controllers.routes.OtherServicesController.submitRepairsLvl3Page
 }
 
 
@@ -51,24 +51,24 @@ else controllers.routes.UndertakingController.postSector
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.otherService.Lvl3.repairComputersCommunication"))),
-value = Some(Sector.hardcoalMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.hardcoalMining.toString)
+value = Some(Sector.repairComputersCommunication.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairComputersCommunication.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.otherService.Lvl3.repairMotorVehiclesMotorcycles"))),
-value = Some(Sector.hardcoalMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.hardcoalMining.toString)
+value = Some(Sector.repairMotorVehiclesMotorcycles.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairMotorVehiclesMotorcycles.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.otherService.Lvl3.repairHouseholdGoods"))),
-value = Some(Sector.hardcoalMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.hardcoalMining.toString)
+value = Some(Sector.repairHouseholdGoods.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairHouseholdGoods.toString)
 ),
 RadioItem( divider = Some("or")),
 RadioItem(
 content = HtmlContent(radioText("sector-label-ligniteMining", messages("NACE.otherService.Lvl3.intermediationRepairMaintenance"))),
-value = Some(Sector.ligniteMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.ligniteMining.toString)
+value = Some(Sector.intermediationRepairMaintenance.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.intermediationRepairMaintenance.toString)
 )
 )
 }
@@ -76,8 +76,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.ligniteMining.to
 
 @layout(
 pageTitle = Some(messages("NACE.otherService.Lvl2.repairMaintenance.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
+backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
 

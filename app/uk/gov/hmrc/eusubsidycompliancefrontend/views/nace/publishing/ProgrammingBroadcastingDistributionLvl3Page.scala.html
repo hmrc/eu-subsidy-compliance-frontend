@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"broadcasting3"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.PublishingTelecomsController.submitProgrammingBroadcastingDistributionLvl3Page()
 }
 
 
@@ -51,27 +51,26 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.radioBroadcasting"))),
-            value = Some(Sector.RadioBroadcasting.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.RadioBroadcasting.toString)
+            content = HtmlContent(radioText("sector-label-radioBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.radioBroadcasting"))),
+            value = Some(Sector.radioBroadcasting.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.radioBroadcasting.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.programmingBroadcastingVideoDistribution"))),
-            value = Some(Sector.ProgrammingBroadcastingVideoDistribution.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ProgrammingBroadcastingVideoDistribution.toString)
+            content = HtmlContent(radioText("sector-label-programmingBroadcastingVideoDistribution", messages("NACE.publishingBroadcasting.Lvl3.programmingBroadcastingVideoDistribution"))),
+            value = Some(Sector.programmingBroadcastingVideoDistribution.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.programmingBroadcastingVideoDistribution.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.newsAgency"))),
-            value = Some(Sector.NewsAgency.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NewsAgency.toString)
+            content = HtmlContent(radioText("sector-label-newsAgency", messages("NACE.publishingBroadcasting.Lvl3.newsAgency"))),
+            value = Some(Sector.newsAgency.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.newsAgency.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -84,7 +83,7 @@
             content = Text(messages("NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

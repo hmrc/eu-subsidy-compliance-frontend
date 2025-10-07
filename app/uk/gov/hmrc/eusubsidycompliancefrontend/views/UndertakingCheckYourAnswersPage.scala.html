@@ -53,47 +53,37 @@
             @govukSummaryList(SummaryList(
                 rows = Seq(
                     SummaryListRow(
-                        key = Key(
-                            content = Text(messages(s"$key.summary-list.eori.key"))
-                        ),
-                        value = Value(
-                            content = Text(eori)
-                        ),
-                        actions = None
+                        key = Key(content = Text(messages(s"$key.summary-list.eori.key"))),
+                        value = Value(content = Text(eori))
                     ),
                     SummaryListRow(
-                        key = Key(
-                            content = Text(messages(s"$key.summary-list.sector.key"))
-                        ),
-                        value = Value(
-                            content = Text(messages(s"sector.label.$sector"))
-                        ),
+                        key = Key(content = Text(messages(s"$key.summary-list.sector.key"))),
+                        value = Value(content = Text(messages(s"sector.label.$sector")))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 1")),
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 2")),
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 3")),
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 4")),
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages(s"$key.summary-list.verified-email"))),
+                        value = Value(content = Text(verifiedEmail)),
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = routes.UndertakingController.getSector.toString,
+                                    href = routes.UndertakingController.getAddEmailForVerification(EmailStatus.CYA).url,
                                     content = Text(messages("common.cya.change")),
-                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.industry-sector"))
+                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.verified-email"))
                                 )
                             )
                         ))
-                    ),
-                    SummaryListRow(
-                    key = Key(
-                        content = Text(messages(s"$key.summary-list.verified-email"))
-                    ),
-                    value = Value(
-                        content = Text(verifiedEmail)
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = routes.UndertakingController.getAddEmailForVerification(EmailStatus.CYA).url,
-                                content = Text(messages("common.cya.change")),
-                                visuallyHiddenText = Some(messages(s"$key.change.hidden.verified-email"))
-                            )
-                        )
-                    ))
                     ),
                     SummaryListRow(
                     key = Key(

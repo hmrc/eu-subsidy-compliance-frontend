@@ -1,0 +1,138 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios
+)
+
+
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@fieldName = @{"fabMetal3"}
+
+@actionUrl = @{
+    if(isUpdate)
+        controllers.routes.UndertakingController.updateIndustrySector
+    else
+        controllers.routes.MetalsChemicalsController.submitFabricatedMetalsLvl3Page
+}
+
+
+@radioText(id: String, content: String) = {
+<span id="@id">@content</span>
+}
+
+@radioOptions = @{
+    Seq(
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-forging", messages("NACE.Manufacturing.Lvl3.ForgingShaping"))),
+            value = Some(Sector.metalForging.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalForging.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-cutlery", messages("NACE.Manufacturing.Lvl3.CutleryToolsHardware"))),
+            value = Some(Sector.cutleryToolsManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.cutleryToolsManufacture.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-structural", messages("NACE.Manufacturing.Lvl3.StructuralMetalProducts"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-structural", messages("NACE.Manufacturing.Lvl3.StructuralMetalProducts.hint")))
+            )),
+            value = Some(Sector.fabricatedStructuralMetalProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fabricatedStructuralMetalProducts.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-tanks", messages("NACE.Manufacturing.Lvl3.TanksReservoirs"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-tanks", messages("NACE.Manufacturing.Lvl3.TanksReservoirs.hint")))
+            )),
+            value = Some(Sector.metalTanksManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalTanksManufacture.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-weapons", messages("NACE.Manufacturing.Lvl3.WeaponsAmmunition"))),
+            value = Some(Sector.weaponsManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.weaponsManufacture.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherFabricatedMetalProducts"))),
+            value = Some(Sector.otherFabricatedMetalProductsManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherFabricatedMetalProductsManufacture.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-coating", messages("NACE.Manufacturing.Lvl3.TreatmentCoatingMachining"))),
+            value = Some(Sector.metalTreatmentCoating.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalTreatmentCoating.toString)
+        )
+    )
+}
+
+
+@layout(
+  pageTitle = Some(messages("NACE.Manufacturing.FabricatedMetal.title")),
+  backLinkEnabled = false,
+  hasErrors = form.hasErrors
+) {
+
+  @formHelper(action = actionUrl) {
+    @form.errors.map { err =>
+      @govukErrorSummary(ErrorSummary(
+        errorList = Seq(
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+            content = Text(messages("NACE.Manufacturing.FabricatedMetal.error"))
+          )
+        ),
+        title = Text(messages("common.error.summary.title"))
+      ))
+    }
+
+    @govukRadios(Radios(
+      errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+        content = Text(messages("NACE.Manufacturing.FabricatedMetal.error"))
+      ))} else None,
+      fieldset = Some(Fieldset(
+        legend = Some(Legend(
+        content = Text(messages("NACE.Manufacturing.FabricatedMetal.title")),
+        classes = "govuk-fieldset__legend--xl",
+        isPageHeading = true
+        ))
+    )),
+        hint = Some(Hint(
+        content = Text(messages("NACE.general.hint"))
+      )),
+      idPrefix = Some(fieldName),
+      name = fieldName,
+      items = radioOptions
+    ))
+
+    @button("continue.button")
+  }
+}

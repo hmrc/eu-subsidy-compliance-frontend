@@ -32,15 +32,16 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"civilEngineering3"}
+@url = @{"/report-and-manage-your-allowance-for-customs-duty-waiver-claims"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.ConstructionController.submitCivilEngineeringLvl3Page
 }
 
 
@@ -52,19 +53,19 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.roadAndRailConstruction"))),
-                value = Some(Sector.RoadAndRailConstruction.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.RoadAndRailConstruction.toString),
+                value = Some(Sector.roadAndRailConstruction.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.roadAndRailConstruction.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.roadAndRailConstruction.hint"))))
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.utilityConstruction"))),
-                value = Some(Sector.UtilityConstruction.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.UtilityConstruction.toString)
+                value = Some(Sector.utilityConstruction.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.utilityConstruction.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.otherUtilityConstructionProjects"))),
-                value = Some(Sector.OtherUtilityConstructionProjects.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherUtilityConstructionProjects.toString),
+                value = Some(Sector.otherUtilityConstructionProjects.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherUtilityConstructionProjects.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.otherUtilityConstructionProjects.hint"))))
         )
     )
@@ -72,8 +73,7 @@
 
 @layout(
   pageTitle = Some(messages("NACE.construction.Lvl2.civilEngineering.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -86,9 +86,23 @@
             content = Text(messages("NACE.construction.Lvl2.civilEngineering.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
+
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getAboutUndertaking.toString>Home</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>General Trade</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadConstructionLvl2Page.toString>Civil Engineering</a>
+        </li>
+    </ol>
+</nav>
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) Some(ErrorMessage(

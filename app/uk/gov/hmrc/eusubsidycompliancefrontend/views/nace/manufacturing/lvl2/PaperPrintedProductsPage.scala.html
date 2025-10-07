@@ -33,15 +33,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"manu-g6"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.GeneralTradeGroupsController.submitPaperPrintedProductsPage
 }
 
 
@@ -56,16 +56,16 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-paper", messages("NACE.Manufacturing.Lvl2.2.Paper.hint")))
             )),
-            value = Some(Sector.PaperRelated.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PaperRelated.toString)
+            value = Some(Sector.paperRelated.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.paperRelated.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-printed", messages("NACE.Manufacturing.Lvl2.2.Printed"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-printed", messages("NACE.Manufacturing.Lvl2.2.Printed.hint")))
             )),
-            value = Some(Sector.PrintedProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PrintedProducts.toString)
+            value = Some(Sector.printedProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.printedProducts.toString)
         )
     )
 }
@@ -73,8 +73,7 @@
 
 @layout(
   pageTitle = Some(messages("NACE.Manufacturing.Lvl2.2.Paper.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -87,7 +86,7 @@
             content = Text(messages("NACE.Manufacturing.Lvl2.2.Paper.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

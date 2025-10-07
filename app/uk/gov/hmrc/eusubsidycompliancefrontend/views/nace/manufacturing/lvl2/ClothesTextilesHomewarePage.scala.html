@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"manu-g2"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.GeneralTradeGroupsController.submitClothesTextilesHomewarePage
 }
 
 
@@ -52,29 +52,29 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-furniture", messages("NACE.Manufacturing.Lvl2.2.Clothes.Furniture"))),
-            value = Some(Sector.FurnitureManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FurnitureManufacture.toString)
+            value = Some(Sector.furnitureManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.furnitureManufacture.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-clothing", messages("NACE.Manufacturing.Lvl2.2.Clothes.Clothing"))),
-            value = Some(Sector.Clothing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Clothing.toString)
+            value = Some(Sector.clothing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.clothing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-textiles", messages("NACE.Manufacturing.Lvl2.2.Clothes.Textiles"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-textiles", messages("NACE.Manufacturing.Lvl2.2.Clothes.Textiles.hint")))
             )),
-            value = Some(Sector.Textiles.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Textiles.toString)
+            value = Some(Sector.textiles.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textiles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-leather", messages("NACE.Manufacturing.Lvl2.2.Clothes.Leather"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-leather", messages("NACE.Manufacturing.Lvl2.2.Clothes.Leather.hint")))
             )),
-            value = Some(Sector.LeatherProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.LeatherProducts.toString)
+            value = Some(Sector.leatherProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.leatherProducts.toString)
         )
     )
 }
@@ -82,8 +82,7 @@
 
 @layout(
   pageTitle = Some(messages("NACE.Manufacturing.Lvl2.2.Clothes.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -96,7 +95,7 @@
             content = Text(messages("NACE.Manufacturing.Lvl2.2.Clothes.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

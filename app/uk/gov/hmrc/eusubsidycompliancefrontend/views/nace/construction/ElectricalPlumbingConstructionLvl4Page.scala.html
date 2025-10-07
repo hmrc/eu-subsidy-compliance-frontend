@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"plumbing4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.ConstructionController.submitElectricalPlumbingConstructionLvl4Page
 }
 
 
@@ -52,31 +52,30 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.electricalInstallation"))),
-                value = Some(Sector.ElectricalInstallation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricalInstallation.toString)
+                value = Some(Sector.electricalInstallation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricalInstallation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.insulationInstallation"))),
-                value = Some(Sector.InsulationInstallation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.InsulationInstallation.toString)
+                value = Some(Sector.insulationInstallation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.insulationInstallation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.plumbingHeatingAC"))),
-                value = Some(Sector.PlumbingHeatingAC.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.PlumbingHeatingAC.toString)
+                value = Some(Sector.plumbingHeatingAC.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.plumbingHeatingAC.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.otherConstructionInstallation"))),
-                value = Some(Sector.OtherConstructionInstallation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherConstructionInstallation.toString)
+                value = Some(Sector.otherConstructionInstallation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherConstructionInstallation.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.construction.Lvl3.electricalAndPlumbingInstallation.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -89,7 +88,7 @@
             content = Text(messages("NACE.construction.Lvl3.electricalAndPlumbingInstallation.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

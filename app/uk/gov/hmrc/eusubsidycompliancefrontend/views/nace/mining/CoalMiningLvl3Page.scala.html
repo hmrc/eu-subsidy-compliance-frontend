@@ -32,13 +32,13 @@ govukRadios : GovukRadios
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"coal3"}
 
 @actionUrl = @{
 if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+else controllers.routes.MiningController.submitCoalMiningLvl3Page()
 }
 
 
@@ -64,8 +64,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.ligniteMining.to
 
 @layout(
 pageTitle = Some(messages("NACE.mining.Lvl2.coalAndLigniteMining.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
+backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
 
@@ -78,7 +77,7 @@ href = Some(s"#${err.key}"),
 content = Text(s"${messages(err.key++"." ++err.message)}")
 )
 ),
-title = Text(messages("common.error.summary.title", undertakingName))
+title = Text(messages("common.error.summary.title"))
 ))
 }
 

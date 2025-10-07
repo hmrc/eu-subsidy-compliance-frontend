@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"zoo4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.ArtsController.submitBotanicalZoologicalReservesLvl4Page()
 }
 
 
@@ -52,21 +52,20 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.botanicalZoologicalGardens"))),
-                value = Some(Sector.BotanicalZoologicalGardens.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.BotanicalZoologicalGardens.toString)
+                value = Some(Sector.botanicalZoologicalGardens.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.botanicalZoologicalGardens.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.natureReserves"))),
-                value = Some(Sector.NatureReserves.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.NatureReserves.toString)
+                value = Some(Sector.natureReserves.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.natureReserves.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.artsSportsRecreation.Lvl3.botanicalGardensAndNatureReserves.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -79,7 +78,7 @@
             content = Text(messages("NACE.artsSportsRecreation.Lvl3.botanicalGardensAndNatureReserves.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

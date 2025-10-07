@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"accommodation2"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.AccomodationUtilitiesController.submitAccommodationFoodLvl2Page()
 }
 
 
@@ -52,14 +52,14 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl2.accommodation"))),
-            value = Some(Sector.Accommodation.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Accommodation.toString),
+            value = Some(Sector.accommodation.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.accommodation.toString),
             hint = Some(Hint(content = Text(messages("NACE.accommodationAndFoodService.Lvl2.accommodation.hint"))))
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities"))),
-                value = Some(Sector.FoodBeverageServiceActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.FoodBeverageServiceActivities.toString),
+                value = Some(Sector.foodBeverageServiceActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.foodBeverageServiceActivities.toString),
                 hint = Some(Hint(content = Text(messages("NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities.hint"))))
         )
     )
@@ -67,8 +67,7 @@
 
 @layout(
   pageTitle = Some(messages("NACE.accommodationAndFoodService.Lvl1.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -81,7 +80,7 @@
             content = Text(messages("NACE.accommodationAndFoodService.Lvl1.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

@@ -33,13 +33,13 @@ govukRadios : GovukRadios
 
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"rAndD3"}
 
 @actionUrl = @{
 if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+else controllers.routes.ProfAndPAdminController.submitScientificRAndDLvl3Page()
 }
 
 
@@ -50,14 +50,14 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-NaturalScientificResearchAndDevelopment", messages("NACE.professional.Lvl3.naturalScienceEngineeringResearch"))),
-value = Some(Sector.NaturalScientificResearchAndDevelopment.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.NaturalScientificResearchAndDevelopment.toString)
+content = HtmlContent(radioText("sector-label-naturalScientificResearchAndDevelopment", messages("NACE.professional.Lvl3.naturalScienceEngineeringResearch"))),
+value = Some(Sector.naturalScientificResearchAndDevelopment.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.naturalScientificResearchAndDevelopment.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-SocialScientificResearchAndDevelopment", messages("NACE.professional.Lvl3.socialScienceHumanitiesResearch"))),
-value = Some(Sector.SocialScientificResearchAndDevelopment.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.SocialScientificResearchAndDevelopment.toString)
+content = HtmlContent(radioText("sector-label-socialScientificResearchAndDevelopment", messages("NACE.professional.Lvl3.socialScienceHumanitiesResearch"))),
+value = Some(Sector.socialScientificResearchAndDevelopment.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.socialScientificResearchAndDevelopment.toString)
 )
 )
 }
@@ -65,8 +65,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.SocialScientific
 
 @layout(
 pageTitle = Some(messages("NACE.professional.Lvl2.scientificResearchDevelopment.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
+backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
 
@@ -79,7 +78,7 @@ href = Some(s"#${err.key}"),
 content = Text(s"${messages(err.key++"." ++err.message)}")
 )
 ),
-title = Text(messages("common.error.summary.title", undertakingName))
+title = Text(messages("common.error.summary.title"))
 ))
 }
 

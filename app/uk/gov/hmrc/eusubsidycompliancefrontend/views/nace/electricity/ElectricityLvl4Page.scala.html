@@ -32,13 +32,13 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"electricity4"}
 
 @actionUrl = @{
   if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-  else controllers.routes.UndertakingController.postSector
+  else controllers.routes.AccomodationUtilitiesController.submitElectricityLvl4Page()
 }
 
 
@@ -49,43 +49,42 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-electricity-nonrenewable", messages("NACE.ElectricityGasSteamAir.Lvl4.ElectricityNonRenewable"))),
-      value = Some(Sector.NonRenewableElectricityProduction.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonRenewableElectricityProduction.toString)
+      content = HtmlContent(radioText("sector-electricity-nonrenewable", messages("NACE.electricityGasSteamAir.Lvl4.electricityNonRenewable"))),
+      value = Some(Sector.nonRenewableElectricityProduction.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonRenewableElectricityProduction.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-electricity-renewable", messages("NACE.ElectricityGasSteamAir.Lvl4.ElectricityRenewable"))),
-      value = Some(Sector.RenewableElectricityProduction.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.RenewableElectricityProduction.toString)
+      content = HtmlContent(radioText("sector-label-electricity-renewable", messages("NACE.electricityGasSteamAir.Lvl4.electricityRenewable"))),
+      value = Some(Sector.renewableElectricityProduction.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.renewableElectricityProduction.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-transmission-electricity", messages("NACE.ElectricityGasSteamAir.Lvl4.TransmissionElectricity"))),
-      value = Some(Sector.ElectricityTransmission.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricityTransmission.toString)
+      content = HtmlContent(radioText("sector-label-transmission-electricity", messages("NACE.electricityGasSteamAir.Lvl4.transmissionElectricity"))),
+      value = Some(Sector.electricityTransmission.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityTransmission.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-distribution-electricity", messages("NACE.ElectricityGasSteamAir.Lvl4.DistributionElectricity"))),
-      value = Some(Sector.ElectricityDistribution.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricityDistribution.toString)
+      content = HtmlContent(radioText("sector-label-distribution-electricity", messages("NACE.electricityGasSteamAir.Lvl4.distributionElectricity"))),
+      value = Some(Sector.electricityDistribution.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityDistribution.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-trade-electricity", messages("NACE.ElectricityGasSteamAir.Lvl4.TradeElectricity"))),
-      value = Some(Sector.ElectricityTrade.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricityTrade.toString)
+      content = HtmlContent(radioText("sector-label-trade-electricity", messages("NACE.electricityGasSteamAir.Lvl4.tradeElectricity"))),
+      value = Some(Sector.electricityTrade.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityTrade.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-storage-electricity", messages("NACE.education.Lvl4.StorageElectricity"))),
-      value = Some(Sector.ElectricityStorage.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricityStorage.toString)
+      content = HtmlContent(radioText("sector-label-storage-electricity", messages("NACE.electricityGasSteamAir.Lvl4.storageElectricity"))),
+      value = Some(Sector.electricityStorage.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityStorage.toString)
     )
   )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.ElectricityGasSteamAir.Lvl3.ElectricPower.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  pageTitle = Some(messages("NACE.electricityGasSteamAir.Lvl3.electricPower.title")),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -98,7 +97,7 @@
             content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 
@@ -108,7 +107,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.ElectricityGasSteamAir.Lvl3.ElectricPower.title")),
+          content = Text(messages("NACE.electricityGasSteamAir.Lvl3.electricPower.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))

@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"filmPublishing3"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.PublishingTelecomsController.submitFilmMusicPublishingLvl3Page()
 }
 
 
@@ -51,23 +51,22 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities"))),
-            value = Some(Sector.FilmVideoActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FilmVideoActivities.toString),
+            content = HtmlContent(radioText("sector-label-filmVideoActivities", messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities"))),
+            value = Some(Sector.filmVideoActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.filmVideoActivities.toString),
             hint = Some(Hint(content = Text(messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.hint"))))
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.soundRecordingAndMusicPublishing"))),
-            value = Some(Sector.SoundRecordingAndMusicPublishing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.SoundRecordingAndMusicPublishing.toString)
+            content = HtmlContent(radioText("sector-label-soundRecordingAndMusicPublishing", messages("NACE.publishingBroadcasting.Lvl3.soundRecordingAndMusicPublishing"))),
+            value = Some(Sector.soundRecordingAndMusicPublishing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.soundRecordingAndMusicPublishing.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -80,7 +79,7 @@
             content = Text(messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

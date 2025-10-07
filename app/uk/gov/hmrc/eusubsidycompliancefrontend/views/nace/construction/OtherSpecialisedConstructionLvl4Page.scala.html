@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"otherSpecial4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.ConstructionController.submitOtherSpecialisedConstructionLvl4Page
 }
 
 
@@ -52,21 +52,20 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.masonryAndBricklaying"))),
-                value = Some(Sector.MasonryAndBricklaying.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.MasonryAndBricklaying.toString)
+                value = Some(Sector.masonryAndBricklaying.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.masonryAndBricklaying.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.otherSpecialisedConstructionActivities"))),
-                value = Some(Sector.OtherSpecialisedConstructionActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSpecialisedConstructionActivities.toString)
+                value = Some(Sector.otherSpecialisedConstructionActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSpecialisedConstructionActivities.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.construction.Lvl3.otherSpecialisedConstruction.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -79,7 +78,7 @@
             content = Text(messages("NACE.construction.Lvl3.otherSpecialisedConstruction.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

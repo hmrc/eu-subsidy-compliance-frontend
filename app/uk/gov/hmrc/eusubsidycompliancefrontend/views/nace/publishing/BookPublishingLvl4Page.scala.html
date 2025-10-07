@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"book4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.PublishingTelecomsController.submitBookPublishingLvl4Page()
 }
 
 
@@ -51,32 +51,31 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.books"))),
-            value = Some(Sector.Books.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Books.toString)
+            content = HtmlContent(radioText("sector-label-books", messages("NACE.publishingBroadcasting.Lvl4.books"))),
+            value = Some(Sector.books.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.books.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.journalsPeriodicals"))),
-            value = Some(Sector.JournalsPeriodicals.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.JournalsPeriodicals.toString)
+            content = HtmlContent(radioText("sector-label-journalsPeriodicals", messages("NACE.publishingBroadcasting.Lvl4.journalsPeriodicals"))),
+            value = Some(Sector.journalsPeriodicals.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.journalsPeriodicals.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.newspapers"))),
-            value = Some(Sector.Newspapers.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Newspapers.toString)
+            content = HtmlContent(radioText("sector-label-newspapers", messages("NACE.publishingBroadcasting.Lvl4.newspapers"))),
+            value = Some(Sector.newspapers.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.newspapers.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.otherPublishing"))),
-            value = Some(Sector.OtherPublishing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPublishing.toString)
+            content = HtmlContent(radioText("sector-label-otherPublishing", messages("NACE.publishingBroadcasting.Lvl4.otherPublishing"))),
+            value = Some(Sector.otherPublishing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPublishing.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.publishingBroadcasting.Lvl3.publishingBooksNewspapers.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -89,7 +88,7 @@
             content = Text(messages("NACE.publishingBroadcasting.Lvl3.publishingBooksNewspapers.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

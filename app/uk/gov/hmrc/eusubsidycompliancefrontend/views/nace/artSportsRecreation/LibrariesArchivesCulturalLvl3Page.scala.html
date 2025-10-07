@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"libraries3"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.ArtsController.submitLibrariesArchivesCulturalLvl3Page()
 }
 
 
@@ -52,31 +52,30 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl3.botanicalGardensAndNatureReserves"))),
-                value = Some(Sector.BotanicalGardensAndNatureReserves.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.BotanicalGardensAndNatureReserves.toString)
+                value = Some(Sector.botanicalGardensAndNatureReserves.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.botanicalGardensAndNatureReserves.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl3.culturalHeritageConservation"))),
-                value = Some(Sector.CulturalHeritageConservation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.CulturalHeritageConservation.toString)
+                value = Some(Sector.culturalHeritageConservation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.culturalHeritageConservation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl3.libraryArchives"))),
-                value = Some(Sector.LibraryArchives.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.LibraryArchives.toString)
+                value = Some(Sector.libraryArchives.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.libraryArchives.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl3.museumCollectionsMonuments"))),
-                value = Some(Sector.MuseumCollectionsMonuments.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.MuseumCollectionsMonuments.toString)
+                value = Some(Sector.museumCollectionsMonuments.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.museumCollectionsMonuments.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.artsSportsRecreation.Lvl2.librariesArchivesMuseums.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -89,7 +88,7 @@
             content = Text(messages("NACE.artsSportsRecreation.Lvl2.librariesArchivesMuseums.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

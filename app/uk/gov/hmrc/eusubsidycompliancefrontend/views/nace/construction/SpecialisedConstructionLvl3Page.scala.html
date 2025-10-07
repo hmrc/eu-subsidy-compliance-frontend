@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"special3"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.ConstructionController.submitSpecialisedConstructionLvl3Page
 }
 
 
@@ -52,42 +52,42 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.buildingFinishing"))),
-                value = Some(Sector.BuildingFinishing.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.BuildingFinishing.toString),
+                value = Some(Sector.buildingFinishing.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.buildingFinishing.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.buildingFinishing.hint"))))
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.demolitionAndPreparation"))),
-                value = Some(Sector.DemolitionAndPreparation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.DemolitionAndPreparation.toString),
+                value = Some(Sector.demolitionAndPreparation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.demolitionAndPreparation.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.demolitionAndPreparation.hint"))))
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.electricalAndPlumbingInstallation"))),
-                value = Some(Sector.ElectricalAndPlumbingInstallation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricalAndPlumbingInstallation.toString),
+                value = Some(Sector.electricalAndPlumbingInstallation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricalAndPlumbingInstallation.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.electricalAndPlumbingInstallation.hint"))))
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.specialisedConstructionIntermediationServices"))),
-                value = Some(Sector.SpecialisedConstructionIntermediationServices.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SpecialisedConstructionIntermediationServices.toString),
+                value = Some(Sector.specialisedConstructionIntermediationServices.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedConstructionIntermediationServices.toString),
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.specialisedCivilEngineering"))),
-                value = Some(Sector.SpecialisedCivilEngineering.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SpecialisedCivilEngineering.toString)
+                value = Some(Sector.specialisedCivilEngineering.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedCivilEngineering.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.specialisedBuildingActivities"))),
-                value = Some(Sector.SpecialisedBuildingActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SpecialisedBuildingActivities.toString),
+                value = Some(Sector.specialisedBuildingActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedBuildingActivities.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.specialisedBuildingActivities.hint"))))
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.otherSpecialisedConstruction"))),
-                value = Some(Sector.OtherSpecialisedConstruction.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSpecialisedConstruction.toString),
+                value = Some(Sector.otherSpecialisedConstruction.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSpecialisedConstruction.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.otherSpecialisedConstruction.hint"))))
         )
     )
@@ -95,8 +95,7 @@
 
 @layout(
   pageTitle = Some(messages("NACE.construction.Lvl2.specialisedConstructionActivities.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -109,7 +108,7 @@
             content = Text(messages("NACE.construction.Lvl2.specialisedConstructionActivities.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

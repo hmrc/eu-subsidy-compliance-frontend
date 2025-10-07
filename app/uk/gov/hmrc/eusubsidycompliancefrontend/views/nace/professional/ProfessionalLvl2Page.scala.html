@@ -33,13 +33,13 @@ govukRadios : GovukRadios
 
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"prof2"}
 
 @actionUrl = @{
 if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+else controllers.routes.ProfAndPAdminController.submitProfessionalLvl2Page()
 }
 
 
@@ -71,8 +71,13 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.legalAndAccounti
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-ScientificResearchAndDevelopment", messages("NACE.professional.Lvl2.scientificResearchDevelopment"))),
-value = Some(Sector.ScientificResearchAndDevelopment.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.ScientificResearchAndDevelopment.toString)
+value = Some(Sector.scientificResearchAndDevelopment.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.scientificResearchAndDevelopment.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-veterinary", messages("NACE.professional.Lvl2.veterinary"))),
+value = Some(Sector.veterinary.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.veterinary.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherProfessionalScientific", messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical"))),
@@ -81,11 +86,6 @@ hint = Some(Hint(
 content = Text(messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical.hint"))
 )),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherProfessionalScientific.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-veterinary", messages("NACE.professional.Lvl2.veterinary"))),
-value = Some(Sector.veterinary.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.veterinary.toString)
 )
 )
 }
@@ -93,8 +93,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.veterinary.toStr
 
 @layout(
 pageTitle = Some(messages("NACE.professional.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
+backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
 
@@ -107,7 +106,7 @@ href = Some(s"#${err.key}"),
 content = Text(s"${messages(err.key++"." ++err.message)}")
 )
 ),
-title = Text(messages("common.error.summary.title", undertakingName))
+title = Text(messages("common.error.summary.title"))
 ))
 }
 

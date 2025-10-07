@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"manu-g1"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.GeneralTradeGroupsController.submitLvl2_1GroupsPage
 }
 
 
@@ -55,66 +55,66 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-metals", messages("NACE.Manufacturing.Lvl2.1.Metals.hint")))
             )),
-            value = Some(Sector.Food.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            value = Some(Sector.manuGroup5.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.manuGroup4.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-food", messages("NACE.Manufacturing.Lvl2.1.Food"))),
-            value = Some(Sector.Food.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            value = Some(Sector.manuGroup4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.manuGroup3.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-computers", messages("NACE.Manufacturing.Lvl2.1.Computers"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-computers", messages("NACE.Manufacturing.Lvl2.1.Computers.hint")))
             )),
-            value = Some(Sector.Food.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            value = Some(Sector.manuGroup3.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.manuGroup2.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-clothes", messages("NACE.Manufacturing.Lvl2.1.Clothes"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-clothes", messages("NACE.Manufacturing.Lvl2.1.Clothes.hint")))
             )),
-            value = Some(Sector.Food.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            value = Some(Sector.manuGroup2.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.manuGroup1.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-paper", messages("NACE.Manufacturing.Lvl2.1.Paper"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-paper", messages("NACE.Manufacturing.Lvl2.1.Paper.hint")))
             )),
-            value = Some(Sector.Food.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            value = Some(Sector.manuGroup6.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.manuGroup5.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-vehicles", messages("NACE.Manufacturing.Lvl2.1.Vehicles"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-vehicles", messages("NACE.Manufacturing.Lvl2.1.Vehicles.hint")))
             )),
-            value = Some(Sector.Food.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            value = Some(Sector.manuGroup7.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.manuGroup7.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-pharmaceuticals", messages("NACE.Manufacturing.Lvl2.1.Pharmaceuticals"))),
-            value = Some(Sector.Food.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            value = Some(Sector.pharmaceuticals.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.pharmaceuticals.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl2.1.OtherManufacturing"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl2.1.OtherManufacturing.hint")))
             )),
-            value = Some(Sector.Food.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            value = Some(Sector.other.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.other.toString)
         ),
         RadioItem(
             divider = Some(messages("common.radioItem.or"))
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-machinery", messages("NACE.Manufacturing.Lvl2.1.Machinery"))),
-            value = Some(Sector.Food.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            value = Some(Sector.otherMachineryAndEquipment.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMachineryAndEquipment.toString)
         )
     )
 }
@@ -122,8 +122,7 @@
 
 @layout(
   pageTitle = Some(messages("NACE.Manufacturing.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -136,7 +135,7 @@
             content = Text(messages("NACE.Manufacturing.Lvl2.1.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

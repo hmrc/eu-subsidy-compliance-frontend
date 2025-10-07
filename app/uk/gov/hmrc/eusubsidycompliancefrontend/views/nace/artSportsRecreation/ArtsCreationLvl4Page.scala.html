@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"artsCreation4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.ArtsController.submitArtsCreationLvl4Page()
 }
 
 
@@ -52,26 +52,25 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.literaryMusical"))),
-                value = Some(Sector.LiteraryMusical.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.LiteraryMusical.toString)
+                value = Some(Sector.literaryMusical.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.literaryMusical.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.visualArtsCreation"))),
-                value = Some(Sector.VisualArtsCreation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.VisualArtsCreation.toString)
+                value = Some(Sector.visualArtsCreation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.visualArtsCreation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.otherArtsCreation"))),
-                value = Some(Sector.OtherArtsCreation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherArtsCreation.toString)
+                value = Some(Sector.otherArtsCreation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherArtsCreation.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.artsSportsRecreation.Lvl3.artsCreation.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -84,7 +83,7 @@
             content = Text(messages("NACE.artsSportsRecreation.Lvl3.artsCreation.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

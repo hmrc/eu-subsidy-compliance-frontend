@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"demo4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.ConstructionController.submitDemolitionSitePreparationLvl4Page
 }
 
 
@@ -52,26 +52,25 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.demolition"))),
-                value = Some(Sector.Demolition.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.Demolition.toString)
+                value = Some(Sector.demolition.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.demolition.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.sitePreparation"))),
-                value = Some(Sector.SitePreparation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SitePreparation.toString)
+                value = Some(Sector.sitePreparation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.sitePreparation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.testDrillingBoring"))),
-                value = Some(Sector.TestDrillingBoring.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.TestDrillingBoring.toString)
+                value = Some(Sector.testDrillingBoring.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.testDrillingBoring.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.construction.Lvl3.demolitionAndPreparation.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -84,7 +83,7 @@
             content = Text(messages("NACE.construction.Lvl3.demolitionAndPreparation.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

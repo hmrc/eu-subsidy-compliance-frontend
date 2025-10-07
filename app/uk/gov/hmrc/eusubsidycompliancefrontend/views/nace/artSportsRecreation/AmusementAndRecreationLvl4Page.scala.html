@@ -32,15 +32,15 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"amusement4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.ArtsController.submitAmusementAndRecreationLvl4Page()
 }
 
 
@@ -52,21 +52,20 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.amusementParks"))),
-                value = Some(Sector.AmusementParks.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.AmusementParks.toString)
+                value = Some(Sector.amusementParks.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.amusementParks.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.otherRecreationActivities"))),
-                value = Some(Sector.OtherRecreationActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherRecreationActivities.toString)
+                value = Some(Sector.otherRecreationActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherRecreationActivities.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.artsSportsRecreation.Lvl3.amusementRecreation.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -79,7 +78,7 @@
             content = Text(messages("NACE.artsSportsRecreation.Lvl3.amusementRecreation.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

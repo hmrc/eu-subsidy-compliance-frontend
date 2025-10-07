@@ -31,9 +31,9 @@
   govukRadios : GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_],isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"gt-other"}
 
 @actionUrl = @{
     if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
@@ -48,66 +48,77 @@
 @radioOptions = @{
     Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.Lvl1.financialInsuranceActivities"))),
-value = Some(Sector.agriculture.toString)
+content = HtmlContent(radioText("sector-label-financialInsuranceActivities", messages("NACE.Lvl1.financialInsuranceActivities"))),
+value = Some(Sector.financialInsuranceActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.financialInsuranceActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.Lvl1.waterSupply"))),
-value = Some(Sector.agriculture.toString)
+content = HtmlContent(radioText("sector-label-waterSupply", messages("NACE.Lvl1.waterSupply"))),
+value = Some(Sector.waterSupply.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.waterSupply.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.Lvl1.electricityGas"))),
+content = HtmlContent(radioText("sector-label-electricityGas", messages("NACE.Lvl1.electricityGas"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.electricityGas.hint")))),
-value = Some(Sector.agriculture.toString)
+value = Some(Sector.electricityGas.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityGas.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.Lvl1.mining"))),
-value = Some(Sector.agriculture.toString)
+content = HtmlContent(radioText("sector-label-mining", messages("NACE.Lvl1.mining"))),
+value = Some(Sector.miningQuarrying.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningQuarrying.toString)
 ),
  RadioItem(
-   content = HtmlContent(radioText("sector-label-AccommodationFoodServices", messages("NACE.Lvl1.accommodationAndFoodService"))),
+   content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.Lvl1.accommodationAndFoodService"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.accommodationAndFoodService.hint")))),
-value = Some(Sector.agriculture.toString)
+value = Some(Sector.accommodationAndFoodService.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.accommodationAndFoodService.toString)
  ),
 
  RadioItem(
- content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.Lvl1.artsSportsRecreation"))),
+ content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.Lvl1.artsSportsRecreation"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.artsSportsRecreation.hint")))),
- value = Some(Sector.agriculture.toString)
+ value = Some(Sector.artsSportsRecreation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.artsSportsRecreation.toString)
  ),
  RadioItem(
- content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.Lvl1.education"))),
- value = Some(Sector.agriculture.toString)
+ content = HtmlContent(radioText("sector-label-education", messages("NACE.Lvl1.education"))),
+ value = Some(Sector.education.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.education.toString)
  ),
  RadioItem(
- content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.Lvl1.humanHealthSocialWork"))),
+ content = HtmlContent(radioText("sector-label-humanHealthSocialWork", messages("NACE.Lvl1.humanHealthSocialWork"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.humanHealthSocialWork.hint")))),
- value = Some(Sector.agriculture.toString)
+ value = Some(Sector.humanHealthSocialWork.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.humanHealthSocialWork.toString)
  ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.Lvl1.publicAdministration"))),
-value = Some(Sector.agriculture.toString)
+content = HtmlContent(radioText("sector-label-publicAdministration", messages("NACE.Lvl1.publicAdministration"))),
+value = Some(Sector.publicAdministration.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.publicAdministration.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.Lvl1.otherService"))),
+content = HtmlContent(radioText("sector-label-otherService", messages("NACE.Lvl1.otherService"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.otherService.hint")))),
-value = Some(Sector.agriculture.toString)
+value = Some(Sector.otherService.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherService.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.Lvl1.households"))),
-value = Some(Sector.agriculture.toString)
+content = HtmlContent(radioText("sector-label-households", messages("NACE.Lvl1.households"))),
+value = Some(Sector.households.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.households.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.Lvl1.activitiesExtraterritorial"))),
-value = Some(Sector.agriculture.toString)
+content = HtmlContent(radioText("sector-label-activitiesExtraterritorial", messages("NACE.Lvl1.activitiesExtraterritorial"))),
+value = Some(Sector.activitiesExtraterritorial.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.activitiesExtraterritorial.toString)
 )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.Lvl1.otherTitle")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -120,7 +131,7 @@ value = Some(Sector.agriculture.toString)
             content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

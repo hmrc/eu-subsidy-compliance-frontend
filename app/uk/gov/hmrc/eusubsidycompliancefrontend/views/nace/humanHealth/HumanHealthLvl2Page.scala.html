@@ -31,13 +31,13 @@ govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"humanHealth2"}
 
 @actionUrl = @{
 if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+else controllers.routes.HouseHealthEducationController.submitHumanHealthLvl2Page()
 }
 
 
@@ -48,17 +48,17 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-HumanHealthActivities", messages("NACE.humanHealth.Lvl2.humanHealth"))),
-value = Some(Sector.HumanHealthActivities.toString),
+content = HtmlContent(radioText("sector-label-humanHealthActivities", messages("NACE.humanHealth.Lvl2.humanHealth"))),
+value = Some(Sector.humanHealthActivities.toString),
 hint = Some(Hint(
 content = Text(messages("NACE.humanHealth.Lvl2.humanHealth.hint"))
 )),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.HumanHealthActivities.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.humanHealthActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-ResidentialCareActivities", messages("NACE.humanHealth.Lvl2.residentialCare"))),
-value = Some(Sector.ResidentialCareActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialCareActivities.toString)
+content = HtmlContent(radioText("sector-label-residentialCareActivities", messages("NACE.humanHealth.Lvl2.residentialCare"))),
+value = Some(Sector.residentialCareActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialCareActivities.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherSocialWorkWithoutAccommodation", messages("NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation"))),
@@ -71,8 +71,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSocialWorkW
 
 @layout(
 pageTitle = Some(messages("NACE.humanHealth.Lvl1.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
+backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
 
@@ -85,7 +84,7 @@ href = Some(s"#${err.key}"),
 content = Text(s"${messages(err.key++"." ++err.message)}")
 )
 ),
-title = Text(messages("common.error.summary.title", undertakingName))
+title = Text(messages("common.error.summary.title"))
 ))
 }
 

@@ -1,0 +1,119 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios
+)
+
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@fieldName = @{"financial3"}
+
+@actionUrl = @{
+    if(isUpdate)
+        controllers.routes.UndertakingController.updateIndustrySector
+    else
+        controllers.routes.FinanceRealEstateController.submitFinancialServicesLvl3Page()
+}
+
+@radioText(id: String, content: String) = {
+    <span id="@id">@content</span>
+}
+
+@radioOptions = @{
+    Seq(
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-monetary-intermediation", messages("NACE.financialServices.Lvl3.monetaryIntermediation"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-monetary-intermediation", messages("NACE.financialServices.Lvl3.monetaryIntermediation.hint")))
+            )),
+            value = Some(Sector.MonetaryIntermediation.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MonetaryIntermediation.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-holding-companies", messages("NACE.financialServices.Lvl3.holdingCompanies"))),
+            value = Some(Sector.HoldingCompanies.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.HoldingCompanies.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-trusts-funds", messages("NACE.financialServices.Lvl3.trustsFunds"))),
+            value = Some(Sector.TrustsFunds.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TrustsFunds.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-other-financial", messages("NACE.financialServices.Lvl3.otherFinancial"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-other-financial", messages("NACE.financialServices.Lvl3.otherFinancial.hint")))
+            )),
+            value = Some(Sector.OtherFinancial.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFinancial.toString)
+        )
+    )
+}
+
+@layout(
+    pageTitle = Some(messages("NACE.financialServices.title")),
+    backLinkEnabled = false,
+    hasErrors = form.hasErrors
+) {
+    @formHelper(action = actionUrl) {
+        @form.errors.map { err =>
+            @govukErrorSummary(ErrorSummary(
+                errorList = Seq(
+                    ErrorLink(
+                        href = Some(s"#${err.key}"),
+                        content = Text(s"${messages(err.key++"." ++err.message)}")
+                    )
+                ),
+                title = Text(messages("common.error.summary.title"))
+            ))
+        }
+
+        @govukRadios(Radios(
+            errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+                content = Text(messages("NACE.financialServices.error.required"))
+            ))} else None,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("NACE.financialServices.title")),
+                    classes = "govuk-fieldset__legend--l",
+                    isPageHeading = true
+                ))
+            )),
+            hint = Some(Hint(
+                content = Text(messages("NACE.general.hint"))
+            )),
+            idPrefix = Some(fieldName),
+            name = fieldName,
+            items = radioOptions
+        ))
+
+        @button("continue.button")
+    }
+}

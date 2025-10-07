@@ -45,13 +45,18 @@
         ))
 
         @P(messages("undertaking.confirmation.p1"), id = Some("confirmationFirstParaId"))
-        @P(messages("undertaking.confirmation.p2"), id = Some("confirmationSecondParaId"))
+
+            <p class="govuk-body tight-paragraph">@messages("undertaking.confirmation.p2")</p>
+            <ul class="govuk-list govuk-list--bullet tight-bullet-list">
+                <li>@messages("undertaking.confirmation.ul1")</li>
+                <li> @messages("undertaking.confirmation.ul2")</li>
+            </ul>
 
         @if(intentToAddBusiness) {
             <p class="govuk-body" id="confirmation-p3">@Html(messages("undertaking.confirmation.p3", controllers.routes.AddBusinessEntityController.startJourney().url))</p>
         }
 
-        @button("common.go-undertaking-home")
+        @button("ManageYourUndertaking.button")
     }
 
     <div id="exit-survey" class="govuk-!-margin-bottom-8">
