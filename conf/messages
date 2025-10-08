@@ -2729,6 +2729,19 @@ NACE.auxiliaryFinancial.Lvl4.financialMarkets = Administration of financial mark
 NACE.auxiliaryFinancial.Lvl4.securityBrokerage = Security and commodity contracts brokerage
 NACE.auxiliaryFinancial.Lvl4.otherAuxiliaryFinancial = Other activities auxiliary to financial services (except insurance and pension funding)
 
+# finance error messages
+auxFinance3.error.required = Select your undertaking’s main business activity in auxiliary financial activities
+auxInsurance4.error.required = Select the type of auxiliary insurance and pension funding activity your undertaking does
+auxNonInsurance4.error.required = Select the type of auxiliary financial services activity your undertaking does
+finance2.error.required = Select your undertaking’s main business activity in financial services and insurance
+financial3.error.required = Select your undertaking’s main business activity in financial services and insurance
+holding4.error.required = Select your undertaking’s main business activity in holding companies and financing conduits
+insurance3.error.required = Select your undertaking’s main business activity in insurance, reinsurance and pension funding
+insurance4.error.required = Select the type of insurance your undertaking provides
+monetary4.error.required = Select your undertaking’s main business activity in financial services and insurance
+otherFinance4.error.required = Select your undertaking’s main business activity in other financial services
+trusts4.error.required =Select your undertaking’s main business activity in trusts, funds and similar financial entities
+
 #RealEstate NACE Sector2,3,4
 
 NACE.realEstate.Lvl4.feeContract.title = What type of real estate activities does your undertaking do on a fee or contract basis?
