@@ -141,7 +141,7 @@ class Navigator @Inject(){
     case "32.1" => routes.NonMetallicOtherController.loadJewelleryCoinsLvl4Page
     case "32.9" => routes.NonMetallicOtherController.loadOtherProductsLvl4Page
 
-    case "35"  => routes.AccomodationUtilitiesController.loadElectricityLvl3Page()
+    case "D"  => routes.AccomodationUtilitiesController.loadElectricityLvl3Page()
     case "35.1"  => routes.AccomodationUtilitiesController.loadElectricityLvl4Page()
     case "35.2"  => routes.AccomodationUtilitiesController.loadGasManufactureLvl4Page()
 

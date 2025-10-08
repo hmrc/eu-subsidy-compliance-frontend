@@ -1593,26 +1593,26 @@ NACE.Manufacturing.Lvl3.InstallationIndustrialMachinery = Installation of indust
 NACE.Manufacturing.Lvl4.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
 
 #ElectricityGasSteamAir NACE Sector2,3,4
-NACE.ElectricityGasSteamAir.Lvl2.Supply = Electricity, gas, steam and air conditioning supply
-NACE.ElectricityGasSteamAir.Lvl2.Supply.title = What is your undertaking’s main business activity in electricity, gas, steam and air conditioning supply?
-NACE.ElectricityGasSteamAir.Lvl3.ElectricPower = Electric power generation, transmission and distribution
-NACE.ElectricityGasSteamAir.Lvl3.ElectricPower.title = What is your undertaking’s main business activity in electricity?
-NACE.ElectricityGasSteamAir.Lvl4.ElectricityNonRenewable = Production of electricity from non-renewable sources
-NACE.ElectricityGasSteamAir.Lvl4.ElectricityRenewable = Production of electricity from renewable sources
-NACE.ElectricityGasSteamAir.Lvl4.TransmissionElectricity = Transmission of electricity
-NACE.ElectricityGasSteamAir.Lvl4.DistributionElectricity = Distribution of electricity
-NACE.ElectricityGasSteamAir.Lvl4.TradeElectricity = Trade of electricity
-NACE.ElectricityGasSteamAir.Lvl4.StorageElectricity = Storage of electricity
-NACE.ElectricityGasSteamAir.Lvl3.GasDistribution = Manufacture of gas, and distribution of gaseous fuels through mains
-NACE.ElectricityGasSteamAir.Lvl3.GasDistribution.title = What is your undertaking’s main business activity in manufacture and distribution of gas?
-NACE.ElectricityGasSteamAir.Lvl4.ManufactureGas = Manufacture of gas
-NACE.ElectricityGasSteamAir.Lvl4.DistributionGas = Distribution of gaseous fuels through mains
-NACE.ElectricityGasSteamAir.Lvl4.TradeGas = Trade of gas through mains
-NACE.ElectricityGasSteamAir.Lvl4.StorageGas = Storage of gas as part of network supply services
-NACE.ElectricityGasSteamAir.Lvl3.SteamAirConditioning = Steam and air conditioning supply
-NACE.ElectricityGasSteamAir.Lvl4.SteamAirConditioning = Steam and air conditioning supply
-NACE.ElectricityGasSteamAir.Lvl3.BrokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
-NACE.ElectricityGasSteamAir.Lvl4.BrokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
+NACE.electricityGasSteamAir.Lvl2.supply = Electricity, gas, steam and air conditioning supply
+NACE.electricityGasSteamAir.Lvl2.supply.title = What is your undertaking’s main business activity in electricity, gas, steam and air conditioning supply?
+NACE.electricityGasSteamAir.Lvl3.electricPower = Electric power generation, transmission and distribution
+NACE.electricityGasSteamAir.Lvl3.electricPower.title = What is your undertaking’s main business activity in electricity?
+NACE.electricityGasSteamAir.Lvl4.electricityNonRenewable = Production of electricity from non-renewable sources
+NACE.electricityGasSteamAir.Lvl4.electricityRenewable = Production of electricity from renewable sources
+NACE.electricityGasSteamAir.Lvl4.transmissionElectricity = Transmission of electricity
+NACE.electricityGasSteamAir.Lvl4.distributionElectricity = Distribution of electricity
+NACE.electricityGasSteamAir.Lvl4.tradeElectricity = Trade of electricity
+NACE.electricityGasSteamAir.Lvl4.storageElectricity = Storage of electricity
+NACE.electricityGasSteamAir.Lvl3.gasDistribution = Manufacture of gas, and distribution of gaseous fuels through mains
+NACE.electricityGasSteamAir.Lvl3.gasDistribution.title = What is your undertaking’s main business activity in manufacture and distribution of gas?
+NACE.electricityGasSteamAir.Lvl4.manufactureGas = Manufacture of gas
+NACE.electricityGasSteamAir.Lvl4.distributionGas = Distribution of gaseous fuels through mains
+NACE.electricityGasSteamAir.Lvl4.tradeGas = Trade of gas through mains
+NACE.electricityGasSteamAir.Lvl4.storageGas = Storage of gas as part of network supply services
+NACE.electricityGasSteamAir.Lvl3.steamAirConditioning = Steam and air conditioning supply
+NACE.electricityGasSteamAir.Lvl4.steamAirConditioning = Steam and air conditioning supply
+NACE.electricityGasSteamAir.Lvl3.brokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
+NACE.electricityGasSteamAir.Lvl4.brokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
 
 #WaterSewerageWasteRemediation NACE Sector2,3,4
 NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply = Water collection, treatment and supply
