@@ -77,7 +77,6 @@ class OtherServicesController @Inject() (
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(otherLvl2Page(otherLvl2PageForm,false)).toFuture
   }
 
   //membershipOrgActivitiesLvl3Page
@@ -95,7 +94,6 @@ class OtherServicesController @Inject() (
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(membershipOrgActivitiesLvl3Page(membershipOrgActivitiesLvl3PageForm,false)).toFuture
   }
 
   //personalServicesLvl3Page
@@ -113,7 +111,6 @@ class OtherServicesController @Inject() (
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(personalServicesLvl3Page(personalServicesLvl3PageForm, false)).toFuture
   }
 
   //repairsLvl3Page
@@ -131,7 +128,6 @@ class OtherServicesController @Inject() (
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(repairsLvl3Page(repairsLvl3PageForm, false)).toFuture
   }
 
   //hairdressingLvl4Page
@@ -149,7 +145,6 @@ class OtherServicesController @Inject() (
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(hairdressingLvl4Page(hairdressingLvl4PageForm, false)).toFuture
   }
 
   //householdRepairLvl4Page
@@ -167,7 +162,6 @@ class OtherServicesController @Inject() (
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(householdRepairLvl4Page(householdRepairLvl4PageForm, false)).toFuture
   }
 
   //membershipOrgsLvl4Page
@@ -185,7 +179,6 @@ class OtherServicesController @Inject() (
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(membershipOrgsLvl4Page(membershipOrgsLvl4PageForm, false)).toFuture
   }
 
   //motorVehiclesRepairLvl4Page
@@ -203,7 +196,6 @@ class OtherServicesController @Inject() (
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(motorVehiclesRepairLvl4Page(motorVehiclesRepairLvl4PageForm, false)).toFuture
   }
 
   //otherMembershipOrgsLvl4Page
@@ -221,7 +213,6 @@ class OtherServicesController @Inject() (
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(otherMembershipOrgsLvl4Page(otherMembershipOrgsLvl4PageForm, false)).toFuture
   }
 
   //otherPersonalServicesLvl4Page
@@ -239,6 +230,5 @@ class OtherServicesController @Inject() (
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(otherPersonalServicesLvl4Page(otherPersonalServicesLvl4PageForm, false)).toFuture
   }
 }

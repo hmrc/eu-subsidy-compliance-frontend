@@ -93,7 +93,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(retailWholesaleLvl2Page(retailWholesaleLvl2PageForm, false)).toFuture
   }
   //retailLvl3PageForm
   def loadRetailLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -110,7 +109,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(retailLvl3Page(retailLvl3PageForm, false)).toFuture
   }
   //culturalLvl4PageForm
   def loadCulturalLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -127,7 +125,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(culturalLvl4Page(culturalLvl4PageForm, false)).toFuture
   }
 
   //foodLvl4PageForm
@@ -145,7 +142,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(foodLvl4Page(foodLvl4PageForm, false)).toFuture
   }
 
   //householdLvl4PageForm
@@ -163,7 +159,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(householdLvl4Page(householdLvl4PageForm, false)).toFuture
   }
 
   //intermediationLvl4PageForm
@@ -181,7 +176,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(intermediationLvl4Page(intermediationLvl4PageForm, false)).toFuture
   }
 
   //motorVehiclesLvl4PageForm
@@ -199,7 +193,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(motorVehiclesLvl4Page(motorVehiclesLvl4PageForm, false)).toFuture
   }
 
   //nonSpecialisedLvl4PageForm
@@ -217,7 +210,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(nonSpecialisedLvl4Page(nonSpecialisedLvl4PageForm, false)).toFuture
   }
 
   //otherGoodsLvl4PageForm
@@ -235,7 +227,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(otherGoodsLvl4Page(otherGoodsLvl4PageForm, false)).toFuture
   }
 
   //wholesaleLvl3PageForm
@@ -253,7 +244,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(wholesaleLvl3Page(wholesaleLvl3PageForm, false)).toFuture
   }
 
   //agriculturalLvl4PageForm
@@ -271,7 +261,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(agriculturalLvl4Page(agriculturalLvl4PageForm, false)).toFuture
   }
 
   //contractBasisLvl4PageForm
@@ -289,7 +278,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(contractBasisLvl4Page(contractBasisLvl4PageForm, false)).toFuture
   }
 
   //foodWholesaleLvl4PageForm
@@ -307,7 +295,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(foodWholesaleLvl4Page(foodWholesaleLvl4PageForm, false)).toFuture
   }
 
   //householdWholesaleLvl4PageForm
@@ -325,7 +312,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(householdWholesaleLvl4Page(householdWholesaleLvl4PageForm, false)).toFuture
   }
 
   //machineryLvl4PageForm
@@ -343,7 +329,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(machineryLvl4Page(machineryLvl4PageForm, false)).toFuture
   }
 
   //motorVehiclesWholesaleLvl4PageForm
@@ -361,7 +346,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(motorVehiclesWholesaleLvl4Page(motorVehiclesWholesaleLvl4PageForm, false)).toFuture
   }
 
   //specialisedLvl4PageForm
@@ -379,7 +363,6 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
-    Ok(specialisedLvl4Page(specialisedLvl4PageForm, false)).toFuture
   }
 
 
