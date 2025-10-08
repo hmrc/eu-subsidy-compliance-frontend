@@ -1253,6 +1253,7 @@ NACE.Manufacturing.Lvl4.ShapedFlatGlass = My undertaking carries out shaping and
 NACE.Manufacturing.Lvl4.HollowGlass = Hollow glass
 NACE.Manufacturing.Lvl4.GlassFibres = Glass fibres
 NACE.Manufacturing.Lvl4.OtherGlass = Another type of glass product
+NACE.Manufacturing.Lvl4.OtherGlass.hint = Includes technical glassware and processing of glass (except of flat glass).
 
 NACE.Manufacturing.Lvl3.RefractoryProducts = Refractory products
 NACE.Manufacturing.Lvl4.RefractoryProducts = Manufacture of refractory products

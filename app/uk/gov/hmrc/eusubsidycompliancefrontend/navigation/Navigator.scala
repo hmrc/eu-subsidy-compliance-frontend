@@ -285,6 +285,22 @@ class Navigator @Inject(){
     case "96.9"  => routes.OtherServicesController.loadOtherPersonalServicesLvl4Page()
 
     case "G"  => routes.RetailWholesaleController.loadRetailWholesaleLvl2Page()
+    case "46"  => routes.RetailWholesaleController.loadWholesaleLvl3Page()
+    case "46.1"  => routes.RetailWholesaleController.loadContractBasisLvl4Page()
+    case "46.2"  => routes.RetailWholesaleController.loadAgriculturalLvl4Page()
+    case "46.3"  => routes.RetailWholesaleController.loadFoodWholesaleLvl4Page()
+    case "46.4"  => routes.RetailWholesaleController.loadHouseholdWholesaleLvl4Page()
+    case "46.6"  => routes.RetailWholesaleController.loadMachineryLvl4Page()
+    case "46.7"  => routes.RetailWholesaleController.loadMotorVehiclesWholesaleLvl4Page()
+    case "46.8"  => routes.RetailWholesaleController.loadSpecialisedLvl4Page()
+    case "47"  => routes.RetailWholesaleController.loadRetailLvl3Page()
+    case "47.1"  => routes.RetailWholesaleController.loadNonSpecialisedLvl4Page()
+    case "47.2"  => routes.RetailWholesaleController.loadFoodLvl4Page()
+    case "47.5"  => routes.RetailWholesaleController.loadHouseholdLvl4Page()
+    case "47.6"  => routes.RetailWholesaleController.loadCulturalLvl4Page()
+    case "47.7"  => routes.RetailWholesaleController.loadOtherGoodsLvl4Page()
+    case "47.8"  => routes.RetailWholesaleController.loadMotorVehiclesLvl4Page()
+    case "47.9"  => routes.RetailWholesaleController.loadIntermediationLvl4Page()
 
     case "14"  => routes.ClothesTextilesHomewareController.loadClothingLvl3Page
     case "15"  => routes.ClothesTextilesHomewareController.loadLeatherLvl3Page
