@@ -83,8 +83,8 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.artsSportsRecrea
  ),
  RadioItem(
  content = HtmlContent(radioText("sector-label-education", messages("NACE.Lvl1.education"))),
- value = Some(Sector.education.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.education.toString)
+ value = Some(Sector.education2.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.education2.toString)
  ),
  RadioItem(
  content = HtmlContent(radioText("sector-label-humanHealthSocialWork", messages("NACE.Lvl1.humanHealthSocialWork"))),
@@ -94,8 +94,8 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.humanHealthSocia
  ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-publicAdministration", messages("NACE.Lvl1.publicAdministration"))),
-value = Some(Sector.publicAdministration.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.publicAdministration.toString)
+value = Some(Sector.publicAdministrationSocialSecurity.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.publicAdministrationSocialSecurity.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherService", messages("NACE.Lvl1.otherService"))),
