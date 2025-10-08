@@ -94,7 +94,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.sewerage.toStrin
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("water2.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

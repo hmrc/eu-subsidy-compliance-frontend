@@ -1681,6 +1681,8 @@ NACE.WaterSewerageWasteRemediation.Lvl4.Remediation = Remediation activities and
 wasteCollection4.error.required = Select the type of waste your undertaking collects
 wasteDisposal4.error.required = Select the type of waste disposal your undertaking does
 wasteRecovery4.error.required = Select the type of waste recovery your undertaking does
+water2.error.required = Select your undertaking’s main business activity in waste collection, recovery and disposal
+wasteCollection3.error.required = Select your undertaking’s main business activity in waste collection, recovery and disposal
 
 #construction NACE Sector2,3,4
 NACE.construction.Lvl1.title = What is your undertaking’s main business activity in construction?
