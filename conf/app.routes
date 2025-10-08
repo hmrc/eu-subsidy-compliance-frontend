@@ -891,5 +891,3 @@ GET        /access-denied-for-agents                                            
 
 GET        /confirm-undertaking-details                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.getCheckDetails
 POST       /confirm-undertaking-details                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.postCheckDetails
-
-GET        /temp                                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.TempController.tempRealEstateLvl3()
