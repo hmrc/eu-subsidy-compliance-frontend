@@ -1951,7 +1951,7 @@ NACE.TransportationAndStorage.Lvl3.IntermediationPostalCourier = Intermediation 
 NACE.TransportationAndStorage.Lvl4.IntermediationPostalCourier = Intermediation service activities for postal and courier activities
 
 #transport error messages
-transport2.error.required = Select the type of transport and storage your undertaking provides
+transport2.error.required = Select the type of land transport or transport via pipeline your undertaking provides
 airTransp3.error.required = Select the type of air transport your undertaking provides
 landTransp3.error.required = Select the type of land transport or transport via pipeline your undertaking provides
 waterTransp3.error.required = Select the type of water transport your undertaking provides
