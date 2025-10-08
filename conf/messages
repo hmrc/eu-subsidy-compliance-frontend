@@ -2133,71 +2133,6 @@ NACE.professional.Lvl2.veterinary = Veterinary activities
 NACE.professional.Lvl3.veterinary = Veterinary activities
 NACE.professional.Lvl4.veterinary = Veterinary activities
 
-#Administration NACE Sector2,3,4
-NACE.Administration.Lvl2.RentalLeasing = Rental and leasing activities
-#### NACE.Administration.Lvl3.MotorVehicleRental = Rental and leasing of motor vehicles
-NACE.Administration.Lvl4.CarsLightVehiclesRental = Rental and leasing of cars and light motor vehicles
-NACE.Administration.Lvl4.TruckRental = Rental and leasing of trucks
-#### NACE.Administration.Lvl3.PersonalHouseholdGoodsRental = Rental and leasing of personal and household goods
-NACE.Administration.Lvl4.SportsRecreationalGoodsRental = Rental and leasing of recreational and sports goods
-NACE.Administration.Lvl4.OtherHouseholdGoodsRental = Rental and leasing of other personal and household goods
-#### NACE.Administration.Lvl3.OtherMachineryEquipmentRental = Rental and leasing of other machinery, equipment and tangible goods
-NACE.Administration.Lvl4.AgriculturalMachineryRental = Rental and leasing of agricultural machinery and equipment
-NACE.Administration.Lvl4.ConstructionCivilEngineeringRental = Rental and leasing of construction and civil engineering machinery and equipment
-NACE.Administration.Lvl4.OfficeMachineryRental = Rental and leasing of office machinery, equipment and computers
-NACE.Administration.Lvl4.WaterTransportRental = Rental and leasing of water transport equipment
-NACE.Administration.Lvl4.AirTransportRental = Rental and leasing of air transport equipment
-NACE.Administration.Lvl4.OtherMachineryRental = Rental and leasing of other machinery, equipment and tangible goods n.e.c.
-#### NACE.Administration.Lvl3.IntellectualPropertyLeasing = Leasing of intellectual property and similar products, except copyrighted works
-NACE.Administration.Lvl4.IntellectualPropertyLeasing = Leasing of intellectual property and similar products, except copyrighted works
-#### NACE.Administration.Lvl3.IntermediationRentalLeasing = Intermediation service activities for rental and leasing of tangible goods and non-financial intangible assets
-NACE.Administration.Lvl4.CarTrailerLeasingIntermediation = Intermediation service activities for rental and leasing of cars, motorhomes and trailers
-NACE.Administration.Lvl4.OtherGoodsLeasingIntermediation = Intermediation service activities for rental and leasing of other tangible goods and non-financial intangible assets
-
-#### NACE.Administration.Lvl2.Employment = Employment activities
-#### NACE.Administration.Lvl3.EmploymentPlacement = Activities of employment placement agencies
-NACE.Administration.Lvl4.EmploymentPlacement = Activities of employment placement agencies
-#### NACE.Administration.Lvl3.TemporaryEmployment = Temporary employment agency activities and other human resource provisions
-NACE.Administration.Lvl4.TemporaryEmployment = Temporary employment agency activities and other human resource provisions
-
-NACE.Administration.Lvl2.TravelTourReservation = Travel agency, tour operator and other reservation service and related activities
-#### NACE.Administration.Lvl3.TravelAgencyTourOperator = Travel agency and tour operator activities
-NACE.Administration.Lvl4.TravelAgency = Travel agency activities
-NACE.Administration.Lvl4.TourOperator = Tour operator activities
-#### NACE.Administration.Lvl3.OtherReservation = Other reservation service and related activities
-NACE.Administration.Lvl4.OtherReservation = Other reservation service and related activities
-
-NACE.Administration.Lvl2.SecurityInvestigation = Investigation and security activities
-#### NACE.Administration.Lvl3.SecurityInvestigation = Investigation and security activities
-NACE.Administration.Lvl4.InvestigationPrivateSecurity = Investigation and private security activities
-NACE.Administration.Lvl4.SecurityNEC = Security activities n.e.c.
-
-NACE.Administration.Lvl2.BuildingLandscapeServices = Services to buildings and landscape activities
-#### NACE.Administration.Lvl3.CombinedFacilities = Combined facilities support activities
-NACE.Administration.Lvl4.CombinedFacilities = Combined facilities support activities
-#### NACE.Administration.Lvl3.Cleaning = Cleaning activities
-NACE.Administration.Lvl4.GeneralCleaningBuildings = General cleaning of buildings
-#### NACE.Administration.Lvl3.OtherCleaning = Other building and industrial cleaning activities
-NACE.Administration.Lvl4.OtherCleaning = Other cleaning activities
-#### NACE.Administration.Lvl3.Landscape = Landscape service activities
-NACE.Administration.Lvl4.Landscape = Landscape service activities
-
-NACE.Administration.Lvl2.OfficeSupport = Office administrative, office support and other business support activities
-#### NACE.Administration.Lvl3.OfficeAdmin = Office administrative and support activities
-NACE.Administration.Lvl4.OfficeAdminSupport = Office administrative and support activities
-#### NACE.Administration.Lvl3.CallCentres = Activities of call centres
-NACE.Administration.Lvl4.CallCentres = Activities of call centres
-#### NACE.Administration.Lvl3.ConventionsTradeShows = Organisation of conventions and trade shows
-NACE.Administration.Lvl4.ConventionsTradeShows = Organisation of conventions and trade shows
-#### NACE.Administration.Lvl3.BusinessSupportNEC = Intermediation service activities for business support service activities n.e.c.
-NACE.Administration.Lvl4.BusinessSupportNEC = Intermediation service activities for business support service activities n.e.c.
-#### NACE.Administration.Lvl3.CollectionCredit = Activities of collection agencies and credit bureaus
-NACE.Administration.Lvl4.CollectionCredit = Activities of collection agencies and credit bureaus
-#### NACE.Administration.Lvl3.Packaging = Packaging activities
-NACE.Administration.Lvl4.Packaging = Packaging activities
-#### NACE.Administration.Lvl3.OtherBusinessSupport = Other business support service activities n.e.c.
-NACE.Administration.Lvl4.OtherBusinessSupport = Other business support service activities n.e.c.
-
 #PublicAdministration NACE Sector2,3,4
 NACE.publicAdministration.Lvl2.publicAdministrationDefence = Public administration and defence; compulsory social security
 NACE.publicAdministration.Lvl2.publicAdministrationDefence.title = What is your undertaking’s main business activity in public administration, defence and compulsory social security?
@@ -2743,7 +2678,11 @@ NACE.Administrative.Lvl4.OtherPersonalHouseholdGoods = Other personal and househ
 
 NACE.Administrative.Rental.title = What type of goods does your undertaking rent or lease?
 NACE.Administrative.Rental.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.MotorVehicles.title = What type of motor vehicles does your undertaking rent or lease?
 NACE.Administrative.Lvl3.MotorVehiclesRental = Motor vehicles
+NACE.Administrative.Lvl4.CarsLightVehiclesRental = Cars and light motor vehicles
+NACE.Administrative.Lvl4.TruckRental = Trucks
+
 NACE.Administrative.Lvl3.PersonalRental = Personal and household goods
 NACE.Administrative.Lvl3.OtherMachineryRental = Other machinery, equipment and tangible goods
 NACE.Administrative.Lvl3.IntellectualProperty = Intellectual property and similar products (except copyrighted works)
