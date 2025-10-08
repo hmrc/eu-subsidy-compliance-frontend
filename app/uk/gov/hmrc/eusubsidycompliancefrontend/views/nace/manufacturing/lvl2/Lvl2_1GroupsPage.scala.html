@@ -113,8 +113,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-machinery", messages("NACE.Manufacturing.Lvl2.1.Machinery"))),
-            value = Some(Sector.otherMachineryAndEquipment.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMachineryAndEquipment.toString)
+            value = Some(Sector.metalProductsRepairMaintenance.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalProductsRepairMaintenance.toString)
         )
     )
 }
