@@ -76,7 +76,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.scientificResear
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-veterinary", messages("NACE.professional.Lvl2.veterinary"))),
-value = Some(Sector.veterinary.toString),
+value = Some(Sector.veterinaryActivities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.veterinary.toString)
 ),
 RadioItem(

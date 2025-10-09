@@ -51,7 +51,7 @@ else controllers.routes.OtherServicesController.submitPersonalServicesLvl3Page
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-funeralActivities", messages("NACE.otherService.Lvl3.funeralActivities"))),
-value = Some(Sector.funeralActivities.toString),
+value = Some(Sector.funeralActivities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.funeralActivities.toString)
 ),
 RadioItem(
@@ -61,12 +61,12 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.beautyTreatment.
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-textileFurCleaning", messages("NACE.otherService.Lvl3.textileFurCleaning"))),
-value = Some(Sector.textileFurCleaning.toString),
+value = Some(Sector.cleaningTextileProducts4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.textileFurCleaning.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-personalServicesIntermediation", messages("NACE.otherService.Lvl3.intermediationPersonalServices"))),
-value = Some(Sector.personalServicesIntermediation.toString),
+value = Some(Sector.personalServicesIntermediation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.personalServicesIntermediation.toString)
 ),
 RadioItem(
@@ -103,6 +103,15 @@ title = Text(messages("common.error.summary.title"))
   </li>
   <li class="govuk-breadcrumbs__list-item">
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.otherService")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadOtherLvl2Page.toString>@messages("NACE.otherService.Lvl2.personalServiceActivities")</a>
   </li>
  </ol>
 </nav>

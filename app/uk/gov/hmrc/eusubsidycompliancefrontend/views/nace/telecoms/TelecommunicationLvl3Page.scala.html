@@ -52,17 +52,17 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-resellingTelecommunication", messages("NACE.telecommunicationsComputing.Lvl3.resellingTelecommunication"))),
-                value = Some(Sector.resellingTelecommunication.toString),
+                value = Some(Sector.resellingTelecommunication4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.resellingTelecommunication.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-wiredTelecommunication", messages("NACE.telecommunicationsComputing.Lvl3.wiredTelecommunication"))),
-                value = Some(Sector.wiredTelecommunication.toString),
+                value = Some(Sector.wiredTelecommunication4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.wiredTelecommunication.toString)
         ),
        RadioItem(
                 content = HtmlContent(radioText("sector-label-otherTelecommunications", messages("NACE.telecommunicationsComputing.Lvl3.otherTelecommunications"))),
-                value = Some(Sector.otherTelecommunications.toString),
+                value = Some(Sector.otherTelecommunications4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTelecommunications.toString)
         )
     )

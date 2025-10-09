@@ -59,7 +59,7 @@
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-freight-rail", messages("NACE.TransportationAndStorage.Lvl3.FreightRail"))),
-      value = Some(Sector.freightRailTransport.toString),
+      value = Some(Sector.freightRailTransport4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightRailTransport.toString)
     ),
     RadioItem(
@@ -69,7 +69,7 @@
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-freight-road-removal", messages("NACE.TransportationAndStorage.Lvl3.PipelineTransport"))),
-      value = Some(Sector.pipelineTransport.toString),
+      value = Some(Sector.pipelineTransport4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.pipelineTransport.toString)
     )
   )

@@ -65,7 +65,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-intellectual-property", messages("NACE.Administrative.Lvl3.IntellectualProperty"))),
-            value = Some(Sector.IntellectualProperty.toString),
+            value = Some(Sector.LeasingIntellectualProperty.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.IntellectualProperty.toString)
         ),
         RadioItem(

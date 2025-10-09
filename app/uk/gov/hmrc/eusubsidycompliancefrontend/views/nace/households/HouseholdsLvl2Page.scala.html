@@ -50,7 +50,7 @@ else controllers.routes.HouseHealthEducationController.submitHouseholdsLvl2Page(
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-domesticPersonnel", messages("NACE.households.Lvl2.domesticPersonnel"))),
-value = Some(Sector.domesticPersonnel.toString),
+value = Some(Sector.householdsActivitiesOfDomesticPersonnel.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.domesticPersonnel.toString)
 ),
 RadioItem(
@@ -84,6 +84,15 @@ title = Text(messages("common.error.summary.title"))
  <ol class="govuk-breadcrumbs__list">
   <li class="govuk-breadcrumbs__list-item">
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getAboutUndertaking.toString>@messages("common.home")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.households")</a>
   </li>
  </ol>
 </nav>

@@ -51,12 +51,12 @@ else controllers.routes.ProfAndPAdminController.submitHeadOfficesLvl3Page()
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-headOffice", messages("NACE.professional.Lvl3.headOffice"))),
-value = Some(Sector.headOffice.toString),
+value = Some(Sector.headOfficesActivities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.headOffice.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-managementConsultancy", messages("NACE.professional.Lvl3.managementConsultancy"))),
-value = Some(Sector.managementConsultancy.toString),
+value = Some(Sector.managementConsultancyActivities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.managementConsultancy.toString)
 )
 )

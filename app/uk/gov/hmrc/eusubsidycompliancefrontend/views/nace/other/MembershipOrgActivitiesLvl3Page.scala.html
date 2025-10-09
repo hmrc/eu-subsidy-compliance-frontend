@@ -56,7 +56,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.businessEmployer
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-tradeUnions", messages("NACE.otherService.Lvl3.tradeUnions"))),
-value = Some(Sector.tradeUnions.toString),
+value = Some(Sector.tradeUnionsActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.tradeUnions.toString)
 ),
 RadioItem(
@@ -86,7 +86,6 @@ content = Text(s"${messages("NACE.otherService.Lvl2.membershipOrganisations.erro
 title = Text(messages("common.error.summary.title"))
 ))
 }
-
 <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
  <ol class="govuk-breadcrumbs__list">
   <li class="govuk-breadcrumbs__list-item">
@@ -94,6 +93,15 @@ title = Text(messages("common.error.summary.title"))
   </li>
   <li class="govuk-breadcrumbs__list-item">
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.otherService")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadOtherLvl2Page.toString>@messages("NACE.otherService.Lvl2.membershipOrganisations")</a>
   </li>
  </ol>
 </nav>

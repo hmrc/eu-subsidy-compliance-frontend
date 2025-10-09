@@ -70,7 +70,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-information", messages("NACE.Wholesale.Lvl3.Information"))),
-            value = Some(Sector.InformationEquipmentWholesale.toString),
+            value = Some(Sector.InformationEquipmentWholesale4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.InformationEquipmentWholesale.toString)
         ),
         RadioItem(
@@ -93,7 +93,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-non-specialised", messages("NACE.Wholesale.Lvl3.NonSpecialised"))),
-            value = Some(Sector.NonSpecialisedWholesale.toString),
+            value = Some(Sector.NonSpecialisedWholesaleTrade.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonSpecialisedWholesale.toString)
         )
     )
@@ -110,16 +110,33 @@
                 errorList = Seq(
                     ErrorLink(
                         href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.key++"." ++err.message)}")
+                        content = Text(messages("NACE.Wholesale.error"))
                     )
                 ),
                 title = Text(messages("common.error.summary.title"))
             ))
         }
 
+        <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+            <ol class="govuk-breadcrumbs__list">
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getAboutUndertaking.toString>@messages("common.home")</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("NACE.Lvl1.wholesaleRetail")</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page.toString>@messages("NACE.RetailWholesale.Lvl2.Wholesale")</a>
+                </li>
+            </ol>
+        </nav>
+
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("undertakingSector.error.required"))
+                content = Text(messages("NACE.Wholesale.error"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(

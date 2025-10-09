@@ -52,7 +52,7 @@
     Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-remediation", messages("NACE.WaterSewerageWasteRemediation.Lvl2.Remediation"))),
-value = Some(Sector.wasteManagementRemediation.toString),
+value = Some(Sector.wasteManagementRemediation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteManagementRemediation.toString)
 ),
 RadioItem(
@@ -62,12 +62,12 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteManagement.
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-water-collection-supply", messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply"))),
-value = Some(Sector.waterTreatment.toString),
+value = Some(Sector.waterTreatment4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.waterTreatment.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-sewerage", messages("NACE.WaterSewerageWasteRemediation.Lvl2.Sewerage"))),
-value = Some(Sector.sewerage.toString),
+value = Some(Sector.sewerage4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.sewerage.toString)
 )
     )
@@ -91,6 +91,22 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.sewerage.toStrin
         title = Text(messages("common.error.summary.title"))
       ))
     }
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getAboutUndertaking.toString>@messages("common.home")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.waterSupply")</a>
+        </li>
+    </ol>
+</nav>
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(

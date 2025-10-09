@@ -52,27 +52,27 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl3.campingGrounds"))),
-                value = Some(Sector.campingGrounds.toString),
+                value = Some(Sector.campingGrounds4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.campingGrounds.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl3.holidayShortStay"))),
-                value = Some(Sector.holidayShortStay.toString),
+                value = Some(Sector.holidayShortStay4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.holidayShortStay.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl3.hotelsAccommodation"))),
-            value = Some(Sector.hotelsAccommodation.toString),
+            value = Some(Sector.hotelsAccommodation4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.hotelsAccommodation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl3.intermediationAccommodation"))),
-                value = Some(Sector.intermediationAccommodation.toString),
+                value = Some(Sector.intermediationAccommodation4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.intermediationAccommodation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl3.otherAccommodation"))),
-                value = Some(Sector.otherAccommodation.toString),
+                value = Some(Sector.otherAccommodation4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherAccommodation.toString)
         )
     )
@@ -96,6 +96,26 @@
         title = Text(messages("common.error.summary.title"))
       ))
     }
+
+    <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getAboutUndertaking.toString>@messages("common.home")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.accommodationAndFoodService")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadAccommodationFoodLvl2Page.toString>@messages("NACE.accommodationAndFoodService.Lvl2.accommodation")</a>
+        </li>
+    </ol>
+</nav>
 
    @govukRadios(Radios(
       errorMessage = if(form.hasErrors) Some(ErrorMessage(

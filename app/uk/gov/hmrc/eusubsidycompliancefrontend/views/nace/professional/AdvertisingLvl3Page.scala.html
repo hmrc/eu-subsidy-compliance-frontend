@@ -56,12 +56,12 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.advertising.toSt
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-marketResearch", messages("NACE.professional.Lvl3.marketResearchPolling"))),
-value = Some(Sector.marketResearch.toString),
+value = Some(Sector.marketResearch4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.marketResearch.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-publicRelations", messages("NACE.professional.Lvl3.publicRelations"))),
-value = Some(Sector.publicRelations.toString),
+value = Some(Sector.publicRelations4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.publicRelations.toString)
 )
 )

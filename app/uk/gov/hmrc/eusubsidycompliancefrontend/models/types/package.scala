@@ -771,6 +771,7 @@ package object types extends SimpleJson {
     val RetailIntermediationServices: types.Sector.Value = Value("47.9")
     val NonSpecialisedRetailIntermediation: types.Sector.Value = Value("47.91")
     val SpecialisedRetailIntermediation: types.Sector.Value = Value("47.92")
+
     val transportStorage: types.Sector.Value = Value("H")
     val landTransport: types.Sector.Value = Value("49")
     val passengerRailTransport: types.Sector.Value = Value("49.1")
@@ -789,6 +790,7 @@ package object types extends SimpleJson {
     val removalServices: types.Sector.Value = Value("49.42")
     val pipelineTransport: types.Sector.Value = Value("49.5")
     val pipelineTransport4: types.Sector.Value = Value("49.50")
+
     val waterTransport: types.Sector.Value = Value("50")
     val coastalPassengerWaterTransport: types.Sector.Value = Value("50.1")
     val coastalPassengerWaterTransport4: types.Sector.Value = Value("50.10")
@@ -805,6 +807,7 @@ package object types extends SimpleJson {
     val freightAndSpaceAirTransport: types.Sector.Value = Value("51.2")
     val freightAirTransport: types.Sector.Value = Value("51.21")
     val spaceTransport: types.Sector.Value = Value("51.22")
+
     val warehousingStorageTransportSupportActivities: types.Sector.Value = Value("52")
     val warehousingStorage: types.Sector.Value = Value("52.1")
     val warehousingStorage4: types.Sector.Value = Value("52.10")
@@ -909,9 +912,9 @@ package object types extends SimpleJson {
     val MonetaryIntermediation: types.Sector.Value = Value("64.1")
     val CentralBanking: types.Sector.Value = Value("64.11")
     val OtherMonetary: types.Sector.Value = Value("64.19")
-    val HoldingCompaniesFinal: types.Sector.Value = Value("64.2")
+    val HoldingCompaniesFinal: types.Sector.Value = Value("64.21")
     val FinancingConduits: types.Sector.Value = Value("64.22")
-    val HoldingCompanies: types.Sector.Value = Value("64.21")
+    val HoldingCompanies: types.Sector.Value = Value("64.2")
     val TrustsFunds: types.Sector.Value = Value("64.3")
     val InvestmentFunds: types.Sector.Value = Value("64.31")
     val TrustEstate: types.Sector.Value = Value("64.32")
@@ -938,7 +941,7 @@ package object types extends SimpleJson {
     val InsuranceAgents: types.Sector.Value = Value("66.22")
     val RiskEvaluation: types.Sector.Value = Value("66.21")
     val OtherAuxiliaryInsurance: types.Sector.Value = Value("66.29")
-    val FundManagementServices: types.Sector.Value = Value("66.30")
+    val FundManagementServices: types.Sector.Value = Value("66.3")
     val fundManagementActivities: types.Sector.Value = Value("66.30")
 
     val realEstate: types.Sector.Value = Value("M")

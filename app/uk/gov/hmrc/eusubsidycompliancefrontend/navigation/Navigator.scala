@@ -37,6 +37,16 @@ class Navigator @Inject(){
   }
 
   private val normalRoutes: String => Call = {
+    case "0"     => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage
+    case "INT00" => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage
+    case "INT01" => routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage
+    case "INT02" => routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage
+    case "INT03" => routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage
+    case "INT04" => routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage
+    case "INT05" => routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage
+    case "INT06" => routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage
+    case "INT07" => routes.GeneralTradeGroupsController.loadVehiclesTransportPage
+
     case "2" => routes.AgricultureController.loadAgricultureLvl3Page()
     case "01.1" => routes.AgricultureController.loadNonPerennialCropLvl4Page()
     case "01.2" => routes.AgricultureController.loadPerennialCropLvl4Page()
@@ -68,6 +78,25 @@ class Navigator @Inject(){
     case "10.8" => routes.FoodBeveragesController.loadOtherFoodProductsLvl4Page
     case "11" => routes.FoodBeveragesController.loadBeveragesLvl4Page
 
+    case "13"  => routes.ClothesTextilesHomewareController.loadTextilesLvl3Page
+    case "13.9"  => routes.ClothesTextilesHomewareController.loadManufactureOfTextilesLvl4Page
+    case "14"  => routes.ClothesTextilesHomewareController.loadClothingLvl3Page
+    case "14.2"  => routes.ClothesTextilesHomewareController.loadOtherClothingLvl4Page
+    case "15"  => routes.ClothesTextilesHomewareController.loadLeatherLvl3Page
+    case "15.1"  => routes.ClothesTextilesHomewareController.loadTanningDressingDyeingLvl4Page
+    case "16"  => routes.ClothesTextilesHomewareController.loadWoodCorkStrawLvl3Page
+    case "16.1"  => routes.ClothesTextilesHomewareController.loadSawmillingWoodworkLvl4Page
+    case "16.2"  => routes.ClothesTextilesHomewareController.loadWoodCorkStrawPlaitingLvl4Page
+    case "22"  => routes.ClothesTextilesHomewareController.loadRubberPlasticLvl3Page
+    case "22.2"  => routes.ClothesTextilesHomewareController.loadPlasticLvl4Page
+    case "22.1"  => routes.ClothesTextilesHomewareController.loadRubberLvl4Page
+
+    case "17.2" => routes.PaperPrintedController.loadArticlesPaperPaperboardLvl4Page
+    case "17" => routes.PaperPrintedController.loadPaperLvl3Page
+    case "18" => routes.PaperPrintedController.loadPrintedLvl3Page
+    case "18.1" => routes.PaperPrintedController.loadPrintingServicesLvl4Page
+    case "17.1" => routes.PaperPrintedController.loadPulpPaperPaperboardLvl4Page
+
     case "20.1" => routes.MetalsChemicalsController.loadBasicLvl4Page
     case "24" => routes.MetalsChemicalsController.loadBasicMetalsLvl3Page
     case "24.5" => routes.MetalsChemicalsController.loadCastingMetalsLvl4Page
@@ -93,12 +122,6 @@ class Navigator @Inject(){
     case "23.6" => routes.NonMetallicOtherController.loadConcreteCementPlasterLvl4Page
     case "23.9" => routes.NonMetallicOtherController.loadAnotherTypeLvl4Page
 
-    case "17.2" => routes.PaperPrintedController.loadArticlesPaperPaperboardLvl4Page
-     case "17" => routes.PaperPrintedController.loadPaperLvl3Page
-     case "18" => routes.PaperPrintedController.loadPrintedLvl3Page
-     case "18.1" => routes.PaperPrintedController.loadPrintingServicesLvl4Page
-     case "17.1" => routes.PaperPrintedController.loadPulpPaperPaperboardLvl4Page
-
     case "26.1" => routes.ComputersElectronicsController.loadComponentsBoardsLvl4Page
     case "26" => routes.ComputersElectronicsController.loadComputersElectronicsOpticalLvl3Page
     case "27.5" => routes.ComputersElectronicsController.loadDomesticAppliancesLvl4Page
@@ -114,34 +137,18 @@ class Navigator @Inject(){
     case "33" => routes.ComputersElectronicsController.loadRepairsMaintainInstallLvl3Page
     case "27.3" => routes.ComputersElectronicsController.loadWiringAndDevicesLvl4Page
 
-      case "30.3" => routes.VehiclesManuTransportController.loadAircraftSpacecraftLvl4Page
-      case "29" => routes.VehiclesManuTransportController.loadMotorVehiclesLvl3Page
-      case "30" => routes.VehiclesManuTransportController.loadOtherTransportEquipmentLvl3Page
-      case "30.9" => routes.VehiclesManuTransportController.loadOtherTransportEquipmentLvl4Page
-      case "29.3" => routes.VehiclesManuTransportController.loadPartsAccessoriesLvl4Page
-      case "30.1" => routes.VehiclesManuTransportController.loadShipsBoatsLvl4Page
-
-     case "17.2" => routes.PaperPrintedController.loadArticlesPaperPaperboardLvl4Page
-     case "17" => routes.PaperPrintedController.loadPaperLvl3Page
-     case "18" => routes.PaperPrintedController.loadPrintedLvl3Page
-     case "18.1" => routes.PaperPrintedController.loadPrintingServicesLvl4Page
-     case "17.1" => routes.PaperPrintedController.loadPulpPaperPaperboardLvl4Page
-
-    case "0"     => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage
-    case "INT00" => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage
-    case "INT01" => routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage
-    case "INT02" => routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage
-    case "INT03" => routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage
-    case "INT04" => routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage
-    case "INT05" => routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage
-    case "INT06" => routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage
-    case "INT07" => routes.GeneralTradeGroupsController.loadVehiclesTransportPage
+    case "30.3" => routes.VehiclesManuTransportController.loadAircraftSpacecraftLvl4Page
+    case "29" => routes.VehiclesManuTransportController.loadMotorVehiclesLvl3Page
+    case "30" => routes.VehiclesManuTransportController.loadOtherTransportEquipmentLvl3Page
+    case "30.9" => routes.VehiclesManuTransportController.loadOtherTransportEquipmentLvl4Page
+    case "29.3" => routes.VehiclesManuTransportController.loadPartsAccessoriesLvl4Page
+    case "30.1" => routes.VehiclesManuTransportController.loadShipsBoatsLvl4Page
 
     case "32" => routes.NonMetallicOtherController.loadOtherManufacturingLvl3Page
     case "32.1" => routes.NonMetallicOtherController.loadJewelleryCoinsLvl4Page
     case "32.9" => routes.NonMetallicOtherController.loadOtherProductsLvl4Page
 
-    case "35"  => routes.AccomodationUtilitiesController.loadElectricityLvl3Page()
+    case "D"  => routes.AccomodationUtilitiesController.loadElectricityLvl3Page()
     case "35.1"  => routes.AccomodationUtilitiesController.loadElectricityLvl4Page()
     case "35.2"  => routes.AccomodationUtilitiesController.loadGasManufactureLvl4Page()
 
@@ -150,12 +157,6 @@ class Navigator @Inject(){
     case "38.3"  => routes.AccomodationUtilitiesController.loadWasteDisposalLvl4Page()
     case "38.2"  => routes.AccomodationUtilitiesController.loadWasteRecoveryLvl4Page()
     case "E"  => routes.AccomodationUtilitiesController.loadWaterLvl2Page()
-
-    case "I"  => routes.AccomodationUtilitiesController.loadAccommodationFoodLvl2Page()
-    case "55"  => routes.AccomodationUtilitiesController.loadAccommodationLvl3Page()
-    case "56.2"  => routes.AccomodationUtilitiesController.loadEventCateringOtherFoodActivitiesLvl4Page()
-    case "56"  => routes.AccomodationUtilitiesController.loadFoodBeverageActivitiesLvl3Page()
-    case "56.1"  => routes.AccomodationUtilitiesController.loadRestaurantFoodServicesLvl4Page()
 
     case "F"     => routes.ConstructionController.loadConstructionLvl2Page
     case "42"    => routes.ConstructionController.loadCivilEngineeringLvl3Page
@@ -169,32 +170,56 @@ class Navigator @Inject(){
     case "43.4"  => routes.ConstructionController.loadSpecialisedConstructionActivitiesLvl4Page
     case "43.9"  => routes.ConstructionController.loadOtherSpecialisedConstructionLvl4Page
 
-    case "51.2"  => routes.TransportController.loadAirTransportFreightAirLvl4Page()
-    case "51"  => routes.TransportController.loadAirTransportLvl3Page()
-    case "49.4"  => routes.TransportController.loadLandTransportFreightTransportLvl4Page()
-    case "49"  => routes.TransportController.loadLandTransportLvl3Page()
-    case "49.3"  => routes.TransportController.loadLandTransportOtherPassengerLvl4Page()
-    case "49.1"  => routes.TransportController.loadLandTransportPassengerRailLvl4Page()
-    case "53"  => routes.TransportController.loadPostalAndCourierLvl3Page()
+    case "G"  => routes.RetailWholesaleController.loadRetailWholesaleLvl2Page()
+    case "46"  => routes.RetailWholesaleController.loadWholesaleLvl3Page()
+    case "46.1"  => routes.RetailWholesaleController.loadContractBasisLvl4Page()
+    case "46.2"  => routes.RetailWholesaleController.loadAgriculturalLvl4Page()
+    case "46.3"  => routes.RetailWholesaleController.loadFoodWholesaleLvl4Page()
+    case "46.4"  => routes.RetailWholesaleController.loadHouseholdWholesaleLvl4Page()
+    case "46.6"  => routes.RetailWholesaleController.loadMachineryLvl4Page()
+    case "46.7"  => routes.RetailWholesaleController.loadMotorVehiclesWholesaleLvl4Page()
+    case "46.8"  => routes.RetailWholesaleController.loadSpecialisedLvl4Page()
+    case "47"  => routes.RetailWholesaleController.loadRetailLvl3Page()
+    case "47.1"  => routes.RetailWholesaleController.loadNonSpecialisedLvl4Page()
+    case "47.2"  => routes.RetailWholesaleController.loadFoodLvl4Page()
+    case "47.5"  => routes.RetailWholesaleController.loadHouseholdLvl4Page()
+    case "47.6"  => routes.RetailWholesaleController.loadCulturalLvl4Page()
+    case "47.7"  => routes.RetailWholesaleController.loadOtherGoodsLvl4Page()
+    case "47.8"  => routes.RetailWholesaleController.loadMotorVehiclesLvl4Page()
+    case "47.9"  => routes.RetailWholesaleController.loadIntermediationLvl4Page()
+
     case "H"  => routes.TransportController.loadTransportLvl2Page()
+    case "49"  => routes.TransportController.loadLandTransportLvl3Page()
+    case "49.1"  => routes.TransportController.loadLandTransportPassengerRailLvl4Page()
+    case "49.3"  => routes.TransportController.loadLandTransportOtherPassengerLvl4Page()
+    case "49.4"  => routes.TransportController.loadLandTransportFreightTransportLvl4Page()
+    case "50"  => routes.TransportController.loadWaterTransportLvl3Page()
+    case "51"  => routes.TransportController.loadAirTransportLvl3Page()
+    case "51.2"  => routes.TransportController.loadAirTransportFreightAirLvl4Page()
+    case "52"  => routes.TransportController.loadWarehousingSupportLvl3Page()
     case "52.2"  => routes.TransportController.loadWarehousingSupportActivitiesTransportLvl4Page()
     case "52.3"  => routes.TransportController.loadWarehousingIntermediationLvl4Page()
-    case "52"  => routes.TransportController.loadWarehousingSupportLvl3Page()
-    case "50"  => routes.TransportController.loadWaterTransportLvl3Page()
+    case "53"  => routes.TransportController.loadPostalAndCourierLvl3Page()
 
-    case "58.1"  => routes.PublishingTelecomsController.loadBookPublishingLvl4Page()
-    case "59"  => routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page()
-    case "59.1"  => routes.PublishingTelecomsController.loadFilmVideoActivitiesLvl4Page()
-    case "60.3"  => routes.PublishingTelecomsController.loadNewsOtherContentDistributionLvl4Page()
-    case "60"  => routes.PublishingTelecomsController.loadProgrammingBroadcastingDistributionLvl3Page()
+    case "I"  => routes.AccomodationUtilitiesController.loadAccommodationFoodLvl2Page()
+    case "55"  => routes.AccomodationUtilitiesController.loadAccommodationLvl3Page()
+    case "56"  => routes.AccomodationUtilitiesController.loadFoodBeverageActivitiesLvl3Page()
+    case "56.1"  => routes.AccomodationUtilitiesController.loadRestaurantFoodServicesLvl4Page()
+    case "56.2"  => routes.AccomodationUtilitiesController.loadEventCateringOtherFoodActivitiesLvl4Page()
+
     case "J"  => routes.PublishingTelecomsController.loadPublishingLvl2Page()
     case "58"  => routes.PublishingTelecomsController.loadPublishingLvl3Page()
+    case "58.1"  => routes.PublishingTelecomsController.loadBookPublishingLvl4Page()
     case "58.2"  => routes.PublishingTelecomsController.loadSoftwarePublishingLvl4Page()
+    case "59"  => routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page()
+    case "59.1"  => routes.PublishingTelecomsController.loadFilmVideoActivitiesLvl4Page()
+    case "60"  => routes.PublishingTelecomsController.loadProgrammingBroadcastingDistributionLvl3Page()
+    case "60.3"  => routes.PublishingTelecomsController.loadNewsOtherContentDistributionLvl4Page()
 
-    case "63"  => routes.PublishingTelecomsController.loadComputerInfrastructureDataHostingLvl3Page()
-    case "62"  => routes.PublishingTelecomsController.loadComputerProgrammingConsultancyLvl3Page()
     case "K"  => routes.PublishingTelecomsController.loadTelecommunicationLvl2Page()
     case "61"  => routes.PublishingTelecomsController.loadTelecommunicationLvl3Page()
+    case "62"  => routes.PublishingTelecomsController.loadComputerProgrammingConsultancyLvl3Page()
+    case "63"  => routes.PublishingTelecomsController.loadComputerInfrastructureDataHostingLvl3Page()
     case "63.9"  => routes.PublishingTelecomsController.loadWebSearchPortalLvl4Page()
 
     case "L" => routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page()
@@ -284,21 +309,7 @@ class Navigator @Inject(){
     case "96.2"  => routes.OtherServicesController.loadHairdressingLvl4Page()
     case "96.9"  => routes.OtherServicesController.loadOtherPersonalServicesLvl4Page()
 
-    case "G"  => routes.RetailWholesaleController.loadRetailWholesaleLvl2Page()
-
-    case "14"  => routes.ClothesTextilesHomewareController.loadClothingLvl3Page
-    case "15"  => routes.ClothesTextilesHomewareController.loadLeatherLvl3Page
-    case "22"  => routes.ClothesTextilesHomewareController.loadRubberPlasticLvl3Page
-    case "13"  => routes.ClothesTextilesHomewareController.loadTextilesLvl3Page
-    case "16"  => routes.ClothesTextilesHomewareController.loadWoodCorkStrawLvl3Page
-    case "13.9"  => routes.ClothesTextilesHomewareController.loadManufactureOfTextilesLvl4Page
-    case "14.2"  => routes.ClothesTextilesHomewareController.loadOtherClothingLvl4Page
-    case "22.2"  => routes.ClothesTextilesHomewareController.loadPlasticLvl4Page
-    case "22.1"  => routes.ClothesTextilesHomewareController.loadRubberLvl4Page
-    case "16.1"  => routes.ClothesTextilesHomewareController.loadSawmillingWoodworkLvl4Page
-    case "15.1"  => routes.ClothesTextilesHomewareController.loadTanningDressingDyeingLvl4Page
-    case "16.2"  => routes.ClothesTextilesHomewareController.loadWoodCorkStrawPlaitingLvl4Page
-
     case _       => routes.NACECheckDetailsController.getCheckDetails
+
   }
 }
