@@ -49,7 +49,7 @@ else controllers.routes.HouseHealthEducationController.submitHumanHealthLvl3Page
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-hospital", messages("NACE.humanHealth.Lvl3.hospital"))),
-value = Some(Sector.hospital.toString),
+value = Some(Sector.hospitalActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.hospital.toString)
 ),
 RadioItem(

@@ -50,22 +50,22 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-call-centres", messages("NACE.Administrative.Lvl3.CallCentres"))),
-            value = Some(Sector.CallCentres.toString),
+            value = Some(Sector.callCentresActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CallCentres.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-intermediation", messages("NACE.Administrative.Lvl3.IntermediationServices"))),
-            value = Some(Sector.businessSupportIntermediation.toString),
+            value = Some(Sector.businessSupportIntermediation4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.businessSupportIntermediation.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-office-admin", messages("NACE.Administrative.Lvl3.OfficeAdministrative"))),
-            value = Some(Sector.OfficeAdministrative.toString),
+            value = Some(Sector.officeAdministrativeActivities4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OfficeAdministrative.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-conventions", messages("NACE.Administrative.Lvl3.ConventionsTradeShows"))),
-            value = Some(Sector.conventionsOrganisation.toString),
+            value = Some(Sector.conventionsOrganisation4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.conventionsOrganisation.toString)
         ),
         RadioItem(

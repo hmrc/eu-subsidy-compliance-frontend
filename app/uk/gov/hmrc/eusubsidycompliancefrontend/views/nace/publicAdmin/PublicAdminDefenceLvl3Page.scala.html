@@ -56,7 +56,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.administrationGe
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-compulsorySocialSecurity", messages("NACE.publicAdministration.Lvl3.compulsorySocialSecurity"))),
-value = Some(Sector.compulsorySocialSecurity.toString),
+value = Some(Sector.compulsorySocialSecurity4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.compulsorySocialSecurity.toString)
 ),
 RadioItem(

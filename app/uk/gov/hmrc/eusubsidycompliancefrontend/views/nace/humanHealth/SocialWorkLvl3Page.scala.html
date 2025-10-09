@@ -50,7 +50,7 @@ else controllers.routes.HouseHealthEducationController.submitSocialWorkLvl3Page(
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-socialWorkDisabilities", messages("NACE.humanHealth.Lvl3.socialWorkDisabilities"))),
-value = Some(Sector.socialWorkDisabilities.toString),
+value = Some(Sector.socialWorkDisabilities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.socialWorkDisabilities.toString)
 ),
 RadioItem(

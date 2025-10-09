@@ -51,12 +51,12 @@ else controllers.routes.ProfAndPAdminController.submitScientificRAndDLvl3Page()
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-naturalScientificResearchAndDevelopment", messages("NACE.professional.Lvl3.naturalScienceEngineeringResearch"))),
-value = Some(Sector.naturalScientificResearchAndDevelopment.toString),
+value = Some(Sector.naturalScientificResearchAndDevelopment4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.naturalScientificResearchAndDevelopment.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-socialScientificResearchAndDevelopment", messages("NACE.professional.Lvl3.socialScienceHumanitiesResearch"))),
-value = Some(Sector.socialScientificResearchAndDevelopment.toString),
+value = Some(Sector.socialScientificResearchAndDevelopment4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.socialScientificResearchAndDevelopment.toString)
 )
 )

@@ -51,12 +51,12 @@ else controllers.routes.HouseHealthEducationController.submitEducationLvl3Page()
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-prePrimaryEducation", messages("NACE.education.Lvl3.prePrimary"))),
-value = Some(Sector.prePrimaryEducation.toString),
+value = Some(Sector.prePrimaryEducation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.prePrimaryEducation.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-primaryEducation", messages("NACE.education.Lvl3.primary"))),
-value = Some(Sector.primaryEducation.toString),
+value = Some(Sector.primaryEducation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.primaryEducation.toString)
 ),
 RadioItem(
@@ -66,7 +66,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.secondaryEducati
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-tertiaryEducation", messages("NACE.education.Lvl3.tertiary"))),
-value = Some(Sector.tertiaryEducation.toString),
+value = Some(Sector.tertiaryEducation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.tertiaryEducation.toString)
 ),
 RadioItem(

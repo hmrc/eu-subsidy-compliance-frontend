@@ -56,7 +56,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.businessEmployer
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-tradeUnions", messages("NACE.otherService.Lvl3.tradeUnions"))),
-value = Some(Sector.tradeUnions.toString),
+value = Some(Sector.tradeUnionsActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.tradeUnions.toString)
 ),
 RadioItem(

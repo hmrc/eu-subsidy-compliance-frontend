@@ -57,12 +57,12 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-military", messages("NACE.Manufacturing.Lvl3.MilitaryVehicles"))),
-            value = Some(Sector.militaryFightingVehicles.toString),
+            value = Some(Sector.militaryFightingVehiclesManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.militaryFightingVehicles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-railway", messages("NACE.Manufacturing.Lvl3.RailwayLocomotives"))),
-            value = Some(Sector.railway.toString),
+            value = Some(Sector.railwayManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.railway.toString)
         ),
         RadioItem(

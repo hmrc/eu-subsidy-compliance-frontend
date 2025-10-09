@@ -67,7 +67,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairHouseholdG
 RadioItem( divider = Some("or")),
 RadioItem(
 content = HtmlContent(radioText("sector-label-ligniteMining", messages("NACE.otherService.Lvl3.intermediationRepairMaintenance"))),
-value = Some(Sector.intermediationRepairMaintenance.toString),
+value = Some(Sector.computerAndMotorcycleMaintenanceIntermediationServiceActivities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.intermediationRepairMaintenance.toString)
 )
 )

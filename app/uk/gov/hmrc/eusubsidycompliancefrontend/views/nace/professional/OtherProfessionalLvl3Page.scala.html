@@ -51,7 +51,7 @@ else controllers.routes.ProfAndPAdminController.submitOtherProfessionalLvl3Page(
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-photography", messages("NACE.professional.Lvl3.photographic"))),
-value = Some(Sector.photography.toString),
+value = Some(Sector.photographicActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.photography.toString)
 ),
 RadioItem(
@@ -62,7 +62,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedDesig
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-translationInterpretation", messages("NACE.professional.Lvl3.translationInterpretation"))),
-value = Some(Sector.translationInterpretation.toString),
+value = Some(Sector.translationActivities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.translationInterpretation.toString)
 ),
 RadioItem(

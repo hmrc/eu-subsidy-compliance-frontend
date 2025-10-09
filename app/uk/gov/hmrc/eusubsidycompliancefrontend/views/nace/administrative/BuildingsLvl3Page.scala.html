@@ -61,12 +61,12 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-combined-facilities", messages("NACE.Administrative.Lvl3.CombinedFacilities.hint")))
             )),
-            value = Some(Sector.CombinedFacilitiesSupport.toString),
+            value = Some(Sector.combinedFacilitiesSupport4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CombinedFacilitiesSupport.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-landscaping", messages("NACE.Administrative.Lvl3.Landscaping"))),
-            value = Some(Sector.Landscaping.toString),
+            value = Some(Sector.landscapeServiceActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Landscaping.toString)
         )
     )

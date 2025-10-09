@@ -49,17 +49,17 @@ else controllers.routes.HouseHealthEducationController.submitResidentialCareLvl3
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-disabledResidentialCareActivitiesMentalIllness", messages("NACE.humanHealth.Lvl3.olderPersonsDisabilitiesCare"))),
-value = Some(Sector.disabledResidentialCareActivitiesMentalIllness.toString),
+value = Some(Sector.disabledResidentialCareActivitiesMentalIllness4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.disabledResidentialCareActivitiesMentalIllness.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-residentialCareActivitiesMentalIllness", messages("NACE.humanHealth.Lvl3.mentalIllnessSubstanceAbuseCare"))),
-value = Some(Sector.residentialCareActivitiesMentalIllness.toString),
+value = Some(Sector.residentialCareActivitiesMentalIllness4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialCareActivitiesMentalIllness.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-residentialNursing", messages("NACE.humanHealth.Lvl3.residentialNursing"))),
-value = Some(Sector.residentialNursing.toString),
+value = Some(Sector.residentialNursing4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialNursing.toString)
 ),
 RadioItem(

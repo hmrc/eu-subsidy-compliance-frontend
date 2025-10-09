@@ -55,7 +55,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-reservation", messages("NACE.Administrative.Lvl3.OtherReservationServices"))),
-            value = Some(Sector.OtherReservationServices.toString),
+            value = Some(Sector.OtherReservationServices4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherReservationServices.toString)
         )
     )
