@@ -2757,6 +2757,11 @@ NACE.realEstate.Lvl3.rentalOperating = Rental and operating of own or leased rea
 NACE.realEstate.Lvl3.feeContract = Real estate activities on a fee or contract basis
 NACE.realEstate.Lvl3.realEstate.title = What is your undertaking''s main business activity in real estate?
 
+# real estate error messages
+feeContract4.error.required = Select the type of real estate activities your undertaking does on a fee or contract basis
+propertyDev4.error.required = Select your undertaking’s main business activity in property and development
+realEstate3.error.required = Select your undertaking’s main business activity in real estate
+
 #Admin
 
 NACE.Administrative.Buildings.title = What type of building or landscape service does your undertaking provide?
