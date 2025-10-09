@@ -58,7 +58,7 @@
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl2.residentialNonResidentialConstruction"))),
-                value = Some(Sector.residentialNonResidentialConstruction.toString),
+                value = Some(Sector.residentialNonResidentialConstruction4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialNonResidentialConstruction.toString)
         ),
         RadioItem(

@@ -2388,14 +2388,15 @@ NACE.ActivitiesExtraterritorial.Lvl4.OrganisationsBodies = Activities of extrate
 #Wholesale / Retail
 
 NACE.RetailWholesale.title = What is your undertaking''s main business activity in retail and wholesale?
+NACE.RetailWholesale.error = Select your undertaking’s main business activity in retail and wholesale
 NACE.RetailWholesale.Lvl2.Wholesale = Wholesale
 NACE.RetailWholesale.Lvl2.Retail = Retail
 
-NACE.Retail.AutomotiveFuel.title = Retail sale of automotive fuel
 NACE.Retail.AutomotiveFuel.Lvl3.automotiveFuel = Retail sale of automotive fuel
 
 # Retail Level 3 Messages
 NACE.Retail.title = What type of products does your undertaking retail?
+NACE.Retail.error = Select the type of products your undertaking retails
 NACE.Retail.Lvl3.NonSpecialised = Non-specialised retail
 NACE.Retail.Lvl3.Food = Food, beverages and tobacco
 NACE.Retail.Lvl3.AutomotiveFuel = Automotive fuel
@@ -2410,6 +2411,7 @@ NACE.Retail.Lvl3.MotorVehicles = Motor vehicles, motorcycles and related parts a
 NACE.Retail.Lvl3.IntermediationServices = My undertaking provides intermediation services for retail sale
 
 NACE.Retail.Household.title = What type of other household equipment does your undertaking retail?
+NACE.Retail.Household.error = Select the type of other household equipment your undertaking retails
 NACE.Retail.Household.Lvl4.Carpets = Carpets, rugs, wall and floor coverings
 NACE.Retail.Household.Lvl4.Electrical = Electrical household appliances
 NACE.Retail.Household.Lvl4.Hardware = Hardware, building materials, paints and glass
@@ -2417,6 +2419,7 @@ NACE.Retail.Household.Lvl4.Textiles = Textiles
 NACE.Retail.Household.Lvl4.Furniture = Furniture, lighting equipment, tableware and other household goods
 
 NACE.Retail.Cultural.title = What type of cultural or recreational goods does your undertaking retail?
+NACE.Retail.Cultural.error = Select the type of cultural or recreational goods your undertaking retails
 NACE.Retail.Cultural.Lvl4.Books = Books
 NACE.Retail.Cultural.Lvl4.Games = Games and toys
 NACE.Retail.Cultural.Lvl4.Newspapers = Newspapers, other periodical publications and stationery
@@ -2424,6 +2427,7 @@ NACE.Retail.Cultural.Lvl4.Sporting = Sporting equipment
 NACE.Retail.Cultural.Lvl4.OtherCultural = Other cultural and recreational goods
 
 NACE.Retail.OtherGoods.title = What type of goods does your undertaking retail?
+NACE.Retail.OtherGoods.error = Select the type of goods your undertaking retails
 NACE.Retail.OtherGoods.Lvl4.Clothing = Clothing
 NACE.Retail.OtherGoods.Lvl4.Cosmetic = Cosmetic and toilet articles
 NACE.Retail.OtherGoods.Lvl4.Flowers = Flowers, plants, fertilisers, pets and pet food
@@ -2435,15 +2439,18 @@ NACE.Retail.OtherGoods.Lvl4.OtherNewGoods = Other new goods
 NACE.Retail.OtherGoods.Lvl4.SecondHand = Second-hand goods
 
 NACE.Retail.MotorVehicles.title = What type of motor vehicles, motorcycles or parts and accessories does your undertaking retail?
+NACE.Retail.MotorVehicles.error = Select the type of motor vehicles, motorcycles or parts and accessories your undertaking retails
 NACE.Retail.MotorVehicles.Lvl4.Vehicles = Motor vehicles
 NACE.Retail.MotorVehicles.Lvl4.Parts = Motor vehicle parts and accessories
 NACE.Retail.MotorVehicles.Lvl4.Motorcycles = Motorcycles, motorcycle parts and accessories
 
 NACE.Retail.Intermediation.title = What type of retail does your undertaking provide intermediation services for?
+NACE.Retail.Intermediation.error = Select the type of retail your undertaking provides intermediation services for
 NACE.Retail.Intermediation.Lvl4.NonSpecialised = Non-specialised retail
 NACE.Retail.Intermediation.Lvl4.Specialised = Specialised retail
 
 NACE.Wholesale.title = What type of wholesale does your undertaking do?
+NACE.Wholesale.error = Select the type of wholesale your undertaking does
 NACE.Wholesale.Lvl3.ContractBasis = Wholesale on a fee or contract basis
 NACE.Wholesale.Lvl3.Agricultural = Wholesale of agricultural raw materials and live animals
 NACE.Wholesale.Lvl3.Food = Wholesale of food, beverages and tobacco
@@ -2454,8 +2461,10 @@ NACE.Wholesale.Lvl3.MotorVehicles = Wholesale of motor vehicles, motorcycles and
 NACE.Wholesale.Lvl3.OtherSpecialised = Other specialised wholesale
 NACE.Wholesale.Lvl3.OtherSpecialised.hint = Includes chemical products, fuels, hardware, metals and metal ores, waste and scrap, wood and construction materials, other intermediate products and all other specialised wholesale.
 NACE.Wholesale.Lvl3.NonSpecialised = Non-specialised wholesale
+
 # Food Retail Level 4 Messages
 NACE.Retail.Food.title = What type of food, beverages or tobacco does your undertaking retail?
+NACE.Retail.Food.error = Select the type of food, beverages or tobacco your undertaking retails
 NACE.Retail.Food.Lvl4.Beverages = Beverages
 NACE.Retail.Food.Lvl4.Bread = Bread, cake and confectionery
 NACE.Retail.Food.Lvl4.Fish = Fish, crustaceans and molluscs
@@ -2465,10 +2474,12 @@ NACE.Retail.Food.Lvl4.Tobacco = Tobacco products
 NACE.Retail.Food.Lvl4.OtherFood = Other food
 
 NACE.Retail.NonSpecialised.title = What type of non-specialised retail does your undertaking do?
+NACE.Retail.NonSpecialised.error = Select the type of non-specialised retail your undertaking does
 NACE.Retail.NonSpecialised.Lvl4.Food = Non-specialised retail sale of predominately food, beverages or tobacco
 NACE.Retail.NonSpecialised.Lvl4.Other = Other non-specialised retail sale
 
 NACE.Wholesale.ContractBasis.title = What type of products does your undertaking wholesale on a fee or contract basis?
+NACE.Wholesale.ContractBasis.error = Select the type of products your undertaking wholesales on a fee or contract basis
 NACE.Wholesale.ContractBasis.Lvl4.Agricultural = Agricultural raw materials, live animals, textile raw materials and semi-finished goods
 NACE.Wholesale.ContractBasis.Lvl4.Food = Food, beverages and tobacco
 NACE.Wholesale.ContractBasis.Lvl4.Fuels = Fuels, ores, metals and industrial chemicals
@@ -2480,12 +2491,14 @@ NACE.Wholesale.ContractBasis.Lvl4.Other = Other particular products
 NACE.Wholesale.ContractBasis.Lvl4.NonSpecialised = My undertaking carries out non-specialised wholesale
 
 NACE.Wholesale.Agricultural.title = What type of agricultural products does your undertaking wholesale?
+NACE.Wholesale.Agricultural.error = Select the type of agricultural products your undertaking wholesales
 NACE.Wholesale.Agricultural.Lvl4.Flowers = Flowers and plants
 NACE.Wholesale.Agricultural.Lvl4.Grain = Grain, unmanufactured tobacco, seeds and animal feeds
 NACE.Wholesale.Agricultural.Lvl4.Hides = Hides, skins and leather
 NACE.Wholesale.Agricultural.Lvl4.LiveAnimals = Live animals
 
 NACE.wholesale.Lvl4.foodWholesale.title = What type of food, beverages or tobacco does your undertaking wholesale?
+NACE.wholesale.Lvl4.foodWholesale.error = Select the type of food, beverages or tobacco your undertaking wholesales
 NACE.wholesale.Lvl4.BeveragesWholesale = Beverages
 NACE.wholesale.Lvl4.BeveragesWholesale.hint = For example, wholesale of alcoholic and non-alcoholic beverages
 NACE.wholesale.Lvl4.CoffeeAndSpicesWholesale = Coffee, tea, cocoa and spices
@@ -2498,19 +2511,8 @@ NACE.wholesale.Lvl4.OtherFoodWholesale = Other food
 NACE.wholesale.Lvl4.NonSpecialisedFoodWholesale = Non-specialised wholesale of food, beverages and tobacco
 NACE.wholesale.Lvl4.foodWholesale.error.required = Select the type of food, beverages or tobacco your undertaking wholesales
 
-NACE.wholesale.Lvl4.householdWholesale.title = What type of household goods does your undertaking wholesale?
-NACE.wholesale.Lvl4.TextilesClothingWholesale = Textiles, clothing and footwear
-NACE.wholesale.Lvl4.TextilesClothingWholesale.hint = For example, wholesale of textiles, clothing, fur or footwear
-NACE.wholesale.Lvl4.FurnitureWholesale = Furniture, carpets and lighting equipment
-NACE.wholesale.Lvl4.ElectricalAppliancesWholesale = Electrical household appliances
-NACE.wholesale.Lvl4.ChinaGlasswareWholesale = China, glassware, wallpaper and cleaning materials
-NACE.wholesale.Lvl4.PerfumeCosmeticsWholesale = Perfume and cosmetics
-NACE.wholesale.Lvl4.PharmaceuticalWholesale = Pharmaceutical goods
-NACE.wholesale.Lvl4.WatchesJewelleryWholesale = Watches, clocks and jewellery
-NACE.wholesale.Lvl4.OtherHouseholdWholesale = Other household goods
-NACE.wholesale.Lvl4.householdWholesale.error.required = Select the type of household goods your undertaking wholesales
-
 NACE.Wholesale.Household.title = What type of household goods does your undertaking wholesale?
+NACE.Wholesale.Household.error = Select the type of household goods your undertaking wholesales
 NACE.Wholesale.Household.Lvl4.China = China, glassware and cleaning materials
 NACE.Wholesale.Household.Lvl4.Clothing = Clothing and footwear
 NACE.Wholesale.Household.Lvl4.Electrical = Electrical household appliances
@@ -2522,17 +2524,20 @@ NACE.Wholesale.Household.Lvl4.Watches = Watches and jewellery
 NACE.Wholesale.Household.Lvl4.Other = Other household goods
 
 NACE.Wholesale.Machinery.title = What type of machinery, equipment or supplies does your undertaking wholesale?
+NACE.Wholesale.Machinery.error = Select the type of machinery, equipment or supplies your undertaking wholesales
 NACE.Wholesale.Machinery.Lvl4.Agricultural = Agricultural machinery, equipment and supplies
 NACE.Wholesale.Machinery.Lvl4.MachineTools = Machine tools
 NACE.Wholesale.Machinery.Lvl4.Mining = Mining, construction and civil engineering machinery
 NACE.Wholesale.Machinery.Lvl4.Other = Other machinery and equipment
 
 NACE.Wholesale.MotorVehicles.title = What type of motor vehicles, motorcycles or parts and accessories does your undertaking wholesale?
+NACE.Wholesale.MotorVehicles.error = Select the type of motor vehicles, motorcycles or parts and accessories your undertaking wholesales
 NACE.Wholesale.MotorVehicles.Lvl4.Vehicles = Motor vehicles
 NACE.Wholesale.MotorVehicles.Lvl4.Parts = Motor vehicle parts and accessories
 NACE.Wholesale.MotorVehicles.Lvl4.Motorcycles = Motorcycles, motorcycle parts and accessories
 
 NACE.Wholesale.Specialised.title = What type of other products does your undertaking wholesale?
+NACE.Wholesale.Specialised.error = Select the type of other products your undertaking wholesales
 NACE.Wholesale.Specialised.Lvl4.Chemical = Chemical products
 NACE.Wholesale.Specialised.Lvl4.Hardware = Hardware, plumbing and heating equipment and supplies
 NACE.Wholesale.Specialised.Lvl4.Metals = Metals and metal ores
@@ -2541,7 +2546,6 @@ NACE.Wholesale.Specialised.Lvl4.Waste = Waste and scrap
 NACE.Wholesale.Specialised.Lvl4.Wood = Wood, construction materials and sanitary equipment
 NACE.Wholesale.Specialised.Lvl4.OtherIntermediate = Other intermediate products
 NACE.Wholesale.Specialised.Lvl4.OtherSpecialised = Other specialised wholesale
-
 
 # Financial services
 

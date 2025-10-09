@@ -52,7 +52,7 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-beverageServing", messages("NACE.accommodationAndFoodService.Lvl3.beverageServing"))),
-                value = Some(Sector.beverageServing.toString),
+                value = Some(Sector.beverageServing4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.beverageServing.toString)
         ),
         RadioItem(
@@ -62,7 +62,7 @@
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-foodBeverageServiceIntermediationActivities", messages("NACE.accommodationAndFoodService.Lvl3.foodBeverageServiceIntermediationActivities"))),
-                value = Some(Sector.foodBeverageServiceIntermediationActivities.toString),
+                value = Some(Sector.foodBeverageServiceIntermediationActivities4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.foodBeverageServiceIntermediationActivities.toString)
         ),
        RadioItem(

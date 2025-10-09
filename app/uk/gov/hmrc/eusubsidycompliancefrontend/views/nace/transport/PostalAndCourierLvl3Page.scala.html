@@ -49,17 +49,17 @@
   Seq(
     RadioItem(
       content = HtmlContent(radioText("sector-label-postal-universal-service", messages("NACE.TransportationAndStorage.Lvl3.PostalUniversalService"))),
-      value = Some(Sector.postalActivities.toString),
+      value = Some(Sector.postalActivities4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.postalActivities.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-other-postal-courier", messages("NACE.TransportationAndStorage.Lvl3.OtherPostalCourier"))),
-      value = Some(Sector.otherPostalActivities.toString),
+      value = Some(Sector.otherPostalActivities4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPostalActivities.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-intermediation-postal-courier", messages("NACE.TransportationAndStorage.Lvl3.IntermediationPostalCourier"))),
-      value = Some(Sector.postalIntermediationActivities.toString),
+      value = Some(Sector.postalIntermediationActivities4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.postalIntermediationActivities.toString)
     )
   )

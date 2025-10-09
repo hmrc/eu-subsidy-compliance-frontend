@@ -55,12 +55,12 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-pension-funding", messages("NACE.insurance.Lvl2.pensionFunding"))),
-            value = Some(Sector.PensionFundingServices.toString),
+            value = Some(Sector.PensionFunding4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PensionFundingServices.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-reinsurance", messages("NACE.insurance.Lvl2.reinsurance"))),
-            value = Some(Sector.ReinsuranceServices.toString),
+            value = Some(Sector.Reinsurance4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ReinsuranceServices.toString)
         )
     )

@@ -59,12 +59,12 @@
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.electricityGasSteamAir.Lvl3.steamAirConditioning"))),
-      value = Some(Sector.steamAndAirConditioningSupply.toString),
+      value = Some(Sector.steamAndAirConditioningSupply4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.steamAndAirConditioningSupply.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-brokers-agents-power-gas", messages("NACE.electricityGasSteamAir.Lvl3.brokersAgentsPowerGas"))),
-      value = Some(Sector.electricPowerAndGasBrokers.toString),
+      value = Some(Sector.electricPowerAndGasBrokers4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricPowerAndGasBrokers.toString)
     )
   )

@@ -70,7 +70,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-information", messages("NACE.Wholesale.Lvl3.Information"))),
-            value = Some(Sector.InformationEquipmentWholesale.toString),
+            value = Some(Sector.InformationEquipmentWholesale4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.InformationEquipmentWholesale.toString)
         ),
         RadioItem(
@@ -93,7 +93,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-non-specialised", messages("NACE.Wholesale.Lvl3.NonSpecialised"))),
-            value = Some(Sector.NonSpecialisedWholesale.toString),
+            value = Some(Sector.NonSpecialisedWholesaleTrade.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonSpecialisedWholesale.toString)
         )
     )
@@ -110,7 +110,7 @@
                 errorList = Seq(
                     ErrorLink(
                         href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.key++"." ++err.message)}")
+                        content = Text(messages("NACE.Wholesale.error"))
                     )
                 ),
                 title = Text(messages("common.error.summary.title"))
@@ -136,7 +136,7 @@
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("undertakingSector.error.required"))
+                content = Text(messages("NACE.Wholesale.error"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(

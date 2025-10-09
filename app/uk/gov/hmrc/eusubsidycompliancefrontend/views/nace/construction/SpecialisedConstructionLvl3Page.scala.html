@@ -70,12 +70,12 @@
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.specialisedConstructionIntermediationServices"))),
-                value = Some(Sector.specialisedConstructionIntermediationServices.toString),
+                value = Some(Sector.specialisedConstructionIntermediationServices4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedConstructionIntermediationServices.toString),
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.specialisedCivilEngineering"))),
-                value = Some(Sector.specialisedCivilEngineering.toString),
+                value = Some(Sector.specialisedCivilEngineering4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedCivilEngineering.toString)
         ),
         RadioItem(
