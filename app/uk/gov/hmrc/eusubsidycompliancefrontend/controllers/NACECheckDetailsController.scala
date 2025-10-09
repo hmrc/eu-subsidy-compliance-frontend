@@ -26,7 +26,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPage
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.{NaceLevel4, NaceLevel4Catalogue}
 
 import javax.inject.{Inject, Singleton}
@@ -50,8 +49,6 @@ class NACECheckDetailsController @Inject()(
     store.get[UndertakingJourney].map { journeyOpt =>
       val sector = Sector.agriculture
       val naceLevel1 = "User's selection of L1"
-      val naceLevel2 = "User's radio selection of L2"
-      val naceLevel3 = "User's radio selection of L3"
       val naceLevel4 = "User's radio selection of L4"
 
       val naceLevel4Code: String = journeyOpt
@@ -61,14 +58,45 @@ class NACECheckDetailsController @Inject()(
       val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(naceLevel4Code)
         .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $naceLevel4Code"))
 
+      val naceLevel3Code: String = naceLevel4Code.dropRight(1)
+      val naceLevel2Code: String = naceLevel4Code.take(2)
+
+      val naceLevel1Code: String = naceLevel2Code match{
+        case "01" | "02" | "03" => "A"
+        case "05"|"06"|"07"|"08"|"09" => "B"
+        case "10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"=> "C"
+        case "18"|"19"|"20"|"21"|"22"|"23"|"24"|"25"=> "C"
+        case "26"|"27"|"28"|"29"|"30"|"31"|"32"|"33"=> "C"
+        case "35" => "D"
+        case "36"| "37" |"38" |"39" => "E"
+        case "41"| "42" |"43" => "F"
+        case "46" | "47" => "G"
+        case "49"| "50" |"51" |"52" |"53" => "H"
+        case "55"| "56" => "I"
+        case "58"| "59"| "60" => "J"
+        case "61" | "62" | "63" => "K"
+        case "64" | "65" | "66" => "L"
+        case "68" => "M"
+        case "69" | "70" | "71" | "72" | "73" | "74" | "75" => "N"
+        case "77" | "78" | "79" | "80" | "81" | "82" => "O"
+        case "84" => "P"
+        case "85" => "Q"
+        case "86" | "87" | "88" => "R"
+        case "90"| "91"| "92" | "93" => "S"
+        case "94" | "95" |"96" => "T"
+        case "97"| "98" => "U"
+        case "99" => "V"
+        case _ => "Missing Level 1 code"
+      }
+
       val previous = routes.AccountController.getAccountPage.url
 
       Ok(naceCYAView(
         confirmDetailsForm,
         sector,
-        naceLevel1,
-        naceLevel2,
-        naceLevel3,
+        naceLevel1Code,
+        naceLevel2Code,
+        naceLevel3Code,
         naceLevel4,
         naceLevel4Notes,
         previous

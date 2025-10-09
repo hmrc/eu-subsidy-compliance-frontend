@@ -35,9 +35,9 @@
 @(
     form: Form[_],
     sector: Sector,
-    naceLevel1: String,
-    naceLevel2: String,
-    naceLevel3: String,
+    naceLevel1Code: String,
+    naceLevel2Code: String,
+    naceLevel3Code: String,
     naceLevel4: String,
     naceLevel4Notes: NaceLevel4,
     previous: Journey.Uri
@@ -72,7 +72,7 @@
             ),
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 1")),
-                value = Value(content = Text(naceLevel1)),
+                value = Value(content = Text(naceLevel1Code)),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
@@ -85,7 +85,7 @@
             ),
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 2")),
-                value = Value(content = Text(naceLevel2)),
+                value = Value(content = Text(naceLevel2Code)),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
@@ -98,7 +98,7 @@
             ),
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 3")),
-                value = Value(content = Text(naceLevel3)),
+                value = Value(content = Text(naceLevel3Code)),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
@@ -140,15 +140,15 @@
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.NACE-level-1"))),
-                value = Value(content = Text("X NACE L1 category"))
+                value = Value(content = Text(naceLevel1Code + " "+ messages(s"NACE.$naceLevel1Code")))
             ),
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.NACE-level-2"))),
-                value = Value(content = Text("00 NACE L2 category"))
+                value = Value(content = Text(naceLevel2Code + " "+ messages(s"NACE.$naceLevel2Code")))
             ),
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.NACE-level-3"))),
-                value = Value(content = Text("00.0 NACE L3 category"))
+                value = Value(content = Text(naceLevel3Code + " "+ messages(s"NACE.$naceLevel3Code")))
             ),
             SummaryListRow(
               key = Key(content = Text(messages(s"$key.NACE-level-4"))),

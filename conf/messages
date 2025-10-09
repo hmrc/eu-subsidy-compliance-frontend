@@ -2984,7 +2984,7 @@ NACE.J    = PUBLISHING, BROADCASTING, AND CONTENT PRODUCTION AND DISTRIBUTION AC
 NACE.58   = Publishing activities
 NACE.58.1 = Publishing of books, newspapers and other publishing activities, except software publishing
 NACE.58.2 = Software publishing
-NACE.59 Mo= tion picture, video and television programme production, sound recording and music publishing activities
+NACE.59   = Motion picture, video and television programme production, sound recording and music publishing activities
 NACE.59.1 = Motion picture, video and television programme activities
 NACE.59.2 = Sound recording and music publishing activities
 NACE.60   = Programming, broadcasting, news agency and other content distribution activities
@@ -3137,7 +3137,6 @@ NACE.98.2 = Undifferentiated service-producing activities of private households 
 NACE.V    = ACTIVITIES OF EXTRATERRITORIAL ORGANISATIONS AND BODIES
 NACE.99   = Activities of extraterritorial organisations and bodies
 NACE.99.0 = Activities of extraterritorial organisations and bodies
-
 
 #Level 4 content notes
 NACE.01.11.heading = 01.11 Growing of cereals (except rice), leguminous crops and oil seeds
