@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package models.nace
+package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 
 import play.api.i18n.Messages
 
 final case class NaceNotes(
-                            desc:  Option[String],   // optional extra paragraph at start
-                            intro: Option[String],   // "This class includes:" or single-line without bullet points
-                            bullets: Seq[String],     //  bullet points
-                            outro: Option[String]     // extra ending text after bullet points
+                            desc:  Option[String],
+                            intro: Option[String],
+                            bullets: Seq[String],
+                            outro: Option[String]
                           )
 
 final case class NaceLevel4(
-                             code: String,     // Nace level code
-                             heading: String,  // heading for text
+                             code: String,
+                             heading: String,
                              notes: NaceNotes
                            )
 
@@ -53,7 +53,6 @@ object NaceLevel4Catalogue {
           .takeWhile(messages.isDefinedAt)
           .map(key => messages(key))
           .toList
-
 
       Some(NaceLevel4(code, heading, NaceNotes(desc, intro, bullets, outro)))
     }

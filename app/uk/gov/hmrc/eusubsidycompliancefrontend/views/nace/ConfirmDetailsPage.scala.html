@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4
 @import views.html.helper.CSPNonce
 
 @this(
@@ -38,6 +39,7 @@
     naceLevel2: String,
     naceLevel3: String,
     naceLevel4: String,
+    naceLevel4Notes: NaceLevel4,
     previous: Journey.Uri
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -149,12 +151,22 @@
                 value = Value(content = Text("00.0 NACE L3 category"))
             ),
             SummaryListRow(
-                key = Key(content = Text(messages(s"$key.NACE-level-4"))),
-                value = Value(content = HtmlContent(
-                    """00.00 NACE L4 category<br><br>Core content note playback here - only for L4"""
-                ))
-            )
-        ),
+              key = Key(content = Text(messages(s"$key.NACE-level-4"))),
+              value = Value(content = HtmlContent {
+                val headingHtml = s"<p class='govuk-body'>${naceLevel4Notes.heading}</p>"
+                val desc   = naceLevel4Notes.notes.desc .map(d => s"<p class='govuk-body'>$d</p>").getOrElse("")
+                val intro  = naceLevel4Notes.notes.intro.map(i => s"<p class='govuk-body'>$i</p>").getOrElse("")
+                val bullets =
+                  if (naceLevel4Notes.notes.bullets.nonEmpty)
+                    "<ul class='govuk-list govuk-list--bullet'>" +
+                      naceLevel4Notes.notes.bullets.map(b => s"<li>$b</li>").mkString +
+                    "</ul>"
+                  else ""
+                val outro  = naceLevel4Notes.notes.outro.map(o => s"<p class='govuk-body'>$o</p>").getOrElse("")
+
+                headingHtml + desc + intro + bullets + outro
+              }))
+            ),
         classes = "govuk-!-margin-bottom-9"
     ))
 
