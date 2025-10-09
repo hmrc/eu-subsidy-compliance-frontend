@@ -2375,6 +2375,16 @@ NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation.hint = Includes child 
 NACE.humanHealth.Lvl4.childDayCare = Child daycare
 NACE.humanHealth.Lvl4.otherSocialWorkNEC = Any other social work activities without accommodation
 
+# humanHealth error messages
+humanHealth2.error.required = Select your undertaking’s main business activity in human healthcare and social work
+humanHealth3.error.required = Select the type of healthcare your undertaking provides
+medical4.error.required = Select your undertaking’s main business activity in medical and dental practice and related activities
+otherHealth4.error.required = Select the type of other human health activities or services your undertaking provides
+otherResidential4.error.required = Select the type of other residential care activitoes your undertaking does
+otherSocial4.error.required = Select the type of other social work activities your undertaking does.
+resiCare3.error.required = Select the type of residential care your undertaking provides
+socialWork3.error.required = Select the type of social work activities your undertaking does
+
 #ArtsSportsRecreation NACE Sector2,3,4
 
 NACE.artsSportsRecreation.Lvl1.title = What is your undertaking’s main business activity in arts, sports and recreation?
