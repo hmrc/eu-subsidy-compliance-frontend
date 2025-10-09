@@ -2539,6 +2539,11 @@ NACE.households.Lvl4.undifferentiatedGoods = Undifferentiated goods-producing ac
 NACE.households.Lvl3.undifferentiatedServices = Undifferentiated service-producing activities of private households for own use
 NACE.households.Lvl4.undifferentiatedServices = Undifferentiated service-producing activities of private households for own use
 
+# household errors
+households2.error.required = Select your undertaking’s main business activity in households as employers or as producers of goods or services
+undifferProducing4.error.required = Select the type of private household activities your undertaking carries out
+
+
 #ActivitiesExtraterritorial NACE Sector2,3,4
 NACE.ActivitiesExtraterritorial.Lvl2.CYAOnly.OrganisationsBodies = Activities of extraterritorial organisations and bodies
 NACE.ActivitiesExtraterritorial.Lvl3.OrganisationsBodies = Activities of extraterritorial organisations and bodies
