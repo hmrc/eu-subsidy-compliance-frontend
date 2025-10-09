@@ -52,22 +52,22 @@ Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.gatheringOfWildGrowth"))),
 value = Some(Sector.gatheringOfWildGrowth4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.gatheringOfWildGrowth4.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.gatheringOfWildGrowth.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.logging"))),
 value = Some(Sector.logging4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.logging4.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.logging.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.silviculture"))),
 value = Some(Sector.silviculture4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.silviculture4.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.silviculture.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.forestrySupportServices"))),
 value = Some(Sector.forestrySupportServices4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.forestrySupportServices4.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.forestrySupportServices.toString)
 )
 )
 }
