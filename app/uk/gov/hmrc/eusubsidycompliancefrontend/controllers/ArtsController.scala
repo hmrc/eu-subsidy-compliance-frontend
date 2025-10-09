@@ -253,8 +253,7 @@ class ArtsController @Inject()(
       .fold(
         formWithErrors => BadRequest(SportsLvl4Page(formWithErrors)).toFuture,
         form => {
-          val code   = form.value                 // e.g. "93.13"
-          val sector = Sector.withName(code)      // safer than .toInt
+          val sector = Sector.withName(form.value)
           store
             .update[UndertakingJourney](_.setUndertakingSector(sector.id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
