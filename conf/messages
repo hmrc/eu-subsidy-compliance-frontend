@@ -2515,6 +2515,18 @@ NACE.otherService.Lvl3.otherPersonalServices.error = Select the type of other pe
 NACE.otherService.Lvl4.domesticPersonalServices = Domestic personal services
 NACE.otherService.Lvl4.otherPersonalServices = Any other personal service activities
 
+# other services error
+hairdressing4.error.required = Select the type of beauty treatments or similar services your undertaking provides
+householdRepair4.error.required = Select the type of personal or household goods your undertaking repairs or maintains
+membership3.error.required = Select the type of membership organisation your undertaking operates
+membership4.error.required = Select the type of business membership organisation your undertaking operates
+vehiclesRepair4.error.required = Select the type of vehicles your undertaking repairs or maintains
+other2.error.required = Select the type of services your undertaking provides
+otherMembership4.error.required = Select the type of other membership organisation your undertaking operates
+otherPersonal4.error.required = Select the type of other personal services your undertaking provides
+personalServices3.error.required = Select the type of personal services your undertaking provides
+repairs3.error.required = Select the type of goods your undertaking repairs or maintains
+
 #Households NACE Sector2,3,4
 NACE.households.Lvl1.title =What is your undertaking’s main business activity in households as employers or producers of goods or services?
 NACE.households.Lvl2.domesticPersonnel = Activities of households as employers of domestic personnel
