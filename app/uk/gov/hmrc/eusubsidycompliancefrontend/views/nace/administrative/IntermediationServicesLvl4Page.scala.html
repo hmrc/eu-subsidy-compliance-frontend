@@ -37,9 +37,9 @@
 
 @actionUrl = @{
     if(isUpdate)
-        controllers.routes.AdminController.submitIntermediationServicesLvl4Page()
-    else
         controllers.routes.UndertakingController.postSector
+    else
+        controllers.routes.AdminController.submitIntermediationServicesLvl4Page()
 }
 
 @radioText(id: String, content: String) = {
@@ -81,7 +81,7 @@
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("NACE.Administrative.IntermediationServices.error"))
+                content = Text(messages("intermediation4.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(

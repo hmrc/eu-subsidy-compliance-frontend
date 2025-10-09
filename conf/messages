@@ -2295,6 +2295,15 @@ NACE.publicAdministration.Lvl4.fireService = Fire service activities
 NACE.publicAdministration.Lvl3.compulsorySocialSecurity = Compulsory social security activities
 NACE.publicAdministration.Lvl4.compulsorySocialSecurity = Compulsory social security activities
 
+# administrative error messages
+admin2.error.required = Select the type of administrative and support services your undertaking provides
+office3.error.required = Select the type of office or business support your undertaking does
+otherBusSupport4.error.required = Select the type of other business support services your undertaking provides
+personalHouse4.error.required = Select the type of personal or household goods your undertaking rents or leases
+rental3.error.required = Select the type of goods your undertaking rents or leases
+travelAgency4.error.required = Select your undertaking’s main business activity in travel agency and tour operator activities
+travel3.error.required = Select your undertaking’s main business activity in travel and other reservation services
+
 #Education NACE Sector2,3,4
 NACE.education.Lvl2.education = Education
 NACE.education.Lvl2.education.title = What is your undertaking’s main business activity in education?
@@ -2773,6 +2782,13 @@ NACE.realEstate.Lvl3.realEstate.title = What is your undertaking''s main busines
 feeContract4.error.required = Select the type of real estate activities your undertaking does on a fee or contract basis
 propertyDev4.error.required = Select your undertaking’s main business activity in property and development
 realEstate3.error.required = Select your undertaking’s main business activity in real estate
+building3.error.required = Select the type of building or landscape service your undertaking provides
+cleaning3.error.required = Select the type of cleaning your undertaking does
+employment3.error.required = Select your undertaking’s main business activity in employment services
+intermediation4.error.required = Select the type of goods for which your undertaking provides intermediation services for rental and leasing
+investigation4.error.required = Select your undertaking’s main business activity in investigation and security
+equipment4.error.required = Select the type of other machinery, equipment and tangible goods your undertaking rents or leases
+vehicles4.error.required = Select the type of motor vehicles your undertaking rents or leases
 
 #Admin
 
@@ -2866,6 +2882,11 @@ NACE.Administrative.Lvl2.BuildingsLandscaping = Services to buildings and landsc
 NACE.Administrative.Lvl2.BuildingsLandscaping.hint = Includes cleaning and combined facilities support.
 NACE.Administrative.Lvl2.OfficeSupport = Office administrative, office support and other business support
 NACE.Administrative.Lvl2.OfficeSupport.hint = Includes call centres, collection agencies and credit bureaus, organisation of conventions and trade shows, and other business support services.
+
+NACE.Administrative.MotorVehicles.title =  What type of motor vehicles does your undertaking rent or lease?
+NACE.Administrative.Lvl4.CarsLightVehicles = Cars and light motor vehicles
+NACE.Administrative.Lvl4.Trucks = Trucks
+
 
 #Insurance
 

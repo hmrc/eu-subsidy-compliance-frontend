@@ -81,7 +81,7 @@
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("NACE.Administrative.Investigation.error"))
+                content = Text(messages("investigation4.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(

@@ -81,7 +81,7 @@
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("NACE.Administrative.TravelAgency.error"))
+                content = Text(messages("travelAgency4.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(

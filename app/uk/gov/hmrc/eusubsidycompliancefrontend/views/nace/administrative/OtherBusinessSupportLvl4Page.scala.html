@@ -86,7 +86,7 @@
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("NACE.Administrative.OtherBusinessSupport.error"))
+                content = Text(messages("otherBusSupport4.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
