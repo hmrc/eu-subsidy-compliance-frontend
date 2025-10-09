@@ -2735,61 +2735,11 @@ NACE.insurance.Lvl2.insurance.title = What is your undertaking''s main business 
 NACE.insurance.Lvl2.insurance = Insurance
 NACE.insurance.Lvl2.reinsurance = Reinsurance
 NACE.insurance.Lvl2.pensionFunding = Pension funding
-
 NACE.insurance.Lvl4.insuranceType.title = What type of insurance does your undertaking provide?
 NACE.insurance.Lvl4.lifeInsurance = Life insurance
 NACE.insurance.Lvl4.nonLifeInsurance = Non-life insurance
 
-#NACE content notes
-
-NACE.A = AGRICULTURE, FORESTRY AND FISHING
-NACE.01 = Crop and animal production, hunting and related service activities
-NACE.01.1 = Growing of non-perennial crops
-
-NACE.01.11.heading = 01.11 Growing of cereals (except rice), leguminous crops and oil seeds
-NACE.01.11.desc = This class includes all forms of growing of cereals, leguminous crops and oil seeds. Further included is the growing of these plants for the purpose of seed production. The growing of these crops is often combined within agricultural units.
-NACE.01.11.intro = This class includes:
-NACE.01.11.b1 = growing of cereals, e.g.: wheat, grain, maize; sorghum; barley; rye; oats; millet; pseudocereals, in other words, fruits or seeds used as cereals, e.g: quinoa; amaranth; chia
-NACE.01.11.b2 = growing of leguminous crops, e.g.: beans; broad beans; chickpeas; cowpeas; lentils; lupines; peas; pigeon peas
-NACE.01.11.b3 = growing of oil seeds, e.g.: soya beans; groundnuts; castor beans; linseed; mustard seed; niger seed; rapeseed; safflower seed; sesame seed; sunflower seed
-
-NACE.01.12.heading = 01.12 Growing of rice
-NACE.01.12.intro = This class includes: growing of rice
-
-NACE.01.13.heading = 01.13 Growing of vegetables and melons, roots and tubers
-NACE.01.13.intro = This class includes:
-NACE.01.13.b1 = growing of leafy or stem vegetables, e.g.: artichokes; asparagus; cabbages; cauliflower and broccoli; lettuce and chicory; spinach
-NACE.01.13.b2 = growing of fruit-bearing vegetables, e.g.: cucumbers and gherkins; eggplants (aubergines); tomatoes; watermelons
-NACE.01.13.b3 = growing of root, bulb or tuberous vegetables, e.g.: carrots; turnips; garlic; onions (including shallots); leeks and other alliaceous vegetables
-NACE.01.13.b4 = growing of mushrooms and truffles
-NACE.01.13.b5 = growing of vegetable seeds, including sugar beet seeds, excluding other beet seeds
-NACE.01.13.b6 = growing of sugar beet
-NACE.01.13.b7 = growing of chillies, peppers (Capsicum spp.)
-NACE.01.13.b8 = growing of roots and tubers, e.g.: potatoes; sweet potatoes; cassava; yams; swedes and mangolds
-NACE.01.13.b9 = growing of sweetcorn
-
-NACE.01.14.heading = 01.14 Growing of sugar cane
-NACE.01.14.intro = This class excludes growing of sugar beet, see 01.13 (Growing of vegetables and melons, roots and tubers)
-
-NACE.01.15.heading = 01.15 Growing of tobacco
-NACE.01.15.intro = This class includes: growing of unmanufactured tobacco
-
-NACE.01.16.heading = 01.16 Growing of fibre crops
-NACE.01.16.intro = This class includes growing of fibre crops, e.g.:
-NACE.01.16.b1 = growing of cotton
-NACE.01.16.b2 = growing of jute, kenaf and other textile bast fibres
-NACE.01.16.b3 = growing of flax and hemp
-NACE.01.16.b4 = growing of sisal and other textile fibre of the genus agave
-NACE.01.16.b5 = growing of abaca, ramie and other vegetable textile fibres
-
-NACE.01.19.heading = 01.19 Growing of other non-perennial crops
-NACE.01.19.intro = This class includes the growing of all other non-perennial crops, e.g.:
-NACE.01.19.b1 = growing of clover, alfalfa, sainfoin, maize, lupines, other grasses, fodder kale and similar forage crops
-NACE.01.19.b2 = growing of beet seeds and seeds of forage plants
-NACE.01.19.b3 = growing of flowers
-NACE.01.19.b4 = cutting of flowers and flower buds
-NACE.01.19.b5 = growing of flower seeds
-NACE.01.19.b6 = perennial flowers and ornamental plants
+#NACE lvl1,2&3 content notes
 
 NACE.A    = AGRICULTURE, FORESTRY AND FISHING
 NACE.01   = Crop and animal production, hunting and related service activities
@@ -2837,7 +2787,7 @@ NACE.10.7 = Manufacture of bakery and farinaceous products
 NACE.10.8 = Manufacture of other food products
 NACE.10.9 = Manufacture of prepared animal feeds
 NACE.11   = Manufacture of beverages
-NACE.11   = Manufacture of beverages
+NACE.11.0   = Manufacture of beverages
 NACE.12   = Manufacture of tobacco products
 NACE.12.0 = Manufacture of tobacco products
 NACE.13   = Manufacture of textiles
@@ -3110,7 +3060,7 @@ NACE.79   = Travel agency, tour operator and other reservation service and relat
 NACE.79.1 = Travel agency and tour operator activities
 NACE.79.9 = Other reservation service and related activities
 NACE.80   = Investigation and security activities
-NACE.80   = Investigation and security activities
+NACE.80.0   = Investigation and security activities
 NACE.81   = Services to buildings and landscape activities
 NACE.81.1 = Combined facilities support activities
 NACE.81.2 = Cleaning activities
@@ -3187,6 +3137,53 @@ NACE.98.2 = Undifferentiated service-producing activities of private households 
 NACE.V    = ACTIVITIES OF EXTRATERRITORIAL ORGANISATIONS AND BODIES
 NACE.99   = Activities of extraterritorial organisations and bodies
 NACE.99.0 = Activities of extraterritorial organisations and bodies
+
+
+#Level 4 content notes
+NACE.01.11.heading = 01.11 Growing of cereals (except rice), leguminous crops and oil seeds
+NACE.01.11.desc = This class includes all forms of growing of cereals, leguminous crops and oil seeds. Further included is the growing of these plants for the purpose of seed production. The growing of these crops is often combined within agricultural units.
+NACE.01.11.intro = This class includes:
+NACE.01.11.b1 = growing of cereals, e.g.: wheat, grain, maize; sorghum; barley; rye; oats; millet; pseudocereals, in other words, fruits or seeds used as cereals, e.g: quinoa; amaranth; chia
+NACE.01.11.b2 = growing of leguminous crops, e.g.: beans; broad beans; chickpeas; cowpeas; lentils; lupines; peas; pigeon peas
+NACE.01.11.b3 = growing of oil seeds, e.g.: soya beans; groundnuts; castor beans; linseed; mustard seed; niger seed; rapeseed; safflower seed; sesame seed; sunflower seed
+
+NACE.01.12.heading = 01.12 Growing of rice
+NACE.01.12.intro = This class includes: growing of rice
+
+NACE.01.13.heading = 01.13 Growing of vegetables and melons, roots and tubers
+NACE.01.13.intro = This class includes:
+NACE.01.13.b1 = growing of leafy or stem vegetables, e.g.: artichokes; asparagus; cabbages; cauliflower and broccoli; lettuce and chicory; spinach
+NACE.01.13.b2 = growing of fruit-bearing vegetables, e.g.: cucumbers and gherkins; eggplants (aubergines); tomatoes; watermelons
+NACE.01.13.b3 = growing of root, bulb or tuberous vegetables, e.g.: carrots; turnips; garlic; onions (including shallots); leeks and other alliaceous vegetables
+NACE.01.13.b4 = growing of mushrooms and truffles
+NACE.01.13.b5 = growing of vegetable seeds, including sugar beet seeds, excluding other beet seeds
+NACE.01.13.b6 = growing of sugar beet
+NACE.01.13.b7 = growing of chillies, peppers (Capsicum spp.)
+NACE.01.13.b8 = growing of roots and tubers, e.g.: potatoes; sweet potatoes; cassava; yams; swedes and mangolds
+NACE.01.13.b9 = growing of sweetcorn
+
+NACE.01.14.heading = 01.14 Growing of sugar cane
+NACE.01.14.intro = This class excludes growing of sugar beet, see 01.13 (Growing of vegetables and melons, roots and tubers)
+
+NACE.01.15.heading = 01.15 Growing of tobacco
+NACE.01.15.intro = This class includes: growing of unmanufactured tobacco
+
+NACE.01.16.heading = 01.16 Growing of fibre crops
+NACE.01.16.intro = This class includes growing of fibre crops, e.g.:
+NACE.01.16.b1 = growing of cotton
+NACE.01.16.b2 = growing of jute, kenaf and other textile bast fibres
+NACE.01.16.b3 = growing of flax and hemp
+NACE.01.16.b4 = growing of sisal and other textile fibre of the genus agave
+NACE.01.16.b5 = growing of abaca, ramie and other vegetable textile fibres
+
+NACE.01.19.heading = 01.19 Growing of other non-perennial crops
+NACE.01.19.intro = This class includes the growing of all other non-perennial crops, e.g.:
+NACE.01.19.b1 = growing of clover, alfalfa, sainfoin, maize, lupines, other grasses, fodder kale and similar forage crops
+NACE.01.19.b2 = growing of beet seeds and seeds of forage plants
+NACE.01.19.b3 = growing of flowers
+NACE.01.19.b4 = cutting of flowers and flower buds
+NACE.01.19.b5 = growing of flower seeds
+NACE.01.19.b6 = perennial flowers and ornamental plants
 
 NACE.01.21.heading = 01.21 Growing of grapes
 NACE.01.21.intro = This class includes:
