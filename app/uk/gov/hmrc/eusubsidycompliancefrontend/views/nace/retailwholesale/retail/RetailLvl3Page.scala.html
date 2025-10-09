@@ -60,12 +60,12 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-automotive-fuel", messages("NACE.Retail.Lvl3.AutomotiveFuel"))),
-            value = Some(Sector.AutomotiveFuelRetail.toString),
+            value = Some(Sector.AutomotiveFuelRetail4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.AutomotiveFuelRetail.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-information-communication", messages("NACE.Retail.Lvl3.InformationCommunication"))),
-            value = Some(Sector.communicationEquipmentRetail.toString),
+            value = Some(Sector.CommunicationEquipmentRetail4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.communicationEquipmentRetail.toString)
         ),
         RadioItem(

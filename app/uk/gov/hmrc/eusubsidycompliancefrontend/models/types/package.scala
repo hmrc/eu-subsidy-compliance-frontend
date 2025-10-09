@@ -771,6 +771,7 @@ package object types extends SimpleJson {
     val RetailIntermediationServices: types.Sector.Value = Value("47.9")
     val NonSpecialisedRetailIntermediation: types.Sector.Value = Value("47.91")
     val SpecialisedRetailIntermediation: types.Sector.Value = Value("47.92")
+
     val transportStorage: types.Sector.Value = Value("H")
     val landTransport: types.Sector.Value = Value("49")
     val passengerRailTransport: types.Sector.Value = Value("49.1")
@@ -789,6 +790,7 @@ package object types extends SimpleJson {
     val removalServices: types.Sector.Value = Value("49.42")
     val pipelineTransport: types.Sector.Value = Value("49.5")
     val pipelineTransport4: types.Sector.Value = Value("49.50")
+
     val waterTransport: types.Sector.Value = Value("50")
     val coastalPassengerWaterTransport: types.Sector.Value = Value("50.1")
     val coastalPassengerWaterTransport4: types.Sector.Value = Value("50.10")
@@ -805,6 +807,7 @@ package object types extends SimpleJson {
     val freightAndSpaceAirTransport: types.Sector.Value = Value("51.2")
     val freightAirTransport: types.Sector.Value = Value("51.21")
     val spaceTransport: types.Sector.Value = Value("51.22")
+
     val warehousingStorageTransportSupportActivities: types.Sector.Value = Value("52")
     val warehousingStorage: types.Sector.Value = Value("52.1")
     val warehousingStorage4: types.Sector.Value = Value("52.10")

@@ -57,7 +57,7 @@
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl3.performingArts"))),
-                value = Some(Sector.performingArts.toString),
+                value = Some(Sector.performingArtsActivities.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.performingArts.toString)
         ),
         RadioItem(
