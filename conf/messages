@@ -2200,6 +2200,18 @@ NACE.professional.Lvl2.veterinary = Veterinary activities
 NACE.professional.Lvl3.veterinary = Veterinary activities
 NACE.professional.Lvl4.veterinary = Veterinary activities
 
+# professional error messages
+advertising3.error.required = Select your undertaking’s main business activity in advertising, market research and public relations
+advertising4.error.required = Select your undertaking’s main business activity in advertising
+architecture3.error.required = Select your undertaking’s main business activity in architecture and engineering, technical testing and analysis
+architecture4.error.required = Select your undertaking’s main business activity in architecture, engineering and technical consultancy
+headOffice3.error.required = Select your undertaking’s main business activity in head offices and management consultancy
+otherProf3.error.required = Select the type of professional, scientific and technical activities your undertaking does
+otherProf4.error.required = Select the type of other professional, scientific and technical activities your undertaking does
+prof2.error.required = Select the type of professional, scientific and technical services your undertaking provides
+rAndD3.error.required = Select the area your undertaking conducts scientific research and development in
+specialDesign4.error.required = Select the type of specialised design activities your undertaking does
+
 #Administration NACE Sector2,3,4
 NACE.Administration.Lvl2.RentalLeasing = Rental and leasing activities
 #### NACE.Administration.Lvl3.MotorVehicleRental = Rental and leasing of motor vehicles
