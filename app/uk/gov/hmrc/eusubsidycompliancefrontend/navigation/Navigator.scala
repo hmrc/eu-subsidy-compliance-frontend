@@ -299,6 +299,6 @@ class Navigator @Inject(){
     case "15.1"  => routes.ClothesTextilesHomewareController.loadTanningDressingDyeingLvl4Page
     case "16.2"  => routes.ClothesTextilesHomewareController.loadWoodCorkStrawPlaitingLvl4Page
 
-    case _       => routes.UndertakingController.getSector
+    case _       => routes.NACECheckDetailsController.getCheckDetails
   }
 }

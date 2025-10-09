@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -253,11 +253,12 @@ class ArtsController @Inject()(
       .fold(
         formWithErrors => BadRequest(SportsLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          val code   = form.value                 // e.g. "93.13"
+          val sector = Sector.withName(code)      // safer than .toInt
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sector.id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
   }
-
-
 }
