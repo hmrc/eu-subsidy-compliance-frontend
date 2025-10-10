@@ -82,7 +82,7 @@ class ArtsController @Inject()(
       .fold(
         formWithErrors => BadRequest(AmusementAndRecreationLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -100,7 +100,7 @@ class ArtsController @Inject()(
       .fold(
         formWithErrors => BadRequest(ArtsCreationLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -117,7 +117,7 @@ class ArtsController @Inject()(
       .fold(
         formWithErrors => BadRequest(ArtsCreationPerformingLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -134,7 +134,7 @@ class ArtsController @Inject()(
       .fold(
         formWithErrors => BadRequest(ArtsPerformingSupportActivitiesLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -151,7 +151,7 @@ class ArtsController @Inject()(
       .fold(
         formWithErrors => BadRequest(ArtsSportsRecreationLvl2Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -168,7 +168,7 @@ class ArtsController @Inject()(
       .fold(
         formWithErrors => BadRequest(BotanicalZoologicalReservesLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -185,7 +185,7 @@ class ArtsController @Inject()(
       .fold(
         formWithErrors => BadRequest(LibrariesArchivesCulturalLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -202,7 +202,7 @@ class ArtsController @Inject()(
       .fold(
         formWithErrors => BadRequest(LibrariesArchivesLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -219,7 +219,7 @@ class ArtsController @Inject()(
       .fold(
         formWithErrors => BadRequest(MuseumsCollectionsMomumentsLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )

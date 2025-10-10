@@ -737,7 +737,9 @@ NACE.suspended.auto.bullet2 = submit a report
 NACE.general.hint = Select one option that best describes your undertaking’s main business activity.
 
 #NACESector01 General Trade options
-NACE.Lvl1.title= What is your undertaking’s main business activity?
+NACE.Lvl1.title = What is your undertaking’s main business activity?
+NACE.Lvl1.error = Select your undertaking’s main business activity
+NACE.Lvl1.other.error = Select the option that best describes your undertaking’s main business activity
 
 NACE.Lvl1.agricultureForestryFishing = Agriculture, forestry and fishing
 NACE.Lvl1.forestry = Forestry
@@ -3153,6 +3155,7 @@ NACE.98.2 = Undifferentiated service-producing activities of private households 
 NACE.V    = ACTIVITIES OF EXTRATERRITORIAL ORGANISATIONS AND BODIES
 NACE.99   = Activities of extraterritorial organisations and bodies
 NACE.99.0 = Activities of extraterritorial organisations and bodies
+
 
 #Level 4 content notes
 NACE.01.11.heading = 01.11 Growing of cereals (except rice), leguminous crops and oil seeds
@@ -6693,6 +6696,11 @@ NACE.58.12.intro = This class includes:
 NACE.58.12.b1 = publishing of journals and other periodicals
 NACE.58.12.b2 = publishing of radio and television schedules All the feasible forms of publishing (in print, digital, analogue, or any other form) are included
 
+NACE.58.13.heading = 58.13 Publishing of journals and periodicals
+NACE.58.13.intro = This class includes:
+NACE.58.13.b1 = publishing of journals and other periodicals
+NACE.58.13.b2 = publishing of radio and television schedules All the feasible forms of publishing (in print, digital, analogue, or any other form) are included
+
 NACE.58.19.heading = 58.19 Other publishing activities, except software publishing
 NACE.58.19.intro = This class includes:
 NACE.58.12.b1 = publishing in any format, including print, digital or on the internet, e.g.: directories and mailing lists; compilations (e.g. case law, pharmaceutical compendia); catalogues; photographs, engravings and postcards; calendars; greeting cards; forms; posters; reproductions of works of art; non-bound leaflets and advertising material; statistics and other information; datasets/databases without associated data processing services
@@ -6800,6 +6808,12 @@ NACE.62.20.b4 = installation of computer systems and provision of training and s
 NACE.62.20.b5 = activities of auditing and certification of computing and data processing infrastructures and services
 NACE.62.20.b6 = cybersecurity network and system monitoring, testing and analysis
 NACE.62.20.b7 = provision of advice on software requirements and procurement of the hardware and software components of a computer system
+
+NACE.62.90.heading = 62.90 Other information technology and computer service activities
+NACE.62.90.intro = This class includes other information technology and computer-related activities not elsewhere classified, for example:
+NACE.62.90.b1 = computer disaster recovery services
+NACE.62.90.b2 = installation (setting-up) of personal computers
+NACE.62.90.b3 = third-party software installation services
 
 NACE.63.10.heading = 63.10 Computing infrastructure, data processing, hosting and related activities
 NACE.63.10.intro = This class includes:
