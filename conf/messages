@@ -737,7 +737,9 @@ NACE.suspended.auto.bullet2 = submit a report
 NACE.general.hint = Select one option that best describes your undertaking’s main business activity.
 
 #NACESector01 General Trade options
-NACE.Lvl1.title= What is your undertaking’s main business activity?
+NACE.Lvl1.title = What is your undertaking’s main business activity?
+NACE.Lvl1.error = Select your undertaking’s main business activity
+NACE.Lvl1.other.error = Select the option that best describes your undertaking’s main business activity
 
 NACE.Lvl1.agricultureForestryFishing = Agriculture, forestry and fishing
 NACE.Lvl1.forestry = Forestry
