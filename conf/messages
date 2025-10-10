@@ -2408,11 +2408,13 @@ NACE.otherService.Lvl4.otherPersonalServices = Any other personal service activi
 
 #Households NACE Sector2,3,4
 NACE.households.Lvl1.title =What is your undertaking’s main business activity in households as employers or producers of goods or services?
+NACE.households.Lvl1.error = Select your undertaking’s main business activity in households as employers or as producers of goods or services
 NACE.households.Lvl2.domesticPersonnel = Activities of households as employers of domestic personnel
 NACE.households.Lvl3.domesticPersonnel = Activities of households as employers of domestic personnel
 NACE.households.Lvl4.domesticPersonnel = Activities of households as employers of domestic personnel
 NACE.households.Lvl2.undifferentiatedProduction = Undifferentiated goods and service-producing activities of private households for own use
 NACE.households.Lvl2.undifferentiatedProduction.title = What type of private household activities does your undertaking carry out?
+NACE.households.Lvl2.undifferentiatedProduction.error = Select the type of private household activities your undertaking carries out
 NACE.households.Lvl3.undifferentiatedGoods = Undifferentiated goods-producing activities of private households for own use
 NACE.households.Lvl4.undifferentiatedGoods = Undifferentiated goods-producing activities of private households for own use
 NACE.households.Lvl3.undifferentiatedServices = Undifferentiated service-producing activities of private households for own use
