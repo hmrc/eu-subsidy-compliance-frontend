@@ -37,9 +37,9 @@
 
 @actionUrl = @{
     if(isUpdate)
-        controllers.routes.AdminController.submitIntermediationServicesLvl4Page()
-    else
         controllers.routes.UndertakingController.postSector
+    else
+        controllers.routes.AdminController.submitIntermediationServicesLvl4Page()
 }
 
 @radioText(id: String, content: String) = {
@@ -55,7 +55,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-tangible", messages("NACE.Administrative.Lvl4.OtherTangibleGoods"))),
-            value = Some(Sector.RentalAndLeasing.toString),
+            value = Some(Sector.otherTangibleGoodsRental.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.RentalAndLeasing.toString)
         )
     )
