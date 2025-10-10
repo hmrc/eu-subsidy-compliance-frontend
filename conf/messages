@@ -3351,8 +3351,8 @@ NACE.01.48.b5 = raising of silkworms, production of silkworm cocoons
 NACE.01.48.b6 = beekeeping; production of bees’ byproducts (e.g. honey, beeswax, propolis, bee venom or honeycomb); bee propagation for sale
 NACE.01.48.b7 = raising and breeding of pets (except fish), e.g.: cats and dogs; birds (e.g. parakeets); hamsters
 
-NACE.01.50.0.heading = 01.50 Mixed farming
-NACE.01.50.0.intro = This class includes the combined production of crops and animals without a specialised production of crops or animals.
+NACE.01.50.heading = 01.50 Mixed farming
+NACE.01.50.intro = This class includes the combined production of crops and animals without a specialised production of crops or animals.
 
 NACE.01.61.heading = 01.61 Support activities for crop production
 NACE.01.61.intro = This class includes:
@@ -3360,6 +3360,11 @@ NACE.01.61.b1 = crop production activities on a fee or contract basis: preparati
 NACE.01.61.b2 = operation of agricultural irrigation equipment
 NACE.01.61.b3 = provision of agricultural machinery with operators and crew
 NACE.01.61.b4 = maintenance of own or leased land, keeping it in good condition without agricultural production
+
+NACE.01.62.heading = 01.62 Support activities for animal production
+NACE.01.62.intro = This class includes:
+NACE.01.62.b1 = animal production activities on a fee or contract basis: activities to promote the propagation, growth and output of animals; herd testing services, droving services, agistment services, poultry caponising, coop cleaning, etc.; activities related to artificial insemination; stud services; sheep shearing; farm animal boarding and care
+NACE.01.62.b2 = activities of farriers
 
 NACE.01.63.heading = 01.63 Post-harvest crop activities and seed processing for propagation
 NACE.01.63.intro = This class includes post-harvest crop activities on a fee or contract basis:
@@ -3931,7 +3936,7 @@ NACE.16.11.b3 = manufacture of wooden railway sleepers
 NACE.16.11.b4 = manufacture of unassembled wooden flooring
 NACE.16.11.b5 = manufacture outside the forest of wood wool, wood sawdust and flour, wood chips and particles
 
-NACE.16.12.heading = Processing and finishing of wood
+NACE.16.12.heading = 16.12 Processing and finishing of wood
 NACE.16.12.intro = This class includes general activities for the processing and finishing of wood, which are typically carried out on a fee or contract basis:
 NACE.16.12.b1 = activities mostly carried out on a fee or contract basis: boring, turning, milling, broaching, levelling, grinding, polishing, splicing, etc., of wood
 NACE.16.12.b2 = drying of wood
@@ -4232,6 +4237,14 @@ NACE.20.60.b3 = manufacture of synthetic or artificial filament yarn, including 
 NACE.20.60.b4 = manufacture of synthetic or artificial monofilament or strip
 NACE.20.60.b5 = manufacture of recycled fibres
 
+NACE.21.10.heading = 21.10 Manufacture of basic pharmaceutical products
+NACE.21.10.intro = This class includes:
+NACE.21.10.b1 = manufacture of active pharmaceutical ingredients to be used for their pharmacological properties in the manufacture of medical products (e.g. antibiotics, basic vitamins, salicylic and O-acetylsalicylic acids)
+NACE.21.10.b2 = processing of blood
+NACE.21.10.b3 = manufacture of chemically pure sugars
+NACE.21.10.b4 = manufacture of probiotics
+NACE.21.10.b5 = processing of glands and manufacture of extracts of glands, etc.
+
 NACE.21.20.heading = 21.20 Manufacture of pharmaceutical preparations
 NACE.21.20.intro = This class includes:
 NACE.21.20.b1 = manufacture of medicaments: antisera and other blood fractions; vaccines; diverse medicaments, including homeopathic preparations
@@ -4246,10 +4259,10 @@ NACE.21.20.b9 = manufacture of pharmaceutical preparations for veterinary medici
 
 NACE.22.11.heading = 22.11 Manufacture, retreading and rebuilding of rubber tyres and manufacture of tubes
 NACE.22.11.intro = This class includes:
-NACE.21.11.b1 = manufacture of rubber tyres for vehicles, equipment, mobile machinery, aircraft, toy, furniture and other uses: pneumatic tyres; solid or cushion tyres
-NACE.21.11.b2 = manufacture of inner tubes for tyres
-NACE.21.11.b3 = manufacture of interchangeable tyre treads, tyre flaps, camelback strips for retreading tyres, etc.
-NACE.21.11.b4 = yre rebuilding and retreading
+NACE.22.11.b1 = manufacture of rubber tyres for vehicles, equipment, mobile machinery, aircraft, toy, furniture and other uses: pneumatic tyres; solid or cushion tyres
+NACE.22.11.b2 = manufacture of inner tubes for tyres
+NACE.22.11.b3 = manufacture of interchangeable tyre treads, tyre flaps, camelback strips for retreading tyres, etc.
+NACE.22.11.b4 = yre rebuilding and retreading
 
 NACE.22.12.heading = 22.12 Manufacture of other rubber products
 NACE.22.12.intro = This class includes:
@@ -6142,10 +6155,10 @@ NACE.46.71.intro = This class includes:
 NACE.46.71.b1 = wholesale of new and used motor vehicles, including electric vehicles: passenger motor vehicles, including specialised passenger motor vehicles (e.g. ambulances, minibuses); lorries, trailers and semi-trailers; camping vehicles (e.g. caravans, motorhomes)
 NACE.46.71.b2 = wholesale of off-road motor vehicles
 
-NACE.47.72.heading = 46.72 Wholesale of motor vehicle parts and accessories
-NACE.47.72.intro = This class includes:
-NACE.47.72.b1 = wholesale of new and used motor vehicle parts, equipment and related accessories like tyres, etc.
-NACE.47.72.b2 = wholesale of batteries and accumulators for motor vehicles
+NACE.46.72.heading = 46.72 Wholesale of motor vehicle parts and accessories
+NACE.46.72.intro = This class includes:
+NACE.46.72.b1 = wholesale of new and used motor vehicle parts, equipment and related accessories like tyres, etc.
+NACE.46.72.b2 = wholesale of batteries and accumulators for motor vehicles
 
 NACE.46.73.heading = 46.73 Wholesale of motorcycles, motorcycle parts and accessories
 NACE.46.73.intro = This class includes:
@@ -6222,8 +6235,8 @@ NACE.46.87.b3 = wholesale of car wrecks
 NACE.46.89.heading = 46.89 Other specialised wholesale not elsewhere classified
 NACE.46.89.intro = This class includes other specialised wholesale activities not classified in other classes of this division.
 
-NACE.46.89.heading = 46.90 Non-specialised wholesale trade
-NACE.46.89.intro = This class includes: wholesale of a variety of goods without any particular specialisation
+NACE.46.90.heading = 46.90 Non-specialised wholesale trade
+NACE.46.90.intro = This class includes: wholesale of a variety of goods without any particular specialisation
 
 NACE.47.11.heading = 47.11 Non-specialised retail sale of predominately food, beverages or tobacco
 NACE.47.11.intro = This class includes: retail sale of a large variety of goods (e.g. wearing apparel, furniture, appliances, hardware, cosmetics) among which, however, food products, beverages or tobacco should be predominant

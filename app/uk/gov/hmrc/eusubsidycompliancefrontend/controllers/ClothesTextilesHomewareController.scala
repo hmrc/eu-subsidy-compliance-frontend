@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -74,7 +74,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
       .fold(
         formWithErrors => BadRequest(clothingLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -92,7 +92,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
       .fold(
         formWithErrors => BadRequest(leatherLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -128,7 +128,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
       .fold(
         formWithErrors => BadRequest(textilesLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -164,7 +164,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
       .fold(
         formWithErrors => BadRequest(manufactureOfTextilesLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -182,7 +182,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
       .fold(
         formWithErrors => BadRequest(otherClothingLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -200,7 +200,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
       .fold(
         formWithErrors => BadRequest(plasticLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -218,7 +218,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
       .fold(
         formWithErrors => BadRequest(rubberLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -236,7 +236,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
       .fold(
         formWithErrors => BadRequest(sawmillingWoodworkLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -254,7 +254,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
       .fold(
         formWithErrors => BadRequest(tanningDressingDyeingLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -272,7 +272,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
       .fold(
         formWithErrors => BadRequest(woodCorkStrawPlaitingLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )

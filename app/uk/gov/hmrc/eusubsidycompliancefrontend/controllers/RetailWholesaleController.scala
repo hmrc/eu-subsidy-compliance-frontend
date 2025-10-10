@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{Journey, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -39,7 +39,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
                                  val store: Store,
                                  navigator: Navigator,
                                            retailWholesaleLvl2Page: RetailWholesaleLvl2Page,
-                                           retailLvl3Page: RetailLvl3Page, //Retail
+                                           retailLvl3Page: RetailLvl3Page,
                                            culturalLvl4Page: CulturalLvl4Page,
                                            foodLvl4Page: FoodLvl4Page,
                                            householdLvl4Page: HouseholdLvl4Page,
@@ -47,7 +47,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
                                            motorVehiclesLvl4Page: MotorVehiclesLvl4Page,
                                            nonSpecialisedLvl4Page: NonSpecialisedLvl4Page,
                                            otherGoodsLvl4Page: OtherGoodsLvl4Page,
-                                           wholesaleLvl3Page: WholesaleLvl3Page, //Wholesale
+                                           wholesaleLvl3Page: WholesaleLvl3Page,
                                            agriculturalLvl4Page: AgriculturalLvl4Page,
                                            contractBasisLvl4Page: ContractBasisLvl4Page,
                                            foodWholesaleLvl4Page: FoodWholesaleLvl4Page,
@@ -105,7 +105,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(retailLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -121,7 +121,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(culturalLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -138,7 +138,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(foodLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -155,7 +155,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(householdLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -172,7 +172,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(intermediationLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -189,7 +189,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(motorVehiclesLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -206,7 +206,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(nonSpecialisedLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -223,7 +223,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(otherGoodsLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -240,7 +240,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(wholesaleLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -257,7 +257,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(agriculturalLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -274,7 +274,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(contractBasisLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -291,7 +291,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(foodWholesaleLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -308,7 +308,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(householdWholesaleLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -325,7 +325,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(machineryLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -342,7 +342,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(motorVehiclesWholesaleLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -359,7 +359,7 @@ class RetailWholesaleController @Inject() (mcc: MessagesControllerComponents,
       .fold(
         formWithErrors => BadRequest(specialisedLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
