@@ -50,12 +50,12 @@ else controllers.routes.MiningController.submitMiningSupportLvl3Page()
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-miningSupportPetroleumExtraction", messages("NACE.mining.Lvl3.miningSupportPetroleumExtraction"))),
-value = Some(Sector.miningSupportPetroleumExtraction.toString),
+value = Some(Sector.miningSupportPetroleumExtraction4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningSupportPetroleumExtraction.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherMiningSupport", messages("NACE.mining.Lvl3.otherMiningSupport"))),
-value = Some(Sector.otherMiningSupport.toString),
+value = Some(Sector.otherMiningSupport4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMiningSupport.toString)
 )
 )

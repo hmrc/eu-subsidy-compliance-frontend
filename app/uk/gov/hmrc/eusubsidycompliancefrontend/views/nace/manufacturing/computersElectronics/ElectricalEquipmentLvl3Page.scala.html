@@ -52,7 +52,7 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-batteries", messages("NACE.Manufacturing.Lvl3.BatteriesAccumulators"))),
-            value = Some(Sector.batteries.toString),
+            value = Some(Sector.batteriesManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.batteries.toString)
         ),
         RadioItem(
@@ -67,7 +67,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-lighting", messages("NACE.Manufacturing.Lvl3.LightingEquipment"))),
-            value = Some(Sector.lightingEquipment.toString),
+            value = Some(Sector.lightingEquipmentManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.lightingEquipment.toString)
         ),
         RadioItem(
@@ -77,7 +77,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherElectricalEquipment"))),
-            value = Some(Sector.otherElectricalEquipment.toString),
+            value = Some(Sector.otherElectricalEquipmentManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherElectricalEquipment.toString)
         )
     )

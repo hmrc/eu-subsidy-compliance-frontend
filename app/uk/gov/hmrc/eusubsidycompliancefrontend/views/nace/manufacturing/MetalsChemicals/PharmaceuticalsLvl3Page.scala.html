@@ -52,12 +52,12 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-basic", messages("NACE.Manufacturing.Lvl3.BasicPharmaceuticals"))),
-            value = Some(Sector.basicPharmaceuticals.toString),
+            value = Some(Sector.pharmaceuticalsManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.basicPharmaceuticals.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-preparations", messages("NACE.Manufacturing.Lvl3.PharmaceuticalPreparations"))),
-            value = Some(Sector.pharmaceuticalPreparations.toString),
+            value = Some(Sector.pharmaceuticalPreparationsManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.pharmaceuticalPreparations.toString)
         )
     )

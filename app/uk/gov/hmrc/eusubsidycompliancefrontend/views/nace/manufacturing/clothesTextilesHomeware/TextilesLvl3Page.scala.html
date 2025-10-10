@@ -52,7 +52,7 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-finishing", messages("NACE.Manufacturing.Lvl3.FinishingTextiles"))),
-            value = Some(Sector.textilesFinishing.toString),
+            value = Some(Sector.textilesFinishing4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesFinishing.toString)
         ),
         RadioItem(
@@ -62,12 +62,12 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-fibre-spinning", messages("NACE.Manufacturing.Lvl3.TextileFibreSpinning"))),
-            value = Some(Sector.textilesPreparation.toString),
+            value = Some(Sector.textilesPreparation4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesPreparation.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-weaving", messages("NACE.Manufacturing.Lvl3.Weaving"))),
-            value = Some(Sector.textilesWeaving.toString),
+            value = Some(Sector.textilesWeaving4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesWeaving.toString)
         )
     )

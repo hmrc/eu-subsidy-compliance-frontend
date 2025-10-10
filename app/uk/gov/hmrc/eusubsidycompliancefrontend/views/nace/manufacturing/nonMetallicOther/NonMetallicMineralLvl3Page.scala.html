@@ -67,7 +67,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-stone", messages("NACE.Manufacturing.Lvl3.CuttingStone"))),
-            value = Some(Sector.stoneCuttingFinishing.toString),
+            value = Some(Sector.stoneCuttingFinishing4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.stoneCuttingFinishing.toString)
         ),
         RadioItem(
@@ -80,7 +80,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-refractory", messages("NACE.Manufacturing.Lvl3.RefractoryProducts"))),
-            value = Some(Sector.refractoryProducts.toString),
+            value = Some(Sector.refractoryProductsManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.refractoryProducts.toString)
         ),
         RadioItem(
