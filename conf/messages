@@ -844,12 +844,15 @@ NACE.forestry.Lvl4.forestrySupportServices = Support services to forestry
 
 NACE.fishing.Lvl2.fishingAquaculture = Fishing and aquaculture
 NACE.fishing.Lvl2.title = What is your undertaking’s main business activity in fishery and aquaculture?
+NACE.fishing.Lvl2.error = Select your undertaking’s main business activity in fishery and aquaculture
 NACE.fishing.Lvl3.fishing = Fishing
 NACE.fishing.Lvl3.fishing.title =  What type of fishing does your undertaking do?
+NACE.fishing.Lvl3.fishing.error = Select the type of fishing your undertaking does
 NACE.fishing.Lvl4.marineFishing = Marine
 NACE.fishing.Lvl4.freshwaterFishing = Freshwater
 NACE.fishing.Lvl3.aquaculture = Aquaculture
 NACE.fishing.Lvl3.aquaculture.title = What is your undertaking’s main business activity in aquaculture?
+NACE.fishing.Lvl3.aquaculture.error = Select your undertaking’s main business activity in aquaculture
 NACE.fishing.Lvl4.marineAquaculture = Marine aquaculture
 NACE.fishing.Lvl4.freshwaterAquaculture = Freshwater aquaculture
 NACE.fishing.Lvl3.aquacultureSupportActivities = Support activities for fishing and aquaculture
