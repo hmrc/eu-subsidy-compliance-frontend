@@ -2107,8 +2107,10 @@ NACE.RealEstate.Lvl4.OtherRealEstateFeeContract = Other real estate activities o
 
 #ProfessionalScientificTechnicalServices NACE Sector2,3,4
 NACE.professional.title = What type of professional, scientific and technical services does your undertaking provide?
+NACE.professional.error = Select the type of professional, scientific and technical services your undertaking provides
 NACE.professional.Lvl2.legalAccounting = Legal and accounting
 NACE.professional.Lvl2.legalAccounting.title = What is your undertaking’s main business activity in legal and accounting services?
+NACE.professional.Lvl2.legalAccounting.error = Select your undertaking’s main business activity in legal and accounting services
 NACE.professional.Lvl3.legal = Legal activities
 NACE.professional.Lvl4.legal = Legal activities
 NACE.professional.Lvl3.accounting = Accounting, bookkeeping, auditing and tax consultancy
@@ -2116,6 +2118,7 @@ NACE.professional.Lvl4.accounting = Accounting, bookkeeping and auditing activit
 
 NACE.professional.Lvl2.headOfficeManagement = Head offices and management consultancy
 NACE.professional.Lvl2.headOfficeManagement.title = What is your undertaking’s main business activity in head offices and management consultancy?
+NACE.professional.Lvl2.headOfficeManagement.error = Select your undertaking’s main business activity in head offices and management consultancy
 NACE.professional.Lvl3.headOffice = Activities of head offices
 NACE.professional.Lvl4.headOffice = Activities of head offices
 NACE.professional.Lvl3.managementConsultancy = Business and other management consultancy activities
@@ -2123,8 +2126,10 @@ NACE.professional.Lvl4.managementConsultancy = Business and other management con
 
 NACE.professional.Lvl2.architecturalEngineeringTesting = Architectural and engineering, technical testing and analysis
 NACE.professional.Lvl2.architecturalEngineeringTesting.title = What is your undertaking’s main business activity in architecture and engineering, technical testing and analysis?
+NACE.professional.Lvl2.architecturalEngineeringTesting.error = Select your undertaking’s main business activity in architecture and engineering, technical testing and analysis
 NACE.professional.Lvl3.architecturalEngineering = Architectural and engineering activities and related technical consultancy
 NACE.professional.Lvl3.architecturalEngineering.title = What is your undertaking’s main business activity in architecture, engineering and technical consultancy?
+NACE.professional.Lvl3.architecturalEngineering.error = Select your undertaking’s main business activity in architecture, engineering and technical consultancy
 NACE.professional.Lvl4.architectural = Architectural activities
 NACE.professional.Lvl4.engineeringConsultancy = Engineering activities and related technical consultancy
 NACE.professional.Lvl3.technicalTesting = Technical testing and analysis
@@ -2132,6 +2137,7 @@ NACE.professional.Lvl4.technicalTesting = Technical testing and analysis
 
 NACE.professional.Lvl2.scientificResearchDevelopment = Scientific research and development
 NACE.professional.Lvl2.scientificResearchDevelopment.title = What area does your undertaking conduct scientific research and development in?
+NACE.professional.Lvl2.scientificResearchDevelopment.error = Select the area your undertaking conducts scientific research and development in
 NACE.professional.Lvl3.naturalScienceEngineeringResearch = Natural sciences and engineering
 NACE.professional.Lvl4.naturalScienceEngineeringResearch = Research and experimental development on natural sciences and engineering
 NACE.professional.Lvl3.socialScienceHumanitiesResearch = Social sciences and humanities
@@ -2139,8 +2145,10 @@ NACE.professional.Lvl4.socialScienceHumanitiesResearch = Research and experiment
 
 NACE.professional.Lvl2.advertisingMarketResearchPR = Advertising, market research and public relations
 NACE.professional.Lvl2.advertisingMarketResearchPR.title = What is your undertaking’s main business activity in advertising, market research and public relations?
+NACE.professional.Lvl2.advertisingMarketResearchPR.error = Select your undertaking’s main business activity in advertising, market research and public relations
 NACE.professional.Lvl3.advertising = Advertising
 NACE.professional.Lvl3.advertising.title = What is your undertaking’s main business activity in advertising?
+NACE.professional.Lvl3.advertising.error = Select your undertaking’s main business activity in advertising
 NACE.professional.Lvl4.advertisingAgencies = Activities of advertising agencies
 NACE.professional.Lvl4.mediaRepresentation = Media representation
 NACE.professional.Lvl3.marketResearchPolling = Market research and public opinion polling
@@ -2151,8 +2159,10 @@ NACE.professional.Lvl4.publicRelations = Public relations and communication acti
 NACE.professional.Lvl2.otherProfessionalScientificTechnical = Other professional, scientific and technical activities
 NACE.professional.Lvl2.otherProfessionalScientificTechnical.hint = Includes patent brokering, photography, specialised design, translation and interpretation, and all other professional, scientific and technical activities.
 NACE.professional.Lvl2.otherProfessionalScientificTechnical.title = What type of professional, scientific and technical activities does your undertaking do?
+NACE.professional.Lvl2.otherProfessionalScientificTechnical.error = Select the type of professional, scientific and technical activities your undertaking does
 NACE.professional.Lvl3.specialisedDesign = Specialised design activities
 NACE.professional.Lvl3.specialisedDesign.title = What type of specialised design activities does your undertaking do?
+NACE.professional.Lvl3.specialisedDesign.error = Select the type of specialised design activities your undertaking does
 NACE.professional.Lvl3.specialisedDesign.hint =  Includes fashion, graphic, industrial product and interior design and visual communication.
 NACE.professional.Lvl4.industrialFashionDesign = Industrial product and fashion design
 NACE.professional.Lvl4.graphicDesign = Graphic design and visual communication
@@ -2165,6 +2175,7 @@ NACE.professional.Lvl4.translationInterpretation = Translation and interpretatio
 NACE.professional.Lvl3.otherProfessionalActivities = Other professional, scientific and technical activities
 NACE.professional.Lvl3.otherProfessionalActivities.hint =  Includes patent brokering and marketing and all other activities.
 NACE.professional.Lvl3.otherProfessionalActivities.title = What type of other professional, scientific and technical activities does your undertaking do?
+NACE.professional.Lvl3.otherProfessionalActivities.error = Select the type of other professional, scientific and technical activities your undertaking does
 NACE.professional.Lvl4.patentBrokering = Patent brokering and marketing service activities
 NACE.professional.Lvl4.otherProfessionalNEC = All other professional, scientific and technical activities
 
