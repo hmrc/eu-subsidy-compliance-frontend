@@ -103,7 +103,7 @@ class MetalsChemicalsController @Inject()(
       .fold(
         formWithErrors => BadRequest(PreciousNonFerrousLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -119,7 +119,7 @@ class MetalsChemicalsController @Inject()(
       .fold(
         formWithErrors => BadRequest(StructuralMetalLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -135,7 +135,7 @@ class MetalsChemicalsController @Inject()(
       .fold(
         formWithErrors => BadRequest(TanksReservoirsContainersLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -151,7 +151,7 @@ class MetalsChemicalsController @Inject()(
       .fold(
         formWithErrors => BadRequest(TreatmentCoatingMachiningLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -203,7 +203,7 @@ class MetalsChemicalsController @Inject()(
       .fold(
         formWithErrors => BadRequest(BasicMetalsLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -220,7 +220,7 @@ class MetalsChemicalsController @Inject()(
       .fold(
         formWithErrors => BadRequest(CastingMetalsLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -271,7 +271,7 @@ class MetalsChemicalsController @Inject()(
       .fold(
         formWithErrors => BadRequest(CutleryToolsHardwareLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -288,7 +288,7 @@ class MetalsChemicalsController @Inject()(
       .fold(
         formWithErrors => BadRequest(FabricatedMetalsLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -305,7 +305,7 @@ class MetalsChemicalsController @Inject()(
       .fold(
         formWithErrors => BadRequest(FirstProcessingSteelLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -323,7 +323,7 @@ class MetalsChemicalsController @Inject()(
       .fold(
         formWithErrors => BadRequest(OtherFabricatedProductsLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )

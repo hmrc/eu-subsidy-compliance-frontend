@@ -130,7 +130,7 @@ class GeneralTradeGroupsController @Inject()(
       .fold(
         formWithErrors => BadRequest(clothesTextilesHomewarePage(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )

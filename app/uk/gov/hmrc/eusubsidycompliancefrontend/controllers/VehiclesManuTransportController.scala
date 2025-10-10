@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -70,7 +70,7 @@ class VehiclesManuTransportController @Inject()(
       .fold(
         formWithErrors => BadRequest(AircraftSpacecraftLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -88,7 +88,7 @@ class VehiclesManuTransportController @Inject()(
       .fold(
         formWithErrors => BadRequest(MotorVehiclesLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -105,7 +105,7 @@ class VehiclesManuTransportController @Inject()(
       .fold(
         formWithErrors => BadRequest(OtherTransportEquipmentLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -122,7 +122,7 @@ class VehiclesManuTransportController @Inject()(
       .fold(
         formWithErrors => BadRequest(OtherTransportEquipmentLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -139,7 +139,7 @@ class VehiclesManuTransportController @Inject()(
       .fold(
         formWithErrors => BadRequest(PartsAccessoriesLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -156,7 +156,7 @@ class VehiclesManuTransportController @Inject()(
       .fold(
         formWithErrors => BadRequest(ShipsBoatsLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )

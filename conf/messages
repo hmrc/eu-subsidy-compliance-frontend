@@ -4526,7 +4526,7 @@ NACE.24.43.b1 = production of unwrought lead, zinc and tin, alloyed or not alloy
 NACE.24.43.b2 = manufacture of bars, rods, profiles, wire, plates, sheets, strip and foil of lead, zinc or tin
 NACE.24.43.b3 = manufacture of zinc powder by atomisation of molten zinc
 
-NAC3.24.44.heading = 24.44 Copper production
+NACE.24.44.heading = 24.44 Copper production
 NACE.24.44.intro = This class includes:
 NACE.24.44.b1 = manufacture of unrefined or refined unwrought copper, alloyed or not alloyed, from ores or from copper waste and scrap
 NACE.24.44.b2 = manufacture of bars, rods, profiles, plates, sheets and strip of copper and copper alloys
@@ -4554,6 +4554,13 @@ NACE.24.51.intro = This class includes activities of iron foundries. This class 
 NACE.24.51.b1 = manufacture of castings made of grey iron castings
 NACE.24.51.b2 = manufacture of castings made of ductile iron castings (including casting of spheroidal graphite iron castings and malleable iron castings)
 NACE.24.51.b3 = manufacture of castings made of other special iron alloys castings
+
+NACE.24.52.heading = 24.52 Casting of steel
+NACE.24.52.intro = This class includes:
+NACE.24.52.b1 = manufacture of castings made of alloy or common steel castings
+NACE.24.52.b2 = manufacture of castings made of carbon or commercial steel castings
+NACE.24.52.b3 = manufacture of castings made of alloy and high alloy castings
+NACE.24.52.b4 = manufacture of castings made of stainless-steel castings
 
 NACE.24.53.heading = 24.53 Casting of light metals
 NACE.24.53.intro = This class includes:
@@ -5388,7 +5395,7 @@ NACE.32.20.b8 = manufacture of musical boxes, fairground organs, calliopes, etc.
 NACE.32.20.b9 = manufacture of instrument parts and accessories, e.g.: metronomes, tuning forks, pitch pipes, cards, discs and rolls for automatic mechanical instruments
 NACE.32.20.b10 = manufacture of whistles, call horns and other mouth-blown sound-signalling instruments
 
-NACE.32.30.heading =
+NACE.32.30.heading = 32.30 Manufacture of sports goods
 NACE.32.30.intro = This class includes the manufacture of sporting and athletic goods (except apparel and footwear). This class includes: manufacture of articles and equipment for sports, outdoor and indoor games, of any material, e.g.: hard, soft and inflatable balls; rackets, bats and clubs; skis, bindings and poles; ski boots, snowboard boots and cross-country ski footwear; sailboards, surfboards and waterskis; requisites for sport fishing, including landing-nets; decoy ‘birds’ and similar requisites for hunting or shooting; articles and equipment for mountain climbing; gloves for use in sport, of leather or composition leather; basins for swimming and padding pools; ice skates, roller skates; bows and crossbows; gymnasium, fitness centre or athletic equipment; metal weights as used for weightlifting
 
 NACE.32.40.heading = 32.40 Manufacture of games and toys

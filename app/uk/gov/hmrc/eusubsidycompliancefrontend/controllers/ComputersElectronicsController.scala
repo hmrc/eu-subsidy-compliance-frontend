@@ -24,11 +24,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.computersElectronics._
 
 import javax.inject.Inject
@@ -87,7 +86,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(OtherSpecialPurposeLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -104,7 +103,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(RepairMaintenanceLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -121,7 +120,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(WiringAndDevicesLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -138,7 +137,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(RepairsMaintainInstallLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -154,7 +153,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(ComponentsBoardsLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -172,7 +171,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(ComputersElectronicsOpticalLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -189,7 +188,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(DomesticAppliancesLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -206,7 +205,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(ElectricalEquipmentLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -223,7 +222,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(GeneralPurposeLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -239,7 +238,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(MeasuringTestingInstrumentsLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -256,7 +255,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(MetalFormingLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -273,7 +272,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(MotorsGeneratorsLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -290,7 +289,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(OtherGeneralPurposeLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -307,7 +306,7 @@ class ComputersElectronicsController @Inject()(
       .fold(
         formWithErrors => BadRequest(OtherMachineryLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
