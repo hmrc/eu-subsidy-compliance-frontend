@@ -2678,7 +2678,7 @@ NACE.realEstate.Lvl3.realEstate.error = Select your undertaking’s main busines
 #Admin
 
 NACE.Administrative.Buildings.title = What type of building or landscape service does your undertaking provide?
-NACE.Administrative.Buildings.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Buildings.hint = Select one option that best describes your undertaking''s main business activity.
 NACE.Administrative.Buildings.error = Select the type of building or landscape service your undertaking provides
 NACE.Administrative.Lvl3.CombinedFacilities = Combined facilities support
 NACE.Administrative.Lvl3.CombinedFacilities.hint =
@@ -2687,22 +2687,26 @@ NACE.Administrative.Lvl3.Cleaning.hint =
 NACE.Administrative.Lvl3.Landscaping = Landscaping
 
 NACE.Administrative.Cleaning.title = What type of cleaning does your undertaking do?
-NACE.Administrative.Cleaning.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Cleaning.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.Cleaning.error = Select the type of cleaning your undertaking does
 NACE.Administrative.Lvl4.GeneralCleaning = General cleaning of buildings
 NACE.Administrative.Lvl4.IndustrialCleaning = Other building and industrial cleaning activities
 NACE.Administrative.Lvl4.OtherCleaning = Other cleaning activities
 
 NACE.Administrative.Employment.title = What is your undertaking'''s main business activity in employment services?
+NACE.Administrative.Employment.error = Select your undertaking’'s main business activity in employment services
 NACE.Administrative.Lvl3.EmploymentPlacement = Activities of employment placement agencies
 NACE.Administrative.Lvl3.TemporaryEmployment = Temporary employment agency activities and other human resource provisions
 
 NACE.Administrative.Investigation.title = What is your undertaking''s main business activity in investigation and security?
-NACE.Administrative.Investigation.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Investigation.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.Investigation.error = Select your undertaking’s main business activity in investigation and security
 NACE.Administrative.Lvl4.InvestigationPrivateSecurity = Investigation and private security activities
 NACE.Administrative.Lvl4.OtherSecurityActivities = Another type of security activities
 
 NACE.Administrative.Office.title = What type of office or business support does your undertaking provide?
 NACE.Administrative.Office.hint = Includes call centres, collection agencies and credit bureaus, organisation of conventions and trade shows, and other business support services.
+NACE.Administrative.Office.error = Select the type of office or business support your undertaking does
 NACE.Administrative.Lvl3.OfficeAdministrative = Office administrative and support activities
 NACE.Administrative.Lvl3.OfficeAdministrative.hint =
 NACE.Administrative.Lvl3.CallCentres = Call centres
@@ -2723,10 +2727,12 @@ NACE.Administrative.Lvl4.OtherBusinessSupportActivities = Other business support
 NACE.Administrative.IntermediationServices.title = For what type of goods does your undertaking provide intermediation services for rental and leasing?
 NACE.Administrative.Lvl4.CarsMotorhomesTrailers = Cars, motorhomes and trailers
 NACE.Administrative.Lvl4.OtherTangibleGoods = Other tangible goods and non-financial intangible assets
-NACE.Administrative.IntermediationServices.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.IntermediationServices.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.IntermediationServices.error = Select the type of goods for which your undertaking provides intermediation services for rental and leasing
 
 NACE.Administrative.MachineryEquipment.title = What type of other machinery, equipment and tangible goods does your undertaking rent or lease?
-NACE.Administrative.MachineryEquipment.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.MachineryEquipment.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.MachineryEquipment.error = Select the type of other machinery, equipment and tangible goods your undertaking rents or leases
 NACE.Administrative.Lvl4.AgriculturalMachinery = Agricultural machinery and equipment
 NACE.Administrative.Lvl4.ConstructionMachinery = Construction and civil engineering machinery and equipment
 NACE.Administrative.Lvl4.OfficeMachinery = Office machinery, equipment and computers
@@ -2735,13 +2741,16 @@ NACE.Administrative.Lvl4.AirTransportEquipment = Air transport equipment
 NACE.Administrative.Lvl4.OtherMachinery = Other machinery, equipment and tangible goods
 
 NACE.Administrative.PersonalHousehold.title = What type of personal or household goods does your undertaking rent or lease?
-NACE.Administrative.PersonalHousehold.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.PersonalHousehold.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.PersonalHousehold.error = Select the type of personal or household goods your undertaking rents or leases
 NACE.Administrative.Lvl4.RecreationalSportsGoods = Recreational and sports goods
 NACE.Administrative.Lvl4.OtherPersonalHouseholdGoods = Other personal and household goods
 
 NACE.Administrative.Rental.title = What type of goods does your undertaking rent or lease?
-NACE.Administrative.Rental.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Rental.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.Rental.error = Select the type of goods your undertaking rents or leases
 NACE.Administrative.MotorVehicles.title = What type of motor vehicles does your undertaking rent or lease?
+NACE.Administrative.MotorVehicles.error = Select the type of motor vehicles your undertaking rents or leases
 NACE.Administrative.Lvl3.MotorVehiclesRental = Motor vehicles
 NACE.Administrative.Lvl4.CarsLightVehiclesRental = Cars and light motor vehicles
 NACE.Administrative.Lvl4.TruckRental = Trucks
@@ -2752,17 +2761,20 @@ NACE.Administrative.Lvl3.IntellectualProperty = Intellectual property and simila
 NACE.Administrative.Lvl3.TangibleGoodsRentalIntermediation = My undertaking provides intermediation services for rental and leasing of tangible goods and non-financial intangible assets
 
 NACE.Administrative.TravelAgency.title = What is your undertaking''s main business activity in travel agency and tour operator activities?
-NACE.Administrative.TravelAgency.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.TravelAgency.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.TravelAgency.error = Select your undertaking'’s main business activity in travel agency and tour operator activities - Added by John. 8/10
 NACE.Administrative.Lvl4.TravelAgencyActivities = Travel agency activities
 NACE.Administrative.Lvl4.TourOperatorActivities = Tour operator activities
 
 NACE.Administrative.Travel.title = What is your undertaking''s main business activity in travel and other reservation services?
-NACE.Administrative.Travel.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Travel.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.Travel.error = Select your undertaking'’s main business activity in travel and other reservation services
 NACE.Administrative.Lvl3.TravelAgencyTourOperator = Travel agency and tour operator activities
 NACE.Administrative.Lvl3.OtherReservationServices = Other reservation services and related activities
 
 NACE.Administrative.title = What type of administrative and support services does your undertaking provide?
-NACE.Administrative.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.error = Select the type of administrative and support services your undertaking provides
 NACE.Administrative.Lvl2.RentalLeasing = Rental and leasing
 NACE.Administrative.Lvl2.Employment = Employment
 NACE.Administrative.Lvl2.TravelTourReservation = Travel agency, tour operator and other reservation services
@@ -8116,12 +8128,12 @@ NACE.99.00.b3 = activities of general government agencies of other countries (e.
 # NACE Check Details Page
 NACE.check-details.title = Confirm the details of your undertaking
 NACE.check-details.your-answers = Your answers
-NACE.check-details.summary-list.sector.key = What is your undertaking's industry sector?
+NACE.check-details.summary-list.sector.key = What is your undertaking''s industry sector?
 NACE.check-details.summary-list.lvl.key = H1 heading of L
 NACE.check-details.change.hidden.sector = industry sector
 NACE.check-details.change.hidden.NACE = NACE categories
 
-NACE.check-details.NACE-categories = Your undertaking's NACE categories
+NACE.check-details.NACE-categories = Your undertaking''s NACE categories
 NACE.check-details.NACE-p1 = Based on your answers, we have selected NACE categories for your undertaking.
 NACE.check-details.NACE-p2 = Check the details carefully and make sure they are right for your undertaking. If your undertaking operates in more than one undertaking area, your Level 4 (Class) category should be your main area of business activity.
 NACE.check-details.NACE-p3-prefix = NACE is a classification system used in the European Union. You can browse the
