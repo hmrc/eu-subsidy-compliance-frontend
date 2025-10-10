@@ -48,18 +48,18 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.TransportationAndStorage.Lvl3.IntermediationTransport"))),
+      content = HtmlContent(radioText("sector-label-transportIntermediationServiceActivities", messages("NACE.TransportationAndStorage.Lvl3.IntermediationTransport"))),
       value = Some(Sector.transportIntermediationServiceActivities.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.transportIntermediationServiceActivities.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-support-transport", messages("NACE.TransportationAndStorage.Lvl3.SupportTransport"))),
+      content = HtmlContent(radioText("sector-label-transportSupportActivities", messages("NACE.TransportationAndStorage.Lvl3.SupportTransport"))),
       hint = Some(Hint(content = Text(messages("NACE.TransportationAndStorage.Lvl3.SupportTransport.hint")))),
        value = Some(Sector.transportSupportActivities.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.transportSupportActivities.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-warehousing-storage", messages("NACE.TransportationAndStorage.Lvl3.WarehousingStorage"))),
+      content = HtmlContent(radioText("sector-label-warehousingStorage4", messages("NACE.TransportationAndStorage.Lvl3.WarehousingStorage"))),
       value = Some(Sector.warehousingStorage4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.warehousingStorage.toString)
     )

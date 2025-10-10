@@ -65,8 +65,8 @@ class TransportController @Inject()(
   private val LandTransportPassengerRailLvl4Form: Form[FormValues] = formWithSingleMandatoryField("landPassenger4")
   private val PostalAndCourierLvl3Form: Form[FormValues] = formWithSingleMandatoryField("postal3")
   private val TransportLvl2Form: Form[FormValues] = formWithSingleMandatoryField("transport2")
-  private val WarehousingSupportActivitiesTransportLvl4Form: Form[FormValues] = formWithSingleMandatoryField("wHouseInt4")
-  private val WarehousingIntermediationLvl4Form: Form[FormValues] = formWithSingleMandatoryField("wHouseSupport4")
+  private val WarehousingSupportActivitiesTransportLvl4Form: Form[FormValues] = formWithSingleMandatoryField("wHouseSupport4")
+  private val WarehousingIntermediationLvl4Form: Form[FormValues] = formWithSingleMandatoryField("wHouseInt4")
   private val WarehousingSupportLvl3Form: Form[FormValues] = formWithSingleMandatoryField("wHouse3")
   private val WaterTransportLvl3Form: Form[FormValues] = formWithSingleMandatoryField("waterTransp3")
 
@@ -185,7 +185,7 @@ class TransportController @Inject()(
       .fold(
         formWithErrors => BadRequest(PostalAndCourierLvl3Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -237,7 +237,7 @@ class TransportController @Inject()(
       .fold(
         formWithErrors => BadRequest(WarehousingIntermediationLvl4Page(formWithErrors)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )

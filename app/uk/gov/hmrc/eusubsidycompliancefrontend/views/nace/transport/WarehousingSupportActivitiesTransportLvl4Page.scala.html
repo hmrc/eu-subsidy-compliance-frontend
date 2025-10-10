@@ -49,7 +49,7 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-cargo-handling", messages("NACE.TransportationAndStorage.Lvl4.CargoHandling"))),
+      content = HtmlContent(radioText("sector-label-cargohandling", messages("NACE.TransportationAndStorage.Lvl4.CargoHandling"))),
       value = Some(Sector.cargoHandling.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.cargoHandling.toString)
     ),
@@ -129,7 +129,7 @@ backLinkEnabled = false,
         legend = Some(Legend(
           content = Text(messages("NACE.TransportationAndStorage.Lvl3.SupportTransport.title")),
           classes = "govuk-fieldset__legend--xl",
-          isPageHeading = true,
+          isPageHeading = true
         ))
       )),
     hint = Some(Hint(
