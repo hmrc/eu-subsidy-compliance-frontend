@@ -82,7 +82,7 @@ backLinkEnabled = false,
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.TransportationAndStorage.Lvl2.WaterTransport.error"))
           )
         ),
         title = Text(messages("common.error.summary.title"))
@@ -108,7 +108,7 @@ backLinkEnabled = false,
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.TransportationAndStorage.Lvl2.WaterTransport.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

@@ -52,7 +52,7 @@ class NACECheckDetailsController @Inject()(
       val naceLevel4 = "User's radio selection of L4"
 
       val naceLevel4Code: String = journeyOpt
-        .flatMap(_.sector.value.map(_.toString))
+       .flatMap(_.sector.value.map(_.toString))
         .getOrElse(throw new IllegalStateException("Missing Level 4 code in UndertakingJourney"))
 
       val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(naceLevel4Code)
@@ -64,9 +64,6 @@ class NACECheckDetailsController @Inject()(
       val naceLevel1Code: String = naceLevel2Code match{
         case "01" | "02" | "03" => "A"
         case "05"|"06"|"07"|"08"|"09" => "B"
-        case "10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"=> "C"
-        case "18"|"19"|"20"|"21"|"22"|"23"|"24"|"25"=> "C"
-        case "26"|"27"|"28"|"29"|"30"|"31"|"32"|"33"=> "C"
         case "35" => "D"
         case "36"| "37" |"38" |"39" => "E"
         case "41"| "42" |"43" => "F"
@@ -86,7 +83,7 @@ class NACECheckDetailsController @Inject()(
         case "94" | "95" |"96" => "T"
         case "97"| "98" => "U"
         case "99" => "V"
-        case _ => "Missing Level 1 code"
+        case _ => "C"
       }
 
       val previous = routes.AccountController.getAccountPage.url
