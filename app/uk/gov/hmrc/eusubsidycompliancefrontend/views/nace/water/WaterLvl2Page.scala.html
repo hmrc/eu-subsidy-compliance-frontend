@@ -85,7 +85,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.sewerage.toStrin
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.error"))
           )
         ),
         title = Text(messages("common.error.summary.title"))
@@ -110,7 +110,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.sewerage.toStrin
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

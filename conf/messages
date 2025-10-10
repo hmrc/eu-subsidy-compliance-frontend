@@ -737,7 +737,9 @@ NACE.suspended.auto.bullet2 = submit a report
 NACE.general.hint = Select one option that best describes your undertaking’s main business activity.
 
 #NACESector01 General Trade options
-NACE.Lvl1.title= What is your undertaking’s main business activity?
+NACE.Lvl1.title = What is your undertaking’s main business activity?
+NACE.Lvl1.error = Select your undertaking’s main business activity
+NACE.Lvl1.other.error = Select the option that best describes your undertaking’s main business activity
 
 NACE.Lvl1.agricultureForestryFishing = Agriculture, forestry and fishing
 NACE.Lvl1.forestry = Forestry
@@ -860,15 +862,17 @@ NACE.fishing.Lvl4.aquacultureSupportActivities = Support activities for fishing 
 
 #MiningQuarrying NACE Sector2,3,4
 NACE.mining.Lvl1.title = What is your undertaking’s main business activity in mining and quarrying?
+NACE.mining.Lvl1.error =Select your undertaking’s main business activity in mining and quarrying
 NACE.mining.Lvl2.coalAndLigniteMining = Mining of coal and lignite
 NACE.mining.Lvl2.coalAndLigniteMining.title = What type of coal does your undertaking mine?
+NACE.mining.Lvl2.coalAndLigniteMining.error =Select the type of coal your undertaking mines
 NACE.mining.Lvl3.hardcoal = Hard coal
 NACE.mining.Lvl4.hardcoalMining = Mining of hard coal
 NACE.mining.Lvl3.lignite = Lignite
 NACE.mining.Lvl4.ligniteMining = Mining of lignite
 NACE.mining.Lvl2.petroleumNaturalGasExtraction = Extraction of crude petroleum and natural gas
 NACE.mining.Lvl2.petroleumNaturalGasExtraction.title = What type of fuel does your undertaking extract?
-NACE.mining.Lvl2.petroleumNaturalGasExtraction.error = fuel your undertaking extracts
+NACE.mining.Lvl2.petroleumNaturalGasExtraction.error = Select the type of fuel your undertaking extracts
 NACE.mining.Lvl3.crudePetroleum = Crude petroleum
 NACE.mining.Lvl4.crudePetroleumExtraction = Extraction of crude petroleum
 NACE.mining.Lvl3.naturalGas = Natural gas
@@ -880,18 +884,21 @@ NACE.mining.Lvl3.ironOre = Iron ores
 NACE.mining.Lvl4.ironOresMining = Mining of iron ores
 NACE.mining.Lvl3.nonFerrousOres = Non-ferrous metal ores
 NACE.mining.Lvl3.nonFerrousOres.title = What type of non-ferrous metal ores does your undertaking mine?
+NACE.mining.Lvl3.nonFerrousOres.error = Select the type of non-ferrous metal ores your undertaking mines
 NACE.mining.Lvl4.uraniumThoriumOres = Uranium and thorium ores
 NACE.mining.Lvl4.otherNonFerrousOres = Other non-ferrous metal ores
 NACE.mining.Lvl2.otherMiningQuarrying = Other mining and quarrying
 NACE.mining.Lvl2.otherMiningQuarrying.title = What type of mining or quarrying does your undertaking do?
+NACE.mining.Lvl2.otherMiningQuarrying.error = Select the type of mining or quarrying your undertaking does
 NACE.mining.Lvl2.otherMiningQuarrying.hint = Includes extraction of peat and salt, mining of chemical and fertiliser minerals, and quarrying of stone, sand and clay.
 NACE.mining.Lvl3.stoneQuarrying = Quarrying of stone, sand and clay
 NACE.mining.Lvl3.stoneQuarrying.title= What type of sand, stone and clay quarrying does your undertaking do?
-NACE.mining.Lvl3.stoneQuarrying.error= What type of sand, stone and clay quarrying does your undertaking do?
+NACE.mining.Lvl3.stoneQuarrying.error= Select the type of sand, stone and clay quarrying your undertaking does
 NACE.mining.Lvl4.ornamentalQuarrying = Quarrying of ornamental stone, limestone, gypsum, slate and other stone
 NACE.mining.Lvl4.gravelPitsOperation = Operation of gravel and sand pits and mining of clay and kaolin
 NACE.mining.Lvl3.miningAndQuarryingNEC = Other mining and quarrying
 NACE.mining.Lvl3.miningAndQuarryingNEC.title = What type of mining or quarrying activity does your undertaking do?
+NACE.mining.Lvl3.miningAndQuarryingNEC.error = Select the type of mining or quarrying your undertaking does
 NACE.mining.Lvl3.miningAndQuarryingNEC.hint = Includes extraction of peat and salt and mining of chemical and fertiliser minerals.
 NACE.mining.Lvl4.chemicalMineralsMining = Mining of chemical and fertiliser minerals
 NACE.mining.Lvl4.peatExtraction = Extraction of peat
@@ -1605,8 +1612,10 @@ NACE.Manufacturing.Lvl4.InstallationIndustrialMachinery = Installation of indust
 #ElectricityGasSteamAir NACE Sector2,3,4
 NACE.electricityGasSteamAir.Lvl2.supply = Electricity, gas, steam and air conditioning supply
 NACE.electricityGasSteamAir.Lvl2.supply.title = What is your undertaking’s main business activity in electricity, gas, steam and air conditioning supply?
+NACE.electricityGasSteamAir.Lvl2.supply.error = Select your undertaking’s main business activity in electricity, gas, steam and air conditioning supply
 NACE.electricityGasSteamAir.Lvl3.electricPower = Electric power generation, transmission and distribution
 NACE.electricityGasSteamAir.Lvl3.electricPower.title = What is your undertaking’s main business activity in electricity?
+NACE.electricityGasSteamAir.Lvl3.electricPower.error =Select your undertaking’s main business activity in electricity
 NACE.electricityGasSteamAir.Lvl4.electricityNonRenewable = Production of electricity from non-renewable sources
 NACE.electricityGasSteamAir.Lvl4.electricityRenewable = Production of electricity from renewable sources
 NACE.electricityGasSteamAir.Lvl4.transmissionElectricity = Transmission of electricity
@@ -1615,6 +1624,7 @@ NACE.electricityGasSteamAir.Lvl4.tradeElectricity = Trade of electricity
 NACE.electricityGasSteamAir.Lvl4.storageElectricity = Storage of electricity
 NACE.electricityGasSteamAir.Lvl3.gasDistribution = Manufacture of gas, and distribution of gaseous fuels through mains
 NACE.electricityGasSteamAir.Lvl3.gasDistribution.title = What is your undertaking’s main business activity in manufacture and distribution of gas?
+NACE.electricityGasSteamAir.Lvl3.gasDistribution.error =Select your undertaking’s main business activity in manufacture and distribution of gas
 NACE.electricityGasSteamAir.Lvl4.manufactureGas = Manufacture of gas
 NACE.electricityGasSteamAir.Lvl4.distributionGas = Distribution of gaseous fuels through mains
 NACE.electricityGasSteamAir.Lvl4.tradeGas = Trade of gas through mains
@@ -1627,33 +1637,34 @@ NACE.electricityGasSteamAir.Lvl4.brokersAgentsPowerGas = Activities of brokers a
 #WaterSewerageWasteRemediation NACE Sector2,3,4
 NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply = Water collection, treatment and supply
 NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title = What is your undertaking’s main business activity in water supply, sewerage and waste management?
+NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.error = Select your undertaking’s main business activity in water supply, sewerage and waste management
 NACE.WaterSewerageWasteRemediation.Lvl3.WaterCollectionSupply = Water collection, treatment and supply
 NACE.WaterSewerageWasteRemediation.Lvl4.WaterCollectionSupply = Water collection, treatment and supply
-
 NACE.WaterSewerageWasteRemediation.Lvl2.Sewerage = Sewerage
 NACE.WaterSewerageWasteRemediation.Lvl3.Sewerage = Sewerage
 NACE.WaterSewerageWasteRemediation.Lvl4.Sewerage = Sewerage
-
 NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities = Waste collection, recovery and disposal
 NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities.title =  What is your undertaking’s main business activity in waste collection, recovery and disposal?
-NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities.title = What type of waste does your undertaking collect? Select one option that best describes your undertaking’s main business activity.
+NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities.error = Select your undertaking’s main business activity in waste collection, recovery and disposal
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities.title = What type of waste does your undertaking collect?
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities.error = Select the type of waste your undertaking collects
 NACE.WaterSewerageWasteRemediation.Lvl3.WasteCollection = Waste collection
 NACE.WaterSewerageWasteRemediation.Lvl4.NonHazardousWaste = Collection of non-hazardous waste
 NACE.WaterSewerageWasteRemediation.Lvl4.HazardousWaste = Collection of hazardous waste
 NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery = Waste recovery
-NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery.title = What type of waste recovery does your undertaking do? Select one option that best describes your undertaking’s main business activity.
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery.title = What type of waste recovery does your undertaking do?
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery.error = Select the type of waste recovery your undertaking does
 NACE.WaterSewerageWasteRemediation.Lvl4.MaterialsRecovery = Materials recovery
 NACE.WaterSewerageWasteRemediation.Lvl4.EnergyRecovery = Energy recovery
 NACE.WaterSewerageWasteRemediation.Lvl4.OtherWasteRecovery = Other waste recovery
 NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery = Waste disposal without recovery
-NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery.title = What type of waste disposal does your undertaking do? Select one option that best describes your undertaking’s main business activity.
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery.title = What type of waste disposal does your undertaking do?
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery.error = Select the type of waste disposal your undertaking does
 NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery.hint = Includes incineration, landfill and permanent storage.
 NACE.WaterSewerageWasteRemediation.Lvl4.IncinerationWithoutEnergy = Incineration without energy recovery
 NACE.WaterSewerageWasteRemediation.Lvl4.Landfilling = Landfilling or permanent storage
 NACE.WaterSewerageWasteRemediation.Lvl4.OtherWasteDisposal = Other waste disposal
-
 NACE.WaterSewerageWasteRemediation.Lvl2.Remediation = Remediation activities and other waste management service activities
-NACE.WaterSewerageWasteRemediation.Lvl2.Remediation.title = Remediation activities and other waste management services
 NACE.WaterSewerageWasteRemediation.Lvl3.Remediation = Remediation activities and other waste management service activities
 NACE.WaterSewerageWasteRemediation.Lvl4.Remediation = Remediation activities and other waste management service activities
 
@@ -3156,6 +3167,7 @@ NACE.98.2 = Undifferentiated service-producing activities of private households 
 NACE.V    = ACTIVITIES OF EXTRATERRITORIAL ORGANISATIONS AND BODIES
 NACE.99   = Activities of extraterritorial organisations and bodies
 NACE.99.0 = Activities of extraterritorial organisations and bodies
+
 
 #Level 4 content notes
 NACE.01.11.heading = 01.11 Growing of cereals (except rice), leguminous crops and oil seeds
@@ -6696,6 +6708,11 @@ NACE.58.12.intro = This class includes:
 NACE.58.12.b1 = publishing of journals and other periodicals
 NACE.58.12.b2 = publishing of radio and television schedules All the feasible forms of publishing (in print, digital, analogue, or any other form) are included
 
+NACE.58.13.heading = 58.13 Publishing of journals and periodicals
+NACE.58.13.intro = This class includes:
+NACE.58.13.b1 = publishing of journals and other periodicals
+NACE.58.13.b2 = publishing of radio and television schedules All the feasible forms of publishing (in print, digital, analogue, or any other form) are included
+
 NACE.58.19.heading = 58.19 Other publishing activities, except software publishing
 NACE.58.19.intro = This class includes:
 NACE.58.12.b1 = publishing in any format, including print, digital or on the internet, e.g.: directories and mailing lists; compilations (e.g. case law, pharmaceutical compendia); catalogues; photographs, engravings and postcards; calendars; greeting cards; forms; posters; reproductions of works of art; non-bound leaflets and advertising material; statistics and other information; datasets/databases without associated data processing services
@@ -6803,6 +6820,12 @@ NACE.62.20.b4 = installation of computer systems and provision of training and s
 NACE.62.20.b5 = activities of auditing and certification of computing and data processing infrastructures and services
 NACE.62.20.b6 = cybersecurity network and system monitoring, testing and analysis
 NACE.62.20.b7 = provision of advice on software requirements and procurement of the hardware and software components of a computer system
+
+NACE.62.90.heading = 62.90 Other information technology and computer service activities
+NACE.62.90.intro = This class includes other information technology and computer-related activities not elsewhere classified, for example:
+NACE.62.90.b1 = computer disaster recovery services
+NACE.62.90.b2 = installation (setting-up) of personal computers
+NACE.62.90.b3 = third-party software installation services
 
 NACE.63.10.heading = 63.10 Computing infrastructure, data processing, hosting and related activities
 NACE.63.10.intro = This class includes:

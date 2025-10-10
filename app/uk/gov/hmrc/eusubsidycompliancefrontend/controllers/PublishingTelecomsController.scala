@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -86,7 +86,7 @@ class PublishingTelecomsController @Inject()(
       .fold(
         formWithErrors => BadRequest(ComputerInfrastructureDataHostingLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -103,7 +103,7 @@ class PublishingTelecomsController @Inject()(
       .fold(
         formWithErrors => BadRequest(ComputerProgrammingConsultancyLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -137,7 +137,7 @@ class PublishingTelecomsController @Inject()(
       .fold(
         formWithErrors => BadRequest(TelecommunicationLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -154,7 +154,7 @@ class PublishingTelecomsController @Inject()(
       .fold(
         formWithErrors => BadRequest(WebSearchPortalLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -171,7 +171,7 @@ class PublishingTelecomsController @Inject()(
       .fold(
         formWithErrors => BadRequest(BookPublishingLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -188,7 +188,7 @@ class PublishingTelecomsController @Inject()(
       .fold(
         formWithErrors => BadRequest(FilmMusicPublishingLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -205,7 +205,7 @@ class PublishingTelecomsController @Inject()(
       .fold(
         formWithErrors => BadRequest(FilmVideoActivitiesLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -222,7 +222,7 @@ class PublishingTelecomsController @Inject()(
       .fold(
         formWithErrors => BadRequest(NewsOtherContentDistributionLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -239,7 +239,7 @@ class PublishingTelecomsController @Inject()(
       .fold(
         formWithErrors => BadRequest(ProgrammingBroadcastingDistributionLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -290,7 +290,7 @@ class PublishingTelecomsController @Inject()(
       .fold(
         formWithErrors => BadRequest(SoftwarePublishingLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )

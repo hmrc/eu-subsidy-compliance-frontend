@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -86,7 +86,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(PublicAdminDefenceLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -104,7 +104,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(PublicAdminLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -121,7 +121,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(ServiceProvisionLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -138,7 +138,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(AdvertisingLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -155,7 +155,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(AdvertisingLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -172,7 +172,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(ArchitecturalLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -189,7 +189,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(ArchitecturalLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -206,7 +206,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(HeadOfficesLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -223,7 +223,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(LegalAndAccountingLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -240,7 +240,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(OtherProfessionalLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -257,7 +257,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(OtherProfessionalLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -274,7 +274,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(ProfessionalLvl2Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -291,7 +291,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(ScientificRAndDLvl3Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
@@ -308,7 +308,7 @@ class ProfAndPAdminController @Inject()(
       .fold(
         formWithErrors => BadRequest(SpecialisedDesignLvl4Page(formWithErrors)).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
         }
       )
