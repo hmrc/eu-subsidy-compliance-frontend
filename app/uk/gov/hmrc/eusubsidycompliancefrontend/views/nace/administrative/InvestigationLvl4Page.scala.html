@@ -50,12 +50,12 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-investigation", messages("NACE.Administrative.Lvl4.InvestigationPrivateSecurity"))),
-            value = Some(Sector.InvestigationAndSecurity.toString),
+            value = Some(Sector.PrivateInvestigationAndSecurityActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.InvestigationAndSecurity.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-security", messages("NACE.Administrative.Lvl4.OtherSecurityActivities"))),
-            value = Some(Sector.InvestigationAndSecurity.toString),
+            value = Some(Sector.OtherInvestigationAndSecurityActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.InvestigationAndSecurity.toString)
         )
     )
