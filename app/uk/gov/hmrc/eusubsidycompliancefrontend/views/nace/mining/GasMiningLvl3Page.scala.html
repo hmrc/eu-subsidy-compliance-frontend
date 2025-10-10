@@ -51,12 +51,12 @@ Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-crudePetroleumExtraction", messages("NACE.mining.Lvl3.crudePetroleum"))),
 value = Some(Sector.crudePetroleumExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.crudePetroleumExtraction.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.crudePetroleum.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-naturalGasExtraction", messages("NACE.mining.Lvl3.naturalGas"))),
 value = Some(Sector.naturalGasExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.naturalGasExtraction.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.naturalGas.toString)
 )
 )
 }

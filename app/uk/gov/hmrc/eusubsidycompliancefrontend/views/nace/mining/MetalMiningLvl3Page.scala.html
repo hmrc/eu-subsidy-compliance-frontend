@@ -50,7 +50,7 @@ else controllers.routes.MiningController.submitMetalMiningLvl3Page()
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-ironOre", messages("NACE.mining.Lvl3.ironOre"))),
-value = Some(Sector.ironOre.toString),
+value = Some(Sector.ironOresMining.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.ironOre.toString)
 ),
 RadioItem(

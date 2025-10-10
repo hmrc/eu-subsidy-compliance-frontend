@@ -52,7 +52,7 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-toys", messages("NACE.Manufacturing.Lvl3.GamesToys"))),
-            value = Some(Sector.gamesAndToys.toString),
+            value = Some(Sector.gamesAndToysManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.gamesAndToys.toString)
         ),
         RadioItem(
@@ -62,12 +62,17 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-medical", messages("NACE.Manufacturing.Lvl3.MedicalDentalInstruments"))),
-            value = Some(Sector.medicalInstruments.toString),
+            value = Some(Sector.medicalInstrumentsManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.medicalInstruments.toString)
         ),
         RadioItem(
+            content = HtmlContent(radioText("sector-label-music", messages("NACE.Manufacturing.Lvl3.MusicalInstruments"))),
+            value = Some(Sector.musicalInstrumentsManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.musicalInstruments.toString)
+        ),
+        RadioItem(
             content = HtmlContent(radioText("sector-label-sports", messages("NACE.Manufacturing.Lvl3.SportsGoods"))),
-            value = Some(Sector.sportsGoods.toString),
+            value = Some(Sector.sportsGoodsManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsGoods.toString)
         ),
         RadioItem(

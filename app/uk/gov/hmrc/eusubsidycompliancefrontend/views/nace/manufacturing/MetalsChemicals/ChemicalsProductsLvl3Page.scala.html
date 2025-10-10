@@ -60,17 +60,17 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-manmade-fibre", messages("NACE.Manufacturing.Lvl3.ManMadeFibres"))),
-            value = Some(Sector.manMadeFibre.toString),
+            value = Some(Sector.manMadeFibreManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.manMadeFibre.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-paints", messages("NACE.Manufacturing.Lvl3.PaintsVarnishes"))),
-            value = Some(Sector.paintsVarnishesCoatings.toString),
+            value = Some(Sector.paintsVarnishesCoatingsManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.paintsVarnishesCoatings.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-pesticides", messages("NACE.Manufacturing.Lvl3.PesticidesAgrochemicals"))),
-            value = Some(Sector.pesticidesDisinfectants.toString),
+            value = Some(Sector.pesticidesDisinfectantsManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.pesticidesDisinfectants.toString)
         ),
         RadioItem(

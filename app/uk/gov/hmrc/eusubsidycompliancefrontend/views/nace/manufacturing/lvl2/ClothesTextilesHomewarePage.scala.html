@@ -52,7 +52,7 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-furniture", messages("NACE.Manufacturing.Lvl2.2.Clothes.Furniture"))),
-            value = Some(Sector.furnitureManufacture.toString),
+            value = Some(Sector.furnitureManufacture4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.furnitureManufacture.toString)
         ),
         RadioItem(

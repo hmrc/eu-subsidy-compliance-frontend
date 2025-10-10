@@ -52,17 +52,17 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-communication", messages("NACE.Manufacturing.Lvl3.CommunicationEquipment"))),
-            value = Some(Sector.communicationEquipment.toString),
+            value = Some(Sector.communicationEquipment4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.communicationEquipment.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-peripherals", messages("NACE.Manufacturing.Lvl3.ComputersPeripherals"))),
-            value = Some(Sector.computersPeripheralEquipment.toString),
+            value = Some(Sector.computersPeripheralEquipment4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.computersPeripheralEquipment.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-consumer", messages("NACE.Manufacturing.Lvl3.ConsumerElectronics"))),
-            value = Some(Sector.consumerElectronics.toString),
+            value = Some(Sector.consumerElectronics4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.consumerElectronics.toString)
         ),
         RadioItem(
@@ -72,7 +72,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-irradiation", messages("NACE.Manufacturing.Lvl3.IrradiationElectromedical"))),
-            value = Some(Sector.irradiationElectromedicalAndElectrotherapeuticEquipment.toString),
+            value = Some(Sector.irradiationElectromedicalAndElectrotherapeuticEquipment4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.irradiationElectromedicalAndElectrotherapeuticEquipment.toString)
         ),
         RadioItem(
@@ -82,7 +82,7 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-optical", messages("NACE.Manufacturing.Lvl3.OpticalInstruments"))),
-            value = Some(Sector.opticalEquipment.toString),
+            value = Some(Sector.opticalEquipment4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.opticalEquipment.toString)
         )
     )
