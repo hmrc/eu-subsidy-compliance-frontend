@@ -42,7 +42,7 @@ class NaceUndertakingCategoryIntroController @Inject() (
   def continue: Action[AnyContent] = enrolled.async { implicit request =>
     Future.successful(
       // Needs updating to take user to /undertaking-industry-sector
-      Redirect(routes.AccountController.getAccountPage)
+      Redirect(routes.UndertakingController.getSectorForUpdate)
     )
   }
 
