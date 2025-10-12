@@ -35,12 +35,20 @@
 @(
     form: Form[_],
     sector: Sector,
+    naceLevel1Display: String,
+    naceLevel2Display: String,
+    naceLevel3Display: String,
+    naceLevel4Display: String,
     naceLevel1Code: String,
     naceLevel2Code: String,
     naceLevel3Code: String,
-    naceLevel4: String,
+    naceLevel4Code: String,
     naceLevel4Notes: NaceLevel4,
-    previous: Journey.Uri
+    changeSectorUrl: String,
+    changeLevel1Url: String,
+    changeLevel2Url: String,
+    changeLevel3Url: String,
+    changeLevel4Url: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @key = @{"NACE.check-details"}
@@ -48,69 +56,84 @@
 @layout(
     pageTitle = Some(messages(s"$key.title")),
     backLinkEnabled = true,
-    backLink = Some(previous)
+    backLink = Some(changeLevel4Url)
 ) {
 
     @H1(messages(s"$key.title"))
 
     <h2 class="govuk-heading-m">@messages(s"$key.your-answers")</h2>
 
-    @govukSummaryList(SummaryList(
-        rows = Seq(
-            SummaryListRow(
-                key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 1")),
-                value = Value(content = Text(naceLevel1Code)),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = routes.NACECheckDetailsController.getCheckDetails.url,
-                            content = Text(messages("common.cya.change")),
-                            visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl1"))
-                        )
+<h2 class="govuk-heading-m">@messages(s"$key.your-answers")</h2>
+
+@govukSummaryList(SummaryList(
+    rows = Seq(
+        SummaryListRow(
+            key = Key(content = Text(messages(s"$key.summary-list.sector.key"))),
+            value = Value(content = Text(messages(s"sector.label.$sector"))),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = changeSectorUrl,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.sector"))
                     )
-                ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 2")),
-                value = Value(content = Text(naceLevel2Code)),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = routes.NACECheckDetailsController.getCheckDetails.url,
-                            content = Text(messages("common.cya.change")),
-                            visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl2"))
-                        )
+                )
+            ))
+        ),
+        SummaryListRow(
+            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 1")),
+            value = Value(content = Text(naceLevel1Display)),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = changeLevel1Url,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl1"))
                     )
-                ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 3")),
-                value = Value(content = Text(naceLevel3Code)),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = routes.NACECheckDetailsController.getCheckDetails.url,
-                            content = Text(messages("common.cya.change")),
-                            visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl3"))
-                        )
+                )
+            ))
+        ),
+        SummaryListRow(
+            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 2")),
+            value = Value(content = Text(naceLevel2Display)),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = changeLevel2Url,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl2"))
                     )
-                ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 4")),
-                value = Value(content = Text(naceLevel4)),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = routes.NACECheckDetailsController.getCheckDetails.url,
-                            content = Text(messages("common.cya.change")),
-                            visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl4"))
-                        )
+                )
+            ))
+        ),
+        SummaryListRow(
+            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 3")),
+            value = Value(content = Text(naceLevel3Display)),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = changeLevel3Url,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl3"))
                     )
-                ))
-            )
+                )
+            ))
+        ),
+        SummaryListRow(
+            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 4")),
+            value = Value(content = Text(naceLevel4Display)),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = changeLevel4Url,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl4"))
+                    )
+                )
+            ))
         )
-    ))
+    )
+))
 
     <h2 class="govuk-heading-m">@messages(s"$key.NACE-categories")</h2>
 
