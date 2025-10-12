@@ -47,19 +47,6 @@ class NACECheckDetailsController @Inject()(
 
   private val confirmDetailsForm: Form[FormValues] = formWithSingleMandatoryField("confirmDetails")
 
-  private def getSelectionPage(naceCode: String): String = naceCode match {
-    case "D" => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.url
-    case "35" => routes.AccomodationUtilitiesController.loadElectricityLvl3Page().url
-    case s if s.startsWith("35.") && s.length == 4 => routes.AccomodationUtilitiesController.loadElectricityLvl3Page().url
-    case s if s.startsWith("35.2") => routes.AccomodationUtilitiesController.loadGasManufactureLvl4Page.url
-    case s if s.startsWith("35.1") => routes.AccomodationUtilitiesController.loadElectricityLvl4Page.url
-    case "G" => routes.RetailWholesaleController.loadRetailWholesaleLvl2Page.url
-    case "46" => routes.RetailWholesaleController.loadWholesaleLvl3Page.url
-    case s if s.startsWith("46.") && s.length == 4 => routes.RetailWholesaleController.loadWholesaleLvl3Page.url
-    case s if s.startsWith("46.2") => routes.RetailWholesaleController.loadAgriculturalLvl4Page.url
-    case _ => navigator.nextPage(naceCode, false).url
-  }
-
   def getCheckDetails: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     implicit val messages: Messages = mcc.messagesApi.preferred(request)
@@ -103,7 +90,14 @@ class NACECheckDetailsController @Inject()(
         case _ => "D"
       }
 
-      val level1Display = messages(s"NACE.$naceLevel1Code")
+      val level1Display = {
+        val rawDisplay = messages(s"NACE.$naceLevel1Code")
+        if (rawDisplay.nonEmpty) {
+          rawDisplay.charAt(0).toUpper.toString + rawDisplay.substring(1).toLowerCase
+        } else {
+          rawDisplay
+        }
+      }
       val level2Display = messages(s"NACE.$naceLevel2Code")
       val level3Display = messages(s"NACE.$naceLevel3Code")
 
@@ -114,11 +108,25 @@ class NACECheckDetailsController @Inject()(
         level4Heading
       }
 
+
+
       val changeSectorUrl = routes.UndertakingController.getSector.url
-      val changeLevel1Url = getSelectionPage(naceLevel1Code)
-      val changeLevel2Url = getSelectionPage(naceLevel2Code)
-      val changeLevel3Url = getSelectionPage(naceLevel3Code)
-      val changeLevel4Url = getSelectionPage(naceLevel4Code)
+      val changeLevel1Url = navigator.nextPage(naceLevel1Code, false).url
+      val changeLevel2Url = navigator.nextPage(naceLevel2Code, false).url
+      val changeLevel3Url = navigator.nextPage(naceLevel3Code, false).url
+      val changeLevel4Url = navigator.nextPage(naceLevel4Code, false).url
+
+      println(
+        s"""
+           |Debug URLs for NACE code $naceLevel4Code:
+           |  changeSectorUrl: $changeSectorUrl
+           |  changeLevel1Url: $changeLevel1Url (code: $naceLevel1Code)
+           |  changeLevel2Url: $changeLevel2Url (code: $naceLevel2Code)
+           |  changeLevel3Url: $changeLevel3Url (code: $naceLevel3Code)
+           |  changeLevel4Url: $changeLevel4Url (code: $naceLevel4Code)
+           |""".stripMargin
+      )
+
 
       val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(naceLevel4Code)(messages)
         .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $naceLevel4Code"))
