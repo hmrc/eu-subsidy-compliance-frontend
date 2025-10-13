@@ -72,7 +72,7 @@ class ArtsController @Inject()(
 
 
   def loadAmusementAndRecreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AmusementAndRecreationLvl4Page(AmusementAndRecreationLvl4Form)).toFuture
+    Ok(AmusementAndRecreationLvl4Page(AmusementAndRecreationLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitAmusementAndRecreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -80,7 +80,7 @@ class ArtsController @Inject()(
     AmusementAndRecreationLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AmusementAndRecreationLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(AmusementAndRecreationLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -90,7 +90,7 @@ class ArtsController @Inject()(
 
 
   def loadArtsCreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArtsCreationLvl4Page(ArtsCreationLvl4Form)).toFuture
+    Ok(ArtsCreationLvl4Page(ArtsCreationLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitArtsCreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -98,7 +98,7 @@ class ArtsController @Inject()(
     ArtsCreationLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArtsCreationLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ArtsCreationLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -107,7 +107,7 @@ class ArtsController @Inject()(
   }
 
   def loadArtsCreationPerformingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArtsCreationPerformingLvl3Page(ArtsCreationPerformingLvl3Form)).toFuture
+    Ok(ArtsCreationPerformingLvl3Page(ArtsCreationPerformingLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitArtsCreationPerformingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -115,7 +115,7 @@ class ArtsController @Inject()(
     ArtsCreationPerformingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArtsCreationPerformingLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ArtsCreationPerformingLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -124,7 +124,7 @@ class ArtsController @Inject()(
   }
 
   def loadArtsPerformingSupportActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArtsPerformingSupportActivitiesLvl4Page(ArtsPerformingSupportActivitiesLvl4Form)).toFuture
+    Ok(ArtsPerformingSupportActivitiesLvl4Page(ArtsPerformingSupportActivitiesLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitArtsPerformingSupportActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -132,7 +132,7 @@ class ArtsController @Inject()(
     ArtsPerformingSupportActivitiesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArtsPerformingSupportActivitiesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ArtsPerformingSupportActivitiesLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -141,7 +141,7 @@ class ArtsController @Inject()(
   }
 
   def loadArtsSportsRecreationLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArtsSportsRecreationLvl2Page(ArtsSportsRecreationLvl2Form)).toFuture
+    Ok(ArtsSportsRecreationLvl2Page(ArtsSportsRecreationLvl2Form, isUpdate = false)).toFuture
   }
 
   def submitArtsSportsRecreationLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -149,7 +149,7 @@ class ArtsController @Inject()(
     ArtsSportsRecreationLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArtsSportsRecreationLvl2Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ArtsSportsRecreationLvl2Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -158,7 +158,7 @@ class ArtsController @Inject()(
   }
 
   def loadBotanicalZoologicalReservesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(BotanicalZoologicalReservesLvl4Page(BotanicalZoologicalReservesLvl4Form)).toFuture
+    Ok(BotanicalZoologicalReservesLvl4Page(BotanicalZoologicalReservesLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitBotanicalZoologicalReservesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -166,7 +166,7 @@ class ArtsController @Inject()(
     BotanicalZoologicalReservesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(BotanicalZoologicalReservesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(BotanicalZoologicalReservesLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -175,7 +175,7 @@ class ArtsController @Inject()(
   }
 
   def loadLibrariesArchivesCulturalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(LibrariesArchivesCulturalLvl3Page(LibrariesArchivesCulturalLvl3Form)).toFuture
+    Ok(LibrariesArchivesCulturalLvl3Page(LibrariesArchivesCulturalLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitLibrariesArchivesCulturalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -183,7 +183,7 @@ class ArtsController @Inject()(
     LibrariesArchivesCulturalLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(LibrariesArchivesCulturalLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(LibrariesArchivesCulturalLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -192,7 +192,7 @@ class ArtsController @Inject()(
   }
 
   def loadLibrariesArchivesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(LibrariesArchivesLvl4Page(LibrariesArchivesLvl4Form)).toFuture
+    Ok(LibrariesArchivesLvl4Page(LibrariesArchivesLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitLibrariesArchivesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -200,7 +200,7 @@ class ArtsController @Inject()(
     LibrariesArchivesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(LibrariesArchivesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(LibrariesArchivesLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -209,7 +209,7 @@ class ArtsController @Inject()(
   }
 
   def loadMuseumsCollectionsMomumentsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MuseumsCollectionsMomumentsLvl4Page(MuseumsCollectionsMomumentsLvl4Form)).toFuture
+    Ok(MuseumsCollectionsMomumentsLvl4Page(MuseumsCollectionsMomumentsLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitMuseumsCollectionsMomumentsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -217,7 +217,7 @@ class ArtsController @Inject()(
     MuseumsCollectionsMomumentsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MuseumsCollectionsMomumentsLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(MuseumsCollectionsMomumentsLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -226,7 +226,7 @@ class ArtsController @Inject()(
   }
 
   def loadSportsAmusementRecreationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SportsAmusementRecreationLvl3Page(SportsAmusementRecreationLvl3Form)).toFuture
+    Ok(SportsAmusementRecreationLvl3Page(SportsAmusementRecreationLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitSportsAmusementRecreationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -234,7 +234,7 @@ class ArtsController @Inject()(
     SportsAmusementRecreationLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SportsAmusementRecreationLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(SportsAmusementRecreationLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -243,7 +243,7 @@ class ArtsController @Inject()(
   }
 
   def loadSportsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SportsLvl4Page(SportsLvl4Form)).toFuture
+    Ok(SportsLvl4Page(SportsLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitSportsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -251,7 +251,7 @@ class ArtsController @Inject()(
     SportsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SportsLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(SportsLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
