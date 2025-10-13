@@ -77,7 +77,7 @@ class HouseHealthEducationController @Inject()(
   private val SecondaryEducationLvl4Form : Form[FormValues] = formWithSingleMandatoryField("secondaryEducation4")
 
   def loadHouseholdsLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(HouseholdsLvl2Page(HouseholdsLvl2Form)).toFuture
+    Ok(HouseholdsLvl2Page(HouseholdsLvl2Form, isUpdate = false)).toFuture
   }
 
   def submitHouseholdsLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -85,7 +85,7 @@ class HouseHealthEducationController @Inject()(
     HouseholdsLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(HouseholdsLvl2Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(HouseholdsLvl2Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -93,7 +93,7 @@ class HouseHealthEducationController @Inject()(
       )
   }
   def loadUndifferentiatedProducingActivitiesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(UndifferentiatedProducingActivitiesLvl4Page(UndifferentiatedProducingActivitiesLvl4Form)).toFuture
+    Ok(UndifferentiatedProducingActivitiesLvl4Page(UndifferentiatedProducingActivitiesLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitUndifferentiatedProducingActivitiesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -101,7 +101,7 @@ class HouseHealthEducationController @Inject()(
     UndifferentiatedProducingActivitiesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(UndifferentiatedProducingActivitiesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(UndifferentiatedProducingActivitiesLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -226,7 +226,7 @@ class HouseHealthEducationController @Inject()(
   }
 
   def loadSecondaryEducationLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SecondaryEducationLvl4Page(SecondaryEducationLvl4Form)).toFuture
+    Ok(SecondaryEducationLvl4Page(SecondaryEducationLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitSecondaryEducationLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -234,7 +234,7 @@ class HouseHealthEducationController @Inject()(
     SecondaryEducationLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SecondaryEducationLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(SecondaryEducationLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -242,7 +242,7 @@ class HouseHealthEducationController @Inject()(
       )
   }
   def loadOtherEducationLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherEducationLvl4Page(OtherEducationLvl4Form)).toFuture
+    Ok(OtherEducationLvl4Page(OtherEducationLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitOtherEducationLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -250,7 +250,7 @@ class HouseHealthEducationController @Inject()(
     OtherEducationLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherEducationLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(OtherEducationLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -258,7 +258,7 @@ class HouseHealthEducationController @Inject()(
       )
   }
   def loadEducationLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(EducationLvl3Page(EducationLvl3Form)).toFuture
+    Ok(EducationLvl3Page(EducationLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitEducationLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -266,7 +266,7 @@ class HouseHealthEducationController @Inject()(
     EducationLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(EducationLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(EducationLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -274,7 +274,7 @@ class HouseHealthEducationController @Inject()(
       )
   }
   def loadEducationalSupportLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(EducationalSupportLvl4Page(EducationalSupportLvl4Form)).toFuture
+    Ok(EducationalSupportLvl4Page(EducationalSupportLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitEducationalSupportLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -282,7 +282,7 @@ class HouseHealthEducationController @Inject()(
     EducationalSupportLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(EducationalSupportLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(EducationalSupportLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
