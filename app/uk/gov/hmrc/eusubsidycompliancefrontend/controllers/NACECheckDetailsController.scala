@@ -47,6 +47,31 @@ class NACECheckDetailsController @Inject()(
 
   private val confirmDetailsForm: Form[FormValues] = formWithSingleMandatoryField("confirmDetails")
 
+  private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
+    case "D" | "E" | "F" =>
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.url
+
+    case "C" => level2Code match {
+      case "13" | "14" | "15" | "16" | "22" =>
+        routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage.url
+      case "26" | "27" | "28" | "33" =>
+        routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage.url
+      case "10" | "11" | "12" =>
+        routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage.url
+      case "19" | "20" | "21" | "23" | "24" | "25" =>
+        routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage.url
+      case "17" | "18" =>
+        routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage.url
+      case "29" | "30" | "32" =>
+        routes.GeneralTradeGroupsController.loadVehiclesTransportPage.url
+      case _ =>
+        routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.url
+    }
+
+    case _ =>
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.url
+  }
+
   def getCheckDetails: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     implicit val messages: Messages = mcc.messagesApi.preferred(request)
@@ -108,13 +133,39 @@ class NACECheckDetailsController @Inject()(
         level4Heading
       }
 
+      val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(naceLevel4Code)(messages)
+        .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $naceLevel4Code"))
 
+      val sector = Sector.other
+
+      val showLevel2 = {
+        naceLevel1Code match {
+          case "D" | "A" => false
+          case _ => true
+        }
+      }
+
+      val showLevel3 = !naceLevel3Code.endsWith(".0")
+
+      val showLevel4 = {
+        val level4Last2Digits = naceLevel4Code.takeRight(2)
+        val level3LastDigit = naceLevel3Code.takeRight(1)
+        !(level4Last2Digits.endsWith("0") && level4Last2Digits.charAt(0).toString == level3LastDigit)
+      }
 
       val changeSectorUrl = routes.UndertakingController.getSector.url
-      val changeLevel1Url = navigator.nextPage(naceLevel1Code, false).url
-      val changeLevel2Url = navigator.nextPage(naceLevel2Code, false).url
-      val changeLevel3Url = navigator.nextPage(naceLevel3Code, false).url
-      val changeLevel4Url = navigator.nextPage(naceLevel4Code, false).url
+
+      val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code) // Needs Refining , WRONG
+
+      val changeLevel2Url = navigator.nextPage(naceLevel1Code, false).url
+
+      val changeLevel3Url = if (showLevel2) {
+        navigator.nextPage(naceLevel2Code, false).url
+      } else {
+        navigator.nextPage(naceLevel1Code, false).url
+      }
+
+      val changeLevel4Url = navigator.nextPage(naceLevel3Code, false).url
 
       println(
         s"""
@@ -124,15 +175,8 @@ class NACECheckDetailsController @Inject()(
            |  changeLevel2Url: $changeLevel2Url (code: $naceLevel2Code)
            |  changeLevel3Url: $changeLevel3Url (code: $naceLevel3Code)
            |  changeLevel4Url: $changeLevel4Url (code: $naceLevel4Code)
-           |""".stripMargin
+           |"""
       )
-
-
-      val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(naceLevel4Code)(messages)
-        .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $naceLevel4Code"))
-
-      val sector = Sector.other
-
       Ok(naceCYAView(
         confirmDetailsForm,
         sector,
@@ -149,7 +193,10 @@ class NACECheckDetailsController @Inject()(
         changeLevel1Url,
         changeLevel2Url,
         changeLevel3Url,
-        changeLevel4Url
+        changeLevel4Url,
+        showLevel2 = showLevel2,
+        showLevel3 = showLevel3,
+        showLevel4 = showLevel4
       )(request, messages, appConfig)).toFuture
 
     } else {
