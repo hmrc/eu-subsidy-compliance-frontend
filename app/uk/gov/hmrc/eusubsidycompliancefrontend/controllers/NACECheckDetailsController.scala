@@ -122,8 +122,10 @@ class NACECheckDetailsController @Inject()(
           BadRequest(naceCYAView(formWithErrors, sector, naceLevel1, naceLevel2, naceLevel3, naceLevel4, naceLvl4Notes, previous))
         },
         form => {
-          // currently just reloads page upon successful submission
-          Redirect(routes.NACECheckDetailsController.getCheckDetails)
+          if(form.value.toBoolean)
+            Redirect(routes.UndertakingController.getConfirmEmail)
+          else //need to use isUpdateMode to determine which home page to go back to
+            Redirect(routes.UndertakingController.getAboutUndertaking)
         }
       )
   }
