@@ -161,7 +161,7 @@ class AccomodationUtilitiesController @Inject()(
   }
 
   def loadElectricityLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ElectricityLvl3Page(ElectricityLvl3Form)).toFuture
+    Ok(ElectricityLvl3Page(ElectricityLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitElectricityLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -169,7 +169,7 @@ class AccomodationUtilitiesController @Inject()(
     ElectricityLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ElectricityLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ElectricityLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -178,7 +178,7 @@ class AccomodationUtilitiesController @Inject()(
   }
 
   def loadElectricityLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ElectricityLvl4Page(ElectricityLvl4Form)).toFuture
+    Ok(ElectricityLvl4Page(ElectricityLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitElectricityLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -186,7 +186,7 @@ class AccomodationUtilitiesController @Inject()(
     ElectricityLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ElectricityLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ElectricityLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -195,7 +195,7 @@ class AccomodationUtilitiesController @Inject()(
   }
 
   def loadGasManufactureLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(GasManufactureLvl4Page(GasManufactureLvl4Form)).toFuture
+    Ok(GasManufactureLvl4Page(GasManufactureLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitGasManufactureLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -203,7 +203,7 @@ class AccomodationUtilitiesController @Inject()(
     GasManufactureLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(GasManufactureLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(GasManufactureLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
