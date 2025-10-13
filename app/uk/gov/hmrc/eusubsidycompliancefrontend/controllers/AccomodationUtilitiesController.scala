@@ -212,7 +212,7 @@ class AccomodationUtilitiesController @Inject()(
   }
 
   def loadWasteCollectionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WasteCollectionLvl4Page(WasteCollectionLvl4Form)).toFuture
+    Ok(WasteCollectionLvl4Page(WasteCollectionLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitWasteCollectionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -220,7 +220,7 @@ class AccomodationUtilitiesController @Inject()(
     WasteCollectionLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WasteCollectionLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(WasteCollectionLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -229,7 +229,7 @@ class AccomodationUtilitiesController @Inject()(
   }
 
   def loadWasteCollectionRecoveryLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WasteCollectionRecoveryLvl3Page(WasteCollectionRecoveryLvl3Form)).toFuture
+    Ok(WasteCollectionRecoveryLvl3Page(WasteCollectionRecoveryLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitWasteCollectionRecoveryLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -237,7 +237,7 @@ class AccomodationUtilitiesController @Inject()(
     WasteCollectionRecoveryLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WasteCollectionRecoveryLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(WasteCollectionRecoveryLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -246,7 +246,7 @@ class AccomodationUtilitiesController @Inject()(
   }
 
   def loadWasteDisposalLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WasteDisposalLvl4Page(WasteDisposalLvl4Form)).toFuture
+    Ok(WasteDisposalLvl4Page(WasteDisposalLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitWasteDisposalLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -254,7 +254,7 @@ class AccomodationUtilitiesController @Inject()(
     WasteDisposalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WasteDisposalLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(WasteDisposalLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -263,7 +263,7 @@ class AccomodationUtilitiesController @Inject()(
   }
 
   def loadWasteRecoveryLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WasteRecoveryLvl4Page(WasteRecoveryLvl4Form)).toFuture
+    Ok(WasteRecoveryLvl4Page(WasteRecoveryLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitWasteRecoveryLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -271,7 +271,7 @@ class AccomodationUtilitiesController @Inject()(
     WasteRecoveryLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WasteRecoveryLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(WasteRecoveryLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -280,7 +280,7 @@ class AccomodationUtilitiesController @Inject()(
   }
 
   def loadWaterLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WaterLvl2Page(WaterLvl2Form)).toFuture
+    Ok(WaterLvl2Page(WaterLvl2Form, isUpdate = false)).toFuture
   }
 
   def submitWaterLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -288,7 +288,7 @@ class AccomodationUtilitiesController @Inject()(
     WaterLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WaterLvl2Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(WaterLvl2Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
