@@ -75,7 +75,7 @@ class AccomodationUtilitiesController @Inject()(
   private val  WaterLvl2Form: Form[FormValues] = formWithSingleMandatoryField("water2")
 
   def loadAccommodationFoodLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AccommodationFoodLvl2Page(AccommodationFoodLvl2Form)).toFuture
+    Ok(AccommodationFoodLvl2Page(AccommodationFoodLvl2Form, isUpdate = false)).toFuture
   }
 
   def submitAccommodationFoodLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -83,7 +83,7 @@ class AccomodationUtilitiesController @Inject()(
     AccommodationFoodLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AccommodationFoodLvl2Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(AccommodationFoodLvl2Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -93,7 +93,7 @@ class AccomodationUtilitiesController @Inject()(
 
 
   def loadAccommodationLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AccommodationLvl3Page(AccommodationLvl3Form)).toFuture
+    Ok(AccommodationLvl3Page(AccommodationLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitAccommodationLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -101,7 +101,7 @@ class AccomodationUtilitiesController @Inject()(
     AccommodationLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AccommodationLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(AccommodationLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -110,7 +110,7 @@ class AccomodationUtilitiesController @Inject()(
   }
 
   def loadEventCateringOtherFoodActivitiesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(EventCateringOtherFoodActivitiesLvl4Page(EventCateringOtherFoodActivitiesLvl4Form)).toFuture
+    Ok(EventCateringOtherFoodActivitiesLvl4Page(EventCateringOtherFoodActivitiesLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitEventCateringOtherFoodActivitiesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -118,7 +118,7 @@ class AccomodationUtilitiesController @Inject()(
     EventCateringOtherFoodActivitiesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(EventCateringOtherFoodActivitiesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(EventCateringOtherFoodActivitiesLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -127,7 +127,7 @@ class AccomodationUtilitiesController @Inject()(
   }
 
   def loadFoodBeverageActivitiesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FoodBeverageActivitiesLvl3Page(FoodBeverageActivitiesLvl3Form)).toFuture
+    Ok(FoodBeverageActivitiesLvl3Page(FoodBeverageActivitiesLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitFoodBeverageActivitiesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -135,7 +135,7 @@ class AccomodationUtilitiesController @Inject()(
     FoodBeverageActivitiesLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FoodBeverageActivitiesLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(FoodBeverageActivitiesLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -144,7 +144,7 @@ class AccomodationUtilitiesController @Inject()(
   }
 
   def loadRestaurantFoodServicesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(RestaurantFoodServicesLvl4Page(RestaurantFoodServicesLvl4Form)).toFuture
+    Ok(RestaurantFoodServicesLvl4Page(RestaurantFoodServicesLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitRestaurantFoodServicesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -152,7 +152,7 @@ class AccomodationUtilitiesController @Inject()(
     RestaurantFoodServicesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(RestaurantFoodServicesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(RestaurantFoodServicesLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
