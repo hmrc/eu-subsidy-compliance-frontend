@@ -50,24 +50,6 @@ class NACECheckDetailsController @Inject()(
   private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
     case "D" | "E" | "F" =>
       routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.url
-
-    case "C" => level2Code match {
-      case "13" | "14" | "15" | "16" | "22" =>
-        routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage.url
-      case "26" | "27" | "28" | "33" =>
-        routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage.url
-      case "10" | "11" | "12" =>
-        routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage.url
-      case "19" | "20" | "21" | "23" | "24" | "25" =>
-        routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage.url
-      case "17" | "18" =>
-        routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage.url
-      case "29" | "30" | "32" =>
-        routes.GeneralTradeGroupsController.loadVehiclesTransportPage.url
-      case _ =>
-        routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.url
-    }
-
     case _ =>
       routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.url
   }
@@ -82,7 +64,7 @@ class NACECheckDetailsController @Inject()(
       }
       .getOrElse("")
 
-    if (selectedLevel4Code.nonEmpty) {
+    if (selectedLevel4Code.nonEmpty) { // Wrong logic for retrieving NACE
       val naceLevel4Code = selectedLevel4Code
       val naceLevel3Code = if (naceLevel4Code.length >= 4) naceLevel4Code.take(4) else naceLevel4Code
       val naceLevel2Code = if (naceLevel4Code.length >= 2) naceLevel4Code.take(2) else naceLevel4Code
@@ -140,7 +122,7 @@ class NACECheckDetailsController @Inject()(
 
       val showLevel2 = {
         naceLevel1Code match {
-          case "D" | "A" => false
+          case "D" | "A"| "Q" => false
           case _ => true
         }
       }

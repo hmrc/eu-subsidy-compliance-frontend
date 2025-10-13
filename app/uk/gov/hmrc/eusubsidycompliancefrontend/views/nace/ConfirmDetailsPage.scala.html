@@ -49,9 +49,9 @@
     changeLevel2Url: String,
     changeLevel3Url: String,
     changeLevel4Url: String,
-    showLevel2: Boolean = true,
-    showLevel3: Boolean = true,
-    showLevel4: Boolean = true
+    showLevel2: Boolean,
+    showLevel3: Boolean,
+    showLevel4: Boolean
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @key = @{"NACE.check-details"}
