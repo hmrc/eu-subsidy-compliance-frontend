@@ -76,7 +76,7 @@ class PublishingTelecomsController @Inject()(
   private val SoftwarePublishingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("softwarePublishing4")
 
   def loadComputerInfrastructureDataHostingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ComputerInfrastructureDataHostingLvl3Page(ComputerInfrastructureDataHostingLvl3Form)).toFuture
+    Ok(ComputerInfrastructureDataHostingLvl3Page(ComputerInfrastructureDataHostingLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitComputerInfrastructureDataHostingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -84,7 +84,7 @@ class PublishingTelecomsController @Inject()(
     ComputerInfrastructureDataHostingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ComputerInfrastructureDataHostingLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ComputerInfrastructureDataHostingLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -93,7 +93,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadComputerProgrammingConsultancyLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ComputerProgrammingConsultancyLvl3Page(ComputerProgrammingConsultancyLvl3Form)).toFuture
+    Ok(ComputerProgrammingConsultancyLvl3Page(ComputerProgrammingConsultancyLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitComputerProgrammingConsultancyLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -101,7 +101,7 @@ class PublishingTelecomsController @Inject()(
     ComputerProgrammingConsultancyLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ComputerProgrammingConsultancyLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ComputerProgrammingConsultancyLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -110,7 +110,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadTelecommunicationLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(TelecommunicationLvl2Page(TelecommunicationLvl2Form)).toFuture
+    Ok(TelecommunicationLvl2Page(TelecommunicationLvl2Form, isUpdate = false)).toFuture
   }
 
   def submitTelecommunicationLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -118,7 +118,7 @@ class PublishingTelecomsController @Inject()(
     TelecommunicationLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(TelecommunicationLvl2Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(TelecommunicationLvl2Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -127,7 +127,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadTelecommunicationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(TelecommunicationLvl3Page(TelecommunicationLvl3Form)).toFuture
+    Ok(TelecommunicationLvl3Page(TelecommunicationLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitTelecommunicationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -135,7 +135,7 @@ class PublishingTelecomsController @Inject()(
     TelecommunicationLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(TelecommunicationLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(TelecommunicationLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -144,7 +144,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadWebSearchPortalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WebSearchPortalLvl4Page(WebSearchPortalLvl4Form)).toFuture
+    Ok(WebSearchPortalLvl4Page(WebSearchPortalLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitWebSearchPortalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -152,7 +152,7 @@ class PublishingTelecomsController @Inject()(
     WebSearchPortalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WebSearchPortalLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(WebSearchPortalLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
