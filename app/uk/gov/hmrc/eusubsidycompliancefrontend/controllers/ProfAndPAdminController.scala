@@ -128,7 +128,7 @@ class ProfAndPAdminController @Inject()(
   }
 
   def loadAdvertisingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AdvertisingLvl3Page(AdvertisingLvl3Form)).toFuture
+    Ok(AdvertisingLvl3Page(AdvertisingLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitAdvertisingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -136,7 +136,7 @@ class ProfAndPAdminController @Inject()(
     AdvertisingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AdvertisingLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(AdvertisingLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -145,7 +145,7 @@ class ProfAndPAdminController @Inject()(
   }
 
   def loadAdvertisingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AdvertisingLvl4Page(AdvertisingLvl4Form)).toFuture
+    Ok(AdvertisingLvl4Page(AdvertisingLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitAdvertisingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -153,7 +153,7 @@ class ProfAndPAdminController @Inject()(
     AdvertisingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AdvertisingLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(AdvertisingLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -162,7 +162,7 @@ class ProfAndPAdminController @Inject()(
   }
 
   def loadArchitecturalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArchitecturalLvl3Page(ArchitecturalLvl3Form)).toFuture
+    Ok(ArchitecturalLvl3Page(ArchitecturalLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitArchitecturalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -170,7 +170,7 @@ class ProfAndPAdminController @Inject()(
     ArchitecturalLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArchitecturalLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ArchitecturalLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -179,7 +179,7 @@ class ProfAndPAdminController @Inject()(
   }
 
   def loadArchitecturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArchitecturalLvl4Page(ArchitecturalLvl4Form)).toFuture
+    Ok(ArchitecturalLvl4Page(ArchitecturalLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitArchitecturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -187,7 +187,7 @@ class ProfAndPAdminController @Inject()(
     ArchitecturalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArchitecturalLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ArchitecturalLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -196,7 +196,7 @@ class ProfAndPAdminController @Inject()(
   }
 
   def loadHeadOfficesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(HeadOfficesLvl3Page(HeadOfficesLvl3Form)).toFuture
+    Ok(HeadOfficesLvl3Page(HeadOfficesLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitHeadOfficesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -204,7 +204,7 @@ class ProfAndPAdminController @Inject()(
     HeadOfficesLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(HeadOfficesLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(HeadOfficesLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -213,7 +213,7 @@ class ProfAndPAdminController @Inject()(
   }
 
   def loadLegalAndAccountingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(LegalAndAccountingLvl3Page(LegalAndAccountingLvl3Form)).toFuture
+    Ok(LegalAndAccountingLvl3Page(LegalAndAccountingLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitLegalAndAccountingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -221,7 +221,7 @@ class ProfAndPAdminController @Inject()(
     LegalAndAccountingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(LegalAndAccountingLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(LegalAndAccountingLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -230,7 +230,7 @@ class ProfAndPAdminController @Inject()(
   }
 
   def loadOtherProfessionalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherProfessionalLvl3Page(OtherProfessionalLvl3Form)).toFuture
+    Ok(OtherProfessionalLvl3Page(OtherProfessionalLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitOtherProfessionalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -238,7 +238,7 @@ class ProfAndPAdminController @Inject()(
     OtherProfessionalLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherProfessionalLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(OtherProfessionalLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -247,7 +247,7 @@ class ProfAndPAdminController @Inject()(
   }
 
   def loadOtherProfessionalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherProfessionalLvl4Page(OtherProfessionalLvl4Form)).toFuture
+    Ok(OtherProfessionalLvl4Page(OtherProfessionalLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitOtherProfessionalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -255,7 +255,7 @@ class ProfAndPAdminController @Inject()(
     OtherProfessionalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherProfessionalLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(OtherProfessionalLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -264,7 +264,7 @@ class ProfAndPAdminController @Inject()(
   }
 
   def loadProfessionalLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ProfessionalLvl2Page(ProfessionalLvl2Form)).toFuture
+    Ok(ProfessionalLvl2Page(ProfessionalLvl2Form, isUpdate = false)).toFuture
   }
 
   def submitProfessionalLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -272,7 +272,7 @@ class ProfAndPAdminController @Inject()(
     ProfessionalLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ProfessionalLvl2Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ProfessionalLvl2Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -281,7 +281,7 @@ class ProfAndPAdminController @Inject()(
   }
 
   def loadScientificRAndDLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ScientificRAndDLvl3Page(ScientificRAndDLvl3Form)).toFuture
+    Ok(ScientificRAndDLvl3Page(ScientificRAndDLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitScientificRAndDLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -289,7 +289,7 @@ class ProfAndPAdminController @Inject()(
     ScientificRAndDLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ScientificRAndDLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ScientificRAndDLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -298,7 +298,7 @@ class ProfAndPAdminController @Inject()(
   }
 
   def loadSpecialisedDesignLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SpecialisedDesignLvl4Page(SpecialisedDesignLvl4Form)).toFuture
+    Ok(SpecialisedDesignLvl4Page(SpecialisedDesignLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitSpecialisedDesignLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -306,7 +306,7 @@ class ProfAndPAdminController @Inject()(
     SpecialisedDesignLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SpecialisedDesignLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(SpecialisedDesignLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
