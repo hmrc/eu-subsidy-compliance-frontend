@@ -66,7 +66,7 @@ class GeneralTradeGroupsController @Inject()(
 
   //GeneralTradeUndertakingPage
   def loadGeneralTradeUndertakingPage() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(generalTradeUndertakingPage(generalTradeUndertakingForm)).toFuture
+    Ok(generalTradeUndertakingPage(generalTradeUndertakingForm, isUpdate = false)).toFuture
   }
 
   def submitGeneralTradeUndertakingPage() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -74,7 +74,7 @@ class GeneralTradeGroupsController @Inject()(
     generalTradeUndertakingForm
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(generalTradeUndertakingPage(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(generalTradeUndertakingPage(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -84,7 +84,7 @@ class GeneralTradeGroupsController @Inject()(
 
   //GeneralTradeUndertakingOtherPage
   def loadGeneralTradeUndertakingOtherPage() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(generalTradeUndertakingOtherPage(generalTradeUndertakingOtherForm)).toFuture
+    Ok(generalTradeUndertakingOtherPage(generalTradeUndertakingOtherForm, isUpdate = false)).toFuture
   }
 
   def submitGeneralTradeUndertakingOtherPage() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -92,7 +92,7 @@ class GeneralTradeGroupsController @Inject()(
     generalTradeUndertakingOtherForm
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(generalTradeUndertakingOtherPage(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(generalTradeUndertakingOtherPage(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
