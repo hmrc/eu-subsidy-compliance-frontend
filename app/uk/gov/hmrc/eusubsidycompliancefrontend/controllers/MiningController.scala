@@ -64,7 +64,7 @@ class MiningController @Inject()(
   private val QuarryingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("quarrying4")
 
   def loadMiningLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MiningLvl2Page(MiningLvl2Form)).toFuture
+    Ok(MiningLvl2Page(MiningLvl2Form, isUpdate = false)).toFuture
   }
 
   def submitMiningLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -72,7 +72,7 @@ class MiningController @Inject()(
     MiningLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MiningLvl2Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(MiningLvl2Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -80,7 +80,7 @@ class MiningController @Inject()(
       )
   }
   def loadMiningSupportLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MiningSupportLvl3Page(MiningSupportLvl3Form)).toFuture
+    Ok(MiningSupportLvl3Page(MiningSupportLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitMiningSupportLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -88,7 +88,7 @@ class MiningController @Inject()(
     MiningSupportLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MiningSupportLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(MiningSupportLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -96,7 +96,7 @@ class MiningController @Inject()(
       )
   }
   def loadNonFeMetalMiningLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(NonFeMetalMiningLvl4Page(NonFeMetalMiningLvl4Form)).toFuture
+    Ok(NonFeMetalMiningLvl4Page(NonFeMetalMiningLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitNonFeMetalMiningLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -104,7 +104,7 @@ class MiningController @Inject()(
     NonFeMetalMiningLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(NonFeMetalMiningLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(NonFeMetalMiningLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -113,7 +113,7 @@ class MiningController @Inject()(
   }
 
   def loadOtherMiningLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherMiningLvl3Page(OtherMiningLvl3Form)).toFuture
+    Ok(OtherMiningLvl3Page(OtherMiningLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitOtherMiningLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -121,7 +121,7 @@ class MiningController @Inject()(
     OtherMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherMiningLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(OtherMiningLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -130,7 +130,7 @@ class MiningController @Inject()(
   }
 
   def loadOtherMiningLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherMiningLvl4Page(OtherMiningLvl4Form)).toFuture
+    Ok(OtherMiningLvl4Page(OtherMiningLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitOtherMiningLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -138,7 +138,7 @@ class MiningController @Inject()(
     OtherMiningLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherMiningLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(OtherMiningLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -146,7 +146,7 @@ class MiningController @Inject()(
       )
   }
   def loadQuarryingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(QuarryingLvl4Page(QuarryingLvl4Form)).toFuture
+    Ok(QuarryingLvl4Page(QuarryingLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitQuarryingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -154,7 +154,7 @@ class MiningController @Inject()(
     QuarryingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(QuarryingLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(QuarryingLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -162,7 +162,7 @@ class MiningController @Inject()(
       )
   }
   def loadCoalMiningLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(CoalMiningLvl3Page(CoalMiningLvl3Form)).toFuture
+    Ok(CoalMiningLvl3Page(CoalMiningLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitCoalMiningLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -170,7 +170,7 @@ class MiningController @Inject()(
     CoalMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(CoalMiningLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(CoalMiningLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -179,7 +179,7 @@ class MiningController @Inject()(
   }
 
   def loadGasMiningLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(GasMiningLvl3Page(GasMiningLvl3Form)).toFuture
+    Ok(GasMiningLvl3Page(GasMiningLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitGasMiningLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -187,7 +187,7 @@ class MiningController @Inject()(
     GasMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(GasMiningLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(GasMiningLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -196,7 +196,7 @@ class MiningController @Inject()(
   }
 
   def loadMetalMiningLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MetalMiningLvl3Page(MetalMiningLvl3Form)).toFuture
+    Ok(MetalMiningLvl3Page(MetalMiningLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitMetalMiningLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -204,7 +204,7 @@ class MiningController @Inject()(
     MetalMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MetalMiningLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(MetalMiningLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
