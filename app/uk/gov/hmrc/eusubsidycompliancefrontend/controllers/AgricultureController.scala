@@ -68,7 +68,7 @@ class AgricultureController @Inject()(
   private val FishingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("fishing4")
 
   def loadAgricultureLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AgricultureLvl3Page(AgricultureLvl3Form)).toFuture
+    Ok(AgricultureLvl3Page(AgricultureLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitAgricultureLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -76,7 +76,7 @@ class AgricultureController @Inject()(
     AgricultureLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AgricultureLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(AgricultureLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -85,7 +85,7 @@ class AgricultureController @Inject()(
   }
 
   def loadSupportActivitiesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SupportActivitiesLvl4Page(SupportActivitiesLvl4Form)).toFuture
+    Ok(SupportActivitiesLvl4Page(SupportActivitiesLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitSupportActivitiesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -93,7 +93,7 @@ class AgricultureController @Inject()(
     SupportActivitiesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SupportActivitiesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(SupportActivitiesLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -101,7 +101,7 @@ class AgricultureController @Inject()(
       )
   }
   def loadAnimalProductionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AnimalProductionLvl4Page(AnimalProductionLvl4Form)).toFuture
+    Ok(AnimalProductionLvl4Page(AnimalProductionLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitAnimalProductionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -109,7 +109,7 @@ class AgricultureController @Inject()(
     AnimalProductionLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AnimalProductionLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(AnimalProductionLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -118,7 +118,7 @@ class AgricultureController @Inject()(
   }
 
   def loadPerennialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(perennialCropLvl4Page(PerennialCropLvl4Form)).toFuture
+    Ok(perennialCropLvl4Page(PerennialCropLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitPerennialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -126,7 +126,7 @@ class AgricultureController @Inject()(
     PerennialCropLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(perennialCropLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(perennialCropLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -135,7 +135,7 @@ class AgricultureController @Inject()(
   }
 
   def loadNonPerennialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(NonPerennialCropLvl4Page(NonPerennialCropLvl4Form)).toFuture
+    Ok(NonPerennialCropLvl4Page(NonPerennialCropLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitNonPerennialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -143,7 +143,7 @@ class AgricultureController @Inject()(
     NonPerennialCropLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(NonPerennialCropLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(NonPerennialCropLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
