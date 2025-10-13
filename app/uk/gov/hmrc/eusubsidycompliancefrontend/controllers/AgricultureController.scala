@@ -152,7 +152,7 @@ class AgricultureController @Inject()(
   }
 
   def loadForestryLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ForestryLvl3Page(ForestryLvl3Form)).toFuture
+    Ok(ForestryLvl3Page(ForestryLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitForestryLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -160,7 +160,7 @@ class AgricultureController @Inject()(
     ForestryLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ForestryLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ForestryLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -169,7 +169,7 @@ class AgricultureController @Inject()(
   }
 
   def loadFishingAndAquacultureLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FishingAndAquacultureLvl3Page(FishingAndAquacultureLvl3Form)).toFuture
+    Ok(FishingAndAquacultureLvl3Page(FishingAndAquacultureLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitFishingAndAquacultureLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -177,7 +177,7 @@ class AgricultureController @Inject()(
     FishingAndAquacultureLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FishingAndAquacultureLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(FishingAndAquacultureLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -186,7 +186,7 @@ class AgricultureController @Inject()(
   }
 
   def loadAquacultureLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AquacultureLvl4Page(AquacultureLvl4Form)).toFuture
+    Ok(AquacultureLvl4Page(AquacultureLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitAquacultureLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -194,7 +194,7 @@ class AgricultureController @Inject()(
     AquacultureLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AquacultureLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(AquacultureLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -203,7 +203,7 @@ class AgricultureController @Inject()(
   }
 
   def loadFishingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FishingLvl4Page(FishingLvl4Form)).toFuture
+    Ok(FishingLvl4Page(FishingLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitFishingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -211,7 +211,7 @@ class AgricultureController @Inject()(
     FishingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FishingLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(FishingLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
