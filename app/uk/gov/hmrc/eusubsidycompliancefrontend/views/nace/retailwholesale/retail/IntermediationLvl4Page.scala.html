@@ -31,13 +31,13 @@
     govukRadios: GovukRadios
 )
 
-@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"intermediationRetail4"}
 
 @actionUrl = @{
     if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
+        controllers.routes.NACECheckDetailsController.getCheckDetails
     else
         controllers.routes.RetailWholesaleController.submitIntermediationLvl4Page
 }
