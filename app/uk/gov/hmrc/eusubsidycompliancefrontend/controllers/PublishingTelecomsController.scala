@@ -161,7 +161,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadBookPublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(BookPublishingLvl4Page(BookPublishingLvl4Form)).toFuture
+    Ok(BookPublishingLvl4Page(BookPublishingLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitBookPublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -169,7 +169,7 @@ class PublishingTelecomsController @Inject()(
     BookPublishingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(BookPublishingLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(BookPublishingLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -178,7 +178,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadFilmMusicPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FilmMusicPublishingLvl3Page(FilmMusicPublishingLvl3Form)).toFuture
+    Ok(FilmMusicPublishingLvl3Page(FilmMusicPublishingLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitFilmMusicPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -186,7 +186,7 @@ class PublishingTelecomsController @Inject()(
     FilmMusicPublishingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FilmMusicPublishingLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(FilmMusicPublishingLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -195,7 +195,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadFilmVideoActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FilmVideoActivitiesLvl4Page(FilmVideoActivitiesLvl4Form)).toFuture
+    Ok(FilmVideoActivitiesLvl4Page(FilmVideoActivitiesLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitFilmVideoActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -203,7 +203,7 @@ class PublishingTelecomsController @Inject()(
     FilmVideoActivitiesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FilmVideoActivitiesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(FilmVideoActivitiesLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -212,7 +212,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadNewsOtherContentDistributionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(NewsOtherContentDistributionLvl4Page(NewsOtherContentDistributionLvl4Form)).toFuture
+    Ok(NewsOtherContentDistributionLvl4Page(NewsOtherContentDistributionLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitNewsOtherContentDistributionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -220,7 +220,7 @@ class PublishingTelecomsController @Inject()(
     NewsOtherContentDistributionLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(NewsOtherContentDistributionLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(NewsOtherContentDistributionLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -229,7 +229,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadProgrammingBroadcastingDistributionLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ProgrammingBroadcastingDistributionLvl3Page(ProgrammingBroadcastingDistributionLvl3Form)).toFuture
+    Ok(ProgrammingBroadcastingDistributionLvl3Page(ProgrammingBroadcastingDistributionLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitProgrammingBroadcastingDistributionLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -237,7 +237,7 @@ class PublishingTelecomsController @Inject()(
     ProgrammingBroadcastingDistributionLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ProgrammingBroadcastingDistributionLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ProgrammingBroadcastingDistributionLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -246,7 +246,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadPublishingLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PublishingLvl2Page(PublishingLvl2Form)).toFuture
+    Ok(PublishingLvl2Page(PublishingLvl2Form, isUpdate = false)).toFuture
   }
 
   def submitPublishingLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -254,7 +254,7 @@ class PublishingTelecomsController @Inject()(
     PublishingLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PublishingLvl2Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(PublishingLvl2Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -263,7 +263,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PublishingLvl3Page(PublishingLvl3Form)).toFuture
+    Ok(PublishingLvl3Page(PublishingLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -271,7 +271,7 @@ class PublishingTelecomsController @Inject()(
     PublishingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PublishingLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(PublishingLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -280,7 +280,7 @@ class PublishingTelecomsController @Inject()(
   }
 
   def loadSoftwarePublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SoftwarePublishingLvl4Page(SoftwarePublishingLvl4Form)).toFuture
+    Ok(SoftwarePublishingLvl4Page(SoftwarePublishingLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitSoftwarePublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -288,7 +288,7 @@ class PublishingTelecomsController @Inject()(
     SoftwarePublishingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SoftwarePublishingLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(SoftwarePublishingLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
