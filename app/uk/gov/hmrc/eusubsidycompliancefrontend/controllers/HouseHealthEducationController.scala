@@ -109,7 +109,7 @@ class HouseHealthEducationController @Inject()(
       )
   }
   def loadHumanHealthLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(HumanHealthLvl2Page(HumanHealthLvl2Form)).toFuture
+    Ok(HumanHealthLvl2Page(HumanHealthLvl2Form, isUpdate = false)).toFuture
   }
 
   def submitHumanHealthLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -117,7 +117,7 @@ class HouseHealthEducationController @Inject()(
     HumanHealthLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(HumanHealthLvl2Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(HumanHealthLvl2Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -126,7 +126,7 @@ class HouseHealthEducationController @Inject()(
   }
 
   def loadHumanHealthLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(HumanHealthLvl3Page(HumanHealthLvl3Form)).toFuture
+    Ok(HumanHealthLvl3Page(HumanHealthLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitHumanHealthLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -134,7 +134,7 @@ class HouseHealthEducationController @Inject()(
     HumanHealthLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(HumanHealthLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(HumanHealthLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -143,7 +143,7 @@ class HouseHealthEducationController @Inject()(
   }
 
   def loadMedicalDentalLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MedicalDentalLvl4Page(MedicalDentalLvl4Form)).toFuture
+    Ok(MedicalDentalLvl4Page(MedicalDentalLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitMedicalDentalLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -151,7 +151,7 @@ class HouseHealthEducationController @Inject()(
     MedicalDentalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MedicalDentalLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(MedicalDentalLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -159,7 +159,7 @@ class HouseHealthEducationController @Inject()(
       )
   }
   def loadOtherHumanHealthLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherHumanHealthLvl4Page(OtherHumanHealthLvl4Form)).toFuture
+    Ok(OtherHumanHealthLvl4Page(OtherHumanHealthLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitOtherHumanHealthLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -167,7 +167,7 @@ class HouseHealthEducationController @Inject()(
     OtherHumanHealthLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherHumanHealthLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(OtherHumanHealthLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -175,7 +175,7 @@ class HouseHealthEducationController @Inject()(
       )
   }
   def loadOtherResidentialCareLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherResidentialCareLvl4Page(OtherResidentialCareLvl4Form)).toFuture
+    Ok(OtherResidentialCareLvl4Page(OtherResidentialCareLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitOtherResidentialCareLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -183,7 +183,7 @@ class HouseHealthEducationController @Inject()(
     OtherResidentialCareLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherResidentialCareLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(OtherResidentialCareLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -192,7 +192,7 @@ class HouseHealthEducationController @Inject()(
   }
 
   def loadOtherSocialWorkLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherSocialWorkLvl4Page(OtherSocialWorkLvl4Form)).toFuture
+    Ok(OtherSocialWorkLvl4Page(OtherSocialWorkLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitOtherSocialWorkLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -200,7 +200,7 @@ class HouseHealthEducationController @Inject()(
     OtherSocialWorkLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherSocialWorkLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(OtherSocialWorkLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -209,7 +209,7 @@ class HouseHealthEducationController @Inject()(
   }
 
   def loadResidentialCareLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ResidentialCareLvl3Page(ResidentialCareLvl3Form)).toFuture
+    Ok(ResidentialCareLvl3Page(ResidentialCareLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitResidentialCareLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -217,7 +217,7 @@ class HouseHealthEducationController @Inject()(
     ResidentialCareLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ResidentialCareLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ResidentialCareLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -290,7 +290,7 @@ class HouseHealthEducationController @Inject()(
       )
   }
   def loadSocialWorkLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SocialWorkLvl3Page(SocialWorkLvl3Form)).toFuture
+    Ok(SocialWorkLvl3Page(SocialWorkLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitSocialWorkLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -298,7 +298,7 @@ class HouseHealthEducationController @Inject()(
     SocialWorkLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SocialWorkLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(SocialWorkLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
