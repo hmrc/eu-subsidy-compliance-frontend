@@ -66,7 +66,7 @@ class NonMetallicOtherController @Inject()(
 
   //nonMetallicMineralLvl3Page
   def loadNonMetallicMineralLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(nonMetallicMineralLvl3Page(nonMetallicMineralLvl3Form)).toFuture
+    Ok(nonMetallicMineralLvl3Page(nonMetallicMineralLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitNonMetallicMineralLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -74,7 +74,7 @@ class NonMetallicOtherController @Inject()(
     nonMetallicMineralLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(nonMetallicMineralLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(nonMetallicMineralLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -84,7 +84,7 @@ class NonMetallicOtherController @Inject()(
 
   //OtherManufacturingLvl3Page
   def loadOtherManufacturingLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(otherManufacturingLvl3Page(otherManufacturingLvl3Form)).toFuture
+    Ok(otherManufacturingLvl3Page(otherManufacturingLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitOtherManufacturingLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -92,7 +92,7 @@ class NonMetallicOtherController @Inject()(
     otherManufacturingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(otherManufacturingLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(otherManufacturingLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -102,7 +102,7 @@ class NonMetallicOtherController @Inject()(
 
   //AnotherTypeLvl4Page
   def loadAnotherTypeLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(anotherTypeLvl4Page(anotherTypeLvl4Form)).toFuture
+    Ok(anotherTypeLvl4Page(anotherTypeLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitAnotherTypeLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -110,7 +110,7 @@ class NonMetallicOtherController @Inject()(
     anotherTypeLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(anotherTypeLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(anotherTypeLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -120,7 +120,7 @@ class NonMetallicOtherController @Inject()(
 
   //CementLimePlasterLvl4Page
   def loadCementLimePlasterLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(cementLimePlasterLvl4Page(cementLimePlasterLvl4Form)).toFuture
+    Ok(cementLimePlasterLvl4Page(cementLimePlasterLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitCementLimePlasterLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -128,7 +128,7 @@ class NonMetallicOtherController @Inject()(
     cementLimePlasterLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(cementLimePlasterLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(cementLimePlasterLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -138,7 +138,7 @@ class NonMetallicOtherController @Inject()(
 
   //ClayBuildingMaterialsLvl4Page
   def loadClayBuildingMaterialsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(clayBuildingMaterialsLvl4Page(clayBuildingMaterialsLvl4Form)).toFuture
+    Ok(clayBuildingMaterialsLvl4Page(clayBuildingMaterialsLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitClayBuildingMaterialsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -146,7 +146,7 @@ class NonMetallicOtherController @Inject()(
     clayBuildingMaterialsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(clayBuildingMaterialsLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(clayBuildingMaterialsLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -156,7 +156,7 @@ class NonMetallicOtherController @Inject()(
 
   //ConcreteCementPlasterLvl4Page
   def loadConcreteCementPlasterLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(concreteCementPlasterLvl4Page(concreteCementPlasterLvl4Form)).toFuture
+    Ok(concreteCementPlasterLvl4Page(concreteCementPlasterLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitConcreteCementPlasterLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -164,7 +164,7 @@ class NonMetallicOtherController @Inject()(
     concreteCementPlasterLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(concreteCementPlasterLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(concreteCementPlasterLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -174,7 +174,7 @@ class NonMetallicOtherController @Inject()(
 
   //GlassProductsLvl4Page
   def loadGlassProductsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(glassProductsLvl4Page(glassProductsLvl4Form)).toFuture
+    Ok(glassProductsLvl4Page(glassProductsLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitGlassProductsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -182,7 +182,7 @@ class NonMetallicOtherController @Inject()(
     glassProductsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(glassProductsLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(glassProductsLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -192,7 +192,7 @@ class NonMetallicOtherController @Inject()(
 
   //JewelleryCoinsLvl4Page
   def loadJewelleryCoinsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(jewelleryCoinsLvl4Page(jewelleryCoinsLvl4Form)).toFuture
+    Ok(jewelleryCoinsLvl4Page(jewelleryCoinsLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitJewelleryCoinsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -200,7 +200,7 @@ class NonMetallicOtherController @Inject()(
     jewelleryCoinsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(jewelleryCoinsLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(jewelleryCoinsLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -211,7 +211,7 @@ class NonMetallicOtherController @Inject()(
 
   //OtherPorcelainAndCeramicsLvl4Page
   def loadOtherPorcelainAndCeramicsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(otherPorcelainAndCeramicsLvl4Page(otherPorcelainAndCeramicsLvl4Form)).toFuture
+    Ok(otherPorcelainAndCeramicsLvl4Page(otherPorcelainAndCeramicsLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitOtherPorcelainAndCeramicsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -219,7 +219,7 @@ class NonMetallicOtherController @Inject()(
     otherPorcelainAndCeramicsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(otherPorcelainAndCeramicsLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(otherPorcelainAndCeramicsLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -229,7 +229,7 @@ class NonMetallicOtherController @Inject()(
 
   //OtherProductsLvl4Page
   def loadOtherProductsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(otherProductsLvl4Page(otherProductsLvl4Form)).toFuture
+    Ok(otherProductsLvl4Page(otherProductsLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitOtherProductsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -237,7 +237,7 @@ class NonMetallicOtherController @Inject()(
     otherProductsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(otherProductsLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(otherProductsLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture

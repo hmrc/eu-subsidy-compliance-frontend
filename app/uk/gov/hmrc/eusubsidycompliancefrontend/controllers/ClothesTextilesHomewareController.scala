@@ -64,7 +64,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //clothingLvl3Page
   def loadClothingLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(clothingLvl3Page(clothingLvl3Form)).toFuture
+    Ok(clothingLvl3Page(clothingLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitClothingLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -72,7 +72,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     clothingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(clothingLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(clothingLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -82,7 +82,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //leatherLvl3Page
   def loadLeatherLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(leatherLvl3Page(leatherLvl3Form)).toFuture
+    Ok(leatherLvl3Page(leatherLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitLeatherLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -90,7 +90,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     leatherLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(leatherLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(leatherLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -100,7 +100,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //RubberPlasticLvl3Page
   def loadRubberPlasticLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(rubberPlasticLvl3Page(rubberPlasticLvl3Form)).toFuture
+    Ok(rubberPlasticLvl3Page(rubberPlasticLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitRubberPlasticLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -108,7 +108,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     rubberPlasticLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(rubberPlasticLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(rubberPlasticLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -118,7 +118,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //textilesLvl3Page
   def loadTextilesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(textilesLvl3Page(textilesLvl3Form)).toFuture
+    Ok(textilesLvl3Page(textilesLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitTextilesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -126,7 +126,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     textilesLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(textilesLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(textilesLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -136,7 +136,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //woodCorkStrawLvl3Page
   def loadWoodCorkStrawLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(woodCorkStrawLvl3Page(woodCorkStrawLvl3Form)).toFuture
+    Ok(woodCorkStrawLvl3Page(woodCorkStrawLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitWoodCorkStrawLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -144,7 +144,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     woodCorkStrawLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(woodCorkStrawLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(woodCorkStrawLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -154,7 +154,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //manufactureOfTextilesLvl4Page
   def loadManufactureOfTextilesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(manufactureOfTextilesLvl4Page(manufactureOfTextilesLvl4Form)).toFuture
+    Ok(manufactureOfTextilesLvl4Page(manufactureOfTextilesLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitManufactureOfTextilesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -162,7 +162,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     manufactureOfTextilesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(manufactureOfTextilesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(manufactureOfTextilesLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -172,7 +172,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //otherClothingLvl4Page
   def loadOtherClothingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(otherClothingLvl4Page(otherClothingLvl4Form)).toFuture
+    Ok(otherClothingLvl4Page(otherClothingLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitOtherClothingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -180,7 +180,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     otherClothingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(otherClothingLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(otherClothingLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -190,7 +190,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //plasticLvl4Page
   def loadPlasticLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(plasticLvl4Page(plasticLvl4Form)).toFuture
+    Ok(plasticLvl4Page(plasticLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitPlasticLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -198,7 +198,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     plasticLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(plasticLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(plasticLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -208,7 +208,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //rubberLvl4Page
   def loadRubberLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(rubberLvl4Page(rubberLvl4Form)).toFuture
+    Ok(rubberLvl4Page(rubberLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitRubberLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -216,7 +216,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     rubberLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(rubberLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(rubberLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -226,7 +226,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //sawmillingWoodworkLvl4Page
   def loadSawmillingWoodworkLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(sawmillingWoodworkLvl4Page(sawmillingWoodworkLvl4Form)).toFuture
+    Ok(sawmillingWoodworkLvl4Page(sawmillingWoodworkLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitSawmillingWoodworkLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -234,7 +234,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     sawmillingWoodworkLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(sawmillingWoodworkLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(sawmillingWoodworkLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -244,7 +244,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //tanningDressingDyeingLvl4Page
   def loadTanningDressingDyeingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(tanningDressingDyeingLvl4Page(tanningDressingDyeingLvl4Form)).toFuture
+    Ok(tanningDressingDyeingLvl4Page(tanningDressingDyeingLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitTanningDressingDyeingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -252,7 +252,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     tanningDressingDyeingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(tanningDressingDyeingLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(tanningDressingDyeingLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -262,7 +262,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
 
   //woodCorkStrawPlaitingLvl4Page
   def loadWoodCorkStrawPlaitingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(woodCorkStrawPlaitingLvl4Page(woodCorkStrawPlaitingLvl4Form)).toFuture
+    Ok(woodCorkStrawPlaitingLvl4Page(woodCorkStrawPlaitingLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitWoodCorkStrawPlaitingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -270,7 +270,7 @@ class ClothesTextilesHomewareController @Inject()(mcc: MessagesControllerCompone
     woodCorkStrawPlaitingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(woodCorkStrawPlaitingLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(woodCorkStrawPlaitingLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture

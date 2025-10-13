@@ -57,7 +57,7 @@ class PaperPrintedController @Inject()(
 
 
   def loadArticlesPaperPaperboardLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArticlesPaperPaperboardLvl4Page(ArticlesPaperPaperboardLvl4Form)).toFuture
+    Ok(ArticlesPaperPaperboardLvl4Page(ArticlesPaperPaperboardLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitArticlesPaperPaperboardLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -65,7 +65,7 @@ class PaperPrintedController @Inject()(
     ArticlesPaperPaperboardLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArticlesPaperPaperboardLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ArticlesPaperPaperboardLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -75,7 +75,7 @@ class PaperPrintedController @Inject()(
 
 
   def loadPaperLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PaperLvl3Page(PaperLvl3Form)).toFuture
+    Ok(PaperLvl3Page(PaperLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitPaperLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -83,7 +83,7 @@ class PaperPrintedController @Inject()(
     PaperLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PaperLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(PaperLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -92,7 +92,7 @@ class PaperPrintedController @Inject()(
   }
 
   def loadPrintedLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PrintedLvl3Page(PrintedLvl3Form)).toFuture
+    Ok(PrintedLvl3Page(PrintedLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitPrintedLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -100,7 +100,7 @@ class PaperPrintedController @Inject()(
     PrintedLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PrintedLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(PrintedLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -111,7 +111,7 @@ class PaperPrintedController @Inject()(
 
 
   def loadPrintingServicesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PrintingServicesLvl4Page(PrintingServicesLvl4Form)).toFuture
+    Ok(PrintingServicesLvl4Page(PrintingServicesLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitPrintingServicesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -119,7 +119,7 @@ class PaperPrintedController @Inject()(
     PrintingServicesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PrintingServicesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(PrintingServicesLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -128,7 +128,7 @@ class PaperPrintedController @Inject()(
   }
 
   def loadPulpPaperPaperboardLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PulpPaperPaperboardLvl4Page(PulpPaperPaperboardLvl4Form)).toFuture
+    Ok(PulpPaperPaperboardLvl4Page(PulpPaperPaperboardLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitPulpPaperPaperboardLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -136,7 +136,7 @@ class PaperPrintedController @Inject()(
     PulpPaperPaperboardLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PulpPaperPaperboardLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(PulpPaperPaperboardLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture

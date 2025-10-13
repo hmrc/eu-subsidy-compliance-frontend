@@ -60,7 +60,7 @@ class VehiclesManuTransportController @Inject()(
   private val ShipsBoatsLvl4Form : Form[FormValues] = formWithSingleMandatoryField("ships4")
 
   def loadAircraftSpacecraftLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AircraftSpacecraftLvl4Page(AircraftSpacecraftLvl4Form)).toFuture
+    Ok(AircraftSpacecraftLvl4Page(AircraftSpacecraftLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitAircraftSpacecraftLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -68,7 +68,7 @@ class VehiclesManuTransportController @Inject()(
     AircraftSpacecraftLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AircraftSpacecraftLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(AircraftSpacecraftLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -78,7 +78,7 @@ class VehiclesManuTransportController @Inject()(
 
 
   def loadMotorVehiclesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MotorVehiclesLvl3Page(MotorVehiclesLvl3Form)).toFuture
+    Ok(MotorVehiclesLvl3Page(MotorVehiclesLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitMotorVehiclesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -86,7 +86,7 @@ class VehiclesManuTransportController @Inject()(
     MotorVehiclesLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MotorVehiclesLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(MotorVehiclesLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -95,7 +95,7 @@ class VehiclesManuTransportController @Inject()(
   }
 
   def loadOtherTransportEquipmentLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherTransportEquipmentLvl3Page(OtherTransportEquipmentLvl3Form)).toFuture
+    Ok(OtherTransportEquipmentLvl3Page(OtherTransportEquipmentLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitOtherTransportEquipmentLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -103,7 +103,7 @@ class VehiclesManuTransportController @Inject()(
     OtherTransportEquipmentLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherTransportEquipmentLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(OtherTransportEquipmentLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -112,7 +112,7 @@ class VehiclesManuTransportController @Inject()(
   }
 
   def loadOtherTransportEquipmentLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherTransportEquipmentLvl4Page(OtherTransportEquipmentLvl4Form)).toFuture
+    Ok(OtherTransportEquipmentLvl4Page(OtherTransportEquipmentLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitOtherTransportEquipmentLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -120,7 +120,7 @@ class VehiclesManuTransportController @Inject()(
     OtherTransportEquipmentLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherTransportEquipmentLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(OtherTransportEquipmentLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -129,7 +129,7 @@ class VehiclesManuTransportController @Inject()(
   }
 
   def loadPartsAccessoriesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PartsAccessoriesLvl4Page(PartsAccessoriesLvl4Form)).toFuture
+    Ok(PartsAccessoriesLvl4Page(PartsAccessoriesLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitPartsAccessoriesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -137,7 +137,7 @@ class VehiclesManuTransportController @Inject()(
     PartsAccessoriesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PartsAccessoriesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(PartsAccessoriesLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -146,7 +146,7 @@ class VehiclesManuTransportController @Inject()(
   }
 
   def loadShipsBoatsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ShipsBoatsLvl4Page(ShipsBoatsLvl4Form)).toFuture
+    Ok(ShipsBoatsLvl4Page(ShipsBoatsLvl4Form, isUpdate = false)).toFuture
   }
 
   def submitShipsBoatsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -154,7 +154,7 @@ class VehiclesManuTransportController @Inject()(
     ShipsBoatsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ShipsBoatsLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ShipsBoatsLvl4Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture

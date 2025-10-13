@@ -102,7 +102,7 @@ class GeneralTradeGroupsController @Inject()(
 
   //Lvl2_1GroupsPage
   def loadLvl2_1GroupsPage() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(lvl2_1GroupsPage(lvl2_1GroupsForm)).toFuture
+    Ok(lvl2_1GroupsPage(lvl2_1GroupsForm, isUpdate = false)).toFuture
   }
 
   def submitLvl2_1GroupsPage() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -110,7 +110,7 @@ class GeneralTradeGroupsController @Inject()(
     lvl2_1GroupsForm
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(lvl2_1GroupsPage(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(lvl2_1GroupsPage(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -120,7 +120,7 @@ class GeneralTradeGroupsController @Inject()(
 
   //ClothesTextilesHomewarePage
   def loadClothesTextilesHomewarePage() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(clothesTextilesHomewarePage(clothesTextilesHomewareForm)).toFuture
+    Ok(clothesTextilesHomewarePage(clothesTextilesHomewareForm, isUpdate = false)).toFuture
   }
 
   def submitClothesTextilesHomewarePage() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -128,7 +128,7 @@ class GeneralTradeGroupsController @Inject()(
     clothesTextilesHomewareForm
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(clothesTextilesHomewarePage(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(clothesTextilesHomewarePage(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -138,7 +138,7 @@ class GeneralTradeGroupsController @Inject()(
 
   //ComputersElectronicsMachineryPage
   def loadComputersElectronicsMachineryPage() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(computersElectronicsMachineryPage(computersElectronicsMachineryForm)).toFuture
+    Ok(computersElectronicsMachineryPage(computersElectronicsMachineryForm, isUpdate = false)).toFuture
   }
 
   def submitComputersElectronicsMachineryPage() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -146,7 +146,7 @@ class GeneralTradeGroupsController @Inject()(
     computersElectronicsMachineryForm
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(computersElectronicsMachineryPage(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(computersElectronicsMachineryPage(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -156,7 +156,7 @@ class GeneralTradeGroupsController @Inject()(
 
   //FoodBeveragesTobaccoPage
   def loadFoodBeveragesTobaccoPage() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(foodBeveragesTobaccoPage(foodBeveragesTobaccoForm)).toFuture
+    Ok(foodBeveragesTobaccoPage(foodBeveragesTobaccoForm, isUpdate = false)).toFuture
   }
 
   def submitFoodBeveragesTobaccoPage() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -164,7 +164,7 @@ class GeneralTradeGroupsController @Inject()(
     foodBeveragesTobaccoForm
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(foodBeveragesTobaccoPage(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(foodBeveragesTobaccoPage(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -174,7 +174,7 @@ class GeneralTradeGroupsController @Inject()(
 
   //MetalsChemicalsMaterialsPage
   def loadMetalsChemicalsMaterialsPage() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(metalsChemicalsMaterialsPage(metalsChemicalsMaterialsForm)).toFuture
+    Ok(metalsChemicalsMaterialsPage(metalsChemicalsMaterialsForm, isUpdate = false)).toFuture
   }
 
   def submitMetalsChemicalsMaterialsPage() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -182,7 +182,7 @@ class GeneralTradeGroupsController @Inject()(
     metalsChemicalsMaterialsForm
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(metalsChemicalsMaterialsPage(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(metalsChemicalsMaterialsPage(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -192,7 +192,7 @@ class GeneralTradeGroupsController @Inject()(
 
   //PaperPrintedProductsPage
   def loadPaperPrintedProductsPage() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(paperPrintedProductsPage(paperPrintedProductsForm)).toFuture
+    Ok(paperPrintedProductsPage(paperPrintedProductsForm, isUpdate = false)).toFuture
   }
 
   def submitPaperPrintedProductsPage() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -200,7 +200,7 @@ class GeneralTradeGroupsController @Inject()(
     paperPrintedProductsForm
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(paperPrintedProductsPage(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(paperPrintedProductsPage(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -210,7 +210,7 @@ class GeneralTradeGroupsController @Inject()(
 
   //VehiclesTransportPage
   def loadVehiclesTransportPage() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(vehiclesTransportPage(vehiclesTransportForm)).toFuture
+    Ok(vehiclesTransportPage(vehiclesTransportForm, isUpdate = false)).toFuture
   }
 
   def submitVehiclesTransportPage() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -218,7 +218,7 @@ class GeneralTradeGroupsController @Inject()(
     vehiclesTransportForm
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(vehiclesTransportPage(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(vehiclesTransportPage(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
