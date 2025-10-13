@@ -32,14 +32,14 @@
 )
 
 
-@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"civilEngineering3"}
 @url = @{"/report-and-manage-your-allowance-for-customs-duty-waiver-claims"}
 
 @actionUrl = @{
     if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
+controllers.routes.NACECheckDetailsController.getCheckDetails
     else
         controllers.routes.ConstructionController.submitCivilEngineeringLvl3Page
 }
