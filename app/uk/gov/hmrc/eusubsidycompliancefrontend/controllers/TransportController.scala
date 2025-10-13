@@ -245,7 +245,7 @@ class TransportController @Inject()(
 
 
   def loadWaterTransportLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WaterTransportLvl3Page(WaterTransportLvl3Form)).toFuture
+    Ok(WaterTransportLvl3Page(WaterTransportLvl3Form, isUpdate = false)).toFuture
   }
 
   def submitWaterTransportLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
@@ -253,7 +253,7 @@ class TransportController @Inject()(
     WaterTransportLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WaterTransportLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(WaterTransportLvl3Page(formWithErrors, isUpdate = false)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
