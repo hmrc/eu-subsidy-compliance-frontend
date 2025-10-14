@@ -24,10 +24,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UndertakingNACESuspend
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class UndertakingSuspendedPageController @Inject() (
+
+class UndertakingNACESuspendedPageController @Inject()(
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  undertakingSuspendedPage: UndertakingSuspendedPage
+  undertakingNACESuspendedPage: UndertakingNACESuspendedPage
 )(implicit
   val appConfig: AppConfig
 ) extends BaseController(mcc) {
@@ -35,7 +36,7 @@ class UndertakingSuspendedPageController @Inject() (
   import actionBuilders._
 
   def showPage(isLead: Boolean): Action[AnyContent] = enrolled.async { implicit request =>
-    Future.successful(Ok(undertakingSuspendedPage(isLead)))
+    Future.successful(Ok(undertakingNACESuspendedPage(isLead)))
   }
 
 }
