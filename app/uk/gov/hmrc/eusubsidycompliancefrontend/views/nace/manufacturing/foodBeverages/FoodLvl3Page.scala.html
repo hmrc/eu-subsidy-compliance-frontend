@@ -37,10 +37,8 @@
 @fieldName = @{"food3"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.FoodBeveragesController.submitFoodLvl3Page
+
+        controllers.routes.FoodBeveragesController.submitFoodLvl3Page(isUpdate)
 }
 
 

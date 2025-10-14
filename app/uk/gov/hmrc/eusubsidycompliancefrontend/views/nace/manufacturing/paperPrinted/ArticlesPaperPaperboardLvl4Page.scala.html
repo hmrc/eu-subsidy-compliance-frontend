@@ -37,10 +37,8 @@
 @fieldName = @{"paper4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.PaperPrintedController.submitArticlesPaperPaperboardLvl4Page
+
+        controllers.routes.PaperPrintedController.submitArticlesPaperPaperboardLvl4Page(isUpdate)
 }
 
 

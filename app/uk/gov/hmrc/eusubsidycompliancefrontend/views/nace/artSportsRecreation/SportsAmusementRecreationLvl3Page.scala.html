@@ -37,10 +37,8 @@
 @fieldName = @{"sports3"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.ArtsController.submitSportsAmusementRecreationLvl3Page()}
+
+        controllers.routes.ArtsController.submitSportsAmusementRecreationLvl3Page(isUpdate)}
 
 
 @radioText(id: String, content: String) = {
@@ -96,7 +94,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.artsSportsRecreation")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page().toString>@messages("NACE.artsSportsRecreation.Lvl2.sportsAndRecreation")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page(isUpdate).toString>@messages("NACE.artsSportsRecreation.Lvl2.sportsAndRecreation")</a>
         </li>
     </ol>
 </nav>

@@ -37,10 +37,8 @@
 @fieldName = @{"infra3"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.PublishingTelecomsController.submitComputerInfrastructureDataHostingLvl3Page()
+
+        controllers.routes.PublishingTelecomsController.submitComputerInfrastructureDataHostingLvl3Page(isUpdate)
 }
 
 
@@ -94,7 +92,7 @@
             <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("NACE.Lvl1.telecommunications")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadTelecommunicationLvl2Page().toString>@messages("NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadTelecommunicationLvl2Page(isUpdate).toString>@messages("NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities")</a>
         </li>
     </ol>
 </nav>

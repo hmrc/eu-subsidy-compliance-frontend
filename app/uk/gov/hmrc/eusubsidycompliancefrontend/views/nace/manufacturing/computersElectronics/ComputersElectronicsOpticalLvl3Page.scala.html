@@ -37,10 +37,8 @@
 @fieldName = @{"optical3"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.ComputersElectronicsController.submitComputersElectronicsOpticalLvl3Page
+
+        controllers.routes.ComputersElectronicsController.submitComputersElectronicsOpticalLvl3Page(isUpdate)
 }
 
 

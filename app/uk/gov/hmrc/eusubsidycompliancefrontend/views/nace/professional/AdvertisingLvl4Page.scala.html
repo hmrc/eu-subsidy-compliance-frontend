@@ -38,8 +38,7 @@ govukRadios : GovukRadios
 @fieldName = @{"advertising4"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.ProfAndPAdminController.submitAdvertisingLvl4Page()
+ controllers.routes.ProfAndPAdminController.submitAdvertisingLvl4Page(isUpdate)
 }
 
 
@@ -97,7 +96,7 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page(isUpdate).toString>@messages("NACE.professional.Lvl2.advertisingMarketResearchPR")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadAdvertisingLvl3Page().toString>@messages("NACE.professional.Lvl3.advertising")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadAdvertisingLvl3Page(isUpdate).toString>@messages("NACE.professional.Lvl3.advertising")</a>
         </li>
     </ol>
 </nav>

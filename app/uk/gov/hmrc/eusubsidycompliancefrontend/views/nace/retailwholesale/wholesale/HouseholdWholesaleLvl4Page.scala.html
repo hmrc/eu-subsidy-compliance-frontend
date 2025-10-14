@@ -36,10 +36,8 @@
 @fieldName = @{"householdWholesale4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.RetailWholesaleController.submitHouseholdWholesaleLvl4Page
+
+        controllers.routes.RetailWholesaleController.submitHouseholdWholesaleLvl4Page(isUpdate)
 }
 
 @radioText(id: String, content: String) = {

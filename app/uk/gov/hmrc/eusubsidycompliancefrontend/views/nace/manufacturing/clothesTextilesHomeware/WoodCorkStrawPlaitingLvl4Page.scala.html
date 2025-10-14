@@ -37,10 +37,8 @@
 @fieldName = @{"strawPlaiting4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.ClothesTextilesHomewareController.submitWoodCorkStrawPlaitingLvl4Page
+
+        controllers.routes.ClothesTextilesHomewareController.submitWoodCorkStrawPlaitingLvl4Page(isUpdate)
 }
 
 

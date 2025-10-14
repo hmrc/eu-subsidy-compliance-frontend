@@ -37,10 +37,8 @@
 @fieldName = @{"clay4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.NonMetallicOtherController.submitClayBuildingMaterialsLvl4Page
+
+        controllers.routes.NonMetallicOtherController.submitClayBuildingMaterialsLvl4Page(isUpdate)
 }
 
 

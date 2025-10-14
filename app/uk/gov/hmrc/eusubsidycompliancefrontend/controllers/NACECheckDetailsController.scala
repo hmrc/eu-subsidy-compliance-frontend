@@ -49,9 +49,9 @@ class NACECheckDetailsController @Inject()(
 
   private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
     case "D" | "E" | "F" =>
-      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.url
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(false).url
     case _ =>
-      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.url
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
   }
 
   def getCheckDetails(usersLastAnswer: String) : Action[AnyContent] = enrolled.async { implicit request =>
@@ -188,7 +188,7 @@ class NACECheckDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          Redirect(routes.AccomodationUtilitiesController.loadGasManufactureLvl4Page).toFuture
+          Redirect(routes.AccomodationUtilitiesController.loadGasManufactureLvl4Page(false)).toFuture
         },
         form => {
           if (form.value == "true") {

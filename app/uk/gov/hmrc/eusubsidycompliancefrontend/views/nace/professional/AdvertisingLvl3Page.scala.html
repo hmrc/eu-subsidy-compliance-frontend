@@ -38,8 +38,7 @@ govukRadios : GovukRadios
 @fieldName = @{"advertising3"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.ProfAndPAdminController.submitAdvertisingLvl3Page()
+ controllers.routes.ProfAndPAdminController.submitAdvertisingLvl3Page(isUpdate)
 }
 
 

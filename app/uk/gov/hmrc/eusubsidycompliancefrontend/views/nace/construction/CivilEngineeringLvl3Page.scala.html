@@ -38,10 +38,8 @@
 @url = @{"/report-and-manage-your-allowance-for-customs-duty-waiver-claims"}
 
 @actionUrl = @{
-    if(isUpdate)
-controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.ConstructionController.submitCivilEngineeringLvl3Page
+
+        controllers.routes.ConstructionController.submitCivilEngineeringLvl3Page(isUpdate)
 }
 
 

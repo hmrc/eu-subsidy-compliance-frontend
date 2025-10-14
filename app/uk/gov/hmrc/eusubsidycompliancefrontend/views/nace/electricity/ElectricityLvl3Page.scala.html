@@ -36,8 +36,7 @@
 @fieldName = @{"electricity3"}
 
 @actionUrl = @{
-  if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-  else controllers.routes.AccomodationUtilitiesController.submitElectricityLvl3Page()
+   controllers.routes.AccomodationUtilitiesController.submitElectricityLvl3Page(isUpdate)
 }
 
 

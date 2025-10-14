@@ -36,8 +36,7 @@
 @fieldName = @{"gt-other"}
 
 @actionUrl = @{
-    if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-    else controllers.routes.GeneralTradeGroupsController.submitGeneralTradeUndertakingOtherPage
+    controllers.routes.GeneralTradeGroupsController.submitGeneralTradeUndertakingOtherPage(isUpdate)
 }
 
 

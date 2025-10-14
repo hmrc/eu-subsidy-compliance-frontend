@@ -37,8 +37,7 @@ govukRadios : GovukRadios
 @fieldName = @{"fishing3"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.AgricultureController.submitFishingAndAquacultureLvl3Page()
+ controllers.routes.AgricultureController.submitFishingAndAquacultureLvl3Page(isUpdate)
 }
 
 

@@ -37,8 +37,7 @@ govukRadios : GovukRadios
 @fieldName = @{"miningSupport3"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.MiningController.submitMiningSupportLvl3Page()
+ controllers.routes.MiningController.submitMiningSupportLvl3Page(isUpdate)
 }
 
 
@@ -96,7 +95,7 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.mining")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MiningController.loadMiningLvl2Page().toString>@messages("NACE.mining.Lvl2.miningSupportServices")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MiningController.loadMiningLvl2Page(isUpdate).toString>@messages("NACE.mining.Lvl2.miningSupportServices")</a>
         </li>
     </ol>
 </nav>

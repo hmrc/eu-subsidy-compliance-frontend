@@ -37,10 +37,8 @@
 @fieldName = @{"sports4"}
 
 @actionUrl = @{
-    if(isUpdate)
-controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.ArtsController.submitSportsLvl4Page()
+
+        controllers.routes.ArtsController.submitSportsLvl4Page(isUpdate)
 }
 
 
@@ -107,10 +105,10 @@ controllers.routes.NACECheckDetailsController.getCheckDetails
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.artsSportsRecreation")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page().toString>@messages("NACE.artsSportsRecreation.Lvl2.sportsAndRecreation")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page(isUpdate).toString>@messages("NACE.artsSportsRecreation.Lvl2.sportsAndRecreation")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadSportsAmusementRecreationLvl3Page().toString>@messages("NACE.artsSportsRecreation.Lvl3.sports")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadSportsAmusementRecreationLvl3Page(isUpdate).toString>@messages("NACE.artsSportsRecreation.Lvl3.sports")</a>
         </li>
     </ol>
 </nav>

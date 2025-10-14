@@ -37,10 +37,8 @@
 @fieldName = @{"steel4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.MetalsChemicalsController.submitFirstProcessingSteelLvl4Page
+
+        controllers.routes.MetalsChemicalsController.submitFirstProcessingSteelLvl4Page(isUpdate)
 }
 
 

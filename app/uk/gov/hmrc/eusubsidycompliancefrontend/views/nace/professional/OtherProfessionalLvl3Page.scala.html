@@ -38,8 +38,7 @@ govukRadios : GovukRadios
 @fieldName = @{"otherProf3"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.ProfAndPAdminController.submitOtherProfessionalLvl3Page()
+ controllers.routes.ProfAndPAdminController.submitOtherProfessionalLvl3Page(isUpdate)
 }
 
 

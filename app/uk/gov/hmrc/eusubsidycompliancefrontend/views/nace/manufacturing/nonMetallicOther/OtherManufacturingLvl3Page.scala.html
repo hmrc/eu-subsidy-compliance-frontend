@@ -37,10 +37,8 @@
 @fieldName = @{"otherManufacturing"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.NonMetallicOtherController.submitOtherManufacturingLvl3Page
+
+        controllers.routes.NonMetallicOtherController.submitOtherManufacturingLvl3Page(isUpdate)
 }
 
 

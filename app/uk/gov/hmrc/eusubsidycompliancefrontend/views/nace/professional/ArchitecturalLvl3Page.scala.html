@@ -38,8 +38,7 @@ govukRadios : GovukRadios
 @fieldName = @{"architecture3"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.ProfAndPAdminController.submitArchitecturalLvl3Page()
+ controllers.routes.ProfAndPAdminController.submitArchitecturalLvl3Page(isUpdate)
 }
 
 

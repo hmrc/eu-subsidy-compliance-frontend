@@ -97,7 +97,7 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.education")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadEducationLvl3Page().toString>@messages("NACE.education.Lvl3.educationalSupport")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadEducationLvl3Page(isUpdate).toString>@messages("NACE.education.Lvl3.educationalSupport")</a>
         </li>
     </ol>
 </nav>

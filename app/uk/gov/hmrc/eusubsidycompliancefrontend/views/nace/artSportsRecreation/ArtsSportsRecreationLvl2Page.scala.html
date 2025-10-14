@@ -37,10 +37,8 @@
 @fieldName = @{"artsSports2"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.ArtsController.submitArtsSportsRecreationLvl2Page()
+
+        controllers.routes.ArtsController.submitArtsSportsRecreationLvl2Page(isUpdate)
 }
 
 
