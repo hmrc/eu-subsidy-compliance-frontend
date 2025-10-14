@@ -30,6 +30,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.{NaceLevel4, NaceLevel4Catalogue}
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
+
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -48,10 +50,18 @@ class NACECheckDetailsController @Inject()(
   private val confirmDetailsForm: Form[FormValues] = formWithSingleMandatoryField("confirmDetails")
 
   private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
-    case "D" | "E" | "F" =>
-      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(false).url
-    case _ =>
-      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
+    case "A" => routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(false).url
+    case "D" | "E" | "F" => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(false).url
+    case _ => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
+  }
+
+  private def toNavigatorCode(level1Code: String, level2Code: String): String = level1Code match {
+    case "A" => level2Code match {
+      case "01" | "02" => "2"
+      case "03" => "3"
+      case _ => level2Code
+    }
+    case _ => level2Code
   }
 
   def getCheckDetails(usersLastAnswer: String, isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
@@ -59,7 +69,7 @@ class NACECheckDetailsController @Inject()(
     implicit val messages: Messages = mcc.messagesApi.preferred(request)
 
 
-    if (usersLastAnswer.nonEmpty) { // Wrong logic for retrieving NACE
+    if (usersLastAnswer.nonEmpty) {
       val naceLevel4Code = usersLastAnswer
       val naceLevel3Code = if (naceLevel4Code.length >= 4) naceLevel4Code.take(4) else naceLevel4Code
       val naceLevel2Code = if (naceLevel4Code.length >= 2) naceLevel4Code.take(2) else naceLevel4Code
@@ -119,6 +129,11 @@ class NACECheckDetailsController @Inject()(
         case _ => Sector.other
       }
 
+      val showLevel1 = naceLevel1Code match {
+        case "A" => false
+        case _ => true
+      }
+
       val showLevel2 = {
         naceLevel1Code match {
           case "D" | "A"| "Q" => false
@@ -136,15 +151,17 @@ class NACECheckDetailsController @Inject()(
 
       val changeSectorUrl = routes.UndertakingController.getSector.url
 
-      val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code) // Needs Refining , WRONG
+      val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code)
 
-      val changeLevel2Url = navigator.nextPage(naceLevel1Code, isUpdate).url
+      val navigatorLevel2Code = toNavigatorCode(naceLevel1Code, naceLevel2Code)
 
-      val changeLevel3Url = if (showLevel2) {
-        navigator.nextPage(naceLevel2Code, isUpdate).url
-      } else {
+      val changeLevel2Url = if (showLevel2) {
         navigator.nextPage(naceLevel1Code, isUpdate).url
+      } else {
+        navigator.nextPage(navigatorLevel2Code, isUpdate).url
       }
+
+      val changeLevel3Url = navigator.nextPage(navigatorLevel2Code, isUpdate).url
 
       val changeLevel4Url = navigator.nextPage(naceLevel3Code, isUpdate).url
 
@@ -154,30 +171,34 @@ class NACECheckDetailsController @Inject()(
            |  changeSectorUrl: $changeSectorUrl
            |  changeLevel1Url: $changeLevel1Url (code: $naceLevel1Code)
            |  changeLevel2Url: $changeLevel2Url (code: $naceLevel2Code)
-           |  changeLevel3Url: $changeLevel3Url (code: $naceLevel3Code)
+           |  changeLevel3Url: $changeLevel3Url (code: $naceLevel3Code, navigator: $navigatorLevel2Code)
            |  changeLevel4Url: $changeLevel4Url (code: $naceLevel4Code)
            |"""
       )
-      Ok(naceCYAView(
-        confirmDetailsForm,
-        sector,
-        level1Display,
-        level2Display,
-        level3Display,
-        level4Display,
-        naceLevel1Code,
-        naceLevel2Code,
-        naceLevel3Code,
-        naceLevel4Code,
-        naceLevel4Notes,
-        changeSectorUrl,
-        changeLevel1Url,
-        changeLevel2Url,
-        changeLevel3Url,
-        changeLevel4Url,
+      val viewModel = NaceCheckDetailsViewModel(
+        naceLevel1Display = level1Display,
+        naceLevel2Display = level2Display,
+        naceLevel3Display = level3Display,
+        naceLevel4Display = level4Display,
+        naceLevel1Code = naceLevel1Code,
+        naceLevel2Code = naceLevel2Code,
+        naceLevel3Code = naceLevel3Code,
+        naceLevel4Code = naceLevel4Code,
+        sector = sector,
+        changeSectorUrl = changeSectorUrl,
+        changeLevel1Url = changeLevel1Url,
+        changeLevel2Url = changeLevel2Url,
+        changeLevel3Url = changeLevel3Url,
+        changeLevel4Url = changeLevel4Url,
+        showLevel1 = showLevel1,
         showLevel2 = showLevel2,
         showLevel3 = showLevel3,
         showLevel4 = showLevel4
+      )
+      Ok(naceCYAView(
+        confirmDetailsForm,
+        viewModel,
+        naceLevel4Notes
       )(request, messages, appConfig)).toFuture
 
     } else {
