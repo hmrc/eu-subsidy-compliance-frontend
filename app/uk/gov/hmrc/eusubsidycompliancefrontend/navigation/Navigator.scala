@@ -27,7 +27,6 @@ import scala.language.postfixOps
 class Navigator @Inject(){
 
   def nextPage(previousAnswer: String, isUpdate : Boolean): Call = isUpdate match {
-    case true => updateRoutes()
     case false => normalRoutes(previousAnswer, isUpdate)
   }
 
@@ -304,7 +303,6 @@ class Navigator @Inject(){
     case ("96.2", isUpdate)  => routes.OtherServicesController.loadHairdressingLvl4Page(isUpdate)
     case ("96.9", isUpdate)  => routes.OtherServicesController.loadOtherPersonalServicesLvl4Page(isUpdate)
 
-    case      => routes.NACECheckDetailsController.getCheckDetails()
-
+    case (other, isUpdate)       => routes.NACECheckDetailsController.getCheckDetails(other)
   }
 }

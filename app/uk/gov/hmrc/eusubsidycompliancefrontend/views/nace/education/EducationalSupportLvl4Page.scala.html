@@ -32,14 +32,15 @@ govukRadios : GovukRadios
 )
 
 
-@(form:  Form[_], isUpdate: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"educationSupport4"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.HouseHealthEducationController.submitEducationalSupportLvl4Page()
+controllers.routes.NACECheckDetailsController.getCheckDetails("")
 }
+
+
 
 
 @radioText(id: String, content: String) = {
