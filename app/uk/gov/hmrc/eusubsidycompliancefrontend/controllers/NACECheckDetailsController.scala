@@ -22,14 +22,13 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.{NaceLevel4, NaceLevel4Catalogue}
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4Catalogue
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
 
 
@@ -50,9 +49,15 @@ class NACECheckDetailsController @Inject()(
   private val confirmDetailsForm: Form[FormValues] = formWithSingleMandatoryField("confirmDetails")
 
   private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
-    case "A" => routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(false).url
-    case "D" | "E" | "F" => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(false).url
-    case _ => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
+    case "A" =>
+      if (level2Code == "02") routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
+      else routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(false).url
+    case "C" | "F" | "G" | "H" | "J" | "M" | "N" | "O" =>
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
+    case "B" | "D" | "E" | "I" | "K" | "L" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" =>
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(false).url
+    case _ =>
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
   }
 
   private def toNavigatorCode(level1Code: String, level2Code: String): String = level1Code match {
