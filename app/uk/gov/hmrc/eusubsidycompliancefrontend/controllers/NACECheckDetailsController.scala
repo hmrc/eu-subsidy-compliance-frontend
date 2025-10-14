@@ -54,18 +54,13 @@ class NACECheckDetailsController @Inject()(
       routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.url
   }
 
-  def getCheckDetails: Action[AnyContent] = enrolled.async { implicit request =>
+  def getCheckDetails(usersLastAnswer: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     implicit val messages: Messages = mcc.messagesApi.preferred(request)
 
-    val selectedLevel4Code = request.queryString
-      .collectFirst {
-        case (key, values) if key.endsWith("4") && values.nonEmpty => values.head
-      }
-      .getOrElse("")
 
-    if (selectedLevel4Code.nonEmpty) { // Wrong logic for retrieving NACE
-      val naceLevel4Code = selectedLevel4Code
+    if (usersLastAnswer.nonEmpty) { // Wrong logic for retrieving NACE
+      val naceLevel4Code = usersLastAnswer
       val naceLevel3Code = if (naceLevel4Code.length >= 4) naceLevel4Code.take(4) else naceLevel4Code
       val naceLevel2Code = if (naceLevel4Code.length >= 2) naceLevel4Code.take(2) else naceLevel4Code
 
