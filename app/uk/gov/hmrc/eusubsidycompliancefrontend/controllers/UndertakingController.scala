@@ -355,23 +355,61 @@ class UndertakingController @Inject() (
       .toContext
       .foldF(Redirect(routes.UndertakingController.getAboutUndertaking).toFuture) { journey =>
         val result = for {
-          undertakingSector <- journey.sector.value.toContext
+          undertakingSector        <- journey.sector.value.toContext
           undertakingVerifiedEmail <- emailService.retrieveVerifiedEmailAddressByEORI(eori).toContext
-          undertakingAddBusiness <- journey.addBusiness.value.toContext
-          _ <- store.update[UndertakingJourney](j => j.copy(cya = UndertakingCyaFormPage(Some(true)))).toContext
-        } yield Ok(
-          cyaPage(
-            eori = eori,
-            sector = undertakingSector,
-            verifiedEmail = undertakingVerifiedEmail,
-            addBusiness = undertakingAddBusiness.toString,
-            previous = routes.UndertakingController.backFromCheckYourAnswers.url
+          undertakingAddBusiness   <- journey.addBusiness.value.toContext
+          _                        <- store.update[UndertakingJourney](j => j.copy(cya = UndertakingCyaFormPage(Some(true)))).toContext
+        } yield {
+          val naceLevel3Code = undertakingSector.toString.dropRight(1)
+          val naceLevel2Code = undertakingSector.toString.take(2)
+          val naceLevel1Code: String = naceLevel2Code match {
+            case "01" | "02" | "03" => "A"
+            case "05" | "06" | "07" | "08" | "09" => "B"
+            case "35" => "D"
+            case "36" | "37" | "38" | "39" => "E"
+            case "41" | "42" | "43" => "F"
+            case "46" | "47" => "G"
+            case "49" | "50" | "51" | "52" | "53" => "H"
+            case "55" | "56" => "I"
+            case "58" | "59" | "60" => "J"
+            case "61" | "62" | "63" => "K"
+            case "64" | "65" | "66" => "L"
+            case "68" => "M"
+            case "69" | "70" | "71" | "72" | "73" | "74" | "75" => "N"
+            case "77" | "78" | "79" | "80" | "81" | "82" => "O"
+            case "84" => "P"
+            case "85" => "Q"
+            case "86" | "87" | "88" => "R"
+            case "90" | "91" | "92" | "93" => "S"
+            case "94" | "95" | "96" => "T"
+            case "97" | "98" => "U"
+            case "99" => "V"
+            case _ => "C"
+          }
+          val industrySectorKey: String = naceLevel2Code match {
+            case "01"        => "agriculture"
+            case "03"        => "fisheryAndAquaculture"
+            case _           => "generalTrade"
+          }
+          Ok(
+            cyaPage(
+              eori               = eori,
+              sector             = undertakingSector,
+              verifiedEmail      = undertakingVerifiedEmail,
+              addBusiness        = undertakingAddBusiness.toString,
+              naceLevel1Code     = naceLevel1Code,
+              naceLevel2Code     = naceLevel2Code,
+              naceLevel3Code     = naceLevel3Code,
+              industrySectorKey  = industrySectorKey,
+              previous           = routes.UndertakingController.backFromCheckYourAnswers.url
+            )
           )
-        )
+        }
 
         result.getOrElse(Redirect(journey.previous))
       }
   }
+
 
   def postCheckAnswers: Action[AnyContent] = verifiedEoriUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
