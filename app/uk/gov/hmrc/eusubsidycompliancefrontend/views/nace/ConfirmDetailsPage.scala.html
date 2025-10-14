@@ -82,21 +82,6 @@
             ))
         )
     ) else Seq.empty) ++
-    (if (viewModel.showLevel1_1) Seq(
-        SummaryListRow(
-            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 1.1")),
-            value = Value(content = Text(viewModel.naceLevel1_1Display)),
-            actions = Some(Actions(
-                items = Seq(
-                    ActionItem(
-                        href = viewModel.changeLevel1_1Url,
-                        content = Text(messages("common.cya.change")),
-                        visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl1.1"))
-                    )
-                )
-            ))
-        )
-    ) else Seq.empty) ++
     (if (viewModel.showLevel2) Seq(
         SummaryListRow(
             key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 2")),
