@@ -22,13 +22,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4Catalogue
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.{NaceLevel4, NaceLevel4Catalogue}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
 
 
@@ -60,6 +61,33 @@ class NACECheckDetailsController @Inject()(
       routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
   }
 
+  private def getLevel1_1ChangeUrl(level2Code: String): String = level2Code match {
+    case "13" | "14" | "15" | "16" | "22" =>
+      routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage(false).url
+    case "26" | "27" | "28" | "33" =>
+      routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage(false).url
+    case "10" | "11" | "12" =>
+      routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage(false).url
+    case "19" | "20" | "21" | "23" | "24" | "25" =>
+      routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage(false).url
+    case "17" | "18" =>
+      routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage(false).url
+    case "29" | "30" | "32" =>
+      routes.GeneralTradeGroupsController.loadVehiclesTransportPage(false).url
+    case _ =>
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
+  }
+
+  private def getLevel1_1Display(level2Code: String)(implicit messages: Messages): String = level2Code match {
+    case "13" | "14" | "15" | "16" | "22" => messages("NACE.Lvl2.1.clothesTextilesHomewares")
+    case "26" | "27" | "28" | "33" => messages("NACE.Lvl2.1.computersElectronicsMachinery")
+    case "10" | "11" | "12" => messages("NACE.Lvl2.1.foodBeveragesTobacco")
+    case "19" | "20" | "21" | "23" | "24" | "25" => messages("NACE.Lvl2.1.metalsChemicalsMaterials")
+    case "17" | "18" => messages("NACE.Lvl2.1.paperPrintedProducts")
+    case "29" | "30" | "32" => messages("NACE.Lvl2.1.vehiclesTransport")
+    case _ => ""
+  }
+
   private def toNavigatorCode(level1Code: String, level2Code: String): String = level1Code match {
     case "A" => level2Code match {
       case "01" | "02" => "2"
@@ -71,8 +99,7 @@ class NACECheckDetailsController @Inject()(
 
   def getCheckDetails(usersLastAnswer: String, isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    implicit val messages: Messages = mcc.messagesApi.preferred(request)
-
+    val messages: Messages = mcc.messagesApi.preferred(request)
 
     if (usersLastAnswer.nonEmpty) {
       val naceLevel4Code = usersLastAnswer
@@ -115,6 +142,7 @@ class NACECheckDetailsController @Inject()(
           rawDisplay
         }
       }
+      val level1_1Display = getLevel1_1Display(naceLevel2Code)
       val level2Display = messages(s"NACE.$naceLevel2Code")
       val level3Display = messages(s"NACE.$naceLevel3Code")
 
@@ -139,6 +167,8 @@ class NACECheckDetailsController @Inject()(
         case _ => true
       }
 
+      val showLevel1_1 = naceLevel1Code == "C"
+
       val showLevel2 = {
         naceLevel1Code match {
           case "D" | "A"| "Q" => false
@@ -158,6 +188,8 @@ class NACECheckDetailsController @Inject()(
 
       val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code)
 
+      val changeLevel1_1Url = getLevel1_1ChangeUrl(naceLevel2Code)
+
       val navigatorLevel2Code = toNavigatorCode(naceLevel1Code, naceLevel2Code)
 
       val changeLevel2Url = if (showLevel2) {
@@ -175,6 +207,7 @@ class NACECheckDetailsController @Inject()(
            |Debug URLs for NACE code $naceLevel4Code:
            |  changeSectorUrl: $changeSectorUrl
            |  changeLevel1Url: $changeLevel1Url (code: $naceLevel1Code)
+           |  changeLevel1_1Url: $changeLevel1_1Url (code: $naceLevel2Code, display: $level1_1Display)
            |  changeLevel2Url: $changeLevel2Url (code: $naceLevel2Code)
            |  changeLevel3Url: $changeLevel3Url (code: $naceLevel3Code, navigator: $navigatorLevel2Code)
            |  changeLevel4Url: $changeLevel4Url (code: $naceLevel4Code)
@@ -182,6 +215,7 @@ class NACECheckDetailsController @Inject()(
       )
       val viewModel = NaceCheckDetailsViewModel(
         naceLevel1Display = level1Display,
+        naceLevel1_1Display = level1_1Display,
         naceLevel2Display = level2Display,
         naceLevel3Display = level3Display,
         naceLevel4Display = level4Display,
@@ -192,10 +226,12 @@ class NACECheckDetailsController @Inject()(
         sector = sector,
         changeSectorUrl = changeSectorUrl,
         changeLevel1Url = changeLevel1Url,
+        changeLevel1_1Url = changeLevel1_1Url,
         changeLevel2Url = changeLevel2Url,
         changeLevel3Url = changeLevel3Url,
         changeLevel4Url = changeLevel4Url,
         showLevel1 = showLevel1,
+        showLevel1_1 = showLevel1_1,
         showLevel2 = showLevel2,
         showLevel3 = showLevel3,
         showLevel4 = showLevel4

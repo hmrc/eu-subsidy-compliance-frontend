@@ -20,6 +20,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 
 case class NaceCheckDetailsViewModel(
                                       naceLevel1Display: String,
+                                      naceLevel1_1Display: String,
                                       naceLevel2Display: String,
                                       naceLevel3Display: String,
                                       naceLevel4Display: String,
@@ -30,10 +31,12 @@ case class NaceCheckDetailsViewModel(
                                       sector: Sector,
                                       changeSectorUrl: String,
                                       changeLevel1Url: String,
+                                      changeLevel1_1Url: String,
                                       changeLevel2Url: String,
                                       changeLevel3Url: String,
                                       changeLevel4Url: String,
                                       showLevel1: Boolean,
+                                      showLevel1_1: Boolean,
                                       showLevel2: Boolean,
                                       showLevel3: Boolean,
                                       showLevel4: Boolean
