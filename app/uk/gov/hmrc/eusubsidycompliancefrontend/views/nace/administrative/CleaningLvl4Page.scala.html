@@ -31,15 +31,12 @@
     govukRadios: GovukRadios
 )
 
-@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"cleaning3"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
-    else
-        controllers.routes.AdminController.submitCleaningLvl4Page()
+        controllers.routes.AdminController.submitCleaningLvl4Page(isUpdate)
 }
 
 @radioText(id: String, content: String) = {
@@ -93,13 +90,13 @@
                     <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("NACE.Lvl1.administration")</a>
+                    <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("NACE.Lvl1.administration")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page.toString>@messages("NACE.Administrative.Lvl2.RentalLeasing")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page(isUpdate).toString>@messages("NACE.Administrative.Lvl2.RentalLeasing")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadBuildingsLvl3Page.toString>@messages("NACE.Administrative.Lvl3.Cleaning")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadBuildingsLvl3Page(isUpdate).toString>@messages("NACE.Administrative.Lvl3.Cleaning")</a>
                 </li>
             </ol>
         </nav>

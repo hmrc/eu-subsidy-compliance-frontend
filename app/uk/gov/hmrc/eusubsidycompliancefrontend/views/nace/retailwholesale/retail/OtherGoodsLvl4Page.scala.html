@@ -31,13 +31,13 @@
     govukRadios: GovukRadios
 )
 
-@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"otherRetail4"}
 
 @actionUrl = @{
     if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
+        controllers.routes.NACECheckDetailsController.getCheckDetails
     else
         controllers.routes.RetailWholesaleController.submitOtherGoodsLvl4Page
 }
@@ -123,13 +123,13 @@
                     <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("NACE.Lvl1.wholesaleRetail")</a>
+                    <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("NACE.Lvl1.wholesaleRetail")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page.toString>@messages("NACE.RetailWholesale.Lvl2.Retail")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page(isUpdate).toString>@messages("NACE.RetailWholesale.Lvl2.Retail")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailLvl3Page.toString>@messages("NACE.Retail.Lvl3.AnotherTypeGoods")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailLvl3Page(isUpdate).toString>@messages("NACE.Retail.Lvl3.AnotherTypeGoods")</a>
                 </li>
             </ol>
         </nav>

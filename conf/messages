@@ -8211,4 +8211,15 @@ NACE.check-details.change.hidden.lvl2 = NACE Level 2
 NACE.check-details.change.hidden.lvl3 = NACE Level 3
 NACE.check-details.change.hidden.lvl4 = NACE Level 4
 
+# NACE Check Your Answers
+nace.cya.title=Check your answers
+nace.cya.summary-list.eori=Your EORI number
+nace.cya.summary-list.industry-sector=Industry sector
+nace.cya.summary-list.nace-level=NACE Level
+nace.cya.summary-list.email-address=Email address
+nace.cya.summary-list.other-businesses=Other businesses in undertaking
+nace.cya.change.hidden.email-address=email address
+nace.cya.change.hidden.other-businesses=other businesses in undertaking
+nace.cya.confirmation-text=By sending these details you are confirming that, to the best of your knowledge, they are correct.
+
 error.confirmDetails.required = Select yes if these are the correct details for your undertaking

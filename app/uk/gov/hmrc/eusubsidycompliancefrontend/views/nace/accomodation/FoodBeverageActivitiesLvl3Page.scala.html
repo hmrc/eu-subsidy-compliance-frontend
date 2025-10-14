@@ -32,15 +32,12 @@
 )
 
 
-@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"foodActs3"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
-    else
-        controllers.routes.AccomodationUtilitiesController.submitFoodBeverageActivitiesLvl3Page()
+        controllers.routes.AccomodationUtilitiesController.submitFoodBeverageActivitiesLvl3Page(isUpdate)
 }
 
 
@@ -101,13 +98,13 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+                <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("Other")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.accommodationAndFoodService")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.accommodationAndFoodService")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadAccommodationFoodLvl2Page.toString>@messages("NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadAccommodationFoodLvl2Page(isUpdate).toString>@messages("NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities")</a>
             </li>
         </ol>
     </nav>

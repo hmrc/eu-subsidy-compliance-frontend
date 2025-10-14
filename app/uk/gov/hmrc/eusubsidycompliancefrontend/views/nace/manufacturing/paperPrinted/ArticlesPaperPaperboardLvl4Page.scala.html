@@ -32,13 +32,13 @@
 )
 
 
-@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"paper4"}
 
 @actionUrl = @{
     if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
+        controllers.routes.NACECheckDetailsController.getCheckDetails
     else
         controllers.routes.PaperPrintedController.submitArticlesPaperPaperboardLvl4Page
 }
@@ -108,16 +108,16 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("NACE.Lvl1.manufacturing")</a>
+            <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("NACE.Lvl1.manufacturing")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage.toString>@messages("NACE.Manufacturing.Lvl2.1.Paper")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(isUpdate).toString>@messages("NACE.Manufacturing.Lvl2.1.Paper")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage.toString>@messages("NACE.Manufacturing.Lvl2.2.Paper")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage(isUpdate).toString>@messages("NACE.Manufacturing.Lvl2.2.Paper")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PaperPrintedController.loadPaperLvl3Page.toString>@messages("NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PaperPrintedController.loadPaperLvl3Page(isUpdate).toString>@messages("NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard")</a>
         </li>
     </ol>
 </nav>

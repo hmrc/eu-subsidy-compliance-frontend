@@ -31,13 +31,13 @@
     govukRadios : GovukRadios
 )
 
-@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"monetary4"}
 
 @actionUrl = @{
     if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
+        controllers.routes.NACECheckDetailsController.getCheckDetails
     else
         controllers.routes.FinanceRealEstateController.submitMonetaryIntermediationLvl4Page()
 }
@@ -89,16 +89,16 @@ content = Text(messages("NACE.financialServices.Lvl4.monetaryIntermediation.erro
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+                <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("Other")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.financialInsuranceActivities")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.financialInsuranceActivities")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page.toString>@messages("NACE.Financial.Lvl2.FinancialServices")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page(isUpdate).toString>@messages("NACE.Financial.Lvl2.FinancialServices")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinancialServicesLvl3Page.toString>@messages("NACE.financialServices.Lvl3.monetaryIntermediation")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinancialServicesLvl3Page(isUpdate).toString>@messages("NACE.financialServices.Lvl3.monetaryIntermediation")</a>
             </li>
         </ol>
     </nav>
