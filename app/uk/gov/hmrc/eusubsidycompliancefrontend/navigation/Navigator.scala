@@ -309,7 +309,6 @@ class Navigator @Inject(){
     case "96.2"  => routes.OtherServicesController.loadHairdressingLvl4Page()
     case "96.9"  => routes.OtherServicesController.loadOtherPersonalServicesLvl4Page()
 
-    case _       => routes.NACECheckDetailsController.getCheckDetails
-
+    case other       => routes.NACECheckDetailsController.getCheckDetails(other)
   }
 }
