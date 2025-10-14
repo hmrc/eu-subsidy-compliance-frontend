@@ -8187,11 +8187,11 @@ NACE.check-details.summary-list.lvl.key = H1 heading of L
 NACE.check-details.change.hidden.sector = industry sector
 NACE.check-details.change.hidden.NACE = NACE categories
 
-NACE.check-details.NACE-categories = Your undertaking''s NACE categories
-NACE.check-details.NACE-p1 = Based on your answers, we have selected NACE categories for your undertaking.
-NACE.check-details.NACE-p2 = Check the details carefully and make sure they are right for your undertaking. If your undertaking operates in more than one undertaking area, your Level 4 (Class) category should be your main area of business activity.
+NACE.check-details.NACE-categories = Your undertaking''s NACE sectors
+NACE.check-details.NACE-p1 = Based on your answers, we have selected NACE sectors for your undertaking.
+NACE.check-details.NACE-p2 = Check the details carefully and make sure they are right for your undertaking. If your undertaking operates in more than one undertaking area, your Level 4 (Class) sector should be your main area of business activity.
 NACE.check-details.NACE-p3-prefix = NACE is a classification system used in the European Union. You can browse the
-NACE.check-details.NACE-link-text = full list of NACE categories from the EU (opens in new tab)
+NACE.check-details.NACE-link-text = full list of NACE sectors from the EU (opens in new tab)
 NACE.check-details.NACE-link-url = https://showvoc.op.europa.eu/#/datasets/ESTAT_Statistical_Classification_of_Economic_Activities_in_the_European_Community_Rev._2.1._%28NACE_2.1%29/data?resId=http:%2F%2Fdata.europa.eu%2Fux2%2Fnace2.1%2Fsections
 
 NACE.check-details.NACE-level-1 = NACE Level 1 (Section)
