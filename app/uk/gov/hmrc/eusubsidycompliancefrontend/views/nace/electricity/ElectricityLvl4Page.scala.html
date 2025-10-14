@@ -37,8 +37,7 @@
 @fieldName = @{"electricity4"}
 
 @actionUrl = @{
-  if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-  else controllers.routes.AccomodationUtilitiesController.submitElectricityLvl4Page()
+    controllers.routes.AccomodationUtilitiesController.submitElectricityLvl4Page()
 }
 
 
@@ -110,13 +109,13 @@ content = Text(messages("NACE.electricityGasSteamAir.Lvl3.electricPower.error"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.electricityGas")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.electricityGas")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadElectricityLvl3Page().toString>@messages("NACE.electricityGasSteamAir.Lvl3.electricPower")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadElectricityLvl3Page(isUpdate).toString>@messages("NACE.electricityGasSteamAir.Lvl3.electricPower")</a>
         </li>
     </ol>
 </nav>

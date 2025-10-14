@@ -95,16 +95,16 @@ title = Text(messages("common.error.summary.title"))
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+   <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("Other")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.otherService")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.otherService")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadOtherLvl2Page.toString>@messages("NACE.otherService.Lvl2.membershipOrganisations")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadOtherLvl2Page(isUpdate).toString>@messages("NACE.otherService.Lvl2.membershipOrganisations")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadMembershipOrgActivitiesLvl3Page.toString>@messages("NACE.otherService.Lvl3.otherMembership")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadMembershipOrgActivitiesLvl3Page(isUpdate).toString>@messages("NACE.otherService.Lvl3.otherMembership")</a>
   </li>
  </ol>
 </nav>

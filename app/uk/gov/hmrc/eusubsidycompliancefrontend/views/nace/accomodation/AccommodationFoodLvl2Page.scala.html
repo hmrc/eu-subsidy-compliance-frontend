@@ -37,10 +37,7 @@
 @fieldName = @{"accommodation2"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.AccomodationUtilitiesController.submitAccommodationFoodLvl2Page()
+        controllers.routes.AccomodationUtilitiesController.submitAccommodationFoodLvl2Page(isUpdate)
 }
 
 
@@ -93,10 +90,10 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+                <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("Other")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.accommodationAndFoodService")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.accommodationAndFoodService")</a>
             </li>
         </ol>
     </nav>

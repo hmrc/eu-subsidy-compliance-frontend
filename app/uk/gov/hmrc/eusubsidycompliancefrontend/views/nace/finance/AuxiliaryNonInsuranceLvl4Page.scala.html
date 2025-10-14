@@ -94,16 +94,16 @@ content = Text(messages("NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.erro
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+                <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("Other")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.financialInsuranceActivities")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.financialInsuranceActivities")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page.toString>@messages("NACE.Financial.Lvl2.Auxiliary")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page(isUpdate).toString>@messages("NACE.Financial.Lvl2.Auxiliary")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadAuxiliaryFinancialLvl3Page.toString>@messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancialServices")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadAuxiliaryFinancialLvl3Page(isUpdate).toString>@messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancialServices")</a>
             </li>
         </ol>
     </nav>

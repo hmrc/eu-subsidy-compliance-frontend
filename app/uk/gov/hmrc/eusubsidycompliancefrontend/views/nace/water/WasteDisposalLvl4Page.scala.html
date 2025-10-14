@@ -97,16 +97,16 @@ content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWi
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage.toString>@messages("NACE.Lvl1.waterSupply")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.waterSupply")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWaterLvl2Page.toString>@messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWaterLvl2Page(isUpdate).toString>@messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWasteCollectionRecoveryLvl3Page.toString>@messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWasteCollectionRecoveryLvl3Page(isUpdate).toString>@messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery")</a>
         </li>
     </ol>
 </nav>

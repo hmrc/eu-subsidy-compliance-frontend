@@ -107,16 +107,16 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("NACE.Lvl1.manufacturing")</a>
+            <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("NACE.Lvl1.manufacturing")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage.toString>@messages("NACE.Manufacturing.Lvl2.1.Clothes")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(isUpdate).toString>@messages("NACE.Manufacturing.Lvl2.1.Clothes")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage.toString>@messages("NACE.Manufacturing.Lvl2.2.Clothes.Clothing")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage(isUpdate).toString>@messages("NACE.Manufacturing.Lvl2.2.Clothes.Clothing")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ClothesTextilesHomewareController.loadClothingLvl3Page.toString>@messages("NACE.Manufacturing.Lvl3.OtherClothing")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ClothesTextilesHomewareController.loadClothingLvl3Page(isUpdate).toString>@messages("NACE.Manufacturing.Lvl3.OtherClothing")</a>
         </li>
     </ol>
 </nav>

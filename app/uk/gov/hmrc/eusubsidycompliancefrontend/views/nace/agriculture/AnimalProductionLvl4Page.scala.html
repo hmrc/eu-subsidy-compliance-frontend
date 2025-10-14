@@ -37,10 +37,7 @@ govukRadios : GovukRadios
 @fieldName = @{"animal4"}
 
 @actionUrl = @{
-if(isUpdate)
-    controllers.routes.NACECheckDetailsController.getCheckDetails
-else
-    controllers.routes.AgricultureController.submitAnimalProductionLvl4Page
+    controllers.routes.AgricultureController.submitAnimalProductionLvl4Page(isUpdate)
 }
 
 
@@ -123,7 +120,7 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.2")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadAgricultureLvl3Page().toString>@messages("NACE.agriculture.Lvl3.animalProduction")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadAgricultureLvl3Page(isUpdate).toString>@messages("NACE.agriculture.Lvl3.animalProduction")</a>
         </li>
     </ol>
 </nav>

@@ -36,10 +36,7 @@
 @fieldName = @{"admin2"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.AdminController.submitAdministrativeLvl2Page()
+        controllers.routes.AdminController.submitAdministrativeLvl2Page(isUpdate)
 }
 
 @radioText(id: String, content: String) = {
@@ -114,7 +111,7 @@
                     <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("NACE.Lvl1.administration")</a>
+                    <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("NACE.Lvl1.administration")</a>
                 </li>
             </ol>
         </nav>

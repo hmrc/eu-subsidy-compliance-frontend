@@ -103,10 +103,10 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("NACE.Lvl1.professionalScientificTechnicalActivities")</a>
+            <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("NACE.Lvl1.professionalScientificTechnicalActivities")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page.toString>@messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page(isUpdate).toString>@messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical")</a>
         </li>
     </ol>
 </nav>
