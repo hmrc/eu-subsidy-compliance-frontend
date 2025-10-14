@@ -113,7 +113,11 @@ class NACECheckDetailsController @Inject()(
       val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(naceLevel4Code)(messages)
         .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $naceLevel4Code"))
 
-      val sector = Sector.other
+      val sector = naceLevel2Code match {
+        case "01" => Sector.agriculture
+        case "03" => Sector.aquaculture
+        case _ => Sector.other
+      }
 
       val showLevel2 = {
         naceLevel1Code match {
