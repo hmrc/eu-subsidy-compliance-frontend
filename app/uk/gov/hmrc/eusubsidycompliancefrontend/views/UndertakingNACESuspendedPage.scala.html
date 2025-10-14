@@ -18,20 +18,26 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.H1
 @import java.time.LocalDateTime
 
-@this(layout: Layout,
+@this(layout: Layout,   button: components.Button
 )
 @(
-isLead: Boolean
+dueDate: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @layout(pageTitle = Some(messages("NACE.undertakingSuspended.title"))) {
     @H1(messages("NACE.undertakingSuspended.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"), id = Some("undertaking-suspended-banner-title"))
     &nbsp;
-        @if(LocalDateTime.now() == 2026){
+        @if(LocalDateTime.now() != 2026){
             <p id="undertaking-NACE-suspended-p1" class="govuk-body">@Html(messages("NACE.undertakingSuspended.ALTp1"))</p>
-            <p id="undertaking-NACE-suspended-p2" class="govuk-body">@Html(messages("NACE.undertakingSuspended.ALTp2"))</p>
+            <p id="undertaking-NACE-suspended-p2" class="govuk-body tight-paragraph">@Html(messages("NACE.undertakingSuspended.ALTp2"))</p>
+                <ul class="govuk-list govuk-list--bullet tight-bullet-list">
+                    <li id="lead-account-homepage-p1-li1">@messages("NACE.undertakingSuspended.ALTul1")</li>
+                    <li id="lead-account-homepage-p1-li2">@messages("NACE.undertakingSuspended.ALTul2")</li>
+                </ul>
             <p id="undertaking-NACE-suspended-p3" class="govuk-body">@Html(messages("NACE.undertakingSuspended.ALTp3"))</p>
         } else {
             <p id="undertaking-NACE-suspended-p1" class="govuk-body">@Html(messages("NACE.undertakingSuspended.p1"))</p>
             <p id="undertaking-NACE-suspended-p2" class="govuk-body">@Html(messages("NACE.undertakingSuspended.p2"))</p>
         }
+
+@button("common.continue.only")
 }

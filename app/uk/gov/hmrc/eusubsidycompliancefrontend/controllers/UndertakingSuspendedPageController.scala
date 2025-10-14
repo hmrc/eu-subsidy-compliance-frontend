@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UndertakingNACESuspendedPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UndertakingSuspendedPage
 
 import javax.inject.Inject
 import scala.concurrent.Future

@@ -35,8 +35,8 @@ class UndertakingNACESuspendedPageController @Inject()(
 
   import actionBuilders._
 
-  def showPage(isLead: Boolean): Action[AnyContent] = enrolled.async { implicit request =>
-    Future.successful(Ok(undertakingNACESuspendedPage(isLead)))
+  def showPage(dueDate: String): Action[AnyContent] = enrolled.async { implicit request =>
+    Future.successful(Ok(undertakingNACESuspendedPage(dueDate)))
   }
 
 }
