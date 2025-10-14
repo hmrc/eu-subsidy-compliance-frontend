@@ -54,7 +54,7 @@ class NACECheckDetailsController @Inject()(
       routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
   }
 
-  def getCheckDetails(usersLastAnswer: String) : Action[AnyContent] = enrolled.async { implicit request =>
+  def getCheckDetails(usersLastAnswer: String, isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     implicit val messages: Messages = mcc.messagesApi.preferred(request)
 
@@ -134,15 +134,15 @@ class NACECheckDetailsController @Inject()(
 
       val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code) // Needs Refining , WRONG
 
-      val changeLevel2Url = navigator.nextPage(naceLevel1Code, false).url
+      val changeLevel2Url = navigator.nextPage(naceLevel1Code, isUpdate).url
 
       val changeLevel3Url = if (showLevel2) {
-        navigator.nextPage(naceLevel2Code, false).url
+        navigator.nextPage(naceLevel2Code, isUpdate).url
       } else {
-        navigator.nextPage(naceLevel1Code, false).url
+        navigator.nextPage(naceLevel1Code, isUpdate).url
       }
 
-      val changeLevel4Url = navigator.nextPage(naceLevel3Code, false).url
+      val changeLevel4Url = navigator.nextPage(naceLevel3Code, isUpdate).url
 
       println(
         s"""
