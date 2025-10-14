@@ -38,8 +38,7 @@ govukRadios : GovukRadios
 @fieldName = @{"rAndD3"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.ProfAndPAdminController.submitScientificRAndDLvl3Page()
+ controllers.routes.ProfAndPAdminController.submitScientificRAndDLvl3Page(isUpdate)
 }
 
 

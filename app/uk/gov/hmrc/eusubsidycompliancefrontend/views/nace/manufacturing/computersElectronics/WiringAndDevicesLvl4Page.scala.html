@@ -37,10 +37,8 @@
 @fieldName = @{"wiring4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.ComputersElectronicsController.submitWiringAndDevicesLvl4Page
+
+        controllers.routes.ComputersElectronicsController.submitWiringAndDevicesLvl4Page(isUpdate)
 }
 
 

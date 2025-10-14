@@ -37,10 +37,8 @@
 @fieldName = @{"water2"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.AccomodationUtilitiesController.submitWaterLvl2Page()
+
+        controllers.routes.AccomodationUtilitiesController.submitWaterLvl2Page(isUpdate)
 }
 
 

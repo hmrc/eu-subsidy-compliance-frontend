@@ -37,10 +37,8 @@
 @fieldName = @{"demo4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.ConstructionController.submitDemolitionSitePreparationLvl4Page
+
+        controllers.routes.ConstructionController.submitDemolitionSitePreparationLvl4Page(isUpdate)
 }
 
 

@@ -37,8 +37,7 @@ govukRadios : GovukRadios
 @fieldName = @{"mining2"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.MiningController.submitMiningLvl2Page()
+ controllers.routes.MiningController.submitMiningLvl2Page(isUpdate)
 }
 
 

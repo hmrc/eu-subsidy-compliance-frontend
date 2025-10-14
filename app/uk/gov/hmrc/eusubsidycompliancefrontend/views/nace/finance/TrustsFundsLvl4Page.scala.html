@@ -36,10 +36,8 @@
 @fieldName = @{"trusts4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.FinanceRealEstateController.submitTrustsFundsLvl4Page()
+
+        controllers.routes.FinanceRealEstateController.submitTrustsFundsLvl4Page(isUpdate)
 }
 
 @radioText(id: String, content: String) = {

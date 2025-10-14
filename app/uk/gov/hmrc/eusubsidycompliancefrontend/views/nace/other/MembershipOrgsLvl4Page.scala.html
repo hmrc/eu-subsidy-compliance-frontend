@@ -37,8 +37,7 @@ govukRadios : GovukRadios
 @fieldName = @{"membership4"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.OtherServicesController.submitMembershipOrgsLvl4Page
+ controllers.routes.OtherServicesController.submitMembershipOrgsLvl4Page(isUpdate)
 }
 
 

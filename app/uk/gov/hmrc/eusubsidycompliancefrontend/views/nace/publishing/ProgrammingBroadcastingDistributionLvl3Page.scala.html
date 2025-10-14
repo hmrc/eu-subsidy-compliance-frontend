@@ -37,10 +37,8 @@
 @fieldName = @{"broadcasting3"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.PublishingTelecomsController.submitProgrammingBroadcastingDistributionLvl3Page()
+
+        controllers.routes.PublishingTelecomsController.submitProgrammingBroadcastingDistributionLvl3Page(isUpdate)
 }
 
 
@@ -99,7 +97,7 @@
             <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("NACE.Lvl1.publishingBroadcasting")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page(isUpdate).toString>@messages("NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities")</a>
         </li>
     </ol>
 </nav>

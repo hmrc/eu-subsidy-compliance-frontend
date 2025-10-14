@@ -35,8 +35,7 @@ govukRadios : GovukRadios
 @fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.UndertakingController.postSector
+ controllers.routes.UndertakingController.postSector
 }
 
 

@@ -37,10 +37,8 @@
 @fieldName = @{"pulp4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.PaperPrintedController.submitPulpPaperPaperboardLvl4Page
+
+        controllers.routes.PaperPrintedController.submitPulpPaperPaperboardLvl4Page(isUpdate)
 }
 
 

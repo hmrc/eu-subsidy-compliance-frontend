@@ -37,10 +37,8 @@
 @fieldName = @{"metalForming4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.ComputersElectronicsController.submitMetalFormingLvl4Page
+
+        controllers.routes.ComputersElectronicsController.submitMetalFormingLvl4Page(isUpdate)
 }
 
 

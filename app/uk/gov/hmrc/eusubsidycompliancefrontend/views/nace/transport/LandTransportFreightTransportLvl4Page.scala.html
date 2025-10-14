@@ -37,8 +37,7 @@
 @fieldName = @{"freight4"}
 
 @actionUrl = @{
-  if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-  else controllers.routes.TransportController.submitLandTransportFreightTransportLvl4Page()
+   controllers.routes.TransportController.submitLandTransportFreightTransportLvl4Page(isUpdate)
 }
 
 
@@ -93,10 +92,10 @@ backLinkEnabled = false,
             <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("NACE.Lvl1.transportStorage")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadTransportLvl2Page().toString>@messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadTransportLvl2Page(isUpdate).toString>@messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadLandTransportLvl3Page().toString>@messages("NACE.TransportationAndStorage.Lvl3.FreightRoadRemoval")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadLandTransportLvl3Page(isUpdate).toString>@messages("NACE.TransportationAndStorage.Lvl3.FreightRoadRemoval")</a>
         </li>
     </ol>
 </nav>

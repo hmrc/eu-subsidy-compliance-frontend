@@ -37,10 +37,8 @@
 @fieldName = @{"boards4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.ComputersElectronicsController.submitComponentsBoardsLvl4Page
+
+        controllers.routes.ComputersElectronicsController.submitComponentsBoardsLvl4Page(isUpdate)
 }
 
 

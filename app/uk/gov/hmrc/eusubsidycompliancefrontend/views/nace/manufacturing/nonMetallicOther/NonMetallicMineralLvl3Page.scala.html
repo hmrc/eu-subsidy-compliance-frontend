@@ -37,10 +37,8 @@
 @fieldName = @{"mineral3"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.NonMetallicOtherController.submitNonMetallicMineralLvl3Page
+
+        controllers.routes.NonMetallicOtherController.submitNonMetallicMineralLvl3Page(isUpdate)
 }
 
 

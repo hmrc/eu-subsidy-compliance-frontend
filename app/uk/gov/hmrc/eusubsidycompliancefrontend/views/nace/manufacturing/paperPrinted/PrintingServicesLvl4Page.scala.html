@@ -37,10 +37,8 @@
 @fieldName = @{"printing4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.PaperPrintedController.submitPrintingServicesLvl4Page
+
+        controllers.routes.PaperPrintedController.submitPrintingServicesLvl4Page(isUpdate)
 }
 
 

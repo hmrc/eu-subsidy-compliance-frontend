@@ -36,8 +36,7 @@ govukRadios : GovukRadios
 @fieldName = @{"resiCare3"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-else controllers.routes.HouseHealthEducationController.submitResidentialCareLvl3Page()
+ controllers.routes.HouseHealthEducationController.submitResidentialCareLvl3Page(isUpdate)
 }
 
 

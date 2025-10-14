@@ -37,10 +37,8 @@
 @fieldName = @{"film4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.PublishingTelecomsController.submitFilmVideoActivitiesLvl4Page()
+
+        controllers.routes.PublishingTelecomsController.submitFilmVideoActivitiesLvl4Page(isUpdate)
 }
 
 
@@ -104,10 +102,10 @@
             <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("NACE.Lvl1.publishingBroadcasting")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page(isUpdate).toString>@messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page().toString>@messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page(isUpdate).toString>@messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities")</a>
         </li>
     </ol>
 </nav>

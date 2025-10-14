@@ -36,8 +36,7 @@
 @fieldName = @{"wasteCollection3"}
 
 @actionUrl = @{
-  if(isUpdate) controllers.routes.NACECheckDetailsController.getCheckDetails
-  else controllers.routes.AccomodationUtilitiesController.submitWasteCollectionRecoveryLvl3Page()
+   controllers.routes.AccomodationUtilitiesController.submitWasteCollectionRecoveryLvl3Page(isUpdate)
 }
 
 

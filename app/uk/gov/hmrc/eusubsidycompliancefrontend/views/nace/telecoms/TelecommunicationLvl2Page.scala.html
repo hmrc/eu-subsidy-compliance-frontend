@@ -37,10 +37,8 @@
 @fieldName = @{"telecommunication2"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.PublishingTelecomsController.submitTelecommunicationLvl2Page()
+
+        controllers.routes.PublishingTelecomsController.submitTelecommunicationLvl2Page(isUpdate)
 }
 
 

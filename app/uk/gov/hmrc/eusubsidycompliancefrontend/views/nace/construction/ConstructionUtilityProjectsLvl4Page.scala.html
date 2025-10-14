@@ -37,10 +37,8 @@
 @fieldName = @{"utility4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.ConstructionController.submitConstructionUtilityProjectsLvl4Page
+
+        controllers.routes.ConstructionController.submitConstructionUtilityProjectsLvl4Page(isUpdate)
 }
 
 

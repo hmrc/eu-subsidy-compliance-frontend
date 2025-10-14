@@ -38,10 +38,8 @@
 @fieldName = @{"manu-g5"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.NACECheckDetailsController.getCheckDetails
-    else
-        controllers.routes.GeneralTradeGroupsController.submitMetalsChemicalsMaterialsPage
+
+        controllers.routes.GeneralTradeGroupsController.submitMetalsChemicalsMaterialsPage(isUpdate)
 }
 
 
