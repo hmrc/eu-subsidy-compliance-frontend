@@ -49,10 +49,13 @@
 @radioOptions = @{
     Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-remediation", messages("NACE.WaterSewerageWasteRemediation.Lvl2.Remediation"))),
-value = Some(Sector.wasteManagementRemediation4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteManagementRemediation.toString)
+content = HtmlContent(radioText("sector-label-sewerage", messages("NACE.WaterSewerageWasteRemediation.Lvl2.Sewerage"))),
+value = Some(Sector.sewerage4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.sewerage.toString)
 ),
+
+
+
 RadioItem(
 content = HtmlContent(radioText("sector-label-waste-activities", messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities"))),
 value = Some(Sector.wasteManagement.toString),
@@ -64,9 +67,9 @@ value = Some(Sector.waterTreatment4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.waterTreatment.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-sewerage", messages("NACE.WaterSewerageWasteRemediation.Lvl2.Sewerage"))),
-value = Some(Sector.sewerage4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.sewerage.toString)
+content = HtmlContent(radioText("sector-label-remediation", messages("NACE.WaterSewerageWasteRemediation.Lvl2.Remediation"))),
+value = Some(Sector.wasteManagementRemediation4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteManagementRemediation.toString)
 )
     )
 }
@@ -98,7 +101,7 @@ content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollection
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(isUpdate).toString>@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.waterSupply")</a>

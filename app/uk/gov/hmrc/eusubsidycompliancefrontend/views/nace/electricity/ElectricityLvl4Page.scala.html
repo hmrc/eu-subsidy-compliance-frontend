@@ -48,6 +48,11 @@
 @radioOptions = @{
   Seq(
     RadioItem(
+    content = HtmlContent(radioText("sector-label-distribution-electricity", messages("NACE.electricityGasSteamAir.Lvl4.distributionElectricity"))),
+    value = Some(Sector.electricityDistribution.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityDistribution.toString)
+    ),
+    RadioItem(
       content = HtmlContent(radioText("sector-electricity-nonrenewable", messages("NACE.electricityGasSteamAir.Lvl4.electricityNonRenewable"))),
       value = Some(Sector.nonRenewableElectricityProduction.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonRenewableElectricityProduction.toString)
@@ -58,14 +63,9 @@
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.renewableElectricityProduction.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-transmission-electricity", messages("NACE.electricityGasSteamAir.Lvl4.transmissionElectricity"))),
-      value = Some(Sector.electricityTransmission.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityTransmission.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-distribution-electricity", messages("NACE.electricityGasSteamAir.Lvl4.distributionElectricity"))),
-      value = Some(Sector.electricityDistribution.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityDistribution.toString)
+    content = HtmlContent(radioText("sector-label-storage-electricity", messages("NACE.electricityGasSteamAir.Lvl4.storageElectricity"))),
+    value = Some(Sector.electricityStorage.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityStorage.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-trade-electricity", messages("NACE.electricityGasSteamAir.Lvl4.tradeElectricity"))),
@@ -73,9 +73,9 @@
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityTrade.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-storage-electricity", messages("NACE.electricityGasSteamAir.Lvl4.storageElectricity"))),
-      value = Some(Sector.electricityStorage.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityStorage.toString)
+    content = HtmlContent(radioText("sector-label-transmission-electricity", messages("NACE.electricityGasSteamAir.Lvl4.transmissionElectricity"))),
+    value = Some(Sector.electricityTransmission.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityTransmission.toString)
     )
   )
 }
@@ -119,7 +119,7 @@ content = Text(messages("NACE.electricityGasSteamAir.Lvl3.electricPower.error"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(isUpdate).toString>@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.electricityGas")</a>
