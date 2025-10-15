@@ -22,6 +22,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
 @import views.html.helper.CSPNonce
 
 @this(
@@ -34,24 +35,8 @@
 
 @(
     form: Form[_],
-    sector: Sector,
-    naceLevel1Display: String,
-    naceLevel2Display: String,
-    naceLevel3Display: String,
-    naceLevel4Display: String,
-    naceLevel1Code: String,
-    naceLevel2Code: String,
-    naceLevel3Code: String,
-    naceLevel4Code: String,
-    naceLevel4Notes: NaceLevel4,
-    changeSectorUrl: String,
-    changeLevel1Url: String,
-    changeLevel2Url: String,
-    changeLevel3Url: String,
-    changeLevel4Url: String,
-    showLevel2: Boolean,
-    showLevel3: Boolean,
-    showLevel4: Boolean
+    viewModel: NaceCheckDetailsViewModel,
+    naceLevel4Notes: NaceLevel4
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @key = @{"NACE.check-details"}
@@ -59,7 +44,7 @@
 @layout(
     pageTitle = Some(messages(s"$key.title")),
     backLinkEnabled = true,
-    backLink = Some(changeLevel4Url)
+    backLink = Some(viewModel.changeLevel4Url)
 ) {
 
     @H1(messages(s"$key.title"))
@@ -70,39 +55,56 @@
     rows = Seq(
         SummaryListRow(
             key = Key(content = Text(messages(s"$key.summary-list.sector.key"))),
-            value = Value(content = Text(messages(s"sector.label.$sector"))),
+            value = Value(content = Text(messages(s"sector.label.${viewModel.sector}"))),
             actions = Some(Actions(
                 items = Seq(
                     ActionItem(
-                        href = changeSectorUrl,
+                        href = viewModel.changeSectorUrl,
                         content = Text(messages("common.cya.change")),
                         visuallyHiddenText = Some(messages(s"$key.change.hidden.sector"))
                     )
                 )
             ))
-        ),
+        )
+    ) ++
+    (if (viewModel.showLevel1) Seq(
         SummaryListRow(
             key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 1")),
-            value = Value(content = Text(naceLevel1Display)),
+            value = Value(content = Text(viewModel.naceLevel1Display)),
             actions = Some(Actions(
                 items = Seq(
                     ActionItem(
-                        href = changeLevel1Url,
+                        href = viewModel.changeLevel1Url,
                         content = Text(messages("common.cya.change")),
                         visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl1"))
                     )
                 )
             ))
         )
-    ) ++
-    (if (showLevel2) Seq(
+    ) else Seq.empty) ++
+    (if (viewModel.showLevel1_1) Seq(
         SummaryListRow(
-            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 2")),
-            value = Value(content = Text(naceLevel2Display)),
+            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 1.1")),
+            value = Value(content = Text(viewModel.naceLevel1_1Display)),
             actions = Some(Actions(
                 items = Seq(
                     ActionItem(
-                        href = changeLevel2Url,
+                        href = viewModel.changeLevel1_1Url,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl1.1"))
+                    )
+                )
+            ))
+        )
+    ) else Seq.empty) ++
+    (if (viewModel.showLevel2) Seq(
+        SummaryListRow(
+            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 2")),
+            value = Value(content = Text(viewModel.naceLevel2Display)),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = viewModel.changeLevel2Url,
                         content = Text(messages("common.cya.change")),
                         visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl2"))
                     )
@@ -110,14 +112,14 @@
             ))
         )
     ) else Seq.empty) ++
-    (if (showLevel3) Seq(
+    (if (viewModel.showLevel3) Seq(
         SummaryListRow(
             key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 3")),
-            value = Value(content = Text(naceLevel3Display)),
+            value = Value(content = Text(viewModel.naceLevel3Display)),
             actions = Some(Actions(
                 items = Seq(
                     ActionItem(
-                        href = changeLevel3Url,
+                        href = viewModel.changeLevel3Url,
                         content = Text(messages("common.cya.change")),
                         visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl3"))
                     )
@@ -125,14 +127,14 @@
             ))
         )
     ) else Seq.empty) ++
-    (if (showLevel4) Seq(
+    (if (viewModel.showLevel4) Seq(
         SummaryListRow(
             key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 4")),
-            value = Value(content = Text(naceLevel4Display)),
+            value = Value(content = Text(viewModel.naceLevel4Display)),
             actions = Some(Actions(
                 items = Seq(
                     ActionItem(
-                        href = changeLevel4Url,
+                        href = viewModel.changeLevel4Url,
                         content = Text(messages("common.cya.change")),
                         visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl4"))
                     )
@@ -157,15 +159,15 @@
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.NACE-level-1"))),
-                value = Value(content = Text(naceLevel1Code + " "+ messages(s"NACE.$naceLevel1Code")))
+                value = Value(content = Text(viewModel.naceLevel1Code + " "+ messages(s"NACE.${viewModel.naceLevel1Code}")))
             ),
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.NACE-level-2"))),
-                value = Value(content = Text(naceLevel2Code + " "+ messages(s"NACE.$naceLevel2Code")))
+                value = Value(content = Text(viewModel.naceLevel2Code + " "+ messages(s"NACE.${viewModel.naceLevel2Code}")))
             ),
             SummaryListRow(
                 key = Key(content = Text(messages(s"$key.NACE-level-3"))),
-                value = Value(content = Text(naceLevel3Code + " "+ messages(s"NACE.$naceLevel3Code")))
+                value = Value(content = Text(viewModel.naceLevel3Code + " "+ messages(s"NACE.${viewModel.naceLevel3Code}")))
             ),
             SummaryListRow(
               key = Key(content = Text(messages(s"$key.NACE-level-4"))),

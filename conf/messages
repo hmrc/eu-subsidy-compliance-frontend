@@ -8226,3 +8226,12 @@ nace.cya.change.hidden.other-businesses=other businesses in undertaking
 nace.cya.confirmation-text=By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
 error.confirmDetails.required = Select yes if these are the correct details for your undertaking
+
+# Manufacturing 1_1
+
+NACE.Lvl2.1.clothesTextilesHomewares=Clothes, textiles and homeware
+NACE.Lvl2.1.computersElectronicsMachinery=Computers, electronics and machinery
+NACE.Lvl2.1.foodBeveragesTobacco=Food, beverages and tobacco
+NACE.Lvl2.1.metalsChemicalsMaterials=Metals, chemicals and materials
+NACE.Lvl2.1.paperPrintedProducts=Paper and printed products
+NACE.Lvl2.1.vehiclesTransport=Vehicles and transport equipment
