@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
@@ -32,13 +33,13 @@
 )
 
 
-@(form:  Form[_], isUpdate: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"film4"}
 
 @actionUrl = @{
 
-        controllers.routes.PublishingTelecomsController.submitFilmVideoActivitiesLvl4Page(isUpdate)
+        controllers.routes.PublishingTelecomsController.submitFilmVideoActivitiesLvl4Page(mode)
 }
 
 
@@ -93,19 +94,19 @@
 <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
     <ol class="govuk-breadcrumbs__list">
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getAboutUndertaking.toString>@messages("common.home")</a>
+            <a class="govuk-breadcrumbs__link" href="@{if(mode == "UpdateToNaceMode") controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(isUpdate).toString>@messages("NACE.Lvl1.publishingBroadcasting")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("NACE.Lvl1.publishingBroadcasting")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page(isUpdate).toString>@messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page(mode).toString>@messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page(isUpdate).toString>@messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page(mode).toString>@messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities")</a>
         </li>
     </ol>
 </nav>

@@ -65,180 +65,180 @@ class FoodBeveragesController @Inject()(
 
 
   //FoodLvl3Page
-  def loadFoodLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(foodLvl3Page(foodLvl3Form, isUpdate)).toFuture
+  def loadFoodLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(foodLvl3Page(foodLvl3Form, mode)).toFuture
   }
 
-  def submitFoodLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitFoodLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     foodLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(foodLvl3Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(foodLvl3Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
   //AnimalFeedsLvl4Page
-  def loadAnimalFeedsLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(animalFeedsLvl4Page(animalFeedsLvl4Form, isUpdate)).toFuture
+  def loadAnimalFeedsLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(animalFeedsLvl4Page(animalFeedsLvl4Form, mode)).toFuture
   }
 
-  def submitAnimalFeedsLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitAnimalFeedsLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     animalFeedsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(animalFeedsLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(animalFeedsLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
   //BakeryAndFarinaceousLvl4Page
-  def loadBakeryAndFarinaceousLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(bakeryAndFarinaceousLvl4Page(bakeryAndFarinaceousLvl4Form, isUpdate)).toFuture
+  def loadBakeryAndFarinaceousLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(bakeryAndFarinaceousLvl4Page(bakeryAndFarinaceousLvl4Form, mode)).toFuture
   }
 
-  def submitBakeryAndFarinaceousLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitBakeryAndFarinaceousLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     bakeryAndFarinaceousLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(bakeryAndFarinaceousLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(bakeryAndFarinaceousLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
   //DairyProductsLvl4Page
-  def loadDairyProductsLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(dairyProductsLvl4Page(dairyProductsLvl4Form, isUpdate)).toFuture
+  def loadDairyProductsLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(dairyProductsLvl4Page(dairyProductsLvl4Form, mode)).toFuture
   }
 
-  def submitDairyProductsLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitDairyProductsLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     dairyProductsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(dairyProductsLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(dairyProductsLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
   //FruitAndVegLvl4Page
-  def loadFruitAndVegLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(fruitAndVegLvl4Page(fruitAndVegLvl4Form, isUpdate)).toFuture
+  def loadFruitAndVegLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(fruitAndVegLvl4Page(fruitAndVegLvl4Form, mode)).toFuture
   }
 
-  def submitFruitAndVegLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitFruitAndVegLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     fruitAndVegLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(fruitAndVegLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(fruitAndVegLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
   //GrainAndStarchLvl4Page
-  def loadGrainAndStarchLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(grainAndStarchLvl4Page(grainAndStarchLvl4Form, isUpdate)).toFuture
+  def loadGrainAndStarchLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(grainAndStarchLvl4Page(grainAndStarchLvl4Form, mode)).toFuture
   }
 
-  def submitGrainAndStarchLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitGrainAndStarchLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     grainAndStarchLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(grainAndStarchLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(grainAndStarchLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
   //MeatLvl4Page
-  def loadMeatLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(meatLvl4Page(meatLvl4Form, isUpdate)).toFuture
+  def loadMeatLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(meatLvl4Page(meatLvl4Form, mode)).toFuture
   }
 
-  def submitMeatLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitMeatLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     meatLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(meatLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(meatLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
-  def loadOilsAndFatsLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(oilsAndFatsLvl4Page(oilsAndFatsLvl4Form, isUpdate)).toFuture
+  def loadOilsAndFatsLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(oilsAndFatsLvl4Page(oilsAndFatsLvl4Form, mode)).toFuture
   }
 
-  def submitOilsAndFatsLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitOilsAndFatsLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     oilsAndFatsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(oilsAndFatsLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(oilsAndFatsLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
   //OtherFoodProductsLvl4Page
-  def loadOtherFoodProductsLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(otherFoodProductsLvl4Page(otherFoodProductsLvl4Form, isUpdate)).toFuture
+  def loadOtherFoodProductsLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(otherFoodProductsLvl4Page(otherFoodProductsLvl4Form, mode)).toFuture
   }
 
-  def submitOtherFoodProductsLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitOtherFoodProductsLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     otherFoodProductsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(otherFoodProductsLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(otherFoodProductsLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
 
-  def loadBeveragesLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(beveragesLvl4Page(beveragesLvl4Form, isUpdate)).toFuture
+  def loadBeveragesLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(beveragesLvl4Page(beveragesLvl4Form, mode)).toFuture
   }
 
-  def submitBeveragesLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitBeveragesLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     beveragesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(beveragesLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(beveragesLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }

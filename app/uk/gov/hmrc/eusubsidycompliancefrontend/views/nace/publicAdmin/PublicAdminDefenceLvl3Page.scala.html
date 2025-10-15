@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
@@ -32,12 +33,12 @@ govukRadios : GovukRadios
 )
 
 
-@(form: Form[_], isUpdate: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"publicAdmin3"}
 
 @actionUrl = @{
- controllers.routes.ProfAndPAdminController.submitPublicAdminDefenceLvl3Page(isUpdate)
+ controllers.routes.ProfAndPAdminController.submitPublicAdminDefenceLvl3Page(mode)
 }
 
 
@@ -89,16 +90,16 @@ title = Text(messages("common.error.summary.title"))
 <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
     <ol class="govuk-breadcrumbs__list">
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getAboutUndertaking.toString>@messages("common.home")</a>
+            <a class="govuk-breadcrumbs__link" href="@{if(mode == "UpdateToNaceMode") controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(isUpdate).toString>@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(isUpdate).toString>@messages("NACE.Lvl1.publicAdministration")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).toString>@messages("NACE.Lvl1.publicAdministration")</a>
         </li>
     </ol>
 </nav>

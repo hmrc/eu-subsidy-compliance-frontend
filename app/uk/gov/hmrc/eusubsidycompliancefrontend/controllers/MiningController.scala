@@ -63,151 +63,151 @@ class MiningController @Inject()(
   private val OtherMiningLvl4Form : Form[FormValues] = formWithSingleMandatoryField("otherMining4")
   private val QuarryingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("quarrying4")
 
-  def loadMiningLvl2Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MiningLvl2Page(MiningLvl2Form, isUpdate)).toFuture
+  def loadMiningLvl2Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(MiningLvl2Page(MiningLvl2Form, mode)).toFuture
   }
 
-  def submitMiningLvl2Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitMiningLvl2Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     MiningLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MiningLvl2Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(MiningLvl2Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
-  def loadMiningSupportLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MiningSupportLvl3Page(MiningSupportLvl3Form, isUpdate)).toFuture
+  def loadMiningSupportLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(MiningSupportLvl3Page(MiningSupportLvl3Form, mode)).toFuture
   }
 
-  def submitMiningSupportLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitMiningSupportLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     MiningSupportLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MiningSupportLvl3Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(MiningSupportLvl3Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
-  def loadNonFeMetalMiningLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(NonFeMetalMiningLvl4Page(NonFeMetalMiningLvl4Form, isUpdate)).toFuture
+  def loadNonFeMetalMiningLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(NonFeMetalMiningLvl4Page(NonFeMetalMiningLvl4Form, mode)).toFuture
   }
 
-  def submitNonFeMetalMiningLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitNonFeMetalMiningLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     NonFeMetalMiningLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(NonFeMetalMiningLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(NonFeMetalMiningLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
-  def loadOtherMiningLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherMiningLvl3Page(OtherMiningLvl3Form, isUpdate)).toFuture
+  def loadOtherMiningLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(OtherMiningLvl3Page(OtherMiningLvl3Form, mode)).toFuture
   }
 
-  def submitOtherMiningLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitOtherMiningLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     OtherMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherMiningLvl3Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(OtherMiningLvl3Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
-  def loadOtherMiningLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherMiningLvl4Page(OtherMiningLvl4Form, isUpdate)).toFuture
+  def loadOtherMiningLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(OtherMiningLvl4Page(OtherMiningLvl4Form, mode)).toFuture
   }
 
-  def submitOtherMiningLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitOtherMiningLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     OtherMiningLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherMiningLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(OtherMiningLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
-  def loadQuarryingLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(QuarryingLvl4Page(QuarryingLvl4Form, isUpdate)).toFuture
+  def loadQuarryingLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(QuarryingLvl4Page(QuarryingLvl4Form, mode)).toFuture
   }
 
-  def submitQuarryingLvl4Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitQuarryingLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     QuarryingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(QuarryingLvl4Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(QuarryingLvl4Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
-  def loadCoalMiningLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(CoalMiningLvl3Page(CoalMiningLvl3Form, isUpdate)).toFuture
+  def loadCoalMiningLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(CoalMiningLvl3Page(CoalMiningLvl3Form, mode)).toFuture
   }
 
-  def submitCoalMiningLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitCoalMiningLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     CoalMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(CoalMiningLvl3Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(CoalMiningLvl3Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
-  def loadGasMiningLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(GasMiningLvl3Page(GasMiningLvl3Form, isUpdate)).toFuture
+  def loadGasMiningLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(GasMiningLvl3Page(GasMiningLvl3Form, mode)).toFuture
   }
 
-  def submitGasMiningLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitGasMiningLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     GasMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(GasMiningLvl3Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(GasMiningLvl3Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }
 
-  def loadMetalMiningLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MetalMiningLvl3Page(MetalMiningLvl3Form, isUpdate)).toFuture
+  def loadMetalMiningLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(MetalMiningLvl3Page(MetalMiningLvl3Form, mode)).toFuture
   }
 
-  def submitMetalMiningLvl3Page(isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitMetalMiningLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     MetalMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MetalMiningLvl3Page(formWithErrors, isUpdate)).toFuture,
+        formWithErrors => BadRequest(MetalMiningLvl3Page(formWithErrors, mode)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, isUpdate)).toFuture
+          Redirect(navigator.nextPage(form.value, mode)).toFuture
         }
       )
   }

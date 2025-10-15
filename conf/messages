@@ -734,16 +734,18 @@ industrySectorResearchBanner.visually.hidden = Hide message. I do not want to ta
 
 ############################################## NACE #################################################################################################################
 
-NACE.interrupt.title = Select a new undertaking category to continue
-NACE.interrupt.heading1 = Select a new undertaking category to continue
+NACE.interrupt.title = You need to update your undertaking sector
+NACE.interrupt.heading1 = You need to update your undertaking sector
 NACE.interrupt.heading2 = What you need to do
 NACE.interrupt.heading3 = Why we are making this change
-NACE.interrupt.p1 = You must answer some questions before 1 January 2026 to keep using this service.
-NACE.interrupt.p2 = If you do not, your undertaking will be suspended. This means you can still trade and claim state aid, but you cannot use state aid to waive customs duty.
-NACE.interrupt.p3 = Answer the questions to choose a new category for your undertaking. You will be able to review and confirm your choice before submitting.
-NACE.interrupt.p4 = The statistical classification of economic activities in the European community (abbreviated as NACE) is a classification system used in the European Union. EU rules require us to record the correct NACE category for your undertaking.
+NACE.interrupt.p1 = You must update your undertaking sector before 1 January 2026 to keep using this service.
+NACE.interrupt.p2 = If you do not, your undertaking will be unable to claim waivers. This means you can still trade, but you cannot use de minimis state aid to waive customs duty.
+NACE.interrupt.p3 = Answer the questions to choose a new sector for your undertaking. You will be able to review and confirm your choice before submitting.
+NACE.interrupt.p4 = This will not affect your state aid allowance.
+NACE.interrupt.p5 = We need you to identify the correct NACE sectors for your undertaking.
+NACE.interrupt.p6 = The statistical classification of economic activities in the European community (abbreviated as NACE) is a classification system used in the European Union. You can browse the
 NACE.interrupt.link.html = You can browse the {0}full list of NACE categories from the EU (opens in new tab){1}.
-NACE.interrupt.p5 = This will not affect your subsidy allowance.
+NACE.interrupt.p7 = This will not affect your subsidy allowance.
 
 NACE.suspended.title = Your undertaking has been suspended
 NACE.suspended.h1 = Your undertaking has been suspended
@@ -8234,3 +8236,12 @@ nace.cya.change.hidden.other-businesses=other businesses in undertaking
 nace.cya.confirmation-text=By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
 error.confirmDetails.required = Select yes if these are the correct details for your undertaking
+
+# Manufacturing 1_1
+
+NACE.Lvl2.1.clothesTextilesHomewares=Clothes, textiles and homeware
+NACE.Lvl2.1.computersElectronicsMachinery=Computers, electronics and machinery
+NACE.Lvl2.1.foodBeveragesTobacco=Food, beverages and tobacco
+NACE.Lvl2.1.metalsChemicalsMaterials=Metals, chemicals and materials
+NACE.Lvl2.1.paperPrintedProducts=Paper and printed products
+NACE.Lvl2.1.vehiclesTransport=Vehicles and transport equipment

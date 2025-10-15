@@ -51,23 +51,6 @@
                 <li>@messages("undertaking.confirmation.ul1")</li>
                 <li> @messages("undertaking.confirmation.ul2")</li>
             </ul>
-
-        @if(intentToAddBusiness) {
-            <p class="govuk-body" id="confirmation-p3">@Html(messages("undertaking.confirmation.p3", controllers.routes.AddBusinessEntityController.startJourney().url))</p>
-        }
-
         @button("ManageYourUndertaking.button")
     }
-
-    <div id="exit-survey" class="govuk-!-margin-bottom-8">
-        <h2 class="govuk-heading-m">@messages("exitSurvey.heading")</h2>
-        <p class="govuk-body">@messages("exitSurvey.p1")</p>
-        <p class="govuk-body">
-            @messages("exitSurveyBeforeYouGo.p2")
-            <a class="govuk-link" href="@appConfig.userResearchUrl">@messages("exitSurveyBeforeYouGo.link")</a>.
-        <p class="govuk-body">
-            <a class="govuk-link" href="@appConfig.exitSurveyUrl">@messages("exitSurvey.link")</a>
-            @messages("exitSurvey.p2")
-        </p>
-    </div>
 }
