@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.Amend
-
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4
 
 @this(
         layout: Layout,
@@ -32,7 +32,7 @@
 )
 
 
-@(sector: Sector, email: String, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(sector: Sector, email: String, naceLevel1Code: String, naceLevel2Code: String, naceLevel3Code: String, industrySectorKey: String, naceLevel4Notes: NaceLevel4,  previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("undertaking.amendUndertaking.title")),
@@ -44,49 +44,97 @@
 
             @H1(messages("undertaking.amendUndertaking.title"))
 
+            <h2 class="govuk-heading-m">@messages(s"undertaking.amendUndertaking.h2.email")</h2>
+
             @govukSummaryList(SummaryList(
                 rows = Seq(
                     SummaryListRow(
-                        key = Key(
-                            content = Text(messages("undertaking.amendUndertaking.summary-list.sector.key"))
-                        ),
-                        value = Value(
-                            content = Text(messages(s"sector.label.$sector"))
-                        ),
-                        actions = Some(Actions(
-                            items = Seq(
-                                ActionItem(
-                                    href = controllers.routes.UndertakingController.getSectorForUpdate.toString,
-                                    content = Text(messages("common.change")),
-                                    visuallyHiddenText = Some(messages("undertaking.amendUndertaking.summary-list.change.industry-sector"))
-                                )
-                            )
-                        ))
+                    key = Key(
+                    content = Text(messages("undertaking.amendUndertaking.summary-list.undertaking-admin-email.key"))
+                    ),
+                    value = Value(
+                    content = Text(email)
+                    ),
+                    actions = Some(Actions(
+                    items = Seq(
+                    ActionItem(
+                    href = controllers.routes.UndertakingController.getAddEmailForVerification(Amend).toString,
+                    content = Text(messages("common.change")),
+                    visuallyHiddenText = Some(messages("undertaking.amendUndertaking.summary-list.change.email"))
+                    )
+                    )
+                    ))
+                    ))))
+
+
+<h2 class="govuk-heading-m">@messages(s"undertaking.amendUndertaking.h2.industry")</h2>
+                @govukSummaryList(SummaryList(
+                    rows = Seq(
+                    SummaryListRow(
+                        key = Key(content = Text("NACE Level 1")),
+                        value = Value(content = Text(s"$naceLevel1Code" + " "+ messages(s"NACE.$naceLevel1Code")))
                     ),
                     SummaryListRow(
-                        key = Key(
-                            content = Text(messages("undertaking.amendUndertaking.summary-list.undertaking-admin-email.key"))
-                        ),
-                        value = Value(
-                            content = Text(email)
-                        ),
-                        actions = Some(Actions(
-                            items = Seq(
-                                ActionItem(
-                                    href = controllers.routes.UndertakingController.getAddEmailForVerification(Amend).toString,
-                                    content = Text(messages("common.change")),
-                                    visuallyHiddenText = Some(messages("undertaking.amendUndertaking.summary-list.change.email"))
-                                )
-                            )
-                        ))
+                    key = Key(content = Text("NACE Level 2")),
+                    value = Value(content = Text(s"$naceLevel2Code" + " "+ messages(s"NACE.$naceLevel2Code")))
+                    ),
+                    SummaryListRow(
+                    key = Key(content = Text("NACE Level 3")),
+                    value = Value(content = Text(s"$naceLevel3Code" + " "+ messages(s"NACE.$naceLevel3Code")))
+                    ),
+                    SummaryListRow(
+                    key = Key(content = Text("NACE Level 4")),
+                    value = Value(content = Text(messages(s"NACE.$sector.heading" )))
                     )
                 )
             ))
 
+            <h2 class="govuk-heading-m">@messages(s"undertaking.amendUndertaking.h2.NACE")</h2>
             @P(messages("undertaking.amendUndertaking.p"))
 
-            @button("common.continue")
-        }
+<p class="govuk-body">
+    @messages("undertaking.amendUndertaking.p2")
+    <a href="@messages("undertaking.amendUndertaking.p2.link-url")" class="govuk-link" target="_blank" rel="noopener noreferrer">@messages("undertaking.amendUndertaking.p2.link-text")</a>.
+</p>
+@P(messages("undertaking.amendUndertaking.p3"))
+            <br>
+
+@govukSummaryList(SummaryList(
+rows = Seq(
+SummaryListRow(
+key = Key(content = Text(messages("NACE.check-details.NACE-level-1"))),
+value = Value(content = Text(s"$naceLevel1Code" + " "+ messages(s"NACE.$naceLevel1Code")))
+),
+SummaryListRow(
+key = Key(content =Text(messages("NACE.check-details.NACE-level-2"))),
+value = Value(content = Text(s"$naceLevel2Code" + " "+ messages(s"NACE.$naceLevel2Code")))
+),
+SummaryListRow(
+key = Key(content = Text(messages("NACE.check-details.NACE-level-3"))),
+value = Value(content = Text(s"$naceLevel3Code" + " "+ messages(s"NACE.$naceLevel3Code")))
+),
+SummaryListRow(
+key = Key(content = Text(messages("NACE.check-details.NACE-level-4"))),
+value = Value(content = HtmlContent
+{
+val headingHtml = s"<p class='govuk-body'>${naceLevel4Notes.heading}</p>"
+val desc   = naceLevel4Notes.notes.desc .map(d => s"<p class='govuk-body'>$d</p>").getOrElse("")
+val intro  = naceLevel4Notes.notes.intro.map(i => s"<p class='govuk-body'>$i</p>").getOrElse("")
+val bullets =
+if (naceLevel4Notes.notes.bullets.nonEmpty)
+"<ul class='govuk-list govuk-list--bullet'>" +
+    naceLevel4Notes.notes.bullets.map(b => s"<li>$b</li>").mkString +
+    "</ul>"
+else ""
+val outro  = naceLevel4Notes.notes.outro.map(o => s"<p class='govuk-body'>$o</p>").getOrElse("")
+
+headingHtml + desc + intro + bullets + outro
+}))
+)
+)
+)
+<a id="homepage-link" class="govuk-link govuk-body" href="@controllers.routes.AccountController.getAccountPage.url">@messages("undertaking.amendUndertaking.home.url")</a>
+}
 
 }
 

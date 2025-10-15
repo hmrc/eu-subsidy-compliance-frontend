@@ -49,6 +49,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms.UndertakingCyaFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4Catalogue
 
 @Singleton
 class UndertakingController @Inject() (
@@ -501,14 +502,56 @@ class UndertakingController @Inject() (
         for {
           updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
           verifiedEmail <- emailService.retrieveVerifiedEmailAddressByEORI(eori)
-        } yield Ok(
+        } yield {
+          val naceLevel4Code = updatedJourney.sector.value.toString.dropRight(1).drop(5)
+          val naceLevel3Code = updatedJourney.sector.value.toString.dropRight(2).drop(5)
+          val naceLevel2Code = naceLevel3Code.take(2)
+          val naceLevel1Code: String = naceLevel2Code match {
+            case "01" | "02" | "03" => "A"
+            case "05" | "06" | "07" | "08" | "09" => "B"
+            case "35" => "D"
+            case "36" | "37" | "38" | "39" => "E"
+            case "41" | "42" | "43" => "F"
+            case "46" | "47" => "G"
+            case "49" | "50" | "51" | "52" | "53" => "H"
+            case "55" | "56" => "I"
+            case "58" | "59" | "60" => "J"
+            case "61" | "62" | "63" => "K"
+            case "64" | "65" | "66" => "L"
+            case "68" => "M"
+            case "69" | "70" | "71" | "72" | "73" | "74" | "75" => "N"
+            case "77" | "78" | "79" | "80" | "81" | "82" => "O"
+            case "84" => "P"
+            case "85" => "Q"
+            case "86" | "87" | "88" => "R"
+            case "90" | "91" | "92" | "93" => "S"
+            case "94" | "95" | "96" => "T"
+            case "97" | "98" => "U"
+            case "99" => "V"
+            case _ => "C"
+          }
+          val industrySectorKey: String = naceLevel2Code match {
+            case "01"        => "agriculture"
+            case "03"        => "fisheryAndAquaculture"
+            case _           => "generalTrade"
+          }
+          val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(naceLevel4Code)
+            .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $naceLevel4Code"))
+
+
+          Ok(
           amendUndertakingPage(
             updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
             verifiedEmail,
-            routes.AccountController.getAccountPage.url
+            naceLevel1Code = naceLevel1Code,
+            naceLevel2Code = naceLevel2Code,
+            naceLevel3Code = naceLevel3Code,
+            naceLevel4Notes = naceLevel4Notes,
+            industrySectorKey = industrySectorKey,
+            previous  = routes.AccountController.getAccountPage.url
           )
         )
-      }
+      }}
     }
   }
 
