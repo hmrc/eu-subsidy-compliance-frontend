@@ -48,16 +48,16 @@ class NACECheckDetailsController @Inject()(
 
   private val confirmDetailsForm: Form[FormValues] = formWithSingleMandatoryField("confirmDetails")
 
-  private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
+  private def getLevel1ChangeUrl(level1Code: String, level2Code: String, mode: String): String = level1Code match {
     case "A" =>
-      if (level2Code == "02") routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
-      else routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(false).url
+      if (level2Code == "02") routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).url
+      else routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(mode).url
     case "C" | "F" | "G" | "H" | "J" | "M" | "N" | "O" =>
-      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).url
     case "B" | "D" | "E" | "I" | "K" | "L" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" =>
-      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(false).url
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).url
     case _ =>
-      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).url
   }
 
   private def getLevel1_1Display(level2Code: String)(implicit messages: Messages): String = level2Code match {
@@ -107,7 +107,7 @@ class NACECheckDetailsController @Inject()(
     case _ => level2Code
   }
 
-  private def buildViewModel(naceLevel4Code: String, isUpdate: Boolean)(implicit messages: Messages): NaceCheckDetailsViewModel = {
+  private def buildViewModel(naceLevel4Code: String, mode: String)(implicit messages: Messages): NaceCheckDetailsViewModel = {
     val naceLevel3Code = if (naceLevel4Code.length >= 4) naceLevel4Code.take(4) else naceLevel4Code
     val naceLevel2Code = if (naceLevel4Code.length >= 2) naceLevel4Code.take(2) else naceLevel4Code
     val naceLevel1Code = deriveLevel1Code(naceLevel2Code)
@@ -160,18 +160,18 @@ class NACECheckDetailsController @Inject()(
     }
 
     val changeSectorUrl = routes.UndertakingController.getSector.url
-    val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code)
-    val changeLevel1_1Url = routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(isUpdate).url
+    val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code, mode)
+    val changeLevel1_1Url = routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(mode).url
     val navigatorLevel2Code = toNavigatorCode(naceLevel1Code, naceLevel2Code)
 
-    val changeLevel2Url = navigator.nextPage(navigatorLevel2Code, isUpdate).url
+    val changeLevel2Url = navigator.nextPage(navigatorLevel2Code, mode).url
 
-    val changeLevel3Url = navigator.nextPage(navigatorLevel2Code, isUpdate).url
+    val changeLevel3Url = navigator.nextPage(navigatorLevel2Code, mode).url
 
     val changeLevel4Url = if (showLevel3) {
-      navigator.nextPage(naceLevel3Code, isUpdate).url
+      navigator.nextPage(naceLevel3Code, mode).url
     } else {
-      navigator.nextPage(navigatorLevel2Code, isUpdate).url
+      navigator.nextPage(navigatorLevel2Code, mode).url
     }
 
     NaceCheckDetailsViewModel(
@@ -199,12 +199,12 @@ class NACECheckDetailsController @Inject()(
     )
   }
 
-  def getCheckDetails(usersLastAnswer: String, isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def getCheckDetails(usersLastAnswer: String, mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val messages: Messages = mcc.messagesApi.preferred(request)
 
     if (usersLastAnswer.nonEmpty) {
-      val viewModel = buildViewModel(usersLastAnswer, isUpdate)(messages)
+      val viewModel = buildViewModel(usersLastAnswer, mode)(messages)
       val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(usersLastAnswer)(messages)
         .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $usersLastAnswer"))
 
@@ -246,7 +246,7 @@ class NACECheckDetailsController @Inject()(
         formWithErrors => {
           request.body.asFormUrlEncoded.flatMap(_.get("naceCode").flatMap(_.headOption)) match {
             case Some(naceLevel4Code) =>
-              val viewModel = buildViewModel(naceLevel4Code, isUpdate = false)(messages)
+              val viewModel = buildViewModel(naceLevel4Code, "NewRegMode")(messages)
               val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(naceLevel4Code)(messages)
                 .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $naceLevel4Code"))
 
