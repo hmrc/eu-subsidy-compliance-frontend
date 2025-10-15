@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
@@ -32,13 +33,13 @@
 )
 
 
-@(form:  Form[_], isUpdate: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"animalFood4"}
 
 @actionUrl = @{
 
-        controllers.routes.FoodBeveragesController.submitAnimalFeedsLvl4Page(isUpdate)
+        controllers.routes.FoodBeveragesController.submitAnimalFeedsLvl4Page(mode)
 }
 
 
@@ -84,22 +85,22 @@
 <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
     <ol class="govuk-breadcrumbs__list">
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="@{if(isUpdate) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
+            <a class="govuk-breadcrumbs__link" href="@{if(mode == "UpdateToNaceMode") controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(isUpdate).toString>@messages("NACE.Lvl1.manufacturing")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString">@messages("NACE.Lvl1.manufacturing")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(isUpdate).toString>@messages("NACE.Manufacturing.Lvl2.1.Food")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(mode).toString>@messages("NACE.Manufacturing.Lvl2.1.Food")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage(isUpdate).toString>@messages("NACE.Manufacturing.Lvl2.2.Food")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage(mode).toString>@messages("NACE.Manufacturing.Lvl2.2.Food")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.FoodBeveragesController.loadFoodLvl3Page(isUpdate).toString>@messages("NACE.Manufacturing.Lvl3.PreparedAnimalFeeds")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.FoodBeveragesController.loadFoodLvl3Page(mode).toString>@messages("NACE.Manufacturing.Lvl3.PreparedAnimalFeeds")</a>
         </li>
     </ol>
 </nav>

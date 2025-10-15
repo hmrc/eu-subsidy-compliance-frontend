@@ -22,7 +22,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
@@ -31,7 +30,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.{NaceLevel4, NaceLevel4Catalogue}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
-
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -49,33 +47,33 @@ class NACECheckDetailsController @Inject()(
 
   private val confirmDetailsForm: Form[FormValues] = formWithSingleMandatoryField("confirmDetails")
 
-  private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
+  private def getLevel1ChangeUrl(level1Code: String, level2Code: String, mode: String): String = level1Code match {
     case "A" =>
-      if (level2Code == "02") routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
-      else routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(false).url
+      if (level2Code == "02") routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).url
+      else routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(mode).url
     case "C" | "F" | "G" | "H" | "J" | "M" | "N" | "O" =>
-      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).url
     case "B" | "D" | "E" | "I" | "K" | "L" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" =>
-      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(false).url
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).url
     case _ =>
-      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).url
   }
 
-  private def getLevel1_1ChangeUrl(level2Code: String): String = level2Code match {
+  private def getLevel1_1ChangeUrl(level2Code: String, mode: String): String = level2Code match {
     case "13" | "14" | "15" | "16" | "22" =>
-      routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage(false).url
+      routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage(mode).url
     case "26" | "27" | "28" | "33" =>
-      routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage(false).url
+      routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage(mode).url
     case "10" | "11" | "12" =>
-      routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage(false).url
+      routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage(mode).url
     case "19" | "20" | "21" | "23" | "24" | "25" =>
-      routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage(false).url
+      routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage(mode).url
     case "17" | "18" =>
-      routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage(false).url
+      routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage(mode).url
     case "29" | "30" | "32" =>
-      routes.GeneralTradeGroupsController.loadVehiclesTransportPage(false).url
+      routes.GeneralTradeGroupsController.loadVehiclesTransportPage(mode).url
     case _ =>
-      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(false).url
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).url
   }
 
   private def getLevel1_1Display(level2Code: String)(implicit messages: Messages): String = level2Code match {
@@ -97,7 +95,7 @@ class NACECheckDetailsController @Inject()(
     case _ => level2Code
   }
 
-  def getCheckDetails(usersLastAnswer: String, isUpdate: Boolean) : Action[AnyContent] = enrolled.async { implicit request =>
+  def getCheckDetails(usersLastAnswer: String, mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val messages: Messages = mcc.messagesApi.preferred(request)
 
@@ -186,21 +184,21 @@ class NACECheckDetailsController @Inject()(
 
       val changeSectorUrl = routes.UndertakingController.getSector.url
 
-      val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code)
+      val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code, mode)
 
-      val changeLevel1_1Url = getLevel1_1ChangeUrl(naceLevel2Code)
+      val changeLevel1_1Url = getLevel1_1ChangeUrl(naceLevel2Code, mode)
 
       val navigatorLevel2Code = toNavigatorCode(naceLevel1Code, naceLevel2Code)
 
       val changeLevel2Url = if (showLevel2) {
-        navigator.nextPage(naceLevel1Code, isUpdate).url
+        navigator.nextPage(naceLevel1Code, mode).url
       } else {
-        navigator.nextPage(navigatorLevel2Code, isUpdate).url
+        navigator.nextPage(navigatorLevel2Code, mode).url
       }
 
-      val changeLevel3Url = navigator.nextPage(navigatorLevel2Code, isUpdate).url
+      val changeLevel3Url = navigator.nextPage(navigatorLevel2Code, mode).url
 
-      val changeLevel4Url = navigator.nextPage(naceLevel3Code, isUpdate).url
+      val changeLevel4Url = navigator.nextPage(naceLevel3Code, mode).url
 
       println(
         s"""
@@ -254,7 +252,7 @@ class NACECheckDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          Redirect(routes.AccomodationUtilitiesController.loadGasManufactureLvl4Page(false)).toFuture
+          Redirect(routes.AccomodationUtilitiesController.loadGasManufactureLvl4Page("NewRegMode")).toFuture
         },
         form => {
           if (form.value == "true") {

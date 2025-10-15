@@ -152,10 +152,10 @@ class UndertakingController @Inject() (
   }
 
   def getSector: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
-    getSectorPage()
+    getSectorPage("NewRegMode")
   }
 
-  private def getSectorPage(isUpdate: Boolean = false)(implicit request: AuthenticatedEnrolledRequest[_]) = {
+  private def getSectorPage(mode: String)(implicit request: AuthenticatedEnrolledRequest[_]) = {
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       runStepIfEligible(journey) {
@@ -168,7 +168,7 @@ class UndertakingController @Inject() (
             form,
             journey.previous,
             journey.about.value.getOrElse(""),
-            isUpdate
+            mode
           )
         ).toFuture
       }
@@ -176,27 +176,27 @@ class UndertakingController @Inject() (
   }
 
   def getSectorForUpdate: Action[AnyContent] = enrolled.async { implicit request =>
-    getSectorPage(isUpdate = true)
+    getSectorPage("UpdateToNaceMode")
   }
 
   def postSector: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
-    updateSector()
+    updateSector("NewRegMode")
   }
   def updateIndustrySector: Action[AnyContent] = enrolled.async { implicit request =>
-    updateSector(isUpdate = true)
+    updateSector("UpdateToNaceMode")
   }
 
-  private def updateSector(isUpdate: Boolean = false)(implicit request: AuthenticatedEnrolledRequest[_]) = {
+  private def updateSector(mode: String)(implicit request: AuthenticatedEnrolledRequest[_]) = {
     implicit val eori: EORI = request.eoriNumber
     processFormSubmission[UndertakingJourney] { journey =>
       undertakingSectorForm
         .bindFromRequest()
         .fold(
           errors =>
-            BadRequest(undertakingSectorPage(errors, journey.previous, journey.about.value.get, isUpdate)).toContext,
+            BadRequest(undertakingSectorPage(errors, journey.previous, journey.about.value.get, mode)).toContext,
           form =>{
             store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-            Redirect(navigator.nextPage(form.value, false)).toContext
+            Redirect(navigator.nextPage(form.value, mode)).toContext
           }
         )
     }
