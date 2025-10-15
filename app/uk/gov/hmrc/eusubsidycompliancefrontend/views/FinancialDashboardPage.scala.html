@@ -32,7 +32,8 @@
   govukNotificationBanner : GovukNotificationBanner
 )
 
-@(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summary: FinancialDashboardSummary,
+sector: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"dashboard"}
 
 
@@ -105,7 +106,7 @@
             ),
             SummaryListRow(
                 key = Key(
-                    content = HtmlContent(s"""<span id="SectorCapId">${messages(s"$key.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector))}</span>""")
+                    content = HtmlContent(s"""<span id="SectorCapId">${messages(s"$key.sector.cap.heading", messages(s"NACE.$sector"))}</span>""")
                 ),
                 value = Value(
                     content = Text(summary.overall.sectorCap.toEuros)
