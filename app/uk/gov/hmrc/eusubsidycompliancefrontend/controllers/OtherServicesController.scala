@@ -33,21 +33,22 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.other.{Hairdressi
 import javax.inject.Inject
 
 class OtherServicesController @Inject() (
-                                          mcc: MessagesControllerComponents,
-                                          actionBuilders: ActionBuilders,
-                                          val store: Store,
-                                          navigator: Navigator,
-                                          otherLvl2Page: OtherLvl2Page,
-                                          membershipOrgActivitiesLvl3Page: MembershipOrgActivitiesLvl3Page,
-                                          personalServicesLvl3Page: PersonalServicesLvl3Page,
-                                          repairsLvl3Page: RepairsLvl3Page,
-                                          hairdressingLvl4Page: HairdressingLvl4Page,
-                                          householdRepairLvl4Page: HouseholdRepairLvl4Page,
-                                          membershipOrgsLvl4Page: MembershipOrgsLvl4Page,
-                                          motorVehiclesRepairLvl4Page: MotorVehiclesRepairLvl4Page,
-                                          otherMembershipOrgsLvl4Page: OtherMembershipOrgsLvl4Page,
-                                          otherPersonalServicesLvl4Page: OtherPersonalServicesLvl4Page)
-          (implicit val appConfig: AppConfig) extends BaseController(mcc){
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  otherLvl2Page: OtherLvl2Page,
+  membershipOrgActivitiesLvl3Page: MembershipOrgActivitiesLvl3Page,
+  personalServicesLvl3Page: PersonalServicesLvl3Page,
+  repairsLvl3Page: RepairsLvl3Page,
+  hairdressingLvl4Page: HairdressingLvl4Page,
+  householdRepairLvl4Page: HouseholdRepairLvl4Page,
+  membershipOrgsLvl4Page: MembershipOrgsLvl4Page,
+  motorVehiclesRepairLvl4Page: MotorVehiclesRepairLvl4Page,
+  otherMembershipOrgsLvl4Page: OtherMembershipOrgsLvl4Page,
+  otherPersonalServicesLvl4Page: OtherPersonalServicesLvl4Page
+)(implicit val appConfig: AppConfig)
+    extends BaseController(mcc) {
 
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
@@ -63,16 +64,17 @@ class OtherServicesController @Inject() (
   private val otherPersonalServicesLvl4PageForm: Form[FormValues] = formWithSingleMandatoryField("otherPersonal4")
 
   // otherLvl2Page
-  def loadOtherLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadOtherLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(otherLvl2Page(otherLvl2PageForm, "")).toFuture
   }
 
-  def submitOtherLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitOtherLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    otherLvl2PageForm.bindFromRequest()
+    otherLvl2PageForm
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(otherLvl2Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -80,16 +82,17 @@ class OtherServicesController @Inject() (
   }
 
   //membershipOrgActivitiesLvl3Page
-  def loadMembershipOrgActivitiesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadMembershipOrgActivitiesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(membershipOrgActivitiesLvl3Page(membershipOrgActivitiesLvl3PageForm, "")).toFuture
   }
 
-  def submitMembershipOrgActivitiesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitMembershipOrgActivitiesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    membershipOrgActivitiesLvl3PageForm.bindFromRequest()
+    membershipOrgActivitiesLvl3PageForm
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(membershipOrgActivitiesLvl3Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -97,16 +100,17 @@ class OtherServicesController @Inject() (
   }
 
   //personalServicesLvl3Page
-  def loadPersonalServicesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadPersonalServicesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(personalServicesLvl3Page(personalServicesLvl3PageForm, "")).toFuture
   }
 
-  def submitPersonalServicesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitPersonalServicesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    personalServicesLvl3PageForm.bindFromRequest()
+    personalServicesLvl3PageForm
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(personalServicesLvl3Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -114,16 +118,17 @@ class OtherServicesController @Inject() (
   }
 
   //repairsLvl3Page
-  def loadRepairsLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadRepairsLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(repairsLvl3Page(repairsLvl3PageForm, "")).toFuture
   }
 
-  def submitRepairsLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitRepairsLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    repairsLvl3PageForm.bindFromRequest()
+    repairsLvl3PageForm
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(repairsLvl3Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -131,16 +136,17 @@ class OtherServicesController @Inject() (
   }
 
   //hairdressingLvl4Page
-  def loadHairdressingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadHairdressingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(hairdressingLvl4Page(hairdressingLvl4PageForm, "")).toFuture
   }
 
-  def submitHairdressingLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitHairdressingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    hairdressingLvl4PageForm.bindFromRequest()
+    hairdressingLvl4PageForm
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(hairdressingLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -148,16 +154,17 @@ class OtherServicesController @Inject() (
   }
 
   //householdRepairLvl4Page
-  def loadHouseholdRepairLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadHouseholdRepairLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(householdRepairLvl4Page(householdRepairLvl4PageForm, "")).toFuture
   }
 
-  def submitHouseholdRepairLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitHouseholdRepairLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    householdRepairLvl4PageForm.bindFromRequest()
+    householdRepairLvl4PageForm
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(householdRepairLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -165,16 +172,17 @@ class OtherServicesController @Inject() (
   }
 
   //membershipOrgsLvl4Page
-  def loadMembershipOrgsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadMembershipOrgsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(membershipOrgsLvl4Page(membershipOrgsLvl4PageForm, "")).toFuture
   }
 
-  def submitMembershipOrgsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitMembershipOrgsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    membershipOrgsLvl4PageForm.bindFromRequest()
+    membershipOrgsLvl4PageForm
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(membershipOrgsLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -182,16 +190,17 @@ class OtherServicesController @Inject() (
   }
 
   //motorVehiclesRepairLvl4Page
-  def loadMotorVehiclesRepairLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadMotorVehiclesRepairLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(motorVehiclesRepairLvl4Page(motorVehiclesRepairLvl4PageForm, "")).toFuture
   }
 
-  def submitMotorVehiclesRepairLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitMotorVehiclesRepairLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    motorVehiclesRepairLvl4PageForm.bindFromRequest()
+    motorVehiclesRepairLvl4PageForm
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(motorVehiclesRepairLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -199,16 +208,17 @@ class OtherServicesController @Inject() (
   }
 
   //otherMembershipOrgsLvl4Page
-  def loadOtherMembershipOrgsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadOtherMembershipOrgsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(otherMembershipOrgsLvl4Page(otherMembershipOrgsLvl4PageForm, "")).toFuture
   }
 
-  def submitOtherMembershipOrgsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitOtherMembershipOrgsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    otherMembershipOrgsLvl4PageForm.bindFromRequest()
+    otherMembershipOrgsLvl4PageForm
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(otherMembershipOrgsLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -216,16 +226,17 @@ class OtherServicesController @Inject() (
   }
 
   //otherPersonalServicesLvl4Page
-  def loadOtherPersonalServicesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadOtherPersonalServicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(otherPersonalServicesLvl4Page(otherPersonalServicesLvl4PageForm, "")).toFuture
   }
 
-  def submitOtherPersonalServicesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitOtherPersonalServicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    otherPersonalServicesLvl4PageForm.bindFromRequest()
+    otherPersonalServicesLvl4PageForm
+      .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(otherPersonalServicesLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }

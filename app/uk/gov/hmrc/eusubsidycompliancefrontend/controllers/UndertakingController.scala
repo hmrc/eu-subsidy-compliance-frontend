@@ -194,8 +194,10 @@ class UndertakingController @Inject() (
         .bindFromRequest()
         .fold(
           errors =>
-            BadRequest(undertakingSectorPage(errors, journey.previous, journey.about.value.get, journey.mode)).toContext,
-          form =>{
+            BadRequest(
+              undertakingSectorPage(errors, journey.previous, journey.about.value.get, journey.mode)
+            ).toContext,
+          form => {
             store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
             Redirect(navigator.nextPage(form.value, journey.mode)).toContext
           }
@@ -356,10 +358,10 @@ class UndertakingController @Inject() (
       .toContext
       .foldF(Redirect(routes.UndertakingController.getAboutUndertaking).toFuture) { journey =>
         val result = for {
-          undertakingSector        <- journey.sector.value.toContext
+          undertakingSector <- journey.sector.value.toContext
           undertakingVerifiedEmail <- emailService.retrieveVerifiedEmailAddressByEORI(eori).toContext
-          undertakingAddBusiness   <- journey.addBusiness.value.toContext
-          _                        <- store.update[UndertakingJourney](j => j.copy(cya = UndertakingCyaFormPage(Some(true)))).toContext
+          undertakingAddBusiness <- journey.addBusiness.value.toContext
+          _ <- store.update[UndertakingJourney](j => j.copy(cya = UndertakingCyaFormPage(Some(true)))).toContext
         } yield {
           val naceLevel3Code = undertakingSector.toString.dropRight(1)
           val naceLevel2Code = undertakingSector.toString.take(2)
@@ -388,21 +390,21 @@ class UndertakingController @Inject() (
             case _ => "C"
           }
           val industrySectorKey: String = naceLevel2Code match {
-            case "01"        => "agriculture"
-            case "03"        => "fisheryAndAquaculture"
-            case _           => "generalTrade"
+            case "01" => "agriculture"
+            case "03" => "fisheryAndAquaculture"
+            case _ => "generalTrade"
           }
           Ok(
             cyaPage(
-              eori               = eori,
-              sector             = undertakingSector,
-              verifiedEmail      = undertakingVerifiedEmail,
-              addBusiness        = undertakingAddBusiness.toString,
-              naceLevel1Code     = naceLevel1Code,
-              naceLevel2Code     = naceLevel2Code,
-              naceLevel3Code     = naceLevel3Code,
-              industrySectorKey  = industrySectorKey,
-              previous           = routes.UndertakingController.backFromCheckYourAnswers.url
+              eori = eori,
+              sector = undertakingSector,
+              verifiedEmail = undertakingVerifiedEmail,
+              addBusiness = undertakingAddBusiness.toString,
+              naceLevel1Code = naceLevel1Code,
+              naceLevel2Code = naceLevel2Code,
+              naceLevel3Code = naceLevel3Code,
+              industrySectorKey = industrySectorKey,
+              previous = routes.UndertakingController.backFromCheckYourAnswers.url
             )
           )
         }
@@ -410,7 +412,6 @@ class UndertakingController @Inject() (
         result.getOrElse(Redirect(journey.previous))
       }
   }
-
 
   def postCheckAnswers: Action[AnyContent] = verifiedEoriUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -531,27 +532,28 @@ class UndertakingController @Inject() (
             case _ => "C"
           }
           val industrySectorKey: String = naceLevel2Code match {
-            case "01"        => "agriculture"
-            case "03"        => "fisheryAndAquaculture"
-            case _           => "generalTrade"
+            case "01" => "agriculture"
+            case "03" => "fisheryAndAquaculture"
+            case _ => "generalTrade"
           }
-          val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(naceLevel4Code)
+          val naceLevel4Notes = NaceLevel4Catalogue
+            .fromMessages(naceLevel4Code)
             .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $naceLevel4Code"))
 
-
           Ok(
-          amendUndertakingPage(
-            updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
-            verifiedEmail,
-            naceLevel1Code = naceLevel1Code,
-            naceLevel2Code = naceLevel2Code,
-            naceLevel3Code = naceLevel3Code,
-            naceLevel4Notes = naceLevel4Notes,
-            industrySectorKey = industrySectorKey,
-            previous  = routes.AccountController.getAccountPage.url
+            amendUndertakingPage(
+              updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
+              verifiedEmail,
+              naceLevel1Code = naceLevel1Code,
+              naceLevel2Code = naceLevel2Code,
+              naceLevel3Code = naceLevel3Code,
+              naceLevel4Notes = naceLevel4Notes,
+              industrySectorKey = industrySectorKey,
+              previous = routes.AccountController.getAccountPage.url
+            )
           )
-        )
-      }}
+        }
+      }
     }
   }
 
