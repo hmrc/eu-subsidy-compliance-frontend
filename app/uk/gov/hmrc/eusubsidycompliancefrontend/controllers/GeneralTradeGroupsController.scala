@@ -33,23 +33,23 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.lvl
 
 import javax.inject.Inject
 
-class GeneralTradeGroupsController @Inject()(
-                                             mcc: MessagesControllerComponents,
-                                             actionBuilders: ActionBuilders,
-                                             val store: Store,
-                                             navigator: Navigator,
-                                             generalTradeUndertakingPage: GeneralTradeUndertakingPage,
-                                             generalTradeUndertakingOtherPage: GeneralTradeUndertakingOtherPage,
-                                             lvl2_1GroupsPage: Lvl2_1GroupsPage,
-                                             clothesTextilesHomewarePage: ClothesTextilesHomewarePage,
-                                             computersElectronicsMachineryPage: ComputersElectronicsMachineryPage,
-                                             foodBeveragesTobaccoPage: FoodBeveragesTobaccoPage,
-                                             metalsChemicalsMaterialsPage: MetalsChemicalsMaterialsPage,
-                                             paperPrintedProductsPage: PaperPrintedProductsPage,
-                                             vehiclesTransportPage: VehiclesTransportPage
-                                           )(implicit
-                                             val appConfig: AppConfig
-                                           ) extends BaseController(mcc){
+class GeneralTradeGroupsController @Inject() (
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  generalTradeUndertakingPage: GeneralTradeUndertakingPage,
+  generalTradeUndertakingOtherPage: GeneralTradeUndertakingOtherPage,
+  lvl2_1GroupsPage: Lvl2_1GroupsPage,
+  clothesTextilesHomewarePage: ClothesTextilesHomewarePage,
+  computersElectronicsMachineryPage: ComputersElectronicsMachineryPage,
+  foodBeveragesTobaccoPage: FoodBeveragesTobaccoPage,
+  metalsChemicalsMaterialsPage: MetalsChemicalsMaterialsPage,
+  paperPrintedProductsPage: PaperPrintedProductsPage,
+  vehiclesTransportPage: VehiclesTransportPage
+)(implicit
+  val appConfig: AppConfig
+) extends BaseController(mcc) {
 
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
@@ -65,17 +65,17 @@ class GeneralTradeGroupsController @Inject()(
   private val vehiclesTransportForm: Form[FormValues] = formWithSingleMandatoryField("manu-g7")
 
   //GeneralTradeUndertakingPage
-  def loadGeneralTradeUndertakingPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadGeneralTradeUndertakingPage(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(generalTradeUndertakingPage(generalTradeUndertakingForm, "")).toFuture
   }
 
-  def submitGeneralTradeUndertakingPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitGeneralTradeUndertakingPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     generalTradeUndertakingForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(generalTradeUndertakingPage(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -83,17 +83,17 @@ class GeneralTradeGroupsController @Inject()(
   }
 
   //GeneralTradeUndertakingOtherPage
-  def loadGeneralTradeUndertakingOtherPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadGeneralTradeUndertakingOtherPage(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(generalTradeUndertakingOtherPage(generalTradeUndertakingOtherForm, "")).toFuture
   }
 
-  def submitGeneralTradeUndertakingOtherPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitGeneralTradeUndertakingOtherPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     generalTradeUndertakingOtherForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(generalTradeUndertakingOtherPage(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -101,17 +101,17 @@ class GeneralTradeGroupsController @Inject()(
   }
 
   //Lvl2_1GroupsPage
-  def loadLvl2_1GroupsPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadLvl2_1GroupsPage(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(lvl2_1GroupsPage(lvl2_1GroupsForm, "")).toFuture
   }
 
-  def submitLvl2_1GroupsPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitLvl2_1GroupsPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     lvl2_1GroupsForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(lvl2_1GroupsPage(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -119,17 +119,17 @@ class GeneralTradeGroupsController @Inject()(
   }
 
   //ClothesTextilesHomewarePage
-  def loadClothesTextilesHomewarePage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadClothesTextilesHomewarePage(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(clothesTextilesHomewarePage(clothesTextilesHomewareForm, "")).toFuture
   }
 
-  def submitClothesTextilesHomewarePage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitClothesTextilesHomewarePage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     clothesTextilesHomewareForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(clothesTextilesHomewarePage(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -137,17 +137,17 @@ class GeneralTradeGroupsController @Inject()(
   }
 
   //ComputersElectronicsMachineryPage
-  def loadComputersElectronicsMachineryPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadComputersElectronicsMachineryPage(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(computersElectronicsMachineryPage(computersElectronicsMachineryForm, "")).toFuture
   }
 
-  def submitComputersElectronicsMachineryPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitComputersElectronicsMachineryPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     computersElectronicsMachineryForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(computersElectronicsMachineryPage(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -155,17 +155,17 @@ class GeneralTradeGroupsController @Inject()(
   }
 
   //FoodBeveragesTobaccoPage
-  def loadFoodBeveragesTobaccoPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadFoodBeveragesTobaccoPage(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(foodBeveragesTobaccoPage(foodBeveragesTobaccoForm, "")).toFuture
   }
 
-  def submitFoodBeveragesTobaccoPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitFoodBeveragesTobaccoPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     foodBeveragesTobaccoForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(foodBeveragesTobaccoPage(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -173,17 +173,17 @@ class GeneralTradeGroupsController @Inject()(
   }
 
   //MetalsChemicalsMaterialsPage
-  def loadMetalsChemicalsMaterialsPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadMetalsChemicalsMaterialsPage(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(metalsChemicalsMaterialsPage(metalsChemicalsMaterialsForm, "")).toFuture
   }
 
-  def submitMetalsChemicalsMaterialsPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitMetalsChemicalsMaterialsPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     metalsChemicalsMaterialsForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(metalsChemicalsMaterialsPage(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -191,17 +191,17 @@ class GeneralTradeGroupsController @Inject()(
   }
 
   //PaperPrintedProductsPage
-  def loadPaperPrintedProductsPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadPaperPrintedProductsPage(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(paperPrintedProductsPage(paperPrintedProductsForm, "")).toFuture
   }
 
-  def submitPaperPrintedProductsPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitPaperPrintedProductsPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     paperPrintedProductsForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(paperPrintedProductsPage(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -209,17 +209,17 @@ class GeneralTradeGroupsController @Inject()(
   }
 
   //VehiclesTransportPage
-  def loadVehiclesTransportPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadVehiclesTransportPage(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(vehiclesTransportPage(vehiclesTransportForm, "")).toFuture
   }
 
-  def submitVehiclesTransportPage() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitVehiclesTransportPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     vehiclesTransportForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(vehiclesTransportPage(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }

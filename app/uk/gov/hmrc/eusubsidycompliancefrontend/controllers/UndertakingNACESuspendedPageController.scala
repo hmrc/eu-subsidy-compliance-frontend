@@ -24,8 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UndertakingNACESuspend
 import javax.inject.Inject
 import scala.concurrent.Future
 
-
-class UndertakingNACESuspendedPageController @Inject()(
+class UndertakingNACESuspendedPageController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
   undertakingNACESuspendedPage: UndertakingNACESuspendedPage

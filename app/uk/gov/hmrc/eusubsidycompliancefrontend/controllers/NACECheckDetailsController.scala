@@ -28,26 +28,30 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.{NaceLevel4, NaceLevel4Catalogue}
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4Catalogue
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class NACECheckDetailsController @Inject()(
-                                            mcc: MessagesControllerComponents,
-                                            store: Store,
-                                            actionBuilders: ActionBuilders,
-                                            naceCYAView: ConfirmDetailsPage,
-                                            navigator: Navigator
-                                          )(implicit ec: ExecutionContext, appConfig: AppConfig) extends BaseController(mcc) {
+class NACECheckDetailsController @Inject() (
+  mcc: MessagesControllerComponents,
+  store: Store,
+  actionBuilders: ActionBuilders,
+  naceCYAView: ConfirmDetailsPage,
+  navigator: Navigator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends BaseController(mcc) {
 
   import actionBuilders._
 
   private val confirmDetailsForm: Form[FormValues] = formWithSingleMandatoryField("confirmDetails")
+  val NewRegChangeMode = "NewRegChangeMode"
 
-  private def getLevel1ChangeUrl(level1Code: String, level2Code: String ): String = level1Code match {
+
+  private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
     case "A" =>
       if (level2Code == "02") routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
       else routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
@@ -87,18 +91,19 @@ class NACECheckDetailsController @Inject()(
   }
 
   private def toNavigatorCode(level1Code: String, level2Code: String): String = level1Code match {
-    case "A" => level2Code match {
-      case "01" | "02" => "2"
-      case "03" => "3"
-      case _ => level2Code
-    }
+    case "A" =>
+      level2Code match {
+        case "01" | "02" => "2"
+        case "03" => "3"
+        case _ => level2Code
+      }
     case _ => level2Code
   }
 
-  def getCheckDetails(usersLastAnswer: String) : Action[AnyContent] = enrolled.async { implicit request =>
+  def getCheckDetails(usersLastAnswer: String): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val messages: Messages = mcc.messagesApi.preferred(request)
-
+    store.update[UndertakingJourney](_.copy(mode = NewRegChangeMode))
     if (usersLastAnswer.nonEmpty) {
       val naceLevel4Code = usersLastAnswer
       val naceLevel3Code = if (naceLevel4Code.length >= 4) naceLevel4Code.take(4) else naceLevel4Code
@@ -106,17 +111,17 @@ class NACECheckDetailsController @Inject()(
 
       val naceLevel1Code = naceLevel2Code match {
         case "01" | "02" | "03" => "A"
-        case "05"|"06"|"07"|"08"|"09" => "B"
-        case "10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"=> "C"
-        case "18"|"19"|"20"|"21"|"22"|"23"|"24"|"25"=> "C"
-        case "26"|"27"|"28"|"29"|"30"|"31"|"32"|"33"=> "C"
+        case "05" | "06" | "07" | "08" | "09" => "B"
+        case "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" => "C"
+        case "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" => "C"
+        case "26" | "27" | "28" | "29" | "30" | "31" | "32" | "33" => "C"
         case "35" => "D"
-        case "36"| "37" |"38" |"39" => "E"
-        case "41"| "42" |"43" => "F"
+        case "36" | "37" | "38" | "39" => "E"
+        case "41" | "42" | "43" => "F"
         case "46" | "47" => "G"
-        case "49"| "50" |"51" |"52" |"53" => "H"
-        case "55"| "56" => "I"
-        case "58"| "59"| "60" => "J"
+        case "49" | "50" | "51" | "52" | "53" => "H"
+        case "55" | "56" => "I"
+        case "58" | "59" | "60" => "J"
         case "61" | "62" | "63" => "K"
         case "64" | "65" | "66" => "L"
         case "68" => "M"
@@ -125,9 +130,9 @@ class NACECheckDetailsController @Inject()(
         case "84" => "P"
         case "85" => "Q"
         case "86" | "87" | "88" => "R"
-        case "90"| "91"| "92" | "93" => "S"
-        case "94" | "95" |"96" => "T"
-        case "97"| "98" => "U"
+        case "90" | "91" | "92" | "93" => "S"
+        case "94" | "95" | "96" => "T"
+        case "97" | "98" => "U"
         case "99" => "V"
         case _ => "D"
       }
@@ -151,7 +156,8 @@ class NACECheckDetailsController @Inject()(
         level4Heading
       }
 
-      val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(naceLevel4Code)(messages)
+      val naceLevel4Notes = NaceLevel4Catalogue
+        .fromMessages(naceLevel4Code)(messages)
         .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $naceLevel4Code"))
 
       val sector = naceLevel2Code match {
@@ -169,7 +175,7 @@ class NACECheckDetailsController @Inject()(
 
       val showLevel2 = {
         naceLevel1Code match {
-          case "D" | "A"| "Q" => false
+          case "D" | "A" | "Q" => false
           case _ => true
         }
       }
@@ -234,11 +240,13 @@ class NACECheckDetailsController @Inject()(
         showLevel3 = showLevel3,
         showLevel4 = showLevel4
       )
-      Ok(naceCYAView(
-        confirmDetailsForm,
-        viewModel,
-        naceLevel4Notes
-      )(request, messages, appConfig)).toFuture
+      Ok(
+        naceCYAView(
+          confirmDetailsForm,
+          viewModel,
+          naceLevel4Notes
+        )(request, messages, appConfig)
+      ).toFuture
 
     } else {
       Redirect(routes.UndertakingController.getSector).toFuture

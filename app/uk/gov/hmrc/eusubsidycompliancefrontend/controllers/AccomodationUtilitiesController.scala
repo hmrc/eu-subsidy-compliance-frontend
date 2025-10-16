@@ -34,262 +34,260 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.water._
 
 import javax.inject.Inject
 
-class AccomodationUtilitiesController @Inject()(
-                                             mcc: MessagesControllerComponents,
-                                             actionBuilders: ActionBuilders,
-                                             val store: Store,
-                                             navigator: Navigator,
-                                             AccommodationFoodLvl2Page: AccommodationFoodLvl2Page,
-                                             AccommodationLvl3Page: AccommodationLvl3Page,
-                                             EventCateringOtherFoodActivitiesLvl4Page: EventCateringOtherFoodActivitiesLvl4Page,
-                                             FoodBeverageActivitiesLvl3Page: FoodBeverageActivitiesLvl3Page,
-                                             RestaurantFoodServicesLvl4Page: RestaurantFoodServicesLvl4Page,
-                                             ElectricityLvl3Page: ElectricityLvl3Page,
-                                             ElectricityLvl4Page: ElectricityLvl4Page,
-                                             GasManufactureLvl4Page: GasManufactureLvl4Page,
-                                             WasteCollectionLvl4Page: WasteCollectionLvl4Page,
-                                             WasteCollectionRecoveryLvl3Page: WasteCollectionRecoveryLvl3Page,
-                                             WasteDisposalLvl4Page: WasteDisposalLvl4Page,
-                                             WasteRecoveryLvl4Page: WasteRecoveryLvl4Page,
-                                             WaterLvl2Page: WaterLvl2Page,
-
-                                           )(implicit
-                                             val appConfig: AppConfig
-                                           ) extends BaseController(mcc){
+class AccomodationUtilitiesController @Inject() (
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  AccommodationFoodLvl2Page: AccommodationFoodLvl2Page,
+  AccommodationLvl3Page: AccommodationLvl3Page,
+  EventCateringOtherFoodActivitiesLvl4Page: EventCateringOtherFoodActivitiesLvl4Page,
+  FoodBeverageActivitiesLvl3Page: FoodBeverageActivitiesLvl3Page,
+  RestaurantFoodServicesLvl4Page: RestaurantFoodServicesLvl4Page,
+  ElectricityLvl3Page: ElectricityLvl3Page,
+  ElectricityLvl4Page: ElectricityLvl4Page,
+  GasManufactureLvl4Page: GasManufactureLvl4Page,
+  WasteCollectionLvl4Page: WasteCollectionLvl4Page,
+  WasteCollectionRecoveryLvl3Page: WasteCollectionRecoveryLvl3Page,
+  WasteDisposalLvl4Page: WasteDisposalLvl4Page,
+  WasteRecoveryLvl4Page: WasteRecoveryLvl4Page,
+  WaterLvl2Page: WaterLvl2Page
+)(implicit
+  val appConfig: AppConfig
+) extends BaseController(mcc) {
 
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
 
-  private val  AccommodationFoodLvl2Form: Form[FormValues] = formWithSingleMandatoryField("accommodation2")
-  private val  AccommodationLvl3Form: Form[FormValues] = formWithSingleMandatoryField("accommodation3")
-  private val  EventCateringOtherFoodActivitiesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("catering4")
-  private val  FoodBeverageActivitiesLvl3Form: Form[FormValues] = formWithSingleMandatoryField("foodActs3")
-  private val  RestaurantFoodServicesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("restaurant4")
-  private val  ElectricityLvl3Form: Form[FormValues] = formWithSingleMandatoryField("electricity3")
-  private val  ElectricityLvl4Form: Form[FormValues] = formWithSingleMandatoryField("electricity4")
-  private val  GasManufactureLvl4Form: Form[FormValues] = formWithSingleMandatoryField("gas4")
-  private val  WasteCollectionLvl4Form: Form[FormValues] = formWithSingleMandatoryField("wasteCollection4")
-  private val  WasteCollectionRecoveryLvl3Form: Form[FormValues] = formWithSingleMandatoryField("wasteCollection3")
-  private val  WasteDisposalLvl4Form: Form[FormValues] = formWithSingleMandatoryField("wasteDisposal4")
-  private val  WasteRecoveryLvl4Form: Form[FormValues] = formWithSingleMandatoryField("wasteRecovery4")
-  private val  WaterLvl2Form: Form[FormValues] = formWithSingleMandatoryField("water2")
+  private val AccommodationFoodLvl2Form: Form[FormValues] = formWithSingleMandatoryField("accommodation2")
+  private val AccommodationLvl3Form: Form[FormValues] = formWithSingleMandatoryField("accommodation3")
+  private val EventCateringOtherFoodActivitiesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("catering4")
+  private val FoodBeverageActivitiesLvl3Form: Form[FormValues] = formWithSingleMandatoryField("foodActs3")
+  private val RestaurantFoodServicesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("restaurant4")
+  private val ElectricityLvl3Form: Form[FormValues] = formWithSingleMandatoryField("electricity3")
+  private val ElectricityLvl4Form: Form[FormValues] = formWithSingleMandatoryField("electricity4")
+  private val GasManufactureLvl4Form: Form[FormValues] = formWithSingleMandatoryField("gas4")
+  private val WasteCollectionLvl4Form: Form[FormValues] = formWithSingleMandatoryField("wasteCollection4")
+  private val WasteCollectionRecoveryLvl3Form: Form[FormValues] = formWithSingleMandatoryField("wasteCollection3")
+  private val WasteDisposalLvl4Form: Form[FormValues] = formWithSingleMandatoryField("wasteDisposal4")
+  private val WasteRecoveryLvl4Form: Form[FormValues] = formWithSingleMandatoryField("wasteRecovery4")
+  private val WaterLvl2Form: Form[FormValues] = formWithSingleMandatoryField("water2")
 
-  def loadAccommodationFoodLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadAccommodationFoodLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(AccommodationFoodLvl2Page(AccommodationFoodLvl2Form, "")).toFuture
   }
 
-  def submitAccommodationFoodLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitAccommodationFoodLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     AccommodationFoodLvl2Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(AccommodationFoodLvl2Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-
-  def loadAccommodationLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadAccommodationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(AccommodationLvl3Page(AccommodationLvl3Form, "")).toFuture
   }
 
-  def submitAccommodationLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitAccommodationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     AccommodationLvl3Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(AccommodationLvl3Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  def loadEventCateringOtherFoodActivitiesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadEventCateringOtherFoodActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(EventCateringOtherFoodActivitiesLvl4Page(EventCateringOtherFoodActivitiesLvl4Form, "")).toFuture
   }
 
-  def submitEventCateringOtherFoodActivitiesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitEventCateringOtherFoodActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     EventCateringOtherFoodActivitiesLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(EventCateringOtherFoodActivitiesLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  def loadFoodBeverageActivitiesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadFoodBeverageActivitiesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(FoodBeverageActivitiesLvl3Page(FoodBeverageActivitiesLvl3Form, "")).toFuture
   }
 
-  def submitFoodBeverageActivitiesLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitFoodBeverageActivitiesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     FoodBeverageActivitiesLvl3Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(FoodBeverageActivitiesLvl3Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  def loadRestaurantFoodServicesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadRestaurantFoodServicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(RestaurantFoodServicesLvl4Page(RestaurantFoodServicesLvl4Form, "")).toFuture
   }
 
-  def submitRestaurantFoodServicesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitRestaurantFoodServicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     RestaurantFoodServicesLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(RestaurantFoodServicesLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  def loadElectricityLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadElectricityLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(ElectricityLvl3Page(ElectricityLvl3Form, "")).toFuture
   }
 
-  def submitElectricityLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitElectricityLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     ElectricityLvl3Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(ElectricityLvl3Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  def loadElectricityLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadElectricityLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(ElectricityLvl4Page(ElectricityLvl4Form, "")).toFuture
   }
 
-  def submitElectricityLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitElectricityLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     ElectricityLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(ElectricityLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  def loadGasManufactureLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadGasManufactureLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(GasManufactureLvl4Page(GasManufactureLvl4Form, "")).toFuture
   }
 
-  def submitGasManufactureLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitGasManufactureLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     GasManufactureLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(GasManufactureLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  def loadWasteCollectionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadWasteCollectionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(WasteCollectionLvl4Page(WasteCollectionLvl4Form, "")).toFuture
   }
 
-  def submitWasteCollectionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitWasteCollectionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     WasteCollectionLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(WasteCollectionLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  def loadWasteCollectionRecoveryLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadWasteCollectionRecoveryLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(WasteCollectionRecoveryLvl3Page(WasteCollectionRecoveryLvl3Form, "")).toFuture
   }
 
-  def submitWasteCollectionRecoveryLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitWasteCollectionRecoveryLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     WasteCollectionRecoveryLvl3Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(WasteCollectionRecoveryLvl3Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  def loadWasteDisposalLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadWasteDisposalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(WasteDisposalLvl4Page(WasteDisposalLvl4Form, "")).toFuture
   }
 
-  def submitWasteDisposalLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitWasteDisposalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     WasteDisposalLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(WasteDisposalLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  def loadWasteRecoveryLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadWasteRecoveryLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(WasteRecoveryLvl4Page(WasteRecoveryLvl4Form, "")).toFuture
   }
 
-  def submitWasteRecoveryLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitWasteRecoveryLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     WasteRecoveryLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(WasteRecoveryLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  def loadWaterLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadWaterLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(WaterLvl2Page(WaterLvl2Form, "")).toFuture
   }
 
-  def submitWaterLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitWaterLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     WaterLvl2Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(WaterLvl2Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }

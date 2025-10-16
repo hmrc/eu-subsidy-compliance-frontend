@@ -35,24 +35,24 @@ import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.Inject
 
 class ConstructionController @Inject() (
-                                             mcc: MessagesControllerComponents,
-                                             actionBuilders: ActionBuilders,
-                                             val store: Store,
-                                             navigator: Navigator,
-                                             buildingCompletionLvl4Page: BuildingCompletionLvl4Page,
-                                             civilEngineeringLvl3Page: CivilEngineeringLvl3Page,
-                                             constructionLvl2Page: ConstructionLvl2Page,
-                                             constructionRoadsRailwaysLvl4Page: ConstructionRoadsRailwaysLvl4Page,
-                                             constructionUtilityProjectsLvl4Page: ConstructionUtilityProjectsLvl4Page,
-                                             demolitionSitePreparationLvl4Page: DemolitionSitePreparationLvl4Page,
-                                             electricalPlumbingConstructionLvl4Page: ElectricalPlumbingConstructionLvl4Page,
-                                             otherCivilEngineeringProjectsLvl4Page: OtherCivilEngineeringProjectsLvl4Page,
-                                             otherSpecialisedConstructionLvl4Page: OtherSpecialisedConstructionLvl4Page,
-                                             specialisedConstructionActivitiesLvl4Page: SpecialisedConstructionActivitiesLvl4Page,
-                                             specialisedConstructionLvl3Page: SpecialisedConstructionLvl3Page
-                                           )(implicit
-                                             val appConfig: AppConfig
-                                           ) extends BaseController(mcc){
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  buildingCompletionLvl4Page: BuildingCompletionLvl4Page,
+  civilEngineeringLvl3Page: CivilEngineeringLvl3Page,
+  constructionLvl2Page: ConstructionLvl2Page,
+  constructionRoadsRailwaysLvl4Page: ConstructionRoadsRailwaysLvl4Page,
+  constructionUtilityProjectsLvl4Page: ConstructionUtilityProjectsLvl4Page,
+  demolitionSitePreparationLvl4Page: DemolitionSitePreparationLvl4Page,
+  electricalPlumbingConstructionLvl4Page: ElectricalPlumbingConstructionLvl4Page,
+  otherCivilEngineeringProjectsLvl4Page: OtherCivilEngineeringProjectsLvl4Page,
+  otherSpecialisedConstructionLvl4Page: OtherSpecialisedConstructionLvl4Page,
+  specialisedConstructionActivitiesLvl4Page: SpecialisedConstructionActivitiesLvl4Page,
+  specialisedConstructionLvl3Page: SpecialisedConstructionLvl3Page
+)(implicit
+  val appConfig: AppConfig
+) extends BaseController(mcc) {
 
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
@@ -70,17 +70,17 @@ class ConstructionController @Inject() (
   private val specialisedConstructionActivitiesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("special4")
 
   //ConstructionLvl2Page
-  def loadConstructionLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadConstructionLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(constructionLvl2Page(constructionLvl2Form, "")).toFuture
   }
 
-  def submitConstructionLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitConstructionLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     constructionLvl2Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(constructionLvl2Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -88,17 +88,17 @@ class ConstructionController @Inject() (
   }
 
   //CivilEngineeringLvl3Page
-  def loadCivilEngineeringLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadCivilEngineeringLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(civilEngineeringLvl3Page(civilEngineeringLvl3Form, "")).toFuture
   }
 
-  def submitCivilEngineeringLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitCivilEngineeringLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     civilEngineeringLvl3Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(civilEngineeringLvl3Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -106,17 +106,17 @@ class ConstructionController @Inject() (
   }
 
   //SpecialisedConstructionLvl3Page
-  def loadSpecialisedConstructionLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadSpecialisedConstructionLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(specialisedConstructionLvl3Page(specialisedConstructionLvl3Form, "")).toFuture
   }
 
-  def submitSpecialisedConstructionLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitSpecialisedConstructionLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     specialisedConstructionLvl3Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(specialisedConstructionLvl3Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -124,17 +124,17 @@ class ConstructionController @Inject() (
   }
 
   //BuildingCompletionLvl4Page
-  def loadBuildingCompletionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadBuildingCompletionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(buildingCompletionLvl4Page(buildingCompletionLvl4Form, "")).toFuture
   }
 
-  def submitBuildingCompletionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitBuildingCompletionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     buildingCompletionLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(buildingCompletionLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -142,17 +142,17 @@ class ConstructionController @Inject() (
   }
 
   //ConstructionRoadsRailwaysLvl4Page
-  def loadConstructionRoadsRailwaysLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadConstructionRoadsRailwaysLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(constructionRoadsRailwaysLvl4Page(constructionRoadsRailwaysLvl4Form, "")).toFuture
   }
 
-  def submitConstructionRoadsRailwaysLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitConstructionRoadsRailwaysLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     constructionRoadsRailwaysLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(constructionRoadsRailwaysLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -160,17 +160,17 @@ class ConstructionController @Inject() (
   }
 
   //ConstructionUtilityProjectsLvl4Page
-  def loadConstructionUtilityProjectsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadConstructionUtilityProjectsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(constructionUtilityProjectsLvl4Page(constructionUtilityProjectsLvl4Form, "")).toFuture
   }
 
-  def submitConstructionUtilityProjectsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitConstructionUtilityProjectsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     constructionUtilityProjectsLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(constructionUtilityProjectsLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -178,17 +178,17 @@ class ConstructionController @Inject() (
   }
 
   //DemolitionSitePreparationLvl4Page
-  def loadDemolitionSitePreparationLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadDemolitionSitePreparationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(demolitionSitePreparationLvl4Page(demolitionSitePreparationLvl4Form, "")).toFuture
   }
 
-  def submitDemolitionSitePreparationLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitDemolitionSitePreparationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     demolitionSitePreparationLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(demolitionSitePreparationLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -196,17 +196,17 @@ class ConstructionController @Inject() (
   }
 
   //ElectricalPlumbingConstructionLvl4Page
-  def loadElectricalPlumbingConstructionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadElectricalPlumbingConstructionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(electricalPlumbingConstructionLvl4Page(electricalPlumbingConstructionLvl4Form, "")).toFuture
   }
 
-  def submitElectricalPlumbingConstructionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitElectricalPlumbingConstructionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     electricalPlumbingConstructionLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(electricalPlumbingConstructionLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -214,17 +214,17 @@ class ConstructionController @Inject() (
   }
 
   //OtherCivilEngineeringProjectsLvl4Page
-  def loadOtherCivilEngineeringProjectsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadOtherCivilEngineeringProjectsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(otherCivilEngineeringProjectsLvl4Page(otherCivilEngineeringProjectsLvl4Form, "")).toFuture
   }
 
-  def submitOtherCivilEngineeringProjectsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitOtherCivilEngineeringProjectsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     otherCivilEngineeringProjectsLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(otherCivilEngineeringProjectsLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -232,17 +232,17 @@ class ConstructionController @Inject() (
   }
 
   //OtherSpecialisedConstructionLvl4Page
-  def loadOtherSpecialisedConstructionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadOtherSpecialisedConstructionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(otherSpecialisedConstructionLvl4Page(otherSpecialisedConstructionLvl4Form, "")).toFuture
   }
 
-  def submitOtherSpecialisedConstructionLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitOtherSpecialisedConstructionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     otherSpecialisedConstructionLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(otherSpecialisedConstructionLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
@@ -250,17 +250,17 @@ class ConstructionController @Inject() (
   }
 
   //SpecialisedConstructionActivitiesLvl4Page
-  def loadSpecialisedConstructionActivitiesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def loadSpecialisedConstructionActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(specialisedConstructionActivitiesLvl4Page(specialisedConstructionActivitiesLvl4Form, "")).toFuture
   }
 
-  def submitSpecialisedConstructionActivitiesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitSpecialisedConstructionActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     specialisedConstructionActivitiesLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(specialisedConstructionActivitiesLvl4Page(formWithErrors, "")).toFuture,
-        form =>{
+        form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }

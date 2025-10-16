@@ -32,27 +32,25 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.artSportsRecreati
 
 import javax.inject.Inject
 
-class ArtsController @Inject()(
-                                mcc: MessagesControllerComponents,
-                                actionBuilders: ActionBuilders,
-                                val store: Store,
-                                navigator: Navigator,
-                                AmusementAndRecreationLvl4Page: AmusementAndRecreationLvl4Page,
-                                ArtsCreationLvl4Page: ArtsCreationLvl4Page,
-                                ArtsCreationPerformingLvl3Page: ArtsCreationPerformingLvl3Page,
-                                ArtsPerformingSupportActivitiesLvl4Page: ArtsPerformingSupportActivitiesLvl4Page,
-                                ArtsSportsRecreationLvl2Page: ArtsSportsRecreationLvl2Page,
-                                BotanicalZoologicalReservesLvl4Page: BotanicalZoologicalReservesLvl4Page,
-                                LibrariesArchivesCulturalLvl3Page: LibrariesArchivesCulturalLvl3Page,
-                                LibrariesArchivesLvl4Page: LibrariesArchivesLvl4Page,
-                                MuseumsCollectionsMomumentsLvl4Page: MuseumsCollectionsMomumentsLvl4Page,
-                                SportsAmusementRecreationLvl3Page: SportsAmusementRecreationLvl3Page,
-                                SportsLvl4Page: SportsLvl4Page,
-
-
-                              )(implicit
-                                val appConfig: AppConfig
-                              ) extends BaseController(mcc) {
+class ArtsController @Inject() (
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  AmusementAndRecreationLvl4Page: AmusementAndRecreationLvl4Page,
+  ArtsCreationLvl4Page: ArtsCreationLvl4Page,
+  ArtsCreationPerformingLvl3Page: ArtsCreationPerformingLvl3Page,
+  ArtsPerformingSupportActivitiesLvl4Page: ArtsPerformingSupportActivitiesLvl4Page,
+  ArtsSportsRecreationLvl2Page: ArtsSportsRecreationLvl2Page,
+  BotanicalZoologicalReservesLvl4Page: BotanicalZoologicalReservesLvl4Page,
+  LibrariesArchivesCulturalLvl3Page: LibrariesArchivesCulturalLvl3Page,
+  LibrariesArchivesLvl4Page: LibrariesArchivesLvl4Page,
+  MuseumsCollectionsMomumentsLvl4Page: MuseumsCollectionsMomumentsLvl4Page,
+  SportsAmusementRecreationLvl3Page: SportsAmusementRecreationLvl3Page,
+  SportsLvl4Page: SportsLvl4Page
+)(implicit
+  val appConfig: AppConfig
+) extends BaseController(mcc) {
 
   import actionBuilders._
 
@@ -61,7 +59,9 @@ class ArtsController @Inject()(
   private val AmusementAndRecreationLvl4Form: Form[FormValues] = formWithSingleMandatoryField("amusement4")
   private val ArtsCreationLvl4Form: Form[FormValues] = formWithSingleMandatoryField("artsCreation4")
   private val ArtsCreationPerformingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("artsCreation3")
-  private val ArtsPerformingSupportActivitiesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("artsPerforming4")
+  private val ArtsPerformingSupportActivitiesLvl4Form: Form[FormValues] = formWithSingleMandatoryField(
+    "artsPerforming4"
+  )
   private val ArtsSportsRecreationLvl2Form: Form[FormValues] = formWithSingleMandatoryField("artsSports2")
   private val BotanicalZoologicalReservesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("zoo4")
   private val LibrariesArchivesCulturalLvl3Form: Form[FormValues] = formWithSingleMandatoryField("libraries3")
@@ -69,7 +69,6 @@ class ArtsController @Inject()(
   private val MuseumsCollectionsMomumentsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("museums4")
   private val SportsAmusementRecreationLvl3Form: Form[FormValues] = formWithSingleMandatoryField("sports3")
   private val SportsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("sports4")
-
 
   def loadAmusementAndRecreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(AmusementAndRecreationLvl4Page(AmusementAndRecreationLvl4Form, "")).toFuture
@@ -87,7 +86,6 @@ class ArtsController @Inject()(
         }
       )
   }
-
 
   def loadArtsCreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(ArtsCreationLvl4Page(ArtsCreationLvl4Form, "")).toFuture

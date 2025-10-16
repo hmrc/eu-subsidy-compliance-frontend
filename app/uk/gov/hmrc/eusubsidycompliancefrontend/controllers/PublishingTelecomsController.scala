@@ -33,29 +33,27 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.telecoms._
 
 import javax.inject.Inject
 
-class PublishingTelecomsController @Inject()(
-                                              mcc: MessagesControllerComponents,
-                                              actionBuilders: ActionBuilders,
-                                              val store: Store,
-                                              navigator: Navigator,
-                                              ComputerInfrastructureDataHostingLvl3Page: ComputerInfrastructureDataHostingLvl3Page,
-                                              ComputerProgrammingConsultancyLvl3Page: ComputerProgrammingConsultancyLvl3Page,
-                                              TelecommunicationLvl2Page: TelecommunicationLvl2Page,
-                                              TelecommunicationLvl3Page: TelecommunicationLvl3Page,
-                                              WebSearchPortalLvl4Page: WebSearchPortalLvl4Page,
-                                              BookPublishingLvl4Page: BookPublishingLvl4Page,
-                                              FilmMusicPublishingLvl3Page: FilmMusicPublishingLvl3Page,
-                                              FilmVideoActivitiesLvl4Page: FilmVideoActivitiesLvl4Page,
-                                              NewsOtherContentDistributionLvl4Page: NewsOtherContentDistributionLvl4Page,
-                                              ProgrammingBroadcastingDistributionLvl3Page: ProgrammingBroadcastingDistributionLvl3Page,
-                                              PublishingLvl2Page: PublishingLvl2Page,
-                                              PublishingLvl3Page: PublishingLvl3Page,
-                                              SoftwarePublishingLvl4Page: SoftwarePublishingLvl4Page,
-
-
-                                            )(implicit
-                                              val appConfig: AppConfig
-                                            ) extends BaseController(mcc) {
+class PublishingTelecomsController @Inject() (
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  ComputerInfrastructureDataHostingLvl3Page: ComputerInfrastructureDataHostingLvl3Page,
+  ComputerProgrammingConsultancyLvl3Page: ComputerProgrammingConsultancyLvl3Page,
+  TelecommunicationLvl2Page: TelecommunicationLvl2Page,
+  TelecommunicationLvl3Page: TelecommunicationLvl3Page,
+  WebSearchPortalLvl4Page: WebSearchPortalLvl4Page,
+  BookPublishingLvl4Page: BookPublishingLvl4Page,
+  FilmMusicPublishingLvl3Page: FilmMusicPublishingLvl3Page,
+  FilmVideoActivitiesLvl4Page: FilmVideoActivitiesLvl4Page,
+  NewsOtherContentDistributionLvl4Page: NewsOtherContentDistributionLvl4Page,
+  ProgrammingBroadcastingDistributionLvl3Page: ProgrammingBroadcastingDistributionLvl3Page,
+  PublishingLvl2Page: PublishingLvl2Page,
+  PublishingLvl3Page: PublishingLvl3Page,
+  SoftwarePublishingLvl4Page: SoftwarePublishingLvl4Page
+)(implicit
+  val appConfig: AppConfig
+) extends BaseController(mcc) {
 
   import actionBuilders._
 
@@ -70,7 +68,9 @@ class PublishingTelecomsController @Inject()(
   private val FilmMusicPublishingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("filmPublishing3")
   private val FilmVideoActivitiesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("film4")
   private val NewsOtherContentDistributionLvl4Form: Form[FormValues] = formWithSingleMandatoryField("news4")
-  private val ProgrammingBroadcastingDistributionLvl3Form: Form[FormValues] = formWithSingleMandatoryField("broadcasting3")
+  private val ProgrammingBroadcastingDistributionLvl3Form: Form[FormValues] = formWithSingleMandatoryField(
+    "broadcasting3"
+  )
   private val PublishingLvl2Form: Form[FormValues] = formWithSingleMandatoryField("publishing2")
   private val PublishingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("publishing3")
   private val SoftwarePublishingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("softwarePublishing4")
@@ -295,6 +295,5 @@ class PublishingTelecomsController @Inject()(
         }
       )
   }
-
 
 }
