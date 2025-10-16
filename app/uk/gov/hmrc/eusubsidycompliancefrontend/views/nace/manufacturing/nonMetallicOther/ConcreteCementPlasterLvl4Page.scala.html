@@ -39,7 +39,7 @@
 
 @actionUrl = @{
 
-        controllers.routes.NonMetallicOtherController.submitConcreteCementPlasterLvl4Page(mode)
+        controllers.routes.NonMetallicOtherController.submitConcreteCementPlasterLvl4Page()
 }
 
 
@@ -111,16 +111,16 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString">@messages("NACE.Lvl1.manufacturing")</a>
+                <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(mode).toString>@messages("NACE.Manufacturing.Lvl2.1.Metals")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.Manufacturing.Lvl2.1.Metals")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage(mode).toString>@messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.NonMetallicOtherController.loadNonMetallicMineralLvl3Page(mode).toString>@messages("NACE.Manufacturing.Lvl3.ConcreteCementPlasterArticles")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.NonMetallicOtherController.loadNonMetallicMineralLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.ConcreteCementPlasterArticles")</a>
             </li>
         </ol>
     </nav>

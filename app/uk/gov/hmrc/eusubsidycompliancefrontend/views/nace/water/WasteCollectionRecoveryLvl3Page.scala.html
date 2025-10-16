@@ -37,7 +37,7 @@
 @fieldName = @{"wasteCollection3"}
 
 @actionUrl = @{
-   controllers.routes.AccomodationUtilitiesController.submitWasteCollectionRecoveryLvl3Page(mode)
+   controllers.routes.AccomodationUtilitiesController.submitWasteCollectionRecoveryLvl3Page()
 }
 
 
@@ -92,13 +92,13 @@ content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).toString>@messages("NACE.Lvl1.waterSupply")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.waterSupply")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWaterLvl2Page(mode).toString>@messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWaterLvl2Page().toString>@messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities")</a>
         </li>
     </ol>
 </nav>

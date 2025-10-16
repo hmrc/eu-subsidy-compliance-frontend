@@ -37,7 +37,7 @@ govukRadios : GovukRadios
 @fieldName = @{"otherSocial4"}
 
 @actionUrl = @{
- controllers.routes.HouseHealthEducationController.submitOtherSocialWorkLvl4Page(mode)
+ controllers.routes.HouseHealthEducationController.submitOtherSocialWorkLvl4Page()
 }
 
 
@@ -88,16 +88,16 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).toString>@messages("NACE.Lvl1.humanHealthSocialWork")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.humanHealthSocialWork")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadHumanHealthLvl2Page(mode).toString>@messages("NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadHumanHealthLvl2Page().toString>@messages("NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadSocialWorkLvl3Page(mode).toString>@messages("NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadSocialWorkLvl3Page().toString>@messages("NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation")</a>
         </li>
     </ol>
 </nav>

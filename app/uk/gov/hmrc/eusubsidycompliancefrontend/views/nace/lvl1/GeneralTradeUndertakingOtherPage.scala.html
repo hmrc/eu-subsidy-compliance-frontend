@@ -37,7 +37,7 @@
 @fieldName = @{"gt-other"}
 
 @actionUrl = @{
-    controllers.routes.GeneralTradeGroupsController.submitGeneralTradeUndertakingOtherPage(mode)
+    controllers.routes.GeneralTradeGroupsController.submitGeneralTradeUndertakingOtherPage()
 }
 
 
@@ -144,7 +144,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.activitiesExtrat
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
         </li>
     </ol>
 </nav>

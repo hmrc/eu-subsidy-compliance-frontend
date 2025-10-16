@@ -39,7 +39,7 @@
 
 @actionUrl = @{
 
-        controllers.routes.VehiclesManuTransportController.submitAircraftSpacecraftLvl4Page(mode)
+        controllers.routes.VehiclesManuTransportController.submitAircraftSpacecraftLvl4Page()
 }
 
 
@@ -91,16 +91,16 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString">@messages("NACE.Lvl1.manufacturing")</a>
+                <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(mode).toString>@messages("NACE.Manufacturing.Lvl2.1.Vehicles")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.Manufacturing.Lvl2.1.Vehicles")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadVehiclesTransportPage(mode).toString>@messages("NACE.Manufacturing.Lvl2.2.Vehicles.Other")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadVehiclesTransportPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Vehicles.Other")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.VehiclesManuTransportController.loadOtherTransportEquipmentLvl3Page(mode).toString>@messages("NACE.Manufacturing.Lvl3.AirSpacecraft")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.VehiclesManuTransportController.loadOtherTransportEquipmentLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.AirSpacecraft")</a>
             </li>
         </ol>
     </nav>

@@ -38,7 +38,7 @@
 @fieldName = @{"gas4"}
 
 @actionUrl = @{
-  controllers.routes.AccomodationUtilitiesController.submitGasManufactureLvl4Page(mode)
+  controllers.routes.AccomodationUtilitiesController.submitGasManufactureLvl4Page()
 }
 
 
@@ -100,13 +100,13 @@ content = Text(messages("NACE.electricityGasSteamAir.Lvl3.gasDistribution.error"
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).toString>@messages("NACE.Lvl1.electricityGas")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.electricityGas")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadElectricityLvl3Page(mode).toString>@messages("NACE.electricityGasSteamAir.Lvl3.gasDistribution")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadElectricityLvl3Page().toString>@messages("NACE.electricityGasSteamAir.Lvl3.gasDistribution")</a>
         </li>
     </ol>
 </nav>

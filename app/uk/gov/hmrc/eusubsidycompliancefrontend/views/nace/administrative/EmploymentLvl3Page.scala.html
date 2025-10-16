@@ -37,7 +37,7 @@
 @fieldName = @{"employment3"}
 
 @actionUrl = @{
-        controllers.routes.AdminController.submitEmploymentLvl3Page(mode)
+        controllers.routes.AdminController.submitEmploymentLvl3Page()
 }
 
 @radioText(id: String, content: String) = {
@@ -86,10 +86,10 @@
                     <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString">@messages("NACE.Lvl1.administration")</a>
+                    <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.administration")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page(mode).toString>@messages("NACE.Administrative.Lvl2.Employment")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.Administrative.Lvl2.Employment")</a>
                 </li>
             </ol>
         </nav>

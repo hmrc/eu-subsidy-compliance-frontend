@@ -39,7 +39,7 @@
 
 @actionUrl = @{
 
-        controllers.routes.GeneralTradeGroupsController.submitLvl2_1GroupsPage(mode)
+        controllers.routes.GeneralTradeGroupsController.submitLvl2_1GroupsPage()
 }
 
 
@@ -147,7 +147,7 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString">@messages("NACE.Lvl1.manufacturing")</a>
+                <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
             </li>
         </ol>
     </nav>

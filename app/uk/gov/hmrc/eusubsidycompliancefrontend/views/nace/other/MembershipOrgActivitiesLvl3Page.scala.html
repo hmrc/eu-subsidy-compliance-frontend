@@ -39,7 +39,7 @@ govukRadios : GovukRadios
 @fieldName = @{"membership3"}
 
 @actionUrl = @{
- controllers.routes.OtherServicesController.submitMembershipOrgActivitiesLvl3Page(mode)
+ controllers.routes.OtherServicesController.submitMembershipOrgActivitiesLvl3Page()
 }
 
 
@@ -95,13 +95,13 @@ title = Text(messages("common.error.summary.title"))
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("Other")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).toString>@messages("NACE.Lvl1.otherService")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.otherService")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadOtherLvl2Page(mode).toString>@messages("NACE.otherService.Lvl2.membershipOrganisations")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadOtherLvl2Page().toString>@messages("NACE.otherService.Lvl2.membershipOrganisations")</a>
   </li>
  </ol>
 </nav>

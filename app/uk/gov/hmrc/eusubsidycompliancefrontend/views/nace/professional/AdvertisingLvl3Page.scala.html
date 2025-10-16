@@ -39,7 +39,7 @@ govukRadios : GovukRadios
 @fieldName = @{"advertising3"}
 
 @actionUrl = @{
- controllers.routes.ProfAndPAdminController.submitAdvertisingLvl3Page(mode)
+ controllers.routes.ProfAndPAdminController.submitAdvertisingLvl3Page()
 }
 
 
@@ -96,10 +96,10 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString">@messages("NACE.Lvl1.professionalScientificTechnicalActivities")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.professionalScientificTechnicalActivities")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page(mode).toString>@messages("NACE.professional.Lvl2.advertisingMarketResearchPR")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page().toString>@messages("NACE.professional.Lvl2.advertisingMarketResearchPR")</a>
         </li>
     </ol>
 </nav>
