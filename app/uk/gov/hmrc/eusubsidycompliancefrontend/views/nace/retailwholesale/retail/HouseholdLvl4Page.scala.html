@@ -38,7 +38,7 @@
 
 @actionUrl = @{
 
-        controllers.routes.RetailWholesaleController.submitHouseholdLvl4Page(mode)
+        controllers.routes.RetailWholesaleController.submitHouseholdLvl4Page()
 }
 
 @radioText(id: String, content: String) = {
@@ -102,13 +102,13 @@
                     <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString">@messages("NACE.Lvl1.wholesaleRetail")</a>
+                    <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.wholesaleRetail")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page(mode).toString>@messages("NACE.RetailWholesale.Lvl2.Retail")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page().toString>@messages("NACE.RetailWholesale.Lvl2.Retail")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailLvl3Page(mode).toString>@messages("NACE.Retail.Lvl3.OtherHouseholdEquipment")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailLvl3Page().toString>@messages("NACE.Retail.Lvl3.OtherHouseholdEquipment")</a>
                 </li>
             </ol>
         </nav>

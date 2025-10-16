@@ -39,7 +39,7 @@
 
 @actionUrl = @{
 
-        controllers.routes.ComputersElectronicsController.submitWiringAndDevicesLvl4Page(mode)
+        controllers.routes.ComputersElectronicsController.submitWiringAndDevicesLvl4Page()
 }
 
 
@@ -96,16 +96,16 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString">@messages("NACE.Lvl1.manufacturing")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(mode).toString>@messages("NACE.Manufacturing.Lvl2.1.Computers")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.Manufacturing.Lvl2.1.Computers")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage(mode).toString>@messages("NACE.Manufacturing.Lvl2.2.Computers.Electrical")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Computers.Electrical")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ComputersElectronicsController.loadElectricalEquipmentLvl3Page(mode).toString>@messages("NACE.Manufacturing.Lvl3.WiringDevices")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ComputersElectronicsController.loadElectricalEquipmentLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.WiringDevices")</a>
         </li>
     </ol>
 </nav>

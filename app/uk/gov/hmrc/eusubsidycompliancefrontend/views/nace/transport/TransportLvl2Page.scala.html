@@ -38,7 +38,7 @@
 @fieldName = @{"transport2"}
 
 @actionUrl = @{
-   controllers.routes.TransportController.submitTransportLvl2Page(mode)
+   controllers.routes.TransportController.submitTransportLvl2Page()
 }
 
 
@@ -108,7 +108,7 @@ backLinkEnabled = false,
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("NACE.Lvl1.transportStorage")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.transportStorage")</a>
         </li>
     </ol>
 </nav>

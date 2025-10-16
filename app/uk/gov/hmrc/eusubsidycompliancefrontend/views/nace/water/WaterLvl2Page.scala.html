@@ -39,7 +39,7 @@
 
 @actionUrl = @{
 
-        controllers.routes.AccomodationUtilitiesController.submitWaterLvl2Page(mode)
+        controllers.routes.AccomodationUtilitiesController.submitWaterLvl2Page()
 }
 
 
@@ -102,10 +102,10 @@ content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollection
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).toString>@messages("NACE.Lvl1.waterSupply")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.waterSupply")</a>
         </li>
     </ol>
 </nav>

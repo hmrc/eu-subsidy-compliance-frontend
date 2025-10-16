@@ -40,7 +40,7 @@
     if(mode)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.RetailWholesaleController.submitRetailWholesaleLvl2Page(mode)
+        controllers.routes.RetailWholesaleController.submitRetailWholesaleLvl2Page()
 }
 
 @radioText(id: String, content: String) = {
@@ -88,7 +88,7 @@
                     <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("NACE.Lvl1.wholesaleRetail")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.wholesaleRetail")</a>
                 </li>
             </ol>
         </nav>

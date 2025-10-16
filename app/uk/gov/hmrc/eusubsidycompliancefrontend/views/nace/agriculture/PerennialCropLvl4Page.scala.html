@@ -39,7 +39,7 @@ govukRadios : GovukRadios
 
 @actionUrl = @{
 
-controllers.routes.AgricultureController.submitPerennialCropLvl4Page(mode)
+controllers.routes.AgricultureController.submitPerennialCropLvl4Page()
 }
 
 
@@ -133,7 +133,7 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.2")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadAgricultureLvl3Page(mode).toString>@messages("NACE.agriculture.Lvl3.growingPerennialCrops")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadAgricultureLvl3Page().toString>@messages("NACE.agriculture.Lvl3.growingPerennialCrops")</a>
         </li>
     </ol>
 </nav>

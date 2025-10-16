@@ -38,7 +38,7 @@
 
 @actionUrl = @{
 
-        controllers.routes.FinanceRealEstateController.submitHoldingCompaniesLvl4Page(mode)
+        controllers.routes.FinanceRealEstateController.submitHoldingCompaniesLvl4Page()
 }
 
 @radioText(id: String, content: String) = {
@@ -88,16 +88,16 @@ content = Text(messages("NACE.financialServices.Lvl4.holdingCompanies.error"))
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("Other")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).toString>@messages("NACE.Lvl1.financialInsuranceActivities")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.financialInsuranceActivities")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page(mode).toString>@messages("NACE.Financial.Lvl2.FinancialServices")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.Financial.Lvl2.FinancialServices")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinancialServicesLvl3Page(mode).toString>@messages("NACE.financialServices.Lvl3.holdingCompanies")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinancialServicesLvl3Page().toString>@messages("NACE.financialServices.Lvl3.holdingCompanies")</a>
             </li>
         </ol>
     </nav>

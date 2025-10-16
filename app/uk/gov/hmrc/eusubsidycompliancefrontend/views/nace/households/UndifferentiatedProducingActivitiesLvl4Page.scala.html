@@ -38,7 +38,7 @@ govukRadios : GovukRadios
 @fieldName = @{"undifferProducing4"}
 
 @actionUrl = @{
- controllers.routes.HouseHealthEducationController.submitUndifferentiatedProducingActivitiesLvl4Page(mode)
+ controllers.routes.HouseHealthEducationController.submitUndifferentiatedProducingActivitiesLvl4Page()
 }
 
 
@@ -89,13 +89,13 @@ title = Text(messages("common.error.summary.title"))
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("Other")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).toString>@messages("NACE.Lvl1.households")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.households")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadHouseholdsLvl2Page(mode).toString>@messages("NACE.households.Lvl2.undifferentiatedProduction")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadHouseholdsLvl2Page().toString>@messages("NACE.households.Lvl2.undifferentiatedProduction")</a>
   </li>
  </ol>
 </nav>

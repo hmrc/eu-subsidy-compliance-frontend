@@ -38,7 +38,7 @@
 @fieldName = @{"libraries4"}
 
 @actionUrl = @{
-        controllers.routes.ArtsController.submitLibrariesArchivesLvl4Page(mode)
+        controllers.routes.ArtsController.submitLibrariesArchivesLvl4Page()
 }
 
 
@@ -89,16 +89,16 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString">@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).toString>@messages("NACE.Lvl1.artsSportsRecreation")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.artsSportsRecreation")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page(mode).toString>@messages("NACE.artsSportsRecreation.Lvl2.librariesArchivesMuseums")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page().toString>@messages("NACE.artsSportsRecreation.Lvl2.librariesArchivesMuseums")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadLibrariesArchivesCulturalLvl3Page(mode).toString>@messages("NACE.artsSportsRecreation.Lvl3.libraryArchives")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadLibrariesArchivesCulturalLvl3Page().toString>@messages("NACE.artsSportsRecreation.Lvl3.libraryArchives")</a>
         </li>
     </ol>
 </nav>

@@ -38,7 +38,7 @@ govukRadios : GovukRadios
 @fieldName = @{"nonIron4"}
 
 @actionUrl = @{
- controllers.routes.MiningController.submitNonFeMetalMiningLvl4Page(mode)
+ controllers.routes.MiningController.submitNonFeMetalMiningLvl4Page()
 }
 
 
@@ -90,16 +90,16 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage(mode).toString>@messages("NACE.Lvl1.mining")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.mining")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MiningController.loadMiningLvl2Page(mode).toString>@messages("NACE.mining.Lvl2.metalOresMining")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MiningController.loadMiningLvl2Page().toString>@messages("NACE.mining.Lvl2.metalOresMining")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MiningController.loadMetalMiningLvl3Page(mode).toString>@messages("NACE.mining.Lvl3.nonFerrousOres")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MiningController.loadMetalMiningLvl3Page().toString>@messages("NACE.mining.Lvl3.nonFerrousOres")</a>
         </li>
     </ol>
 </nav>

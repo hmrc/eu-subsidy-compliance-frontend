@@ -39,7 +39,7 @@
 
 @actionUrl = @{
 
-        controllers.routes.PublishingTelecomsController.submitComputerProgrammingConsultancyLvl3Page(mode)
+        controllers.routes.PublishingTelecomsController.submitComputerProgrammingConsultancyLvl3Page()
 }
 
 
@@ -95,10 +95,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage(mode).toString>@messages("NACE.Lvl1.telecommunications")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.telecommunications")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadTelecommunicationLvl2Page(mode).toString>@messages("NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadTelecommunicationLvl2Page().toString>@messages("NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy")</a>
         </li>
     </ol>
 </nav>

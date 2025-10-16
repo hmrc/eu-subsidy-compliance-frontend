@@ -38,7 +38,7 @@
 
 @actionUrl = @{
 
-        controllers.routes.FinanceRealEstateController.submitPropertyDevelopmentLvl4Page(mode)
+        controllers.routes.FinanceRealEstateController.submitPropertyDevelopmentLvl4Page()
 }
 
 @radioText(id: String, content: String) = {
@@ -91,7 +91,7 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("NACE.Lvl1.realEstate")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadRealEstateLvl3Page(mode).toString>@messages("NACE.realEstate.Lvl3.propertyDevelopment")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadRealEstateLvl3Page().toString>@messages("NACE.realEstate.Lvl3.propertyDevelopment")</a>
             </li>
         </ol>
     </nav>

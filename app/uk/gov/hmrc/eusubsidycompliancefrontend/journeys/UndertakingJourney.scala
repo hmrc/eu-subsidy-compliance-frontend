@@ -38,7 +38,8 @@ case class UndertakingJourney(
   cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
   confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
   submitted: Option[Boolean] = None,
-  isAmend: Boolean = false
+  isAmend: Boolean = false,
+  mode: String = ""
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] = Array(
