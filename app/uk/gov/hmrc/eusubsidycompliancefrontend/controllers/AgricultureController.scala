@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import org.apache.pekko.util.Helpers.{Requiring, compareIdentityHash}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -23,7 +24,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
@@ -51,7 +52,8 @@ class AgricultureController @Inject()(
                                              AquacultureLvl4Page: AquacultureLvl4Page,
                                              FishingLvl4Page: FishingLvl4Page,
                                            )(implicit
-                                             val appConfig: AppConfig
+                                             val appConfig: AppConfig,
+                                             val executionContext: ExecutionContext
                                            ) extends BaseController(mcc){
 
   import actionBuilders._
@@ -67,26 +69,47 @@ class AgricultureController @Inject()(
   private val AquacultureLvl4Form: Form[FormValues] = formWithSingleMandatoryField("aquaculture4")
   private val FishingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("fishing4")
 
-  def loadAgricultureLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AgricultureLvl3Page(AgricultureLvl3Form, mode)).toFuture
+  def loadAgricultureLvl3Page(mode: String ) : Action[AnyContent] = enrolled.async { implicit request =>
+      implicit val eori: EORI = request.eoriNumber
+      store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+        val sector = journey.sector.value match {
+          case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+          case None => ""
+        }
+        val form = if (sector == "") AgricultureLvl3Form else AgricultureLvl3Form.fill(FormValues(sector))
+      Ok(AgricultureLvl3Page(form, mode)).toFuture
+      }
   }
 
   def submitAgricultureLvl3Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     AgricultureLvl3Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(AgricultureLvl3Page(formWithErrors, mode)).toFuture,
         form =>{
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, mode)).toFuture
-        }
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val choice = journey.sector.value.toString
+          if (choice == form.value && journey.mode == "newRegChangeMode")
+            routes.NACECheckDetailsController.getCheckDetails(form.value, mode)
+          else
+            store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+            Redirect(navigator.nextPage(form.value, mode)).toFuture
+        }}
       )
   }
 
   def loadSupportActivitiesLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SupportActivitiesLvl4Page(SupportActivitiesLvl4Form, mode)).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") SupportActivitiesLvl4Form else SupportActivitiesLvl4Form.fill(FormValues(sector))
+      Ok(SupportActivitiesLvl4Page(form, mode)).toFuture
+    }}
 
   def submitSupportActivitiesLvl4Page(mode: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
