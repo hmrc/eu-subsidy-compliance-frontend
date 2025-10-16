@@ -31,31 +31,30 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.Met
 
 import javax.inject.Inject
 
-class MetalsChemicalsController @Inject()(
-                                           mcc: MessagesControllerComponents,
-                                           actionBuilders: ActionBuilders,
-                                           val store: Store,
-                                           navigator: Navigator,
-                                           BasicLvl4Page: BasicLvl4Page,
-                                           BasicMetalsLvl3Page: BasicMetalsLvl3Page,
-                                           CastingMetalsLvl4Page: CastingMetalsLvl4Page,
-                                           ChemicalsProductsLvl3Page: ChemicalsProductsLvl3Page,
-                                           CokePetroleumLvl3Page: CokePetroleumLvl3Page,
-                                           CutleryToolsHardwareLvl4Page: CutleryToolsHardwareLvl4Page,
-                                           FabricatedMetalsLvl3Page: FabricatedMetalsLvl3Page,
-                                           FirstProcessingSteelLvl4Page: FirstProcessingSteelLvl4Page,
-                                           OtherFabricatedProductsLvl4Page: OtherFabricatedProductsLvl4Page,
-                                           OtherProductsLvl4Page: OtherProductsLvl4Page,
-                                           PharmaceuticalsLvl3Page: PharmaceuticalsLvl3Page,
-                                           PreciousNonFerrousLvl4Page: PreciousNonFerrousLvl4Page,
-                                           StructuralMetalLvl4Page: StructuralMetalLvl4Page,
-                                           TanksReservoirsContainersLvl4Page: TanksReservoirsContainersLvl4Page,
-                                           TreatmentCoatingMachiningLvl4Page: TreatmentCoatingMachiningLvl4Page,
-                                           WashingLvl4Page: WashingLvl4Page
-
-                                         )(implicit
-                                           val appConfig: AppConfig
-                                         ) extends BaseController(mcc) {
+class MetalsChemicalsController @Inject() (
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  BasicLvl4Page: BasicLvl4Page,
+  BasicMetalsLvl3Page: BasicMetalsLvl3Page,
+  CastingMetalsLvl4Page: CastingMetalsLvl4Page,
+  ChemicalsProductsLvl3Page: ChemicalsProductsLvl3Page,
+  CokePetroleumLvl3Page: CokePetroleumLvl3Page,
+  CutleryToolsHardwareLvl4Page: CutleryToolsHardwareLvl4Page,
+  FabricatedMetalsLvl3Page: FabricatedMetalsLvl3Page,
+  FirstProcessingSteelLvl4Page: FirstProcessingSteelLvl4Page,
+  OtherFabricatedProductsLvl4Page: OtherFabricatedProductsLvl4Page,
+  OtherProductsLvl4Page: OtherProductsLvl4Page,
+  PharmaceuticalsLvl3Page: PharmaceuticalsLvl3Page,
+  PreciousNonFerrousLvl4Page: PreciousNonFerrousLvl4Page,
+  StructuralMetalLvl4Page: StructuralMetalLvl4Page,
+  TanksReservoirsContainersLvl4Page: TanksReservoirsContainersLvl4Page,
+  TreatmentCoatingMachiningLvl4Page: TreatmentCoatingMachiningLvl4Page,
+  WashingLvl4Page: WashingLvl4Page
+)(implicit
+  val appConfig: AppConfig
+) extends BaseController(mcc) {
 
   import actionBuilders._
 
@@ -172,8 +171,6 @@ class MetalsChemicalsController @Inject()(
         }
       )
   }
-
-
 
   def loadBasicLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(BasicLvl4Page(BasicLvl4Form, "")).toFuture
@@ -311,7 +308,6 @@ class MetalsChemicalsController @Inject()(
       )
   }
 
-
   def loadOtherFabricatedProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(OtherFabricatedProductsLvl4Page(OtherFabricatedProductsLvl4Form, "")).toFuture
   }
@@ -328,7 +324,6 @@ class MetalsChemicalsController @Inject()(
         }
       )
   }
-
 
   def loadOtherProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(OtherProductsLvl4Page(OtherProductsLvl4Form, "")).toFuture

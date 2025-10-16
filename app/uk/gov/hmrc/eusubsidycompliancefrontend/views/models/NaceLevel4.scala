@@ -19,17 +19,17 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 import play.api.i18n.Messages
 
 final case class NaceNotes(
-                            desc:  Option[String],
-                            intro: Option[String],
-                            bullets: Seq[String],
-                            outro: Option[String]
-                          )
+  desc: Option[String],
+  intro: Option[String],
+  bullets: Seq[String],
+  outro: Option[String]
+)
 
 final case class NaceLevel4(
-                             code: String,
-                             heading: String,
-                             notes: NaceNotes
-                           )
+  code: String,
+  heading: String,
+  notes: NaceNotes
+)
 
 object NaceLevel4Catalogue {
 
@@ -37,18 +37,19 @@ object NaceLevel4Catalogue {
     if (messages.isDefinedAt(key)) Some(messages(key)) else None
 
   def fromMessages(code: String)(implicit messages: Messages): Option[NaceLevel4] = {
-    val base       = s"NACE.$code"
+    val base = s"NACE.$code"
     val headingKey = s"$base.heading"
 
     if (!messages.isDefinedAt(headingKey)) {
       None
     } else {
-      val heading  = messages(headingKey)
-      val desc   = msgOpt(s"$base.desc")
-      val intro  = msgOpt(s"$base.intro")
-      val outro  = msgOpt(s"$base.outro")
+      val heading = messages(headingKey)
+      val desc = msgOpt(s"$base.desc")
+      val intro = msgOpt(s"$base.intro")
+      val outro = msgOpt(s"$base.outro")
       val bullets: List[String] =
-        Iterator.from(1)
+        Iterator
+          .from(1)
           .map(i => s"$base.b$i")
           .takeWhile(messages.isDefinedAt)
           .map(key => messages(key))

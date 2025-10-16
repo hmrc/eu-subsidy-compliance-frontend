@@ -52,7 +52,7 @@ case class UndertakingJourney(
   )
   private lazy val previousMap: Map[String, Uri] = Map(
     routes.UndertakingController.getAboutUndertaking.url -> routes.EligibilityEoriCheckController.getEoriCheck.url,
-    routes.UndertakingController.getSector.url -> routes.UndertakingController.getAboutUndertaking.url,
+    routes.UndertakingController.getSector.url -> routes.UndertakingController.getAboutUndertaking.url
   )
 
   override def previous(implicit r: Request[_]): Uri =
@@ -126,7 +126,6 @@ object UndertakingJourney {
     case class UndertakingConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.postConfirmation.url
     }
-
 
     object AboutUndertakingFormPage {
       implicit val undertakingNameFormPage: OFormat[AboutUndertakingFormPage] = Json.format

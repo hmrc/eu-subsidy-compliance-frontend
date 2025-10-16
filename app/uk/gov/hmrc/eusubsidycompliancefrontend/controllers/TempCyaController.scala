@@ -26,24 +26,27 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class TempCyaController @Inject()(
-                                   mcc: MessagesControllerComponents,
-                                   naceCyaPage: NaceCyaPage
-                                 )(implicit appConfig: AppConfig) extends FrontendController(mcc) {
+class TempCyaController @Inject() (
+  mcc: MessagesControllerComponents,
+  naceCyaPage: NaceCyaPage
+)(implicit appConfig: AppConfig)
+    extends FrontendController(mcc) {
 
   def showCya: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(
-      Ok(naceCyaPage(
-        eori = EORI("GB123456789012"),
-        industrySector = "General trade",
-        naceLevel1 = "C Manufacturing",
-        naceLevel2 = "10 Manufacture of food products",
-        naceLevel3 = "10.8 Manufacture of other food products",
-        naceLevel4 = "10.82 Manufacture of cocoa, chocolate and sugar confectionery",
-        emailAddress = "someemail@mail.com",
-        otherBusinesses = "Yes",
-        previous = routes.TempCyaController.showCya.url
-      ))
+      Ok(
+        naceCyaPage(
+          eori = EORI("GB123456789012"),
+          industrySector = "General trade",
+          naceLevel1 = "C Manufacturing",
+          naceLevel2 = "10 Manufacture of food products",
+          naceLevel3 = "10.8 Manufacture of other food products",
+          naceLevel4 = "10.82 Manufacture of cocoa, chocolate and sugar confectionery",
+          emailAddress = "someemail@mail.com",
+          otherBusinesses = "Yes",
+          previous = routes.TempCyaController.showCya.url
+        )
+      )
     )
   }
 

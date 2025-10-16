@@ -33,47 +33,47 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.publicAdmin._
 
 import javax.inject.Inject
 
-class ProfAndPAdminController @Inject()(
-                                         mcc: MessagesControllerComponents,
-                                         actionBuilders: ActionBuilders,
-                                         val store: Store,
-                                         navigator: Navigator,
-                                         PublicAdminDefenceLvl3Page: PublicAdminDefenceLvl3Page,
-                                         PublicAdminLvl4Page: PublicAdminLvl4Page,
-                                         ServiceProvisionLvl4Page: ServiceProvisionLvl4Page,
-                                         AdvertisingLvl3Page: AdvertisingLvl3Page,
-                                         AdvertisingLvl4Page: AdvertisingLvl4Page,
-                                         ArchitecturalLvl3Page: ArchitecturalLvl3Page,
-                                         ArchitecturalLvl4Page: ArchitecturalLvl4Page,
-                                         HeadOfficesLvl3Page: HeadOfficesLvl3Page,
-                                         LegalAndAccountingLvl3Page: LegalAndAccountingLvl3Page,
-                                         OtherProfessionalLvl3Page: OtherProfessionalLvl3Page,
-                                         OtherProfessionalLvl4Page: OtherProfessionalLvl4Page,
-                                         ProfessionalLvl2Page: ProfessionalLvl2Page,
-                                         ScientificRAndDLvl3Page: ScientificRAndDLvl3Page,
-                                         SpecialisedDesignLvl4Page: SpecialisedDesignLvl4Page
-                                       )(implicit
-                                         val appConfig: AppConfig
-                                       ) extends BaseController(mcc) {
+class ProfAndPAdminController @Inject() (
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  PublicAdminDefenceLvl3Page: PublicAdminDefenceLvl3Page,
+  PublicAdminLvl4Page: PublicAdminLvl4Page,
+  ServiceProvisionLvl4Page: ServiceProvisionLvl4Page,
+  AdvertisingLvl3Page: AdvertisingLvl3Page,
+  AdvertisingLvl4Page: AdvertisingLvl4Page,
+  ArchitecturalLvl3Page: ArchitecturalLvl3Page,
+  ArchitecturalLvl4Page: ArchitecturalLvl4Page,
+  HeadOfficesLvl3Page: HeadOfficesLvl3Page,
+  LegalAndAccountingLvl3Page: LegalAndAccountingLvl3Page,
+  OtherProfessionalLvl3Page: OtherProfessionalLvl3Page,
+  OtherProfessionalLvl4Page: OtherProfessionalLvl4Page,
+  ProfessionalLvl2Page: ProfessionalLvl2Page,
+  ScientificRAndDLvl3Page: ScientificRAndDLvl3Page,
+  SpecialisedDesignLvl4Page: SpecialisedDesignLvl4Page
+)(implicit
+  val appConfig: AppConfig
+) extends BaseController(mcc) {
 
   import actionBuilders._
 
   override val messagesApi: MessagesApi = mcc.messagesApi
 
-  private val   PublicAdminDefenceLvl3Form: Form[FormValues] = formWithSingleMandatoryField("publicAdmin3")
-  private val   PublicAdminLvl4Form: Form[FormValues] = formWithSingleMandatoryField("publicAdmin4")
-  private val   ServiceProvisionLvl4Form: Form[FormValues] = formWithSingleMandatoryField("serviceProvision4")
-  private val   AdvertisingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("advertising3")
-  private val   AdvertisingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("advertising4")
-  private val   ArchitecturalLvl3Form: Form[FormValues] = formWithSingleMandatoryField("architecture3")
-  private val   ArchitecturalLvl4Form: Form[FormValues] = formWithSingleMandatoryField("architecture4")
-  private val   HeadOfficesLvl3Form: Form[FormValues] = formWithSingleMandatoryField("headOffice3")
-  private val   LegalAndAccountingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("legal3")
-  private val   OtherProfessionalLvl3Form: Form[FormValues] = formWithSingleMandatoryField("otherProf3")
-  private val   OtherProfessionalLvl4Form: Form[FormValues] = formWithSingleMandatoryField("otherProf4")
-  private val   ProfessionalLvl2Form: Form[FormValues] = formWithSingleMandatoryField("prof2")
-  private val   ScientificRAndDLvl3Form: Form[FormValues] = formWithSingleMandatoryField("rAndD3")
-  private val   SpecialisedDesignLvl4Form: Form[FormValues] = formWithSingleMandatoryField("specialDesign4")
+  private val PublicAdminDefenceLvl3Form: Form[FormValues] = formWithSingleMandatoryField("publicAdmin3")
+  private val PublicAdminLvl4Form: Form[FormValues] = formWithSingleMandatoryField("publicAdmin4")
+  private val ServiceProvisionLvl4Form: Form[FormValues] = formWithSingleMandatoryField("serviceProvision4")
+  private val AdvertisingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("advertising3")
+  private val AdvertisingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("advertising4")
+  private val ArchitecturalLvl3Form: Form[FormValues] = formWithSingleMandatoryField("architecture3")
+  private val ArchitecturalLvl4Form: Form[FormValues] = formWithSingleMandatoryField("architecture4")
+  private val HeadOfficesLvl3Form: Form[FormValues] = formWithSingleMandatoryField("headOffice3")
+  private val LegalAndAccountingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("legal3")
+  private val OtherProfessionalLvl3Form: Form[FormValues] = formWithSingleMandatoryField("otherProf3")
+  private val OtherProfessionalLvl4Form: Form[FormValues] = formWithSingleMandatoryField("otherProf4")
+  private val ProfessionalLvl2Form: Form[FormValues] = formWithSingleMandatoryField("prof2")
+  private val ScientificRAndDLvl3Form: Form[FormValues] = formWithSingleMandatoryField("rAndD3")
+  private val SpecialisedDesignLvl4Form: Form[FormValues] = formWithSingleMandatoryField("specialDesign4")
 
   def loadPublicAdminDefenceLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(PublicAdminDefenceLvl3Page(PublicAdminDefenceLvl3Form, "")).toFuture
@@ -91,7 +91,6 @@ class ProfAndPAdminController @Inject()(
         }
       )
   }
-
 
   def loadPublicAdminLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(PublicAdminLvl4Page(PublicAdminLvl4Form, "")).toFuture
