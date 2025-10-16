@@ -25,7 +25,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleM
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4Catalogue
@@ -38,7 +37,6 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class NACECheckDetailsController @Inject()(
                                             mcc: MessagesControllerComponents,
-                                            store: Store,
                                             actionBuilders: ActionBuilders,
                                             naceCYAView: ConfirmDetailsPage,
                                             navigator: Navigator
@@ -146,7 +144,7 @@ class NACECheckDetailsController @Inject()(
 
     val showLevel2 = {
       naceLevel1Code match {
-        case "D" | "A"| "Q" => false
+        case "D" | "A"| "Q" | "M" => false
         case _ => true
       }
     }
@@ -164,7 +162,14 @@ class NACECheckDetailsController @Inject()(
     val changeLevel1_1Url = routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage(mode).url
     val navigatorLevel2Code = toNavigatorCode(naceLevel1Code, naceLevel2Code)
 
-    val changeLevel2Url = navigator.nextPage(navigatorLevel2Code, mode).url
+    val changeLevel2Url = if (showLevel2) {
+      naceLevel1Code match {
+        case "F" => navigator.nextPage(naceLevel1Code, mode).url
+        case _ => navigator.nextPage(navigatorLevel2Code, mode).url
+      }
+    } else {
+      navigator.nextPage(navigatorLevel2Code, mode).url
+    }
 
     val changeLevel3Url = navigator.nextPage(navigatorLevel2Code, mode).url
 
