@@ -45,7 +45,7 @@ class AgricultureController @Inject() (
   AgricultureLvl3Page: AgricultureLvl3Page,
   AnimalProductionLvl4Page: AnimalProductionLvl4Page,
   NonPerennialCropLvl4Page: NonPerennialCropLvl4Page,
-  perennialCropLvl4Page: PerennialCropLvl4Page,
+  PerennialCropLvl4Page: PerennialCropLvl4Page,
   SupportActivitiesLvl4Page: SupportActivitiesLvl4Page,
   ForestryLvl3Page: ForestryLvl3Page,
   FishingAndAquacultureLvl3Page: FishingAndAquacultureLvl3Page,
@@ -77,13 +77,12 @@ class AgricultureController @Inject() (
           case None => ""
         }
         val form = if (sector == "") AgricultureLvl3Form else AgricultureLvl3Form.fill(FormValues(sector))
-      Ok(AgricultureLvl3Page(form, "")).toFuture
+      Ok(AgricultureLvl3Page(form, journey.mode)).toFuture
       }
   }
 
   def submitAgricultureLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     AgricultureLvl3Form
       .bindFromRequest()
       .fold(
@@ -94,23 +93,17 @@ class AgricultureController @Inject() (
               case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
               case None => ""
             }
-
             val lvl4Answer = journey.sector.value match {
               case Some(value) => value.toString
               case None => ""
             }
-
           if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
             Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
            else {
             store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
             store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
             Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
-          }
-
-        }}
-      )
-  }
+          }}})}
 
   def loadSupportActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -130,14 +123,34 @@ class AgricultureController @Inject() (
       .fold(
         formWithErrors => BadRequest(SupportActivitiesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
-        }
-      )
-  }
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => value.toString
+              case None => ""
+            }
+            val lvl4Answer = journey.sector.value match {
+              case Some(value) => value.toString
+              case None => ""
+            }
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }}})}
+
+
   def loadAnimalProductionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AnimalProductionLvl4Page(AnimalProductionLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") AnimalProductionLvl4Form else AnimalProductionLvl4Form.fill(FormValues(sector))
+      Ok(AnimalProductionLvl4Page(form, "")).toFuture
+    }}
 
   def submitAnimalProductionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -146,49 +159,104 @@ class AgricultureController @Inject() (
       .fold(
         formWithErrors => BadRequest(AnimalProductionLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
-        }
-      )
-  }
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => value.toString
+              case None => ""
+            }
+            val lvl4Answer = journey.sector.value match {
+              case Some(value) => value.toString
+              case None => ""
+            }
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }}})}
 
   def loadPerennialCropLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(perennialCropLvl4Page(PerennialCropLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") PerennialCropLvl4Form else PerennialCropLvl4Form.fill(FormValues(sector))
+      Ok(PerennialCropLvl4Page(form, "")).toFuture
+    }}
+
 
   def submitPerennialCropLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     PerennialCropLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(perennialCropLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(PerennialCropLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
-        }
-      )
-  }
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => value.toString
+              case None => ""
+            }
+            val lvl4Answer = journey.sector.value match {
+              case Some(value) => value.toString
+              case None => ""
+            }
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }}})}
 
   def loadNonPerennialCropLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(NonPerennialCropLvl4Page(NonPerennialCropLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") NonPerennialCropLvl4Form else NonPerennialCropLvl4Form.fill(FormValues(sector))
+      Ok(NonPerennialCropLvl4Page(form, "")).toFuture
+    }}
 
   def submitNonPerennialCropLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
+      implicit val eori: EORI = request.eoriNumber
     NonPerennialCropLvl4Form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(NonPerennialCropLvl4Page(formWithErrors, "")).toFuture,
-        form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
-        }
-      )
-  }
+        .bindFromRequest()
+        .fold(
+          formWithErrors => BadRequest(NonPerennialCropLvl4Page(formWithErrors, "")).toFuture,
+          form => {
+            store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+              val previousAnswer = journey.sector.value match {
+                case Some(value) => value.toString
+                case None => ""
+              }
+              val lvl4Answer = journey.sector.value match {
+                case Some(value) => value.toString
+                case None => ""
+              }
+              if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+                Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+              else {
+                store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+                Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+              }}})}
 
   def loadForestryLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ForestryLvl3Page(ForestryLvl3Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") ForestryLvl3Form else ForestryLvl3Form.fill(FormValues(sector))
+      Ok(ForestryLvl3Page(form, "")).toFuture
+    }}
 
   def submitForestryLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -204,8 +272,15 @@ class AgricultureController @Inject() (
   }
 
   def loadFishingAndAquacultureLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FishingAndAquacultureLvl3Page(FishingAndAquacultureLvl3Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") FishingAndAquacultureLvl3Form else FishingAndAquacultureLvl3Form.fill(FormValues(sector))
+      Ok(FishingAndAquacultureLvl3Page(form, "")).toFuture
+    }}
 
   def submitFishingAndAquacultureLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -221,8 +296,15 @@ class AgricultureController @Inject() (
   }
 
   def loadAquacultureLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AquacultureLvl4Page(AquacultureLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") AquacultureLvl4Form else AquacultureLvl4Form.fill(FormValues(sector))
+      Ok(AquacultureLvl4Page(form, "")).toFuture
+    }}
 
   def submitAquacultureLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -238,8 +320,15 @@ class AgricultureController @Inject() (
   }
 
   def loadFishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FishingLvl4Page(FishingLvl4Form, "")).toFuture
-  }
+      implicit val eori: EORI = request.eoriNumber
+      store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+        val sector = journey.sector.value match {
+          case Some(value) => value.toString
+          case None => ""
+        }
+        val form = if (sector == "") FishingLvl4Form else FishingLvl4Form.fill(FormValues(sector))
+        Ok(FishingLvl4Page(form, "")).toFuture
+      }}
 
   def submitFishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
