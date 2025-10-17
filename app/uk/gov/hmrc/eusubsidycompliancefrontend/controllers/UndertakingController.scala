@@ -152,11 +152,46 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getSector: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
-    getSectorPage()
+  def getSector: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      if (journey.mode == "UpdateNaceMode") {
+        Ok(
+          undertakingSectorPage(
+            undertakingSectorForm,
+            journey.previous,
+            journey.about.value.getOrElse(""),
+            journey.mode
+          )
+        ).toFuture
+      }
+      else {
+        getSectorPage()
+      }
+    }
   }
 
   private def getSectorPage()(implicit request: AuthenticatedEnrolledRequest[_]) = {
+    implicit val eori: EORI = request.eoriNumber
+    withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
+      runStepIfEligible(journey) {
+        val form = journey.sector.value.fold(undertakingSectorForm) { sector =>
+          undertakingSectorForm.fill(FormValues(sector.id.toString))
+        }
+
+        Ok(
+          undertakingSectorPage(
+            form,
+            journey.previous,
+            journey.about.value.getOrElse(""),
+            journey.mode
+          )
+        ).toFuture
+      }
+    }
+  }
+
+  private def getSectorPageUpdateMode()(implicit request: AuthenticatedEnrolledRequest[_]) = {
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       runStepIfEligible(journey) {
@@ -559,6 +594,9 @@ class UndertakingController @Inject() (
 
   private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] =
     store.update[UndertakingJourney](_.copy(isAmend = value))
+
+  private def setMode(value: String)(implicit e: EORI): Future[UndertakingJourney] =
+    store.update[UndertakingJourney](_.copy(mode = value))
 
   def postAmendUndertaking: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { _ =>
