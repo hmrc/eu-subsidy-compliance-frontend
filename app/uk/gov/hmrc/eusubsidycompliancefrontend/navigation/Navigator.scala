@@ -27,6 +27,7 @@ import scala.language.postfixOps
 class Navigator @Inject(){
 
   def nextPage(previousAnswer: String, mode: String): Call = mode match {
+    case "NewRegChangeMode" => routes.NACECheckDetailsController.getCheckDetails(previousAnswer)
     case _ => normalRoutes(previousAnswer)
   }
 
