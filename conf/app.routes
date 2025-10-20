@@ -888,7 +888,7 @@ GET        /registration-already-submitted                                      
 
 GET        /access-denied-for-agents                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgentNotAllowedController.showPage
 
-GET        /confirm-undertaking-details                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.getCheckDetails(usersLastAnswer: String)
+GET         /confirm-undertaking-details                                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.getCheckDetails(usersLastAnswer: String)
 POST       /confirm-undertaking-details                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.postCheckDetails
 
 GET        /cya                                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.TempCyaController.showCya

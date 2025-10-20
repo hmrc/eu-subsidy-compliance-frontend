@@ -190,6 +190,8 @@
     ))
 
     @formHelper(action = routes.NACECheckDetailsController.postCheckDetails) {
+        <input type="hidden" name="naceCode" value="@viewModel.naceLevel4Code" />
+
         @govukRadios(Radios(
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
