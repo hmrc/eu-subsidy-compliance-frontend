@@ -101,7 +101,7 @@ package object types extends SimpleJson {
 
   object Sector extends Enumeration {
     type Sector = Value
-    val other: types.Sector.Value = Value("0")
+    val other: types.Sector.Value = Value("00")
     val transport: types.Sector.Value = Value("1")
     val agriculture: types.Sector.Value = Value("2")
     val aquaculture: types.Sector.Value = Value("3")
