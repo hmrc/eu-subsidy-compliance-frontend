@@ -16,15 +16,13 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import org.apache.pekko.util.Helpers.{Requiring, compareIdentityHash}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api.Html
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
@@ -76,8 +74,7 @@ class AgricultureController @Inject() (
           case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
           case None => ""
         }
-        val form = if (sector == "") AgricultureLvl3Form else AgricultureLvl3Form.fill(FormValues(sector))
-      Ok(AgricultureLvl3Page(form, journey.mode)).toFuture
+      Ok(AgricultureLvl3Page(AgricultureLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
       }
   }
 
