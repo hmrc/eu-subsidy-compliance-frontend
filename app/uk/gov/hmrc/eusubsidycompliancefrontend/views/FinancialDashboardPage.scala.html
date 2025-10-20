@@ -33,7 +33,7 @@
 )
 
 @(summary: FinancialDashboardSummary,
-sector: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+industrySectorKey: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"dashboard"}
 
 
@@ -106,7 +106,7 @@ sector: String)(implicit request: Request[_], messages: Messages, appConfig: App
             ),
             SummaryListRow(
                 key = Key(
-                    content = HtmlContent(s"""<span id="SectorCapId">${messages(s"$key.sector.cap.heading", messages(s"NACE.$sector"))}</span>""")
+                    content = HtmlContent(s"""<span id="SectorCapId">${messages(s"$key.sector.cap.heading", messages(s"sector.label.$industrySectorKey"))}</span>""")
                 ),
                 value = Value(
                     content = Text(summary.overall.sectorCap.toEuros)

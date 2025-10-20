@@ -32,6 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.accomodation._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.electricity._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.water._
 
+import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.Inject
 
 class AccomodationUtilitiesController @Inject() (
@@ -53,8 +54,9 @@ class AccomodationUtilitiesController @Inject() (
   WasteRecoveryLvl4Page: WasteRecoveryLvl4Page,
   WaterLvl2Page: WaterLvl2Page
 )(implicit
-  val appConfig: AppConfig
-) extends BaseController(mcc) {
+  val appConfig: AppConfig,
+                                             val executionContext: ExecutionContext
+                                           ) extends BaseController(mcc){
 
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
@@ -74,8 +76,15 @@ class AccomodationUtilitiesController @Inject() (
   private val WaterLvl2Form: Form[FormValues] = formWithSingleMandatoryField("water2")
 
   def loadAccommodationFoodLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AccommodationFoodLvl2Page(AccommodationFoodLvl2Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+        case None => ""
+      }
+      val form = if (sector == "I") AccommodationFoodLvl2Form else AccommodationFoodLvl2Form.fill(FormValues(sector))
+      Ok(AccommodationFoodLvl2Page(form, journey.mode)).toFuture
+    }}
 
   def submitAccommodationFoodLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -91,7 +100,15 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadAccommodationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AccommodationLvl3Page(AccommodationLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      val form = if (sector == "") AccommodationLvl3Form else AccommodationLvl3Form.fill(FormValues(sector))
+      Ok(AccommodationLvl3Page(form, journey.mode)).toFuture
+    }
   }
 
   def submitAccommodationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -108,8 +125,15 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadEventCateringOtherFoodActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(EventCateringOtherFoodActivitiesLvl4Page(EventCateringOtherFoodActivitiesLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") EventCateringOtherFoodActivitiesLvl4Form else EventCateringOtherFoodActivitiesLvl4Form.fill(FormValues(sector))
+      Ok(EventCateringOtherFoodActivitiesLvl4Page(form, journey.mode)).toFuture
+    }}
 
   def submitEventCateringOtherFoodActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -125,7 +149,15 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadFoodBeverageActivitiesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FoodBeverageActivitiesLvl3Page(FoodBeverageActivitiesLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      val form = if (sector == "") FoodBeverageActivitiesLvl3Form else FoodBeverageActivitiesLvl3Form.fill(FormValues(sector))
+      Ok(FoodBeverageActivitiesLvl3Page(form, journey.mode)).toFuture
+    }
   }
 
   def submitFoodBeverageActivitiesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -142,8 +174,15 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadRestaurantFoodServicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(RestaurantFoodServicesLvl4Page(RestaurantFoodServicesLvl4Form, "")).toFuture
-  }
+      implicit val eori: EORI = request.eoriNumber
+      store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+        val sector = journey.sector.value match {
+          case Some(value) => value.toString
+          case None => ""
+        }
+        val form = if (sector == "") RestaurantFoodServicesLvl4Form else RestaurantFoodServicesLvl4Form.fill(FormValues(sector))
+        Ok(RestaurantFoodServicesLvl4Page(form, journey.mode)).toFuture
+      }}
 
   def submitRestaurantFoodServicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -159,8 +198,16 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadElectricityLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ElectricityLvl3Page(ElectricityLvl3Form, "")).toFuture
-  }
+      implicit val eori: EORI = request.eoriNumber
+      store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+        val sector = journey.sector.value match {
+          case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+          case None => ""
+        }
+        val form = if (sector == "") ElectricityLvl3Form else ElectricityLvl3Form.fill(FormValues(sector))
+        Ok(ElectricityLvl3Page(form, journey.mode)).toFuture
+      }
+    }
 
   def submitElectricityLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -176,8 +223,15 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadElectricityLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ElectricityLvl4Page(ElectricityLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") ElectricityLvl4Form else ElectricityLvl4Form.fill(FormValues(sector))
+      Ok(ElectricityLvl4Page(form, journey.mode)).toFuture
+    }}
 
   def submitElectricityLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -193,8 +247,15 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadGasManufactureLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(GasManufactureLvl4Page(GasManufactureLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") GasManufactureLvl4Form else GasManufactureLvl4Form.fill(FormValues(sector))
+      Ok(GasManufactureLvl4Page(form, journey.mode)).toFuture
+    }}
 
   def submitGasManufactureLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -210,8 +271,15 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadWasteCollectionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WasteCollectionLvl4Page(WasteCollectionLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") WasteCollectionLvl4Form else WasteCollectionLvl4Form.fill(FormValues(sector))
+      Ok(WasteCollectionLvl4Page(form, journey.mode)).toFuture
+    }}
 
   def submitWasteCollectionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -227,8 +295,16 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadWasteCollectionRecoveryLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WasteCollectionRecoveryLvl3Page(WasteCollectionRecoveryLvl3Form, "")).toFuture
-  }
+      implicit val eori: EORI = request.eoriNumber
+      store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+        val sector = journey.sector.value match {
+          case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+          case None => ""
+        }
+        val form = if (sector == "") WasteCollectionRecoveryLvl3Form else WasteCollectionRecoveryLvl3Form.fill(FormValues(sector))
+        Ok(WasteCollectionRecoveryLvl3Page(form, journey.mode)).toFuture
+      }
+    }
 
   def submitWasteCollectionRecoveryLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -244,8 +320,15 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadWasteDisposalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WasteDisposalLvl4Page(WasteDisposalLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") WasteDisposalLvl4Form else WasteDisposalLvl4Form.fill(FormValues(sector))
+      Ok(WasteDisposalLvl4Page(form, journey.mode)).toFuture
+    }}
 
   def submitWasteDisposalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -261,8 +344,15 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadWasteRecoveryLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WasteRecoveryLvl4Page(WasteRecoveryLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") WasteRecoveryLvl4Form else WasteRecoveryLvl4Form.fill(FormValues(sector))
+      Ok(WasteRecoveryLvl4Page(form, journey.mode)).toFuture
+    }}
 
   def submitWasteRecoveryLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -278,8 +368,15 @@ class AccomodationUtilitiesController @Inject() (
   }
 
   def loadWaterLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WaterLvl2Page(WaterLvl2Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+        case None => ""
+      }
+      val form = if (sector == "") WaterLvl2Form else WaterLvl2Form.fill(FormValues(sector))
+      Ok(WaterLvl2Page(form, journey.mode)).toFuture
+    }}
 
   def submitWaterLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
