@@ -119,8 +119,8 @@ class NACECheckDetailsController @Inject()(
 
   private def toNavigatorCode(level1Code: String, level2Code: String): String = level1Code match {
     case "A" => level2Code match {
-      case "01" | "02" => "2"
-      case "03" => "3"
+      case "01" | "02" => "02"
+      case "03" => "03"
       case _ => level2Code
     }
     case _ => level2Code
@@ -181,7 +181,7 @@ class NACECheckDetailsController @Inject()(
     val changeSectorUrl = routes.UndertakingController.getSector.url
     val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code)
     val changeLevel1_1Url = routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
-    val navigatorLevel2Code = toNavigatorCode(naceLevel1Code, naceLevel2Code)
+    val navigatorLevel2Code = naceLevel2Code
 
     val changeLevel2Url = if (showLevel2) {
       naceLevel1Code match {
