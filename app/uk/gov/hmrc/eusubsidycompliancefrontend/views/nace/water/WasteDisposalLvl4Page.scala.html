@@ -60,9 +60,6 @@
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-other-waste-disposal", messages("NACE.WaterSewerageWasteRemediation.Lvl4.OtherWasteDisposal"))),
-       hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other", messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery.hint")))
-                )),
        value = Some(Sector.otherWasteDisposal.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherWasteDisposal.toString)
     )
