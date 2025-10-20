@@ -31,6 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.computersElectronics._
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class ComputersElectronicsController @Inject() (
   mcc: MessagesControllerComponents,
@@ -52,7 +53,8 @@ class ComputersElectronicsController @Inject() (
   RepairsMaintainInstallLvl3Page: RepairsMaintainInstallLvl3Page,
   WiringAndDevicesLvl4Page: WiringAndDevicesLvl4Page
 )(implicit
-  val appConfig: AppConfig
+  val appConfig: AppConfig,
+  val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
   import actionBuilders._
@@ -137,8 +139,25 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(RepairsMaintainInstallLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -170,8 +189,25 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(ComputersElectronicsOpticalLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -204,8 +240,25 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(ElectricalEquipmentLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -305,8 +358,25 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(OtherMachineryLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }

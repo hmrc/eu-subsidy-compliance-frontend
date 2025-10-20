@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.nonMetallicOther._
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class NonMetallicOtherController @Inject() (
   mcc: MessagesControllerComponents,
@@ -47,7 +48,8 @@ class NonMetallicOtherController @Inject() (
   otherPorcelainAndCeramicsLvl4Page: OtherPorcelainAndCeramicsLvl4Page,
   otherProductsLvl4Page: OtherProductsLvl4Page
 )(implicit
-  val appConfig: AppConfig
+  val appConfig: AppConfig,
+  val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
   import actionBuilders._
@@ -75,8 +77,25 @@ class NonMetallicOtherController @Inject() (
       .fold(
         formWithErrors => BadRequest(nonMetallicMineralLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -93,8 +112,25 @@ class NonMetallicOtherController @Inject() (
       .fold(
         formWithErrors => BadRequest(otherManufacturingLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }

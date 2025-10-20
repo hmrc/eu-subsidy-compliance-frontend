@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.clothesTextilesHomeware._
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class ClothesTextilesHomewareController @Inject() (
   mcc: MessagesControllerComponents,
@@ -48,7 +49,8 @@ class ClothesTextilesHomewareController @Inject() (
   sawmillingWoodworkLvl4Page: SawmillingWoodworkLvl4Page,
   tanningDressingDyeingLvl4Page: TanningDressingDyeingLvl4Page,
   woodCorkStrawPlaitingLvl4Page: WoodCorkStrawPlaitingLvl4Page
-)(implicit val appConfig: AppConfig)
+)(implicit val appConfig: AppConfig,
+  val executionContext: ExecutionContext)
     extends BaseController(mcc) {
   import actionBuilders._
   private val clothingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("clothing3")
@@ -76,8 +78,25 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(clothingLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -94,8 +113,25 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(leatherLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -112,8 +148,25 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(rubberPlasticLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -130,8 +183,25 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(textilesLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -148,8 +218,25 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(woodCorkStrawLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }

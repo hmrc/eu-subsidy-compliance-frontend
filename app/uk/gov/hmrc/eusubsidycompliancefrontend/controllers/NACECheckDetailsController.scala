@@ -263,6 +263,7 @@ class NACECheckDetailsController @Inject() (
           Redirect(routes.AccomodationUtilitiesController.loadGasManufactureLvl4Page()).toFuture
         },
         form => {
+          store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
           if (form.value == "true") {
             Redirect(routes.UndertakingController.getAddBusiness).toFuture
           } else {

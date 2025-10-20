@@ -32,6 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.professional._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.publicAdmin._
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class ProfAndPAdminController @Inject() (
   mcc: MessagesControllerComponents,
@@ -53,7 +54,8 @@ class ProfAndPAdminController @Inject() (
   ScientificRAndDLvl3Page: ScientificRAndDLvl3Page,
   SpecialisedDesignLvl4Page: SpecialisedDesignLvl4Page
 )(implicit
-  val appConfig: AppConfig
+  val appConfig: AppConfig,
+  val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
   import actionBuilders._
@@ -86,8 +88,25 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(PublicAdminDefenceLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -137,8 +156,25 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(AdvertisingLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -171,8 +207,25 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(ArchitecturalLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -205,8 +258,25 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(HeadOfficesLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -222,8 +292,25 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(LegalAndAccountingLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -239,8 +326,25 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(OtherProfessionalLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -273,8 +377,25 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(ProfessionalLvl2Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }
@@ -290,8 +411,25 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(ScientificRAndDLvl3Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+            }
+          }
         }
       )
   }

@@ -33,7 +33,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUn
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EmailStatus, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EmailStatus, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{Store, UndertakingCache}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -128,6 +128,7 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val form = journey.about.value.fold(aboutUndertakingForm)(name => aboutUndertakingForm.fill(FormValues(name)))
+      store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
       Ok(aboutUndertakingPage(form, journey.previous)).toFuture
     }
   }
@@ -233,8 +234,23 @@ class UndertakingController @Inject() (
               undertakingSectorPage(errors, journey.previous, journey.about.value.get, journey.mode)
             ).toContext,
           form => {
-            store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-            Redirect(navigator.nextPage(form.value, journey.mode)).toContext
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 1) value.toString.take(1) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
+              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toContext
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+              Redirect(navigator.nextPage(form.value, "NewRegMode")).toContext
+            }
           }
         )
     }
