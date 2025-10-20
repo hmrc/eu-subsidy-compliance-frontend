@@ -39,7 +39,8 @@ case class UndertakingJourney(
   confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
   submitted: Option[Boolean] = None,
   isAmend: Boolean = false,
-  mode: String = ""
+  mode: String = "",
+  internalNaceCode: String = ""
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] = Array(

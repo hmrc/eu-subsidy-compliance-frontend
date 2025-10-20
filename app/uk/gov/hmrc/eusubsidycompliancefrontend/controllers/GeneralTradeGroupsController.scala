@@ -47,7 +47,8 @@ class GeneralTradeGroupsController @Inject() (
   foodBeveragesTobaccoPage: FoodBeveragesTobaccoPage,
   metalsChemicalsMaterialsPage: MetalsChemicalsMaterialsPage,
   paperPrintedProductsPage: PaperPrintedProductsPage,
-  vehiclesTransportPage: VehiclesTransportPage
+  vehiclesTransportPage: VehiclesTransportPage,
+  naceCheckDetailsController: NACECheckDetailsController
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -79,22 +80,26 @@ class GeneralTradeGroupsController @Inject() (
         formWithErrors => BadRequest(generalTradeUndertakingPage(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+
+
             val previousAnswer = journey.sector.value match {
-              case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+              case Some(value) => if (value.toString.length >=  2) value.toString.take(2) else value.toString
               case None => ""
             }
+
+            val previousLevel1Code = naceCheckDetailsController.deriveLevel1Code(previousAnswer)
 
             val lvl4Answer = journey.sector.value match {
               case Some(lvl4Value) => lvl4Value.toString
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
-              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            if (previousLevel1Code.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
-              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
+              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
             }
           }
         }
@@ -124,12 +129,12 @@ class GeneralTradeGroupsController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
-              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toFuture
+            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
-              Redirect(navigator.nextPage(form.value, "NewRegMode")).toFuture
+              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
+              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
             }
           }
         }
@@ -148,8 +153,23 @@ class GeneralTradeGroupsController @Inject() (
       .fold(
         formWithErrors => BadRequest(lvl2_1GroupsPage(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+
+            if (form.value.equals(journey.internalNaceCode) && journey.mode.equals(appConfig.NewRegChangeMode))
+            {
+              val lvl4Answer = journey.sector.value match {
+                case Some(lvl4Value) => lvl4Value.toString
+                case None => ""
+              }
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            }
+            else
+            {
+              store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+              store.update[UndertakingJourney](_.copy(internalNaceCode = form.value, mode = appConfig.NewRegMode))
+              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+            }
+          }
         }
       )
   }

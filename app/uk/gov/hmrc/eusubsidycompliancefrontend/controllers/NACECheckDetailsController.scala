@@ -48,7 +48,7 @@ class NACECheckDetailsController @Inject()(
   import actionBuilders._
 
   private val confirmDetailsForm: Form[FormValues] = formWithSingleMandatoryField("confirmDetails")
-  val NewRegChangeMode = "NewRegChangeMode"
+  val NewRegChangeMode = appConfig.NewRegChangeMode
 
   private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
     case "A" =>
@@ -89,7 +89,7 @@ class NACECheckDetailsController @Inject()(
     case _ => ""
   }
 
-  private def deriveLevel1Code(level2Code: String): String = level2Code match {
+  def deriveLevel1Code(level2Code: String): String = level2Code match {
     case "01" | "02" | "03" => "A"
     case "05"|"06"|"07"|"08"|"09" => "B"
     case "10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"=> "C"
@@ -284,7 +284,7 @@ class NACECheckDetailsController @Inject()(
           }
         },
         form => {
-          store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+          store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
           if (form.value == "true") {
             Redirect(routes.UndertakingController.getAddBusiness).toFuture
           } else {

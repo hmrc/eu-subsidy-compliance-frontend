@@ -128,7 +128,7 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val form = journey.about.value.fold(aboutUndertakingForm)(name => aboutUndertakingForm.fill(FormValues(name)))
-      store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
+      store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
       Ok(aboutUndertakingPage(form, journey.previous)).toFuture
     }
   }
@@ -156,7 +156,7 @@ class UndertakingController @Inject() (
   def getSector: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-      if (journey.mode == "UpdateNaceMode") {
+      if (journey.mode.equals(appConfig.UpdateNaceMode)) {
         Ok(
           undertakingSectorPage(
             undertakingSectorForm,
@@ -244,12 +244,12 @@ class UndertakingController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals("NewRegChangeMode"))
-              Redirect(navigator.nextPage(lvl4Answer, "NewRegChangeMode")).toContext
+            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toContext
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = "NewRegMode"))
-              Redirect(navigator.nextPage(form.value, "NewRegMode")).toContext
+              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
+              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toContext
             }
           }
         )
