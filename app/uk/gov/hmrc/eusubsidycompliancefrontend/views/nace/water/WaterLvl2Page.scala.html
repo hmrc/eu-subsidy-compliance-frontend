@@ -54,9 +54,6 @@ content = HtmlContent(radioText("sector-label-sewerage", messages("NACE.WaterSew
 value = Some(Sector.sewerage4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.sewerage.toString)
 ),
-
-
-
 RadioItem(
 content = HtmlContent(radioText("sector-label-waste-activities", messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities"))),
 value = Some(Sector.wasteManagement.toString),

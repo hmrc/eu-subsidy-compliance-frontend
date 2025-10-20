@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.artSportsRecreation._
 
+import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
@@ -55,7 +56,6 @@ class ArtsController @Inject() (
 ) extends BaseController(mcc) {
 
   import actionBuilders._
-
   override val messagesApi: MessagesApi = mcc.messagesApi
 
   private val AmusementAndRecreationLvl4Form: Form[FormValues] = formWithSingleMandatoryField("amusement4")
@@ -73,8 +73,14 @@ class ArtsController @Inject() (
   private val SportsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("sports4")
 
   def loadAmusementAndRecreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AmusementAndRecreationLvl4Page(AmusementAndRecreationLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(AmusementAndRecreationLvl4Page(AmusementAndRecreationLvl4Form.fill(FormValues(sector)), "")).toFuture
+    }}
 
   def submitAmusementAndRecreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -90,8 +96,15 @@ class ArtsController @Inject() (
   }
 
   def loadArtsCreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArtsCreationLvl4Page(ArtsCreationLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") ArtsCreationLvl4Form else ArtsCreationLvl4Form.fill(FormValues(sector))
+      Ok(ArtsCreationLvl4Page(form, "")).toFuture
+    }}
 
   def submitArtsCreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -107,7 +120,15 @@ class ArtsController @Inject() (
   }
 
   def loadArtsCreationPerformingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArtsCreationPerformingLvl3Page(ArtsCreationPerformingLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      val form = if (sector == "") ArtsCreationPerformingLvl3Form else ArtsCreationPerformingLvl3Form.fill(FormValues(sector))
+      Ok(ArtsCreationPerformingLvl3Page(form, journey.mode)).toFuture
+    }
   }
 
   def submitArtsCreationPerformingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -141,8 +162,15 @@ class ArtsController @Inject() (
   }
 
   def loadArtsPerformingSupportActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArtsPerformingSupportActivitiesLvl4Page(ArtsPerformingSupportActivitiesLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") ArtsPerformingSupportActivitiesLvl4Form else ArtsPerformingSupportActivitiesLvl4Form.fill(FormValues(sector))
+      Ok(ArtsPerformingSupportActivitiesLvl4Page(form, "")).toFuture
+    }}
 
   def submitArtsPerformingSupportActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -192,8 +220,15 @@ class ArtsController @Inject() (
   }
 
   def loadBotanicalZoologicalReservesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(BotanicalZoologicalReservesLvl4Page(BotanicalZoologicalReservesLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") BotanicalZoologicalReservesLvl4Form else BotanicalZoologicalReservesLvl4Form.fill(FormValues(sector))
+      Ok(BotanicalZoologicalReservesLvl4Page(form, "")).toFuture
+    }}
 
   def submitBotanicalZoologicalReservesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -209,7 +244,15 @@ class ArtsController @Inject() (
   }
 
   def loadLibrariesArchivesCulturalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(LibrariesArchivesCulturalLvl3Page(LibrariesArchivesCulturalLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      val form = if (sector == "") LibrariesArchivesCulturalLvl3Form else LibrariesArchivesCulturalLvl3Form.fill(FormValues(sector))
+      Ok(LibrariesArchivesCulturalLvl3Page(form, journey.mode)).toFuture
+    }
   }
 
   def submitLibrariesArchivesCulturalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -243,8 +286,15 @@ class ArtsController @Inject() (
   }
 
   def loadLibrariesArchivesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(LibrariesArchivesLvl4Page(LibrariesArchivesLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") LibrariesArchivesLvl4Form else LibrariesArchivesLvl4Form.fill(FormValues(sector))
+      Ok(LibrariesArchivesLvl4Page(form, "")).toFuture
+    }}
 
   def submitLibrariesArchivesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -260,8 +310,15 @@ class ArtsController @Inject() (
   }
 
   def loadMuseumsCollectionsMomumentsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MuseumsCollectionsMomumentsLvl4Page(MuseumsCollectionsMomumentsLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") MuseumsCollectionsMomumentsLvl4Form else MuseumsCollectionsMomumentsLvl4Form.fill(FormValues(sector))
+      Ok(MuseumsCollectionsMomumentsLvl4Page(form, "")).toFuture
+    }}
 
   def submitMuseumsCollectionsMomumentsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -277,7 +334,15 @@ class ArtsController @Inject() (
   }
 
   def loadSportsAmusementRecreationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SportsAmusementRecreationLvl3Page(SportsAmusementRecreationLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      val form = if (sector == "") SportsAmusementRecreationLvl3Form else SportsAmusementRecreationLvl3Form.fill(FormValues(sector))
+      Ok(SportsAmusementRecreationLvl3Page(form, journey.mode)).toFuture
+    }
   }
 
   def submitSportsAmusementRecreationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -311,8 +376,15 @@ class ArtsController @Inject() (
   }
 
   def loadSportsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SportsLvl4Page(SportsLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") SportsLvl4Form else SportsLvl4Form.fill(FormValues(sector))
+      Ok(SportsLvl4Page(form, "")).toFuture
+    }}
 
   def submitSportsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

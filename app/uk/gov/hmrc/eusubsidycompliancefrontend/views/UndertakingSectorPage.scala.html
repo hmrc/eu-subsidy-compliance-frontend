@@ -47,25 +47,21 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-agriculture", messages("sector.label.2"))),
-hint = Some(Hint(
-content = HtmlContent(radioText("sector-hint-agriculture", messages("sector.hint.2", appConfig.sectorCap("agriculture")) +" " + messages("sector.hint.Cont")))
-)),
-value = Some(Sector.agriculture.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.agriculture.toString)
+hint = Some(Hint(content = HtmlContent(radioText("sector-hint-agriculture", messages("sector.hint.2", appConfig.sectorCap("agriculture")) +" " + messages("sector.hint.Cont"))))),
+value = Some(Sector.cropAnimalProduction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.cropAnimalProduction.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-aquaculture", messages("sector.label.3"))),
 hint = Some(Hint(
 content = HtmlContent(radioText("sector-hint-aquaculture", messages("sector.hint.3", appConfig.sectorCap("aquaculture")) +" " + messages("sector.hint.3Cont")))
 )),
-value = Some(Sector.aquaculture.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquaculture.toString)
+value = Some(Sector.fishingAndAquaculture.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.fishingAndAquaculture.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-other", messages("sector.label.0"))),
-hint = Some(Hint(
-id = Some("sector-hint-other"),
-content = HtmlContent(radioText("sector-hint-other", messages("sector.hint.0", appConfig.sectorCap("other")+" " +  messages("sector.hint.Cont"))))
+hint = Some(Hint(id = Some("sector-hint-other"),content = HtmlContent(radioText("sector-hint-other", messages("sector.hint.0", appConfig.sectorCap("other")+" " +  messages("sector.hint.Cont"))))
 )),
 value = Some(Sector.other.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.other.toString)
