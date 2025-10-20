@@ -47,7 +47,7 @@ class NaceUndertakingCategoryIntroController @Inject() (
 
     implicit val eori: EORI = request.eoriNumber
     store.put[UndertakingJourney](UndertakingJourney())
-    store.update[UndertakingJourney](_.copy(mode = "UpdateNaceMode"))
+    store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
 
     Future.successful(
       // Needs updating to take user to /undertaking-industry-sector
