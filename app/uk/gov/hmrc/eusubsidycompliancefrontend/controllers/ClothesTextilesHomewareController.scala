@@ -352,7 +352,7 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(sawmillingWoodworkLvl4Page(sawmillingWoodworkLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(rubberLvl4Page(rubberLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }}
 
   def submitRubberLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
