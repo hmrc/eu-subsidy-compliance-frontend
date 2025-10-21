@@ -67,7 +67,14 @@ class OtherServicesController @Inject() (
 
   // otherLvl2Page
   def loadOtherLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(otherLvl2Page(otherLvl2PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+        case None => ""
+      }
+      Ok(otherLvl2Page(otherLvl2PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitOtherLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -102,7 +109,14 @@ class OtherServicesController @Inject() (
 
   //membershipOrgActivitiesLvl3Page
   def loadMembershipOrgActivitiesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(membershipOrgActivitiesLvl3Page(membershipOrgActivitiesLvl3PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(membershipOrgActivitiesLvl3Page(membershipOrgActivitiesLvl3PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitMembershipOrgActivitiesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -137,7 +151,14 @@ class OtherServicesController @Inject() (
 
   //personalServicesLvl3Page
   def loadPersonalServicesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(personalServicesLvl3Page(personalServicesLvl3PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(personalServicesLvl3Page(personalServicesLvl3PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitPersonalServicesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -172,7 +193,14 @@ class OtherServicesController @Inject() (
 
   //repairsLvl3Page
   def loadRepairsLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(repairsLvl3Page(repairsLvl3PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(repairsLvl3Page(repairsLvl3PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitRepairsLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -207,7 +235,14 @@ class OtherServicesController @Inject() (
 
   //hairdressingLvl4Page
   def loadHairdressingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(hairdressingLvl4Page(hairdressingLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(hairdressingLvl4Page(hairdressingLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitHairdressingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -225,7 +260,14 @@ class OtherServicesController @Inject() (
 
   //householdRepairLvl4Page
   def loadHouseholdRepairLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(householdRepairLvl4Page(householdRepairLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(householdRepairLvl4Page(householdRepairLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitHouseholdRepairLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -243,7 +285,14 @@ class OtherServicesController @Inject() (
 
   //membershipOrgsLvl4Page
   def loadMembershipOrgsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(membershipOrgsLvl4Page(membershipOrgsLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(membershipOrgsLvl4Page(membershipOrgsLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitMembershipOrgsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -261,7 +310,14 @@ class OtherServicesController @Inject() (
 
   //motorVehiclesRepairLvl4Page
   def loadMotorVehiclesRepairLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(motorVehiclesRepairLvl4Page(motorVehiclesRepairLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(motorVehiclesRepairLvl4Page(motorVehiclesRepairLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitMotorVehiclesRepairLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -279,7 +335,14 @@ class OtherServicesController @Inject() (
 
   //otherMembershipOrgsLvl4Page
   def loadOtherMembershipOrgsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(otherMembershipOrgsLvl4Page(otherMembershipOrgsLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(otherMembershipOrgsLvl4Page(otherMembershipOrgsLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitOtherMembershipOrgsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -297,7 +360,14 @@ class OtherServicesController @Inject() (
 
   //otherPersonalServicesLvl4Page
   def loadOtherPersonalServicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(otherPersonalServicesLvl4Page(otherPersonalServicesLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(otherPersonalServicesLvl4Page(otherPersonalServicesLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitOtherPersonalServicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>

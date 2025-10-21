@@ -85,7 +85,14 @@ class RetailWholesaleController @Inject() (
 
   //retailWholesaleLvl2PageForm
   def loadRetailWholesaleLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(retailWholesaleLvl2Page(retailWholesaleLvl2PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+        case None => ""
+      }
+    Ok(retailWholesaleLvl2Page(retailWholesaleLvl2PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitRetailWholesaleLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -119,7 +126,14 @@ class RetailWholesaleController @Inject() (
   }
   //retailLvl3PageForm
   def loadRetailLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(retailLvl3Page(retailLvl3PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+    Ok(retailLvl3Page(retailLvl3PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitRetailLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -153,7 +167,14 @@ class RetailWholesaleController @Inject() (
   }
   //culturalLvl4PageForm
   def loadCulturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(culturalLvl4Page(culturalLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(culturalLvl4Page(culturalLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitCulturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -171,7 +192,14 @@ class RetailWholesaleController @Inject() (
 
   //foodLvl4PageForm
   def loadFoodLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(foodLvl4Page(foodLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(foodLvl4Page(foodLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitFoodLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -189,7 +217,14 @@ class RetailWholesaleController @Inject() (
 
   //householdLvl4PageForm
   def loadHouseholdLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(householdLvl4Page(householdLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(householdLvl4Page(householdLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitHouseholdLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -207,7 +242,14 @@ class RetailWholesaleController @Inject() (
 
   //intermediationLvl4PageForm
   def loadIntermediationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(intermediationLvl4Page(intermediationLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(intermediationLvl4Page(intermediationLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitIntermediationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -225,7 +267,14 @@ class RetailWholesaleController @Inject() (
 
   //motorVehiclesLvl4PageForm
   def loadMotorVehiclesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(motorVehiclesLvl4Page(motorVehiclesLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(motorVehiclesLvl4Page(motorVehiclesLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitMotorVehiclesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -243,7 +292,14 @@ class RetailWholesaleController @Inject() (
 
   //nonSpecialisedLvl4PageForm
   def loadNonSpecialisedLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(nonSpecialisedLvl4Page(nonSpecialisedLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(nonSpecialisedLvl4Page(nonSpecialisedLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitNonSpecialisedLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -261,7 +317,14 @@ class RetailWholesaleController @Inject() (
 
   //otherGoodsLvl4PageForm
   def loadOtherGoodsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(otherGoodsLvl4Page(otherGoodsLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(otherGoodsLvl4Page(otherGoodsLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitOtherGoodsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -279,7 +342,14 @@ class RetailWholesaleController @Inject() (
 
   //wholesaleLvl3PageForm
   def loadWholesaleLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(wholesaleLvl3Page(wholesaleLvl3PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(wholesaleLvl3Page(wholesaleLvl3PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitWholesaleLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -314,7 +384,14 @@ class RetailWholesaleController @Inject() (
 
   //agriculturalLvl4PageForm
   def loadAgriculturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(agriculturalLvl4Page(agriculturalLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(agriculturalLvl4Page(agriculturalLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitAgriculturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -332,7 +409,14 @@ class RetailWholesaleController @Inject() (
 
   //contractBasisLvl4PageForm
   def loadContractBasisLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(contractBasisLvl4Page(contractBasisLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(contractBasisLvl4Page(contractBasisLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitContractBasisLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -350,7 +434,14 @@ class RetailWholesaleController @Inject() (
 
   //foodWholesaleLvl4PageForm
   def loadFoodWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(foodWholesaleLvl4Page(foodWholesaleLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(foodWholesaleLvl4Page(foodWholesaleLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitFoodWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -368,7 +459,14 @@ class RetailWholesaleController @Inject() (
 
   //householdWholesaleLvl4PageForm
   def loadHouseholdWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(householdWholesaleLvl4Page(householdWholesaleLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(householdWholesaleLvl4Page(householdWholesaleLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitHouseholdWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -386,7 +484,14 @@ class RetailWholesaleController @Inject() (
 
   //machineryLvl4PageForm
   def loadMachineryLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(machineryLvl4Page(machineryLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(machineryLvl4Page(machineryLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitMachineryLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -404,7 +509,14 @@ class RetailWholesaleController @Inject() (
 
   //motorVehiclesWholesaleLvl4PageForm
   def loadMotorVehiclesWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(motorVehiclesWholesaleLvl4Page(motorVehiclesWholesaleLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(motorVehiclesWholesaleLvl4Page(motorVehiclesWholesaleLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitMotorVehiclesWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -422,7 +534,14 @@ class RetailWholesaleController @Inject() (
 
   //specialisedLvl4PageForm
   def loadSpecialisedLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(specialisedLvl4Page(specialisedLvl4PageForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(specialisedLvl4Page(specialisedLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitSpecialisedLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>

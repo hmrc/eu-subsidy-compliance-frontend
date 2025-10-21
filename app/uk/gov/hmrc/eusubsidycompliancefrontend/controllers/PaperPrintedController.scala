@@ -56,7 +56,14 @@ class PaperPrintedController @Inject() (
   private val PulpPaperPaperboardLvl4Form: Form[FormValues] = formWithSingleMandatoryField("pulp4")
 
   def loadArticlesPaperPaperboardLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArticlesPaperPaperboardLvl4Page(ArticlesPaperPaperboardLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(ArticlesPaperPaperboardLvl4Page(ArticlesPaperPaperboardLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitArticlesPaperPaperboardLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -73,7 +80,14 @@ class PaperPrintedController @Inject() (
   }
 
   def loadPaperLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PaperLvl3Page(PaperLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(PaperLvl3Page(PaperLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitPaperLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -107,7 +121,14 @@ class PaperPrintedController @Inject() (
   }
 
   def loadPrintedLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PrintedLvl3Page(PrintedLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(PrintedLvl3Page(PrintedLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitPrintedLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -141,7 +162,14 @@ class PaperPrintedController @Inject() (
   }
 
   def loadPrintingServicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PrintingServicesLvl4Page(PrintingServicesLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(PrintingServicesLvl4Page(PrintingServicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitPrintingServicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -158,7 +186,14 @@ class PaperPrintedController @Inject() (
   }
 
   def loadPulpPaperPaperboardLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PulpPaperPaperboardLvl4Page(PulpPaperPaperboardLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(PulpPaperPaperboardLvl4Page(PulpPaperPaperboardLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitPulpPaperPaperboardLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>

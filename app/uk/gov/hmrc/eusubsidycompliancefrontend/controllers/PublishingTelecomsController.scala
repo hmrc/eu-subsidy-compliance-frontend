@@ -78,7 +78,14 @@ class PublishingTelecomsController @Inject() (
   private val SoftwarePublishingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("softwarePublishing4")
 
   def loadComputerInfrastructureDataHostingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ComputerInfrastructureDataHostingLvl3Page(ComputerInfrastructureDataHostingLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(ComputerInfrastructureDataHostingLvl3Page(ComputerInfrastructureDataHostingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitComputerInfrastructureDataHostingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -112,7 +119,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadComputerProgrammingConsultancyLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ComputerProgrammingConsultancyLvl3Page(ComputerProgrammingConsultancyLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(ComputerProgrammingConsultancyLvl3Page(ComputerProgrammingConsultancyLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitComputerProgrammingConsultancyLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -146,7 +160,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadTelecommunicationLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(TelecommunicationLvl2Page(TelecommunicationLvl2Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+        case None => ""
+      }
+      Ok(TelecommunicationLvl2Page(TelecommunicationLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitTelecommunicationLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -180,7 +201,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadTelecommunicationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(TelecommunicationLvl3Page(TelecommunicationLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(TelecommunicationLvl3Page(TelecommunicationLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitTelecommunicationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -214,7 +242,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadWebSearchPortalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(WebSearchPortalLvl4Page(WebSearchPortalLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(WebSearchPortalLvl4Page(WebSearchPortalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitWebSearchPortalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -231,7 +266,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadBookPublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(BookPublishingLvl4Page(BookPublishingLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(BookPublishingLvl4Page(BookPublishingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitBookPublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -248,7 +290,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadFilmMusicPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FilmMusicPublishingLvl3Page(FilmMusicPublishingLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(FilmMusicPublishingLvl3Page(FilmMusicPublishingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitFilmMusicPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -282,7 +331,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadFilmVideoActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FilmVideoActivitiesLvl4Page(FilmVideoActivitiesLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(FilmVideoActivitiesLvl4Page(FilmVideoActivitiesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitFilmVideoActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -299,7 +355,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadNewsOtherContentDistributionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(NewsOtherContentDistributionLvl4Page(NewsOtherContentDistributionLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(NewsOtherContentDistributionLvl4Page(NewsOtherContentDistributionLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitNewsOtherContentDistributionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -316,7 +379,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadProgrammingBroadcastingDistributionLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ProgrammingBroadcastingDistributionLvl3Page(ProgrammingBroadcastingDistributionLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(ProgrammingBroadcastingDistributionLvl3Page(ProgrammingBroadcastingDistributionLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitProgrammingBroadcastingDistributionLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -350,7 +420,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadPublishingLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PublishingLvl2Page(PublishingLvl2Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+        case None => ""
+      }
+      Ok(PublishingLvl2Page(PublishingLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitPublishingLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -384,7 +461,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PublishingLvl3Page(PublishingLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(PublishingLvl3Page(PublishingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -418,7 +502,14 @@ class PublishingTelecomsController @Inject() (
   }
 
   def loadSoftwarePublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SoftwarePublishingLvl4Page(SoftwarePublishingLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(SoftwarePublishingLvl4Page(SoftwarePublishingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitSoftwarePublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>

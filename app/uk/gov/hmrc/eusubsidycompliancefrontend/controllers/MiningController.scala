@@ -66,7 +66,14 @@ class MiningController @Inject() (
   private val QuarryingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("quarrying4")
 
   def loadMiningLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MiningLvl2Page(MiningLvl2Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+        case None => ""
+      }
+      Ok(MiningLvl2Page(MiningLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitMiningLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -99,7 +106,14 @@ class MiningController @Inject() (
       )
   }
   def loadMiningSupportLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MiningSupportLvl3Page(MiningSupportLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(MiningSupportLvl3Page(MiningSupportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitMiningSupportLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -132,7 +146,14 @@ class MiningController @Inject() (
       )
   }
   def loadNonFeMetalMiningLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(NonFeMetalMiningLvl4Page(NonFeMetalMiningLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(NonFeMetalMiningLvl4Page(NonFeMetalMiningLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitNonFeMetalMiningLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -149,7 +170,14 @@ class MiningController @Inject() (
   }
 
   def loadOtherMiningLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherMiningLvl3Page(OtherMiningLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(OtherMiningLvl3Page(OtherMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitOtherMiningLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -183,7 +211,14 @@ class MiningController @Inject() (
   }
 
   def loadOtherMiningLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherMiningLvl4Page(OtherMiningLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(OtherMiningLvl4Page(OtherMiningLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitOtherMiningLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -199,7 +234,14 @@ class MiningController @Inject() (
       )
   }
   def loadQuarryingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(QuarryingLvl4Page(QuarryingLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(QuarryingLvl4Page(QuarryingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitQuarryingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -215,7 +257,14 @@ class MiningController @Inject() (
       )
   }
   def loadCoalMiningLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(CoalMiningLvl3Page(CoalMiningLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(CoalMiningLvl3Page(CoalMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitCoalMiningLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -249,7 +298,14 @@ class MiningController @Inject() (
   }
 
   def loadGasMiningLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(GasMiningLvl3Page(GasMiningLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(GasMiningLvl3Page(GasMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitGasMiningLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -283,7 +339,14 @@ class MiningController @Inject() (
   }
 
   def loadMetalMiningLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MetalMiningLvl3Page(MetalMiningLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(MetalMiningLvl3Page(MetalMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitMetalMiningLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
