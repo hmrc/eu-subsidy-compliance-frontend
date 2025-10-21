@@ -48,7 +48,6 @@ class NACECheckDetailsController @Inject()(
   import actionBuilders._
 
   private val confirmDetailsForm: Form[FormValues] = formWithSingleMandatoryField("confirmDetails")
-  val NewRegChangeMode = appConfig.NewRegChangeMode
 
   private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
     case "A" =>
@@ -229,7 +228,7 @@ class NACECheckDetailsController @Inject()(
   def getCheckDetails(usersLastAnswer: String) : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val messages: Messages = mcc.messagesApi.preferred(request)
-    store.update[UndertakingJourney](_.copy(mode = NewRegChangeMode))
+    store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegChangeMode))
 
     if (usersLastAnswer.nonEmpty) {
       val viewModel = buildViewModel(usersLastAnswer)(messages)
