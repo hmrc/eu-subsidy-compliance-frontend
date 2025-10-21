@@ -69,7 +69,17 @@ class GeneralTradeGroupsController @Inject() (
 
   //GeneralTradeUndertakingPage
   def loadGeneralTradeUndertakingPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(generalTradeUndertakingPage(generalTradeUndertakingForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length >=  2) value.toString.take(2) else value.toString
+        case None => ""
+      }
+
+      val previousLevel1Code = if(sector.length > 1) naceCheckDetailsController.deriveLevel1Code(sector) else sector
+
+    Ok(generalTradeUndertakingPage(generalTradeUndertakingForm.fill(FormValues(previousLevel1Code)), journey.mode)).toFuture
+    }
   }
 
   def submitGeneralTradeUndertakingPage(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -93,12 +103,12 @@ class GeneralTradeGroupsController @Inject() (
               case None => ""
             }
 
-            if (previousLevel1Code.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousLevel1Code.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -107,7 +117,14 @@ class GeneralTradeGroupsController @Inject() (
 
   //GeneralTradeUndertakingOtherPage
   def loadGeneralTradeUndertakingOtherPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(generalTradeUndertakingOtherPage(generalTradeUndertakingOtherForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+    Ok(generalTradeUndertakingOtherPage(generalTradeUndertakingOtherForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitGeneralTradeUndertakingOtherPage(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -128,12 +145,12 @@ class GeneralTradeGroupsController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -142,7 +159,10 @@ class GeneralTradeGroupsController @Inject() (
 
   //Lvl2_1GroupsPage
   def loadLvl2_1GroupsPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(lvl2_1GroupsPage(lvl2_1GroupsForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      Ok(lvl2_1GroupsPage(lvl2_1GroupsForm, journey.mode)).toFuture
+    }
   }
 
   def submitLvl2_1GroupsPage(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -154,7 +174,7 @@ class GeneralTradeGroupsController @Inject() (
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
 
-            if (form.value.equals(journey.internalNaceCode) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (form.value.equals(journey.internalNaceCode) && journey.isNaceCYA)
             {
               val lvl4Answer = journey.sector.value match {
                 case Some(lvl4Value) => lvl4Value.toString
@@ -165,8 +185,8 @@ class GeneralTradeGroupsController @Inject() (
             else
             {
               store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-              store.update[UndertakingJourney](_.copy(internalNaceCode = form.value, mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(internalNaceCode = form.value, isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -175,7 +195,14 @@ class GeneralTradeGroupsController @Inject() (
 
   //ClothesTextilesHomewarePage
   def loadClothesTextilesHomewarePage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(clothesTextilesHomewarePage(clothesTextilesHomewareForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+    Ok(clothesTextilesHomewarePage(clothesTextilesHomewareForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitClothesTextilesHomewarePage(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -193,7 +220,14 @@ class GeneralTradeGroupsController @Inject() (
 
   //ComputersElectronicsMachineryPage
   def loadComputersElectronicsMachineryPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(computersElectronicsMachineryPage(computersElectronicsMachineryForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+    Ok(computersElectronicsMachineryPage(computersElectronicsMachineryForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitComputersElectronicsMachineryPage(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -211,7 +245,14 @@ class GeneralTradeGroupsController @Inject() (
 
   //FoodBeveragesTobaccoPage
   def loadFoodBeveragesTobaccoPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(foodBeveragesTobaccoPage(foodBeveragesTobaccoForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+    Ok(foodBeveragesTobaccoPage(foodBeveragesTobaccoForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitFoodBeveragesTobaccoPage(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -229,7 +270,14 @@ class GeneralTradeGroupsController @Inject() (
 
   //MetalsChemicalsMaterialsPage
   def loadMetalsChemicalsMaterialsPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(metalsChemicalsMaterialsPage(metalsChemicalsMaterialsForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+    Ok(metalsChemicalsMaterialsPage(metalsChemicalsMaterialsForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitMetalsChemicalsMaterialsPage(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -247,7 +295,14 @@ class GeneralTradeGroupsController @Inject() (
 
   //PaperPrintedProductsPage
   def loadPaperPrintedProductsPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(paperPrintedProductsPage(paperPrintedProductsForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+    Ok(paperPrintedProductsPage(paperPrintedProductsForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitPaperPrintedProductsPage(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -265,7 +320,14 @@ class GeneralTradeGroupsController @Inject() (
 
   //VehiclesTransportPage
   def loadVehiclesTransportPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(vehiclesTransportPage(vehiclesTransportForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+    Ok(vehiclesTransportPage(vehiclesTransportForm.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitVehiclesTransportPage(): Action[AnyContent] = enrolled.async { implicit request =>

@@ -22,7 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NaceSelection}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -94,12 +94,12 @@ class FoodBeveragesController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -304,13 +304,27 @@ class FoodBeveragesController @Inject() (
 
   def submitBeveragesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     beveragesLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(beveragesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+
+          val naceSelection = NaceSelection(
+            code = form.value,
+            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+            level1Display = formData.get("level1Display").flatMap(_.headOption),
+            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+            level2Display = formData.get("level2Display").flatMap(_.headOption),
+            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
+          )
+
+          val sectorEnum = Sector.withName(form.value)
+
+          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }

@@ -60,7 +60,14 @@ class VehiclesManuTransportController @Inject() (
   private val ShipsBoatsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("ships4")
 
   def loadAircraftSpacecraftLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AircraftSpacecraftLvl4Page(AircraftSpacecraftLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(AircraftSpacecraftLvl4Page(AircraftSpacecraftLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitAircraftSpacecraftLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -77,7 +84,14 @@ class VehiclesManuTransportController @Inject() (
   }
 
   def loadMotorVehiclesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MotorVehiclesLvl3Page(MotorVehiclesLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+    Ok(MotorVehiclesLvl3Page(MotorVehiclesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitMotorVehiclesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -98,12 +112,12 @@ class VehiclesManuTransportController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -111,7 +125,14 @@ class VehiclesManuTransportController @Inject() (
   }
 
   def loadOtherTransportEquipmentLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherTransportEquipmentLvl3Page(OtherTransportEquipmentLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+    Ok(OtherTransportEquipmentLvl3Page(OtherTransportEquipmentLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitOtherTransportEquipmentLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -132,12 +153,12 @@ class VehiclesManuTransportController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -145,7 +166,14 @@ class VehiclesManuTransportController @Inject() (
   }
 
   def loadOtherTransportEquipmentLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherTransportEquipmentLvl4Page(OtherTransportEquipmentLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+    Ok(OtherTransportEquipmentLvl4Page(OtherTransportEquipmentLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitOtherTransportEquipmentLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -162,7 +190,14 @@ class VehiclesManuTransportController @Inject() (
   }
 
   def loadPartsAccessoriesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PartsAccessoriesLvl4Page(PartsAccessoriesLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+    Ok(PartsAccessoriesLvl4Page(PartsAccessoriesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitPartsAccessoriesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -179,7 +214,14 @@ class VehiclesManuTransportController @Inject() (
   }
 
   def loadShipsBoatsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ShipsBoatsLvl4Page(ShipsBoatsLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+    Ok(ShipsBoatsLvl4Page(ShipsBoatsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitShipsBoatsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -194,5 +236,4 @@ class VehiclesManuTransportController @Inject() (
         }
       )
   }
-
 }

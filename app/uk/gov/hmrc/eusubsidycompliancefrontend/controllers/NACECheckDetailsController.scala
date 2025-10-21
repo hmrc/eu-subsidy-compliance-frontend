@@ -295,7 +295,7 @@ class NACECheckDetailsController @Inject()(
     val messages: Messages = mcc.messagesApi.preferred(request)
 
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-      store.update[UndertakingJourney](_.copy(mode = NewRegChangeMode))
+      store.update[UndertakingJourney](_.copy(isNaceCYA = true))
 
       if (usersLastAnswer.nonEmpty) {
         val viewModel = journey.naceSelection match {
@@ -365,7 +365,7 @@ class NACECheckDetailsController @Inject()(
           }
         },
         form => {
-          store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
+          store.update[UndertakingJourney](_.copy(isNaceCYA = false))
           if (form.value == "true") {
             Redirect(routes.UndertakingController.getAddBusiness).toFuture
           } else {

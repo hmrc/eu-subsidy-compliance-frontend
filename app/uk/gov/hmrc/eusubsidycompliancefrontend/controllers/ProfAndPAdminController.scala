@@ -78,7 +78,14 @@ class ProfAndPAdminController @Inject() (
   private val SpecialisedDesignLvl4Form: Form[FormValues] = formWithSingleMandatoryField("specialDesign4")
 
   def loadPublicAdminDefenceLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PublicAdminDefenceLvl3Page(PublicAdminDefenceLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(PublicAdminDefenceLvl3Page(PublicAdminDefenceLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitPublicAdminDefenceLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -99,12 +106,12 @@ class ProfAndPAdminController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -112,7 +119,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadPublicAdminLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PublicAdminLvl4Page(PublicAdminLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(PublicAdminLvl4Page(PublicAdminLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitPublicAdminLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -129,7 +143,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadServiceProvisionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ServiceProvisionLvl4Page(ServiceProvisionLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(ServiceProvisionLvl4Page(ServiceProvisionLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitServiceProvisionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -146,7 +167,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadAdvertisingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AdvertisingLvl3Page(AdvertisingLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(AdvertisingLvl3Page(AdvertisingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitAdvertisingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -167,12 +195,12 @@ class ProfAndPAdminController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -180,7 +208,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadAdvertisingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AdvertisingLvl4Page(AdvertisingLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(AdvertisingLvl4Page(AdvertisingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitAdvertisingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -197,7 +232,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadArchitecturalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArchitecturalLvl3Page(ArchitecturalLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(ArchitecturalLvl3Page(ArchitecturalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitArchitecturalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -218,12 +260,12 @@ class ProfAndPAdminController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -231,7 +273,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadArchitecturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArchitecturalLvl4Page(ArchitecturalLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(ArchitecturalLvl4Page(ArchitecturalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitArchitecturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -248,7 +297,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadHeadOfficesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(HeadOfficesLvl3Page(HeadOfficesLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(HeadOfficesLvl3Page(HeadOfficesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitHeadOfficesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -269,12 +325,12 @@ class ProfAndPAdminController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -282,7 +338,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadLegalAndAccountingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(LegalAndAccountingLvl3Page(LegalAndAccountingLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(LegalAndAccountingLvl3Page(LegalAndAccountingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitLegalAndAccountingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -303,12 +366,12 @@ class ProfAndPAdminController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -316,7 +379,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadOtherProfessionalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherProfessionalLvl3Page(OtherProfessionalLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(OtherProfessionalLvl3Page(OtherProfessionalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitOtherProfessionalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -337,12 +407,12 @@ class ProfAndPAdminController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -350,7 +420,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadOtherProfessionalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherProfessionalLvl4Page(OtherProfessionalLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(OtherProfessionalLvl4Page(OtherProfessionalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitOtherProfessionalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -367,7 +444,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadProfessionalLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ProfessionalLvl2Page(ProfessionalLvl2Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+        case None => ""
+      }
+      Ok(ProfessionalLvl2Page(ProfessionalLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitProfessionalLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -388,12 +472,12 @@ class ProfAndPAdminController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -401,7 +485,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadScientificRAndDLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ScientificRAndDLvl3Page(ScientificRAndDLvl3Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(ScientificRAndDLvl3Page(ScientificRAndDLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitScientificRAndDLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -422,12 +513,12 @@ class ProfAndPAdminController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -435,7 +526,14 @@ class ProfAndPAdminController @Inject() (
   }
 
   def loadSpecialisedDesignLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(SpecialisedDesignLvl4Page(SpecialisedDesignLvl4Form, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(SpecialisedDesignLvl4Page(SpecialisedDesignLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
   }
 
   def submitSpecialisedDesignLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>

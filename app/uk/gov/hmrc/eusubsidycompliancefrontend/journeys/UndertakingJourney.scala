@@ -43,7 +43,8 @@ case class UndertakingJourney(
   submitted: Option[Boolean] = None,
   isAmend: Boolean = false,
   mode: String = "",
-  internalNaceCode: String = ""
+  internalNaceCode: String = "",
+  isNaceCYA: Boolean = false
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] = Array(
