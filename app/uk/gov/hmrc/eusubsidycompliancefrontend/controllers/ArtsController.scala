@@ -30,7 +30,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.artSportsRecreation._
 
-import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
@@ -79,7 +78,7 @@ class ArtsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(AmusementAndRecreationLvl4Page(AmusementAndRecreationLvl4Form.fill(FormValues(sector)), "")).toFuture
+      Ok(AmusementAndRecreationLvl4Page(AmusementAndRecreationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }}
 
   def submitAmusementAndRecreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -103,7 +102,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       val form = if (sector == "") ArtsCreationLvl4Form else ArtsCreationLvl4Form.fill(FormValues(sector))
-      Ok(ArtsCreationLvl4Page(form, "")).toFuture
+      Ok(ArtsCreationLvl4Page(form, journey.mode)).toFuture
     }}
 
   def submitArtsCreationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -169,7 +168,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       val form = if (sector == "") ArtsPerformingSupportActivitiesLvl4Form else ArtsPerformingSupportActivitiesLvl4Form.fill(FormValues(sector))
-      Ok(ArtsPerformingSupportActivitiesLvl4Page(form, "")).toFuture
+      Ok(ArtsPerformingSupportActivitiesLvl4Page(form, journey.mode)).toFuture
     }}
 
   def submitArtsPerformingSupportActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -186,8 +185,14 @@ class ArtsController @Inject() (
   }
 
   def loadArtsSportsRecreationLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(ArtsSportsRecreationLvl2Page(ArtsSportsRecreationLvl2Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+        case None => ""
+      }
+      Ok(ArtsSportsRecreationLvl2Page(ArtsSportsRecreationLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitArtsSportsRecreationLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -227,7 +232,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       val form = if (sector == "") BotanicalZoologicalReservesLvl4Form else BotanicalZoologicalReservesLvl4Form.fill(FormValues(sector))
-      Ok(BotanicalZoologicalReservesLvl4Page(form, "")).toFuture
+      Ok(BotanicalZoologicalReservesLvl4Page(form, journey.mode)).toFuture
     }}
 
   def submitBotanicalZoologicalReservesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -293,7 +298,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       val form = if (sector == "") LibrariesArchivesLvl4Form else LibrariesArchivesLvl4Form.fill(FormValues(sector))
-      Ok(LibrariesArchivesLvl4Page(form, "")).toFuture
+      Ok(LibrariesArchivesLvl4Page(form, journey.mode)).toFuture
     }}
 
   def submitLibrariesArchivesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -317,7 +322,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       val form = if (sector == "") MuseumsCollectionsMomumentsLvl4Form else MuseumsCollectionsMomumentsLvl4Form.fill(FormValues(sector))
-      Ok(MuseumsCollectionsMomumentsLvl4Page(form, "")).toFuture
+      Ok(MuseumsCollectionsMomumentsLvl4Page(form, journey.mode)).toFuture
     }}
 
   def submitMuseumsCollectionsMomumentsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -383,7 +388,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       val form = if (sector == "") SportsLvl4Form else SportsLvl4Form.fill(FormValues(sector))
-      Ok(SportsLvl4Page(form, "")).toFuture
+      Ok(SportsLvl4Page(form, journey.mode)).toFuture
     }}
 
   def submitSportsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>

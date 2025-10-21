@@ -77,8 +77,14 @@ class FinanceRealEstateController @Inject() (
   private val TrustsFundsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("trusts4")
 
   def loadFeeContractLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FeeContractLvl4Page(FeeContractLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(FeeContractLvl4Page(FeeContractLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitFeeContractLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -93,8 +99,14 @@ class FinanceRealEstateController @Inject() (
       )
   }
   def loadPropertyDevelopmentLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PropertyDevelopmentLvl4Page(PropertyDevelopmentLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(PropertyDevelopmentLvl4Page(PropertyDevelopmentLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitPropertyDevelopmentLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -109,8 +121,14 @@ class FinanceRealEstateController @Inject() (
       )
   }
   def loadRealEstateLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(RealEstateLvl3Page(RealEstateLvl3Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(PropertyDevelopmentLvl4Page(PropertyDevelopmentLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitRealEstateLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -143,8 +161,14 @@ class FinanceRealEstateController @Inject() (
   }
 
   def loadAuxiliaryFinancialLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AuxiliaryFinancialLvl3Page(AuxiliaryFinancialLvl3Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(AuxiliaryFinancialLvl3Page(AuxiliaryFinancialLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitAuxiliaryFinancialLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -177,8 +201,14 @@ class FinanceRealEstateController @Inject() (
   }
 
   def loadAuxiliaryInsuranceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AuxiliaryInsuranceLvl4Page(AuxiliaryInsuranceLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(AuxiliaryInsuranceLvl4Page(AuxiliaryInsuranceLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitAuxiliaryInsuranceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -194,8 +224,14 @@ class FinanceRealEstateController @Inject() (
   }
 
   def loadAuxiliaryNonInsuranceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AuxiliaryNonInsuranceLvl4Page(AuxiliaryNonInsuranceLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(AuxiliaryNonInsuranceLvl4Page(AuxiliaryNonInsuranceLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitAuxiliaryNonInsuranceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -210,8 +246,14 @@ class FinanceRealEstateController @Inject() (
       )
   }
   def loadFinanceInsuranceLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FinanceInsuranceLvl2Page(FinanceInsuranceLvl2Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+        case None => ""
+      }
+      Ok(FinanceInsuranceLvl2Page(FinanceInsuranceLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitFinanceInsuranceLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -244,8 +286,14 @@ class FinanceRealEstateController @Inject() (
   }
 
   def loadFinancialServicesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FinancialServicesLvl3Page(FinancialServicesLvl3Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(FinancialServicesLvl3Page(FinancialServicesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitFinancialServicesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -278,8 +326,14 @@ class FinanceRealEstateController @Inject() (
   }
 
   def loadHoldingCompaniesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(HoldingCompaniesLvl4Page(HoldingCompaniesLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(HoldingCompaniesLvl4Page(HoldingCompaniesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitHoldingCompaniesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -295,8 +349,14 @@ class FinanceRealEstateController @Inject() (
   }
 
   def loadTrustsFundsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(TrustsFundsLvl4Page(TrustsFundsLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(TrustsFundsLvl4Page(TrustsFundsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitTrustsFundsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -312,8 +372,14 @@ class FinanceRealEstateController @Inject() (
   }
 
   def loadOtherFinancialLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherFinancialLvl4Page(OtherFinancialLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(OtherFinancialLvl4Page(OtherFinancialLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitOtherFinancialLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -329,8 +395,14 @@ class FinanceRealEstateController @Inject() (
   }
 
   def loadMonetaryIntermediationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MonetaryIntermediationLvl4Page(MonetaryIntermediationLvl4Form, "")).toFuture
-  }
+      implicit val eori: EORI = request.eoriNumber
+      store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+        val sector = journey.sector.value match {
+          case Some(value) => value.toString
+          case None => ""
+        }
+        Ok(MonetaryIntermediationLvl4Page(MonetaryIntermediationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      }}
 
   def submitMonetaryIntermediationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -346,8 +418,14 @@ class FinanceRealEstateController @Inject() (
   }
 
   def loadInsuranceTypeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(InsuranceTypeLvl4Page(InsuranceTypeLvl4Form, "")).toFuture
-  }
+      implicit val eori: EORI = request.eoriNumber
+      store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+        val sector = journey.sector.value match {
+          case Some(value) => value.toString
+          case None => ""
+        }
+        Ok(InsuranceTypeLvl4Page(InsuranceTypeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      }}
 
   def submitInsuranceTypeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -362,8 +440,14 @@ class FinanceRealEstateController @Inject() (
       )
   }
   def loadInsuranceLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(InsuranceLvl3Page(InsuranceLvl3Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(InsuranceLvl3Page(InsuranceLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitInsuranceLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

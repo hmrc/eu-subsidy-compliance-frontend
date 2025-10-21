@@ -19,7 +19,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{Journey, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -36,4 +37,3 @@ class BaseController(mcc: MessagesControllerComponents) extends FrontendControll
     if (journey.isEligibleForStep) f
     else Redirect(journey.previous).toFuture
 
-}

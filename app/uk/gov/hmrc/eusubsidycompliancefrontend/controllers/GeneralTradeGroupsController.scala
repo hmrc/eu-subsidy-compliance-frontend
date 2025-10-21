@@ -81,7 +81,6 @@ class GeneralTradeGroupsController @Inject() (
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
 
-
             val previousAnswer = journey.sector.value match {
               case Some(value) => if (value.toString.length >=  2) value.toString.take(2) else value.toString
               case None => ""
