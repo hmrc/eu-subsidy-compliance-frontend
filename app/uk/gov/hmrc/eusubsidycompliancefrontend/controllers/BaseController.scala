@@ -37,3 +37,4 @@ class BaseController(mcc: MessagesControllerComponents) extends FrontendControll
     if (journey.isEligibleForStep) f
     else Redirect(journey.previous).toFuture
 
+}
