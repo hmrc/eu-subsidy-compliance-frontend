@@ -289,12 +289,17 @@ class NACECheckDetailsController @Inject()(
     )
   }
 
-  def getCheckDetails(usersLastAnswer: String) : Action[AnyContent] = enrolled.async { implicit request =>
+  def getCheckDetails() : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val messages: Messages = mcc.messagesApi.preferred(request)
 
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       store.update[UndertakingJourney](_.copy(isNaceCYA = true))
+
+      val usersLastAnswer = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
 
       if (usersLastAnswer.nonEmpty) {
         val viewModel = journey.naceSelection match {
