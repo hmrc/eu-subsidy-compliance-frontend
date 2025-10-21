@@ -111,6 +111,13 @@
         </ol>
     </nav>
 
+    <input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
+    <input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
+    <input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Food")" />
+    <input type="hidden" name="level2Display_12.00" value="@messages("NACE.Manufacturing.Lvl2.2.Food.Tobacco")" />
+    <input type="hidden" name="level3Display_12.00" value="@messages("NACE.Manufacturing.Lvl2.2.Food.Tobacco")" />
+    <input type="hidden" name="level4Display_12.00" value="@messages("NACE.Manufacturing.Lvl2.2.Food.Tobacco")" />
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("NACE.Manufacturing.Lvl2.2.Food.error"))
