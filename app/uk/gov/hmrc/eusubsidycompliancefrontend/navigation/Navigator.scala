@@ -34,6 +34,7 @@ class Navigator @Inject() {
 
   private val normalRoutes: (String) => Call = {
     case ("00") => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage()
+    case ("0") => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage()
     case ("INT00") => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage()
     case ("C") => routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage()
     case ("INT02") => routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage()
