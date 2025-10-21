@@ -127,6 +127,18 @@
     </ol>
 </nav>
 
+<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
+<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
+<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Food")" />
+<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Food.Beverages")" />
+<input type="hidden" name="level4Display_11.05" value="@messages("NACE.manufacturing.lvl4.beer")" />
+<input type="hidden" name="level4Display_11.03" value="@messages("NACE.Manufacturing.Lvl4.cider")" />
+<input type="hidden" name="level4Display_11.06" value="@messages("NACE.manufacturing.lvl4.malt")" />
+<input type="hidden" name="level4Display_11.07" value="@messages("NACE.Manufacturing.Lvl4.softDrinks")" />
+<input type="hidden" name="level4Display_11.01" value="@messages("NACE.Manufacturing.Lvl4.spirits")" />
+<input type="hidden" name="level4Display_11.02" value="@messages("NACE.Manufacturing.Lvl4.wine")" />
+<input type="hidden" name="level4Display_11.04" value="@messages("NACE.Manufacturing.Lvl4.otherFermentedBeverages")" />
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("NACE.Manufacturing.Beverages.error"))
