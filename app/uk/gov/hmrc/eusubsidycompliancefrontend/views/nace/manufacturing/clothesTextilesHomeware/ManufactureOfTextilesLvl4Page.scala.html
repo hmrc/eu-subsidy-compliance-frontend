@@ -130,6 +130,19 @@
     </ol>
 </nav>
 
+<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
+<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
+<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Clothes")" />
+<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Clothes.Textiles")" />
+<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.OtherTextiles")" />
+<input type="hidden" name="level4Display_13.93" value="@messages("NACE.Manufacturing.Lvl4.CarpetsRugs")" />
+<input type="hidden" name="level4Display_13.94" value="@messages("NACE.Manufacturing.Lvl4.CordageRopeTwineNetting")" />
+<input type="hidden" name="level4Display_13.92" value="@messages("NACE.Manufacturing.Lvl4.HouseholdFurnishingTextiles")" />
+<input type="hidden" name="level4Display_13.91" value="@messages("NACE.Manufacturing.Lvl4.KnittedCrochetedFabrics")" />
+<input type="hidden" name="level4Display_13.95" value="@messages("NACE.Manufacturing.Lvl4.NonWovens")" />
+<input type="hidden" name="level4Display_13.96" value="@messages("NACE.Manufacturing.Lvl4.TechnicalIndustrialTextiles")" />
+<input type="hidden" name="level4Display_13.99" value="@messages("NACE.Manufacturing.Lvl4.OtherTextiles")" />
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("NACE.Manufacturing.OtherTextiles.error"))
