@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NaceSelection}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -257,13 +257,37 @@ class GeneralTradeGroupsController @Inject() (
 
   def submitFoodBeveragesTobaccoPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     foodBeveragesTobaccoForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(foodBeveragesTobaccoPage(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+          val sectorEnum = Sector.withName(form.value)
+
+          val naceSelectionOpt = if (form.value == "12.00") {
+            Some(NaceSelection(
+              code = "12.00",
+              sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+              level1Display = formData.get("level1Display").flatMap(_.headOption),
+              level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+              level2Display = formData.get("level2Display_12.00").flatMap(_.headOption),
+              level3Display = formData.get("level3Display_12.00").flatMap(_.headOption),
+              level4Display = formData.get("level4Display_12.00").flatMap(_.headOption).getOrElse("")
+            ))
+          } else {
+            None
+          }
+
+          naceSelectionOpt match {
+            case Some(selection) =>
+              store.update[UndertakingJourney](_.setNaceSelection(selection).setUndertakingSector(sectorEnum.id))
+                .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+            case None =>
+              store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+                .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+          }
         }
       )
   }

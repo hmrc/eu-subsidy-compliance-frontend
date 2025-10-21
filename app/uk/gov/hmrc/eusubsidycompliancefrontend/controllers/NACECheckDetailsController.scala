@@ -48,7 +48,6 @@ class NACECheckDetailsController @Inject()(
   import actionBuilders._
 
   private val confirmDetailsForm: Form[FormValues] = formWithSingleMandatoryField("confirmDetails")
-  val NewRegChangeMode = appConfig.NewRegChangeMode
 
   private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
     case "A" =>
