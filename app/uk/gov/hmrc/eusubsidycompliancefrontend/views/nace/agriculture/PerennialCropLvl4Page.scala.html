@@ -138,6 +138,18 @@ title = Text(messages("common.error.summary.title"))
     </ol>
 </nav>
 
+<input type="hidden" name="sectorDisplay" value="@messages("sector.label.2")" />
+<input type="hidden" name="level3Display" value="@messages("NACE.agriculture.Lvl3.growingPerennialCrops")" />
+<input type="hidden" name="level4Display_01.27" value="@messages("NACE.agriculture.Lvl4.beverageCrops")" />
+<input type="hidden" name="level4Display_01.23" value="@messages("NACE.agriculture.Lvl4.citrusFruits")" />
+<input type="hidden" name="level4Display_01.21" value="@messages("NACE.agriculture.Lvl4.grapes")" />
+<input type="hidden" name="level4Display_01.26" value="@messages("NACE.agriculture.Lvl4.oleaginousFruits")" />
+<input type="hidden" name="level4Display_01.24" value="@messages("NACE.agriculture.Lvl4.stoneFruits")" />
+<input type="hidden" name="level4Display_01.28" value="@messages("NACE.agriculture.Lvl4.spicesPharmaceuticalCrops")" />
+<input type="hidden" name="level4Display_01.22" value="@messages("NACE.agriculture.Lvl4.tropicalFruits")" />
+<input type="hidden" name="level4Display_01.25" value="@messages("NACE.agriculture.Lvl4.otherTree")" />
+<input type="hidden" name="level4Display_01.29" value="@messages("NACE.agriculture.Lvl4.otherPerennialCrops")" />
+
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
 content = Text(messages("NACE.agriculture.Lvl3.growingCrops.error"))
