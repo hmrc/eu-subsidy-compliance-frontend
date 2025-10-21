@@ -155,7 +155,6 @@ sector.label.2=Agriculture
 sector.label.3=Fishery and aquaculture
 sector.label.00=General trade
 
-
 sector.label.agriculture = Agriculture
 sector.label.fisheryAndAquaculture = Fishery and aquaculture
 sector.label.generalTrade = General trade
