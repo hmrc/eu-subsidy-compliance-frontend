@@ -105,6 +105,14 @@
     </ol>
 </nav>
 
+<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
+<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
+<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Food")" />
+<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Food")" />
+<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.GrainMillProducts")" />
+<input type="hidden" name="level4Display_10.61" value="@messages("NACE.Manufacturing.Lvl4.GrainMillProducts")" />
+<input type="hidden" name="level4Display_10.62" value="@messages("NACE.Manufacturing.Lvl4.Starches")" />
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("NACE.Manufacturing.GrainMillProducts.error"))

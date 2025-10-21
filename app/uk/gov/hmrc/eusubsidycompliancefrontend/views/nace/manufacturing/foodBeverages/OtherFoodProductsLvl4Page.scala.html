@@ -133,6 +133,19 @@
     </ol>
 </nav>
 
+<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
+<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
+<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Food")" />
+<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Food")" />
+<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.OtherFoodProducts")" />
+<input type="hidden" name="level4Display_10.82" value="@messages("NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery")" />
+<input type="hidden" name="level4Display_10.84" value="@messages("NACE.Manufacturing.Lvl4.CondimentsSeasonings")" />
+<input type="hidden" name="level4Display_10.86" value="@messages("NACE.Manufacturing.Lvl4.HomogenisedFood")" />
+<input type="hidden" name="level4Display_10.85" value="@messages("NACE.Manufacturing.Lvl4.PreparedMeals")" />
+<input type="hidden" name="level4Display_10.81" value="@messages("NACE.Manufacturing.Lvl4.Sugar")" />
+<input type="hidden" name="level4Display_10.83" value="@messages("NACE.Manufacturing.Lvl4.TeaCoffee")" />
+<input type="hidden" name="level4Display_10.89" value="@messages("NACE.Manufacturing.Lvl4.OtherFoodProducts")" />
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("NACE.Manufacturing.OtherFoodProducts.error"))

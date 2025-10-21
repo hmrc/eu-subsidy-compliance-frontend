@@ -119,13 +119,28 @@ class FoodBeveragesController @Inject() (
 
   def submitAnimalFeedsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     animalFeedsLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(animalFeedsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+
+          val naceSelection = NaceSelection(
+            code = form.value,
+            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+            level1Display = formData.get("level1Display").flatMap(_.headOption),
+            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+            level2Display = formData.get("level2Display").flatMap(_.headOption),
+            level3Display = formData.get("level3Display").flatMap(_.headOption),
+            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
+          )
+
+          val sectorEnum = Sector.withName(form.value)
+
+          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
@@ -142,13 +157,28 @@ class FoodBeveragesController @Inject() (
 
   def submitBakeryAndFarinaceousLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     bakeryAndFarinaceousLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(bakeryAndFarinaceousLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+
+          val naceSelection = NaceSelection(
+            code = form.value,
+            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+            level1Display = formData.get("level1Display").flatMap(_.headOption),
+            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+            level2Display = formData.get("level2Display").flatMap(_.headOption),
+            level3Display = formData.get("level3Display").flatMap(_.headOption),
+            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
+          )
+
+          val sectorEnum = Sector.withName(form.value)
+
+          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
@@ -165,13 +195,28 @@ class FoodBeveragesController @Inject() (
 
   def submitDairyProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     dairyProductsLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(dairyProductsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+
+          val naceSelection = NaceSelection(
+            code = form.value,
+            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+            level1Display = formData.get("level1Display").flatMap(_.headOption),
+            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+            level2Display = formData.get("level2Display").flatMap(_.headOption),
+            level3Display = formData.get("level3Display").flatMap(_.headOption),
+            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
+          )
+
+          val sectorEnum = Sector.withName(form.value)
+
+          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
@@ -188,16 +233,33 @@ class FoodBeveragesController @Inject() (
 
   def submitFruitAndVegLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     fruitAndVegLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(fruitAndVegLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+
+          val naceSelection = NaceSelection(
+            code = form.value,
+            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+            level1Display = formData.get("level1Display").flatMap(_.headOption),
+            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+            level2Display = formData.get("level2Display").flatMap(_.headOption),
+            level3Display = formData.get("level3Display").flatMap(_.headOption),
+            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
+          )
+
+          val sectorEnum = Sector.withName(form.value)
+
+          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
+
+
 
   def loadGrainAndStarchLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -211,13 +273,28 @@ class FoodBeveragesController @Inject() (
 
   def submitGrainAndStarchLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     grainAndStarchLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(grainAndStarchLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+
+          val naceSelection = NaceSelection(
+            code = form.value,
+            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+            level1Display = formData.get("level1Display").flatMap(_.headOption),
+            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+            level2Display = formData.get("level2Display").flatMap(_.headOption),
+            level3Display = formData.get("level3Display").flatMap(_.headOption),
+            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
+          )
+
+          val sectorEnum = Sector.withName(form.value)
+
+          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
@@ -234,13 +311,28 @@ class FoodBeveragesController @Inject() (
 
   def submitMeatLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     meatLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(meatLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+
+          val naceSelection = NaceSelection(
+            code = form.value,
+            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+            level1Display = formData.get("level1Display").flatMap(_.headOption),
+            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+            level2Display = formData.get("level2Display").flatMap(_.headOption),
+            level3Display = formData.get("level3Display").flatMap(_.headOption),
+            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
+          )
+
+          val sectorEnum = Sector.withName(form.value)
+
+          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
@@ -257,13 +349,28 @@ class FoodBeveragesController @Inject() (
 
   def submitOilsAndFatsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     oilsAndFatsLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(oilsAndFatsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+
+          val naceSelection = NaceSelection(
+            code = form.value,
+            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+            level1Display = formData.get("level1Display").flatMap(_.headOption),
+            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+            level2Display = formData.get("level2Display").flatMap(_.headOption),
+            level3Display = formData.get("level3Display").flatMap(_.headOption),
+            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
+          )
+
+          val sectorEnum = Sector.withName(form.value)
+
+          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
@@ -281,13 +388,28 @@ class FoodBeveragesController @Inject() (
 
   def submitOtherFoodProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     otherFoodProductsLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(otherFoodProductsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+
+          val naceSelection = NaceSelection(
+            code = form.value,
+            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+            level1Display = formData.get("level1Display").flatMap(_.headOption),
+            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+            level2Display = formData.get("level2Display").flatMap(_.headOption),
+            level3Display = formData.get("level3Display").flatMap(_.headOption),
+            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
+          )
+
+          val sectorEnum = Sector.withName(form.value)
+
+          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
