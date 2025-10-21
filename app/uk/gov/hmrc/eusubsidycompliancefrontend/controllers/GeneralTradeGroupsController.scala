@@ -103,12 +103,12 @@ class GeneralTradeGroupsController @Inject() (
               case None => ""
             }
 
-            if (previousLevel1Code.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousLevel1Code.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -145,12 +145,12 @@ class GeneralTradeGroupsController @Inject() (
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
@@ -159,7 +159,10 @@ class GeneralTradeGroupsController @Inject() (
 
   //Lvl2_1GroupsPage
   def loadLvl2_1GroupsPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(lvl2_1GroupsPage(lvl2_1GroupsForm, "")).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      Ok(lvl2_1GroupsPage(lvl2_1GroupsForm, journey.mode)).toFuture
+    }
   }
 
   def submitLvl2_1GroupsPage(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -171,7 +174,7 @@ class GeneralTradeGroupsController @Inject() (
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
 
-            if (form.value.equals(journey.internalNaceCode) && journey.mode.equals(appConfig.NewRegChangeMode))
+            if (form.value.equals(journey.internalNaceCode) && journey.isNaceCYA)
             {
               val lvl4Answer = journey.sector.value match {
                 case Some(lvl4Value) => lvl4Value.toString
@@ -182,8 +185,8 @@ class GeneralTradeGroupsController @Inject() (
             else
             {
               store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-              store.update[UndertakingJourney](_.copy(internalNaceCode = form.value, mode = appConfig.NewRegMode))
-              Redirect(navigator.nextPage(form.value, appConfig.NewRegMode)).toFuture
+              store.update[UndertakingJourney](_.copy(internalNaceCode = form.value, isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
