@@ -32,8 +32,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.agriculture._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.forestry._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.fishing._
 
-import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class AgricultureController @Inject() (
   mcc: MessagesControllerComponents,
@@ -51,7 +51,7 @@ class AgricultureController @Inject() (
   FishingLvl4Page: FishingLvl4Page
 )(implicit
   val appConfig: AppConfig,
-                                             val executionContext: ExecutionContext
+  val executionContext: ExecutionContext
                                            ) extends BaseController(mcc){
 
   import actionBuilders._
@@ -116,7 +116,7 @@ class AgricultureController @Inject() (
         case None => ""
       }
       val form = if (sector == "") SupportActivitiesLvl4Form else SupportActivitiesLvl4Form.fill(FormValues(sector))
-      Ok(SupportActivitiesLvl4Page(form, "")).toFuture
+      Ok(SupportActivitiesLvl4Page(form,  journey.mode)).toFuture
     }}
 
   def submitSupportActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -299,7 +299,7 @@ class AgricultureController @Inject() (
         case None => ""
       }
       val form = if (sector == "") AquacultureLvl4Form else AquacultureLvl4Form.fill(FormValues(sector))
-      Ok(AquacultureLvl4Page(form, "")).toFuture
+      Ok(AquacultureLvl4Page(form, journey.mode)).toFuture
     }}
 
   def submitAquacultureLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -322,8 +322,7 @@ class AgricultureController @Inject() (
           case Some(value) => value.toString
           case None => ""
         }
-        val form = if (sector == "") FishingLvl4Form else FishingLvl4Form.fill(FormValues(sector))
-        Ok(FishingLvl4Page(form, "")).toFuture
+        Ok(FishingLvl4Page(FishingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
       }}
 
   def submitFishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>

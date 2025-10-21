@@ -1927,7 +1927,7 @@ NACE.TransportationAndStorage.Lvl3.FreightAirSpace.error = Select the type of fr
 NACE.TransportationAndStorage.Lvl4.FreightAir = Freight air transport
 NACE.TransportationAndStorage.Lvl4.SpaceTransport = Space transport
 
-NACE.TransportationAndStorage.Lvl2.WarehousingSupport = Warehousing, storage and support activities for transportation
+NACE.TransportationAndStorage.Lvl2.WarehousingSupport = Warehousing, storage and support activities for transport
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport.title = What type of warehousing, storage or support activity does your undertaking do?
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint = Includes cargo handling, logistics and intermediation services for transport.
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport.error = Select the type of warehousing, storage or support activity your undertaking does

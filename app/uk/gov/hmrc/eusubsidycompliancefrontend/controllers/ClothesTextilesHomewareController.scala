@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.data.Form
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -53,6 +54,8 @@ class ClothesTextilesHomewareController @Inject() (
   val executionContext: ExecutionContext)
     extends BaseController(mcc) {
   import actionBuilders._
+  override val messagesApi: MessagesApi = mcc.messagesApi
+
   private val clothingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("clothing3")
   private val leatherLvl3Form: Form[FormValues] = formWithSingleMandatoryField("leather3")
   private val rubberPlasticLvl3Form: Form[FormValues] = formWithSingleMandatoryField("rubber3")
@@ -66,10 +69,15 @@ class ClothesTextilesHomewareController @Inject() (
   private val tanningDressingDyeingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("tanning4")
   private val woodCorkStrawPlaitingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("strawPlaiting4")
 
-  //clothingLvl3Page
   def loadClothingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(clothingLvl3Page(clothingLvl3Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(clothingLvl3Page(clothingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitClothingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -103,8 +111,14 @@ class ClothesTextilesHomewareController @Inject() (
 
   //leatherLvl3Page
   def loadLeatherLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(leatherLvl3Page(leatherLvl3Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(leatherLvl3Page(leatherLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitLeatherLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -138,8 +152,14 @@ class ClothesTextilesHomewareController @Inject() (
 
   //RubberPlasticLvl3Page
   def loadRubberPlasticLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(rubberPlasticLvl3Page(rubberPlasticLvl3Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(rubberPlasticLvl3Page(rubberPlasticLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitRubberPlasticLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -171,10 +191,15 @@ class ClothesTextilesHomewareController @Inject() (
       )
   }
 
-  //textilesLvl3Page
   def loadTextilesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(textilesLvl3Page(textilesLvl3Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(textilesLvl3Page(textilesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitTextilesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -208,8 +233,14 @@ class ClothesTextilesHomewareController @Inject() (
 
   //woodCorkStrawLvl3Page
   def loadWoodCorkStrawLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(woodCorkStrawLvl3Page(woodCorkStrawLvl3Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(woodCorkStrawLvl3Page(woodCorkStrawLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitWoodCorkStrawLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -243,8 +274,14 @@ class ClothesTextilesHomewareController @Inject() (
 
   //manufactureOfTextilesLvl4Page
   def loadManufactureOfTextilesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(manufactureOfTextilesLvl4Page(manufactureOfTextilesLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(manufactureOfTextilesLvl4Page(manufactureOfTextilesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitManufactureOfTextilesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -261,8 +298,14 @@ class ClothesTextilesHomewareController @Inject() (
 
   //otherClothingLvl4Page
   def loadOtherClothingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(otherClothingLvl4Page(otherClothingLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(otherClothingLvl4Page(otherClothingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitOtherClothingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -279,8 +322,14 @@ class ClothesTextilesHomewareController @Inject() (
 
   //plasticLvl4Page
   def loadPlasticLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(plasticLvl4Page(plasticLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(plasticLvl4Page(plasticLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitPlasticLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -297,8 +346,14 @@ class ClothesTextilesHomewareController @Inject() (
 
   //rubberLvl4Page
   def loadRubberLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(rubberLvl4Page(rubberLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(sawmillingWoodworkLvl4Page(sawmillingWoodworkLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitRubberLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -315,8 +370,14 @@ class ClothesTextilesHomewareController @Inject() (
 
   //sawmillingWoodworkLvl4Page
   def loadSawmillingWoodworkLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(sawmillingWoodworkLvl4Page(sawmillingWoodworkLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(sawmillingWoodworkLvl4Page(sawmillingWoodworkLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitSawmillingWoodworkLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -333,8 +394,14 @@ class ClothesTextilesHomewareController @Inject() (
 
   //tanningDressingDyeingLvl4Page
   def loadTanningDressingDyeingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(tanningDressingDyeingLvl4Page(tanningDressingDyeingLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(tanningDressingDyeingLvl4Page(tanningDressingDyeingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitTanningDressingDyeingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -351,8 +418,14 @@ class ClothesTextilesHomewareController @Inject() (
 
   //woodCorkStrawPlaitingLvl4Page
   def loadWoodCorkStrawPlaitingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(woodCorkStrawPlaitingLvl4Page(woodCorkStrawPlaitingLvl4Form, "")).toFuture
-  }
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      Ok(woodCorkStrawPlaitingLvl4Page(woodCorkStrawPlaitingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }}
 
   def submitWoodCorkStrawPlaitingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

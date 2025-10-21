@@ -76,8 +76,6 @@ case class UndertakingJourney(
 
   def setUndertakingSector(s: Int): UndertakingJourney = this.copy(sector = sector.copy(value = Some(Sector(s))))
 
-  def getUndertakingSector = sector.value.getOrElse("")
-
   def setUndertakingCYA(b: Boolean): UndertakingJourney = this.copy(cya = cya.copy(value = Some(b)))
 
   def setHasVerifiedEmail(e: Boolean): UndertakingJourney =
