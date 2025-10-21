@@ -18,16 +18,20 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
-button: components.Button,
+button: Button,
 govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
+
 
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -35,7 +39,7 @@ govukRadios : GovukRadios
 @fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
- controllers.routes.UndertakingController.postSector
+controllers.routes.UndertakingController.postSector
 }
 
 
@@ -47,33 +51,37 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-agriculture", messages("sector.label.2"))),
-hint = Some(Hint(content = HtmlContent(radioText("sector-hint-agriculture", messages("sector.hint.2", appConfig.sectorCap("agriculture")) +" " + messages("sector.hint.Cont"))))),
+hint = Some(Hint(
+content = HtmlContent(radioText("sector-hint-agriculture", messages("sector.hint.2", appConfig.sectorCap("agriculture")) +" " + messages("sector.hint.Cont")))
+)),
 value = Some(Sector.cropAnimalProduction.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.cropAnimalProduction.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-aquaculture", messages("sector.label.3"))),
+content = HtmlContent(radioText("sector-label-fishingAndAquaculture", messages("sector.label.3"))),
 hint = Some(Hint(
-content = HtmlContent(radioText("sector-hint-aquaculture", messages("sector.hint.3", appConfig.sectorCap("aquaculture")) +" " + messages("sector.hint.3Cont")))
+content = HtmlContent(radioText("sector-hint-fishingAndAquaculture", messages("sector.hint.3", appConfig.sectorCap("aquaculture")) +" " + messages("sector.hint.3Cont")))
 )),
 value = Some(Sector.fishingAndAquaculture.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.fishingAndAquaculture.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-other", messages("sector.label.0"))),
-hint = Some(Hint(id = Some("sector-hint-other"),content = HtmlContent(radioText("sector-hint-other", messages("sector.hint.0", appConfig.sectorCap("other")+" " +  messages("sector.hint.Cont"))))
+content = HtmlContent(radioText("sector-label-generalTrade", messages("sector.label.00"))),
+hint = Some(Hint(id = Some("sector-hint-other"),
+content = HtmlContent(radioText("sector-hint-generalTrade", messages("sector.hint.0", appConfig.sectorCap("other")+" " +  messages("sector.hint.Cont"))))
 )),
-value = Some(Sector.other.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.other.toString)
+value = Some(Sector.generalTrade.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.generalTrade.toString)
 )
 )
 }
 
 
+
+
 @layout(
 pageTitle = Some(messages("undertakingSector.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
+backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
 
@@ -86,11 +94,19 @@ href = Some(s"#${err.key}"),
 content = Text(s"${messages(err.key++"." ++err.message)}")
 )
 ),
-title = Text(messages("common.error.summary.title"))
+title = Text(messages("common.error.summary.title", undertakingName))
 ))
 }
 
-
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link"
+               href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString
+                        else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
+        </li>
+    </ol>
+</nav>
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(

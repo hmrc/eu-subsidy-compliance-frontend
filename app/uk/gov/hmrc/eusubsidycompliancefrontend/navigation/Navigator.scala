@@ -258,7 +258,8 @@ class Navigator @Inject() {
     case ("78") => routes.AdminController.loadEmploymentLvl3Page()
     case ("79") => routes.AdminController.loadTravelLvl3Page()
     case ("79.1") => routes.AdminController.loadTravelAgencyLvl4Page()
-    case ("80") => routes.AdminController.loadInvestigationLvl4Page()
+
+    case ("80.0") => routes.AdminController.loadInvestigationLvl4Page()
     case ("81") => routes.AdminController.loadBuildingsLvl3Page()
     case ("81.2") => routes.AdminController.loadCleaningLvl4Page()
     case ("82") => routes.AdminController.loadOfficeLvl3Page()

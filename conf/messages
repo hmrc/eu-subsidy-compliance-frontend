@@ -1334,7 +1334,7 @@ NACE.Manufacturing.Lvl4.OtherConcretePlasterArticles = Other articles of concret
 NACE.Manufacturing.Lvl3.CuttingStone = Cutting, shaping and finishing of stone
 NACE.Manufacturing.Lvl4.CuttingStone = Cutting, shaping and finishing of stone
 
-NACE.Manufacturing.Lvl3.AbrasiveProducts = Another type of abrasive and non-metallic mineral product.
+NACE.Manufacturing.Lvl3.AbrasiveProducts = Another type of abrasive or non-metallic mineral product.
 NACE.Manufacturing.AnotherType.title = What type of abrasive or non-metallic mineral products does your undertaking manufacture?
 NACE.Manufacturing.AnotherType.error = Select the type of abrasive or non-metallic mineral products your undertaking manufactures
 NACE.Manufacturing.Lvl4.AbrasiveProducts = Abrasive products

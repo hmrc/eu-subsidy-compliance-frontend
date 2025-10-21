@@ -53,8 +53,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-investigation", messages("NACE.Administrative.Lvl2.InvestigationSecurity"))),
-            value = Some(Sector.InvestigationAndSecurity.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.InvestigationAndSecurity.toString)
+            value = Some(Sector.InvestigationAndSecurityActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.InvestigationAndSecurityActivities.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-office", messages("NACE.Administrative.Lvl2.OfficeSupport"))),

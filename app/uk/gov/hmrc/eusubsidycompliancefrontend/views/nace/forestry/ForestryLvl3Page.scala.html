@@ -108,10 +108,6 @@ title = Text(messages("common.error.summary.title"))
 
 <input type="hidden" name="sectorDisplay" value="@messages("sector.label.00")" />
 <input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.forestry")" />
-<input type="hidden" name="level4Display_02.30" value="@messages("NACE.forestry.Lvl4.gatheringOfWildGrowth")" />
-<input type="hidden" name="level4Display_02.20" value="@messages("NACE.forestry.Lvl4.logging")" />
-<input type="hidden" name="level4Display_02.10" value="@messages("NACE.forestry.Lvl4.silviculture")" />
-<input type="hidden" name="level4Display_02.40" value="@messages("NACE.forestry.Lvl4.forestrySupportServices")" />
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
