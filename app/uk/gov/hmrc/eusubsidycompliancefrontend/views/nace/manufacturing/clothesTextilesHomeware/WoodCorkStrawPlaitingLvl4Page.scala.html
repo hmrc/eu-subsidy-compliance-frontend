@@ -138,6 +138,20 @@
     </ol>
 </nav>
 
+<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
+<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
+<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Metals")" />
+<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Metals.Wood")" />
+<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting")" />
+<input type="hidden" name="level4Display_16.22" value="@messages("NACE.Manufacturing.Lvl4.ParquetFloors")" />
+<input type="hidden" name="level4Display_16.26" value="@messages("NACE.Manufacturing.Lvl4.SolidFuelsBiomass")" />
+<input type="hidden" name="level4Display_16.21" value="@messages("NACE.Manufacturing.Lvl4.VeneerSheetsPanels")" />
+<input type="hidden" name="level4Display_16.24" value="@messages("NACE.Manufacturing.Lvl4.WoodenContainers")" />
+<input type="hidden" name="level4Display_16.25" value="@messages("NACE.Manufacturing.Lvl4.DoorsWindowsWood")" />
+<input type="hidden" name="level4Display_16.23" value="@messages("NACE.Manufacturing.Lvl4.BuildersCarpentryJoinery")" />
+<input type="hidden" name="level4Display_16.28" value="@messages("NACE.Manufacturing.Lvl4.OtherWoodCorkStrawPlaiting")" />
+<input type="hidden" name="level4Display_16.27" value="@messages("NACE.Manufacturing.Lvl4.FinishingWoodenProducts")" />
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("NACE.Manufacturing.WoodCorkStrawPlaiting.Lvl4.error"))

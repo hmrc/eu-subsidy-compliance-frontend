@@ -120,6 +120,17 @@
     </ol>
 </nav>
 
+<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
+<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
+<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Clothes")" />
+<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Clothes.Clothing")" />
+<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.OtherClothing")" />
+<input type="hidden" name="level4Display_14.24" value="@messages("NACE.Manufacturing.Lvl4.LeatherAndFurClothing")" />
+<input type="hidden" name="level4Display_14.21" value="@messages("NACE.Manufacturing.Lvl4.Outerwear")" />
+<input type="hidden" name="level4Display_14.22" value="@messages("NACE.Manufacturing.Lvl4.Underwear")" />
+<input type="hidden" name="level4Display_14.23" value="@messages("NACE.Manufacturing.Lvl4.Workwear")" />
+<input type="hidden" name="level4Display_14.29" value="@messages("NACE.Manufacturing.Lvl4.OtherClothingAccessories")" />
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("NACE.Manufacturing.OtherClothing.error"))

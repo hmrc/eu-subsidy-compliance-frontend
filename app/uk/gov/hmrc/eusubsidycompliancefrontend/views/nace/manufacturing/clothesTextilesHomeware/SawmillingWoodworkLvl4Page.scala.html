@@ -105,6 +105,14 @@
     </ol>
 </nav>
 
+<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
+<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
+<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Metals")" />
+<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Metals.Wood")" />
+<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.SawmillingWood")" />
+<input type="hidden" name="level4Display_16.12" value="@messages("NACE.Manufacturing.Lvl4.ProcessingFinishingWood")" />
+<input type="hidden" name="level4Display_16.11" value="@messages("NACE.Manufacturing.Lvl4.SawmillingWood")" />
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("NACE.Manufacturing.SawmillingWood.Lvl4.error"))

@@ -129,6 +129,18 @@
     </ol>
 </nav>
 
+<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
+<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
+<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Metals")" />
+<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Metals.Rubber")" />
+<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.PlasticProducts")" />
+<input type="hidden" name="level4Display_22.24" value="@messages("NACE.Manufacturing.Lvl4.BuildersWarePlastic")" />
+<input type="hidden" name="level4Display_22.23" value="@messages("NACE.Manufacturing.Lvl4.PlasticDoorsWindows")" />
+<input type="hidden" name="level4Display_22.22" value="@messages("NACE.Manufacturing.Lvl4.PlasticPackingGoods")" />
+<input type="hidden" name="level4Display_22.21" value="@messages("NACE.Manufacturing.Lvl4.PlasticPlatesSheets")" />
+<input type="hidden" name="level4Display_22.26" value="@messages("NACE.Manufacturing.Lvl4.OtherPlasticProducts")" />
+<input type="hidden" name="level4Display_22.25" value="@messages("NACE.Manufacturing.Lvl4.FinishingPlasticProducts")" />
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("NACE.Manufacturing.Plastic.error"))
