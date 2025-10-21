@@ -95,6 +95,11 @@ title = Text(messages("common.error.summary.title"))
     </ol>
 </nav>
 
+<input type="hidden" name="sectorDisplay" value="@messages("sector.label.3")" />
+<input type="hidden" name="level3Display" value="@messages("NACE.fishing.Lvl3.fishing")" />
+<input type="hidden" name="level4Display_03.12" value="@messages("NACE.fishing.Lvl4.freshwaterFishing")" />
+<input type="hidden" name="level4Display_03.11" value="@messages("NACE.fishing.Lvl4.marineFishing")" />
+
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
 content = Text(messages("NACE.fishing.Lvl3.fishing.error"))
