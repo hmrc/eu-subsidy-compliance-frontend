@@ -50,12 +50,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-measuring", messages("NACE.Manufacturing.Lvl4.MeasuringTestingNavigation"))),
+            content = HtmlContent(radioText("sector-label-measuring", messages("NACE.radio.26.51"))),
             value = Some(Sector.measuringInstruments.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.measuringInstruments.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-watches-clocks", messages("NACE.Manufacturing.Lvl4.WatchesClocks"))),
+            content = HtmlContent(radioText("sector-label-watches-clocks", messages("NACE.radio.26.52"))),
             value = Some(Sector.watchesAndClocks.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.watchesAndClocks.toString)
         )
@@ -100,7 +100,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Computers")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ComputersElectronicsController.loadComputersElectronicsOpticalLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.MeasuringTestingInstruments")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ComputersElectronicsController.loadComputersElectronicsOpticalLvl3Page().toString>@messages("NACE.radio.26.5")</a>
         </li>
     </ol>
 </nav>

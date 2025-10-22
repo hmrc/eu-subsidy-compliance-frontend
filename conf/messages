@@ -1429,31 +1429,31 @@ NACE.Manufacturing.Lvl4.OtherFabricatedMetalProducts = Another type of fabricate
 NACE.Manufacturing.ComputersElectronics.title = What type of computers, electronics or optical products does your undertaking manufacture?
 NACE.Manufacturing.ComputersElectronics.error = Select the type of computers, electronics or optical products your undertaking manufactures
 
-NACE.Manufacturing.Lvl3.ElectronicComponentsBoards = Electronic components and boards
+NACE.radio.26.1 = Electronic components and boards
 NACE.Manufacturing.ElectronicComponentsBoards.title = What type of electronic components and boards does your undertaking manufacture?
 NACE.Manufacturing.ElectronicComponentsBoards.error = Select the type of electronic components and boards your undertaking manufactures
-NACE.Manufacturing.Lvl4.ElectronicComponents = Electronic components
-NACE.Manufacturing.Lvl4.LoadedElectronicBoards = Loaded electronic boards
+NACE.radio.26.11 = Electronic components
+NACE.radio.26.12 = Loaded electronic boards
 
-NACE.Manufacturing.Lvl3.ComputersPeripherals = Computers and peripheral equipment
+NACE.radio.26.2 = Computers and peripheral equipment
 NACE.Manufacturing.Lvl4.ComputersPeripherals = Manufacture of computers and peripheral equipment
 
-NACE.Manufacturing.Lvl3.CommunicationEquipment = Communication equipment
+NACE.radio.26.3 = Communication equipment
 NACE.Manufacturing.Lvl4.CommunicationEquipment = Manufacture of communication equipment
 
-NACE.Manufacturing.Lvl3.ConsumerElectronics = Consumer electronics
+NACE.radio.26.4 = Consumer electronics
 NACE.Manufacturing.Lvl4.ConsumerElectronics = Manufacture of consumer electronics
 
-NACE.Manufacturing.Lvl3.MeasuringTestingInstruments = Measuring testing instruments, clocks and watches
+NACE.radio.26.5 = Measuring testing instruments, clocks and watches
 NACE.Manufacturing.MeasuringTestingInstruments.title = What type of instruments does your undertaking manufacture?
 NACE.Manufacturing.MeasuringTestingInstruments.error = Select the type of instruments your undertaking manufactures
-NACE.Manufacturing.Lvl4.MeasuringTestingNavigation = Instruments and appliances for measuring, testing and navigation
-NACE.Manufacturing.Lvl4.WatchesClocks = Watches and clocks
+NACE.radio.26.51 = Instruments and appliances for measuring, testing and navigation
+NACE.radio.26.52 = Watches and clocks
 
-NACE.Manufacturing.Lvl3.IrradiationElectromedical = Irradiation, electromedical and electrotherapeutic equipment
+NACE.radio.26.6 = Irradiation, electromedical and electrotherapeutic equipment
 NACE.Manufacturing.Lvl4.IrradiationElectromedical = Manufacture of irradiation, electromedical and electrotherapeutic equipment
 
-NACE.Manufacturing.Lvl3.OpticalInstruments = Optical instruments, magnetic and optical media, photographic equipment
+NACE.radio.26.7 = Optical instruments, magnetic and optical media, photographic equipment
 NACE.Manufacturing.Lvl4.OpticalInstruments = Manufacture of optical instruments, magnetic and optical media and photographic equipment
 
 ### Electrical equipment ###
@@ -2536,7 +2536,7 @@ NACE.radio.46.6 = Wholesale of other machinery, equipment and supplies
 NACE.radio.46.7 = Wholesale of motor vehicles, motorcycles and parts and accessories
 NACE.radio.46.8 = Other specialised wholesale
 NACE.Wholesale.Lvl3.OtherSpecialised.hint = Includes chemical products, fuels, hardware, metals and metal ores, waste and scrap, wood and construction materials, other intermediate products and all other specialised wholesale.
-NACE..radio.46.9 = Non-specialised wholesale
+NACE.radio.46.9 = Non-specialised wholesale
 
 # Food Retail Level 4 Messages
 NACE.Retail.Food.title = What type of food, beverages or tobacco does your undertaking retail?

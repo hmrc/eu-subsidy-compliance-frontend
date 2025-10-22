@@ -50,37 +50,37 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-communication", messages("NACE.Manufacturing.Lvl3.CommunicationEquipment"))),
+            content = HtmlContent(radioText("sector-label-communication", messages("NACE.radio.26.3"))),
             value = Some(Sector.communicationEquipment4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.communicationEquipment.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-peripherals", messages("NACE.Manufacturing.Lvl3.ComputersPeripherals"))),
+            content = HtmlContent(radioText("sector-label-peripherals", messages("NACE.radio.26.2"))),
             value = Some(Sector.computersPeripheralEquipment4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.computersPeripheralEquipment.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-consumer", messages("NACE.Manufacturing.Lvl3.ConsumerElectronics"))),
+            content = HtmlContent(radioText("sector-label-consumer", messages("NACE.radio.26.4"))),
             value = Some(Sector.consumerElectronics4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.consumerElectronics.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-components", messages("NACE.Manufacturing.Lvl3.ElectronicComponentsBoards"))),
+            content = HtmlContent(radioText("sector-label-components", messages("NACE.radio.26.1"))),
             value = Some(Sector.electronicComponents.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.electronicComponents.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-irradiation", messages("NACE.Manufacturing.Lvl3.IrradiationElectromedical"))),
+            content = HtmlContent(radioText("sector-label-irradiation", messages("NACE.radio.26.6"))),
             value = Some(Sector.irradiationElectromedicalAndElectrotherapeuticEquipment4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.irradiationElectromedicalAndElectrotherapeuticEquipment.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-measuring", messages("NACE.Manufacturing.Lvl3.MeasuringTestingInstruments"))),
+            content = HtmlContent(radioText("sector-label-measuring", messages("NACE.radio.26.5"))),
             value = Some(Sector.measuringToolsAndClocks.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.measuringToolsAndClocks.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-optical", messages("NACE.Manufacturing.Lvl3.OpticalInstruments"))),
+            content = HtmlContent(radioText("sector-label-optical", messages("NACE.radio.26.7"))),
             value = Some(Sector.opticalEquipment4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.opticalEquipment.toString)
         )
@@ -126,21 +126,6 @@
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
-<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
-<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Computers")" />
-<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Computers")" />
-<input type="hidden" name="level3Display_26.30" value="@messages("NACE.Manufacturing.Lvl3.CommunicationEquipment")" />
-<input type="hidden" name="level3Display_26.20" value="@messages("NACE.Manufacturing.Lvl3.ComputersPeripherals")" />
-<input type="hidden" name="level3Display_26.40" value="@messages("NACE.Manufacturing.Lvl3.ConsumerElectronics")" />
-<input type="hidden" name="level3Display_26.60" value="@messages("NACE.Manufacturing.Lvl3.IrradiationElectromedical")" />
-<input type="hidden" name="level3Display_26.70" value="@messages("NACE.Manufacturing.Lvl3.OpticalInstruments")" />
-<input type="hidden" name="level4Display_26.30" value="@messages("NACE.Manufacturing.Lvl3.CommunicationEquipment")" />
-<input type="hidden" name="level4Display_26.20" value="@messages("NACE.Manufacturing.Lvl3.ComputersPeripherals")" />
-<input type="hidden" name="level4Display_26.40" value="@messages("NACE.Manufacturing.Lvl3.ConsumerElectronics")" />
-<input type="hidden" name="level4Display_26.60" value="@messages("NACE.Manufacturing.Lvl3.IrradiationElectromedical")" />
-<input type="hidden" name="level4Display_26.70" value="@messages("NACE.Manufacturing.Lvl3.OpticalInstruments")" />
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
