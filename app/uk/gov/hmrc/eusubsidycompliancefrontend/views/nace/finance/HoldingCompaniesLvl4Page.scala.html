@@ -48,12 +48,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-financing-conduits", messages("NACE.financialServices.Lvl4.financingConduits"))),
+            content = HtmlContent(radioText("sector-label-financing-conduits", messages("NACE.radio.64.22"))),
             value = Some(Sector.FinancingConduits.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FinancingConduits.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-holding-companies-final", messages("NACE.financialServices.Lvl4.holdingCompaniesFinal"))),
+            content = HtmlContent(radioText("sector-label-holding-companies-final", messages("NACE.radio.64.21"))),
             value = Some(Sector.HoldingCompaniesFinal.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.HoldingCompaniesFinal.toString)
         )
@@ -94,10 +94,10 @@ content = Text(messages("NACE.financialServices.Lvl4.holdingCompanies.error"))
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.financialInsuranceActivities")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.Financial.Lvl2.FinancialServices")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.radio.64")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinancialServicesLvl3Page().toString>@messages("NACE.financialServices.Lvl3.holdingCompanies")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinancialServicesLvl3Page().toString>@messages("NACE.radio.64.2")</a>
             </li>
         </ol>
     </nav>

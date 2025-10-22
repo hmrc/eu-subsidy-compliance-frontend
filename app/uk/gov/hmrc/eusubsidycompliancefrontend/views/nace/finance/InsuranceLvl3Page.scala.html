@@ -48,17 +48,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-insurance", messages("NACE.insurance.Lvl2.insurance"))),
+            content = HtmlContent(radioText("sector-label-insurance", messages("NACE.radio.65.1"))),
             value = Some(Sector.InsuranceServices.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.InsuranceServices.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-pension-funding", messages("NACE.insurance.Lvl2.pensionFunding"))),
+            content = HtmlContent(radioText("sector-label-pension-funding", messages("NACE.radio.65.3"))),
             value = Some(Sector.PensionFunding4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PensionFundingServices.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-reinsurance", messages("NACE.insurance.Lvl2.reinsurance"))),
+            content = HtmlContent(radioText("sector-label-reinsurance", messages("NACE.radio.65.2"))),
             value = Some(Sector.Reinsurance4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ReinsuranceServices.toString)
         )
@@ -99,7 +99,7 @@ content = Text(messages("NACE.insurance.Lvl2.insurance.error"))
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.financialInsuranceActivities")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.Financial.Lvl2.Insurance")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.radio.65")</a>
             </li>
         </ol>
     </nav>

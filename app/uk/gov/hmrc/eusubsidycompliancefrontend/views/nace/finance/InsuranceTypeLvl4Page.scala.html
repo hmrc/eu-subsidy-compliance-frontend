@@ -48,12 +48,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-life-insurance", messages("NACE.insurance.Lvl4.lifeInsurance"))),
+            content = HtmlContent(radioText("sector-label-life-insurance", messages("NACE.radio.65.11"))),
             value = Some(Sector.LifeInsurance.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.LifeInsurance.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-non-life-insurance", messages("NACE.insurance.Lvl4.nonLifeInsurance"))),
+            content = HtmlContent(radioText("sector-label-non-life-insurance", messages("NACE.radio.65.12"))),
             value = Some(Sector.NonLifeInsurance.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonLifeInsurance.toString)
         )
@@ -94,10 +94,10 @@ content = Text(messages("NACE.insurance.Lvl4.insuranceType.error"))
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.financialInsuranceActivities")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.Financial.Lvl2.Insurance")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.radio.65")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadInsuranceLvl3Page().toString>@messages("NACE.insurance.Lvl2.insurance")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadInsuranceLvl3Page().toString>@messages("NACE.radio.65.1")</a>
             </li>
         </ol>
     </nav>

@@ -2632,21 +2632,21 @@ NACE.radio.46.89 = Other specialised wholesale
 
 NACE.Financial.title = What is your undertaking''s main business activity in financial services and insurance?
 NACE.Financial.error =Select your undertaking''s main business activity in financial services and insurance
-NACE.Financial.Lvl2.FinancialServices = Financial services (except insurance and pension funding)
+NACE.radio.64 = Financial services (except insurance and pension funding)
 NACE.Financial.Lvl2.FinancialServices.hint = Includes financial leasing, holding companies and financial conduits, monetary intermediation, trusts and funds, and other financial service activities.
-NACE.Financial.Lvl2.Insurance = Insurance, reinsurance and pension funding
-NACE.Financial.Lvl2.Auxiliary = Activities auxiliary to financial services and insurance activities
+NACE.radio.65 = Insurance, reinsurance and pension funding
+NACE.radio.66 = Activities auxiliary to financial services and insurance activities
 NACE.Financial.Lvl2.Auxiliary.hint = Includes administration of financial markets, fund management, risk and damage evaluation, security and commodity contracts brokerage, and other auxiliary activities.
 
 # Level 3: Financial Services categories
 NACE.financialServices.title = What is your undertaking''s main business activity in financial services?
 NACE.financialServices.error = Select your undertaking’s main business activity in financial services
 NACE.financialServices.hint = Includes financial leasing, holding companies and financial conduits, monetary intermediation, trusts and funds, and other financial service activities.
-NACE.financialServices.Lvl3.monetaryIntermediation = Monetary intermediation
+NACE.radio.64.1 = Monetary intermediation
 NACE.financialServices.Lvl3.monetaryIntermediation.hint = Includes central banking.
-NACE.financialServices.Lvl3.holdingCompanies = Holding companies and financing conduits
-NACE.financialServices.Lvl3.trustsFunds = Trusts, funds and similar financial entities
-NACE.financialServices.Lvl3.otherFinancial = Other financial services (except insurance and pension funding)
+NACE.radio.64.2 = Holding companies and financing conduits
+NACE.radio.64.3 = Trusts, funds and similar financial entities
+NACE.radio.64.9 = Other financial services (except insurance and pension funding)
 NACE.financialServices.Lvl3.otherFinancial.hint = Includes financial leasing and other credit granting.
 NACE.financialServices.error.required = Select your undertaking''s main business activity in financial services
 
@@ -2654,58 +2654,58 @@ NACE.financialServices.error.required = Select your undertaking''s main business
 # Level 4: Holding Companies and Financing Conduits
 NACE.financialServices.Lvl4.holdingCompanies.title = What is your undertaking’s main business activity in holding companies and financing conduits?
 NACE.financialServices.Lvl4.holdingCompanies.error =Select your undertaking’s main business activity in holding companies and financing conduits
-NACE.financialServices.Lvl4.financingConduits = Financing conduits
-NACE.financialServices.Lvl4.holdingCompaniesFinal = Holding companies
+NACE.radio.64.22 = Financing conduits
+NACE.radio.64.21 = Holding companies
 NACE.financialServices.Lvl4.holdingCompanies.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.financialServices.Lvl4.holdingCompanies.error.required = Select your undertaking’s main business activity in holding companies and financing conduits
 
 # Level 4: Monetary Intermediation
 NACE.financialServices.Lvl4.monetaryIntermediation.title = What type of monetary intermediation service does your undertaking provide?
 NACE.financialServices.Lvl4.monetaryIntermediation.error =Select the type of monetary intermediation service your undertaking provides
-NACE.financialServices.Lvl4.centralBanking = Central banking
-NACE.financialServices.Lvl4.otherMonetary = Other monetary intermediation
+NACE.radio.64.11 = Central banking
+NACE.radio.64.19 = Other monetary intermediation
 NACE.financialServices.Lvl4.monetaryIntermediation.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.financialServices.Lvl4.monetaryIntermediation.error.required = Select the type of monetary intermediation service your undertaking provides
 
 # Level 4: Other Financial Services
 NACE.financialServices.Lvl4.otherFinancial.title = What is your undertaking’s main business activity in other financial services?
 NACE.financialServices.Lvl4.otherFinancial.error =Select your undertaking’s main business activity in other financial services
-NACE.financialServices.Lvl4.financialLeasing = Financial leasing
-NACE.financialServices.Lvl4.otherCredit = Other credit granting
-NACE.financialServices.Lvl4.otherFinancialServices = Other financial service activities (except insurance and pension funding)
+NACE.radio.64.91 = Financial leasing
+NACE.radio.64.92 = Other credit granting
+NACE.radio.64.99 = Other financial service activities (except insurance and pension funding)
 NACE.financialServices.Lvl4.otherFinancial.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.financialServices.Lvl4.otherFinancial.error.required = Select your undertaking’s main business activity in other financial services
 
 # Level 4: Trusts, Funds, and Similar Financial Entities
 NACE.financialServices.Lvl4.trustsFunds.title = What is your undertaking’s main business activity in trusts, funds and similar financial entities?
 NACE.financialServices.Lvl4.trustsFunds.error =Select your undertaking’s main business activity in trusts, funds and similar financial entities
-NACE.financialServices.Lvl4.investmentFunds = Money market and non-money market investment funds
-NACE.financialServices.Lvl4.trustEstate = Trust, estate and agency accounts
+NACE.radio.64.31 = Money market and non-money market investment funds
+NACE.radio.64.32 = Trust, estate and agency accounts
 NACE.financialServices.Lvl4.trustsFunds.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.financialServices.Lvl4.trustsFunds.error.required = Select your undertaking’s main business activity in trusts, funds and similar financial entities
 
 NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.title = What is your undertaking’s main business activity in auxiliary financial activities?
 NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.error =Select your undertaking’s main business activity in auxiliary financial activities
 NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.hint = Includes administration of financial markets, fund management, risk and damage evaluation, security and commodity contracts brokerage, and other auxiliary activities.
-NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancialServices = Activities auxiliary to financial services (except insurance and pension funding)
+NACE.radio.66.1 = Activities auxiliary to financial services (except insurance and pension funding)
 NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancialServices.hint = Includes administration of financial markets and security and commodity contracts brokerage.
-NACE.auxiliaryFinancial.Lvl2.auxiliaryInsurance = Activities auxiliary to insurance and pension funding
+NACE.radio.66.2 = Activities auxiliary to insurance and pension funding
 NACE.auxiliaryFinancial.Lvl2.auxiliaryInsurance.hint = Includes risk and damage evaluation and activities of insurance agents and brokers.
-NACE.auxiliaryFinancial.Lvl2.fundManagement = Fund management
+NACE.radio.66.3 = Fund management
 
 NACE.auxiliaryFinancial.Lvl4.auxiliaryInsurance.title = What type of auxiliary insurance and pension funding activity does your undertaking do?
 NACE.auxiliaryFinancial.Lvl4.auxiliaryInsurance.error =Select the type of auxiliary insurance and pension funding activity your undertaking does
 NACE.auxiliaryFinancial.Lvl4.auxiliaryInsurance.hint = Select one option that best describes your undertaking’s main business activity.
-NACE.auxiliaryFinancial.Lvl4.insuranceAgents = Activities of insurance agents and brokers
-NACE.auxiliaryFinancial.Lvl4.riskEvaluation = Risk and damage evaluation
-NACE.auxiliaryFinancial.Lvl4.otherAuxiliaryInsurance = Other activities auxiliary to insurance and pension funding
+NACE.radio.66.22 = Activities of insurance agents and brokers
+NACE.radio.66.21 = Risk and damage evaluation
+NACE.radio.66.29 = Other activities auxiliary to insurance and pension funding
 
 NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.title = What type of auxiliary financial services activity does your undertaking do?
 NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.error =Select the type of auxiliary financial services activity your undertaking does
 NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.hint = Select one option that best describes your undertaking’s main business activity.
-NACE.auxiliaryFinancial.Lvl4.financialMarkets = Administration of financial markets
-NACE.auxiliaryFinancial.Lvl4.securityBrokerage = Security and commodity contracts brokerage
-NACE.auxiliaryFinancial.Lvl4.otherAuxiliaryFinancial = Other activities auxiliary to financial services (except insurance and pension funding)
+NACE.radio.66.11 = Administration of financial markets
+NACE.radio.66.12 = Security and commodity contracts brokerage
+NACE.radio.66.19 = Other activities auxiliary to financial services (except insurance and pension funding)
 
 #RealEstate NACE Sector2,3,4
 
@@ -2838,13 +2838,13 @@ NACE.Administrative.Lvl2.OfficeSupport.hint = Includes call centres, collection 
 
 NACE.insurance.Lvl2.insurance.title = What is your undertaking''s main business activity in insurance, reinsurance and pension funding?
 NACE.insurance.Lvl2.insurance.error =Select your undertaking’s main business activity in insurance, reinsurance and pension funding
-NACE.insurance.Lvl2.insurance = Insurance
-NACE.insurance.Lvl2.reinsurance = Reinsurance
-NACE.insurance.Lvl2.pensionFunding = Pension funding
+NACE.radio.65.1 = Insurance
+NACE.radio.65.2 = Reinsurance
+NACE.radio.65.3 = Pension funding
 NACE.insurance.Lvl4.insuranceType.title = What type of insurance does your undertaking provide?
 NACE.insurance.Lvl4.insuranceType.error = Select the type of insurance your undertaking provides
-NACE.insurance.Lvl4.lifeInsurance = Life insurance
-NACE.insurance.Lvl4.nonLifeInsurance = Non-life insurance
+NACE.radio.65.11 = Life insurance
+NACE.radio.65.12 = Non-life insurance
 
 #NACE lvl1,2&3 content notes
 

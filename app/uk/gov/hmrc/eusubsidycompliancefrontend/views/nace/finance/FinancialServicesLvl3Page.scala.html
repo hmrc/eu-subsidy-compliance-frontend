@@ -48,7 +48,7 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-monetary-intermediation", messages("NACE.financialServices.Lvl3.monetaryIntermediation"))),
+            content = HtmlContent(radioText("sector-label-monetary-intermediation", messages("NACE.radio.64.1"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-monetary-intermediation", messages("NACE.financialServices.Lvl3.monetaryIntermediation.hint")))
             )),
@@ -61,12 +61,12 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.HoldingCompaniesFinal.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-trusts-funds", messages("NACE.financialServices.Lvl3.trustsFunds"))),
+            content = HtmlContent(radioText("sector-label-trusts-funds", messages("NACE.radio.64.3"))),
             value = Some(Sector.TrustsFunds.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.TrustsFunds.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-financial", messages("NACE.financialServices.Lvl3.otherFinancial"))),
+            content = HtmlContent(radioText("sector-label-other-financial", messages("NACE.radio.64.9"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other-financial", messages("NACE.financialServices.Lvl3.otherFinancial.hint")))
             )),
@@ -109,7 +109,7 @@ content = Text(messages("NACE.financialServices.error"))
                     <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.financialInsuranceActivities")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.Financial.Lvl2.FinancialServices")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.radio.64")</a>
                 </li>
             </ol>
         </nav>
