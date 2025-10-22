@@ -106,9 +106,6 @@ title = Text(messages("common.error.summary.title"))
     </ol>
 </nav>
 
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.00")" />
-<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.forestry")" />
-
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
 content = Text(messages("undertakingSector.error.required.nace")+ " forestry" )
