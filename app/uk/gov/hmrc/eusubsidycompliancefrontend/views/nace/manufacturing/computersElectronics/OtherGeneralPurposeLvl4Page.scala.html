@@ -50,32 +50,32 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-lifting", messages("NACE.Manufacturing.Lvl4.LiftingHandlingEquipment"))),
+            content = HtmlContent(radioText("sector-label-lifting", messages("NACE.radio.28.22"))),
             value = Some(Sector.liftingEquipment.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.liftingEquipment.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-aircon", messages("NACE.Manufacturing.Lvl4.AirConditioning"))),
+            content = HtmlContent(radioText("sector-label-aircon", messages("NACE.radio.28.25"))),
             value = Some(Sector.nonDomesticAirConditioning.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonDomesticAirConditioning.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-office-machinery", messages("NACE.Manufacturing.Lvl4.OfficeMachinery"))),
+            content = HtmlContent(radioText("sector-label-office-machinery", messages("NACE.radio.28.23"))),
             value = Some(Sector.officeMachinery.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.officeMachinery.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-ovens", messages("NACE.Manufacturing.Lvl4.OvensFurnacesHeating"))),
+            content = HtmlContent(radioText("sector-label-ovens", messages("NACE.radio.28.21"))),
             value = Some(Sector.ovens.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ovens.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-hand-tools", messages("NACE.Manufacturing.Lvl4.PowerDrivenHandTools"))),
+            content = HtmlContent(radioText("sector-label-hand-tools", messages("NACE.radio.28.24))),
             value = Some(Sector.powerDrivenHandTools.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.powerDrivenHandTools.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherGeneralPurposeMachinery"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.28.29"))),
             value = Some(Sector.otherGeneralPurposeMachinery4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherGeneralPurposeMachinery4.toString)
         )
@@ -120,7 +120,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Computers.Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ComputersElectronicsController.loadOtherMachineryLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ComputersElectronicsController.loadOtherMachineryLvl3Page().toString>@messages("NACE.radio.28.2")</a>
         </li>
     </ol>
 </nav>
