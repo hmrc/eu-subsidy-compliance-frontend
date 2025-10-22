@@ -48,7 +48,7 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-hospital", messages("NACE.radio.86.10"))),
+content = HtmlContent(radioText("sector-label-hospital", messages("NACE.radio.86.1"))),
 value = Some(Sector.hospitalActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.hospital.toString)
 ),
