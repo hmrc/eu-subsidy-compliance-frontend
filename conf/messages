@@ -1016,81 +1016,81 @@ NACE.Manufacturing.Lvl2.2.Vehicles.Other.hint = Includes aircraft, bicycles, boa
 NACE.Manufacturing.Food.title = What type of food does your undertaking manufacture?
 NACE.Manufacturing.Food.error = Select the type of food your undertaking manufactures
 
-NACE.Manufacturing.Lvl3.MeatProducts = Meat
+NACE.radio.10.1 = Meat
 NACE.Manufacturing.Food.Meat.title = What type of meat production or processing does your undertaking do?
 NACE.Manufacturing.Food.Meat.error = Select the type of meat production or processing your undertaking does
-NACE.Manufacturing.Lvl4.MeatExceptPoultry = Processing and preserving of meat (except poultry)
-NACE.Manufacturing.Lvl4.PoultryMeat = Processing and preserving of poultry meat
-NACE.Manufacturing.Lvl4.MeatPoultryProducts = Production of meat and poultry meat products
+NACE.radio.10.11 = Processing and preserving of meat (except poultry)
+NACE.radio.10.12 = Processing and preserving of poultry meat
+NACE.radio.10.13 = Production of meat and poultry meat products
 
-NACE.Manufacturing.Lvl3.FishProducts = Fish, crustaceans and molluscs
+NACE.radio.10.2 = Fish, crustaceans and molluscs
 NACE.Manufacturing.Lvl4.FishProducts = Processing and preserving of fish, crustaceans and molluscs
 
 NACE.Manufacturing.Food.FruitAndVeg.title = What type of fruit and vegetable production or processing does your undertaking do?
 NACE.Manufacturing.Food.FruitAndVeg.error = Select the type of fruit and vegetable production or processing your undertaking does
-NACE.Manufacturing.Lvl3.FruitVegetables = Fruit and vegetables
-NACE.Manufacturing.Lvl4.Potatoes = Processing and preserving of potatoes
-NACE.Manufacturing.Lvl4.FruitVegetableJuice = Manufacture of fruit and vegetable juice
-NACE.Manufacturing.Lvl4.OtherFruitVegetables = Other processing and preserving of fruit and vegetables
+NACE.radio.10.3 = Fruit and vegetables
+NACE.radio.10.31 = Processing and preserving of potatoes
+NACE.radio.10.32 = Manufacture of fruit and vegetable juice
+NACE.radio.10.39 = Other processing and preserving of fruit and vegetables
 
 NACE.Manufacturing.Food.OilsAndFats.title = What type of oils and fats does your undertaking manufacture?
 NACE.Manufacturing.Food.OilsAndFats.error = Select the type of oils and fats your undertaking manufactures
-NACE.Manufacturing.Lvl3.OilsFats = Oils and fats
-NACE.Manufacturing.Lvl4.OilsFats = Other oils and fats
-NACE.Manufacturing.Lvl4.Margarine = Margarine and similar edible fats
+NACE.radio.10.4 = Oils and fats
+NACE.radio.10.41 = Other oils and fats
+NACE.radio.10.42 = Margarine and similar edible fats
 
 NACE.Manufacturing.DairyProducts.title = What type of dairy products or ice does your undertaking manufacture?
 NACE.Manufacturing.DairyProducts.error = Select the type of dairy products or ice your undertaking manufactures
-NACE.Manufacturing.Lvl3.DairyProducts = Dairy products and ice
-NACE.Manufacturing.Lvl4.DairyProducts = Dairy products
-NACE.Manufacturing.Lvl4.IceCream = Ice cream and other edible ice
+NACE.radio.10.5 = Dairy products and ice
+NACE.radio.10.51 = Dairy products
+NACE.radio.10.52 = Ice cream and other edible ice
 
 NACE.Manufacturing.GrainMillProducts.title = What type of grain mill products or starch does your undertaking manufacture?
 NACE.Manufacturing.GrainMillProducts.error = Select the type of grain mill products or starch your undertaking manufactures
-NACE.Manufacturing.Lvl3.GrainMillProducts = Grain mill products and starch
+NACE.radio.10.6 = Grain mill products and starch
 NACE.Manufacturing.Lvl3.GrainMillProducts.hint = Includes cereals and flour.
-NACE.Manufacturing.Lvl4.GrainMillProducts = Grain mill products
-NACE.Manufacturing.Lvl4.Starches = Starches and starch products
+NACE.radio.10.61 = Grain mill products
+NACE.radio.10.62 = Starches and starch products
 
 NACE.Manufacturing.BakeryProducts.title = What type of bakery and farinaceous products does your undertaking manufacture?
 NACE.Manufacturing.BakeryProducts.error = Select the type of bakery and farinaceous products your undertaking manufactures
-NACE.Manufacturing.Lvl3.BakeryProducts = Bakery and farinaceous products
+NACE.radio.10.7 = Bakery and farinaceous products
 NACE.Manufacturing.Lvl3.BakeryProducts.hint = For example bread, biscuits, cakes, pastries and pasta.
-NACE.Manufacturing.Lvl4.BreadPastry = Bread, cakes and fresh pastry goods
-NACE.Manufacturing.Lvl4.RusksBiscuits = Biscuits, rusks and preserved pastries and cakes
-NACE.Manufacturing.Lvl4.FarinaceousProducts = Farinaceous products
+NACE.radio.10.71 = Bread, cakes and fresh pastry goods
+NACE.radio.10.72 = Biscuits, rusks and preserved pastries and cakes
+NACE.radio.10.73 = Farinaceous products
 NACE.Manufacturing.Lvl4.FarinaceousProducts.hint = For example pasta and couscous.
 
 NACE.Manufacturing.OtherFoodProducts.title = What type of other food products does your undertaking manufacture?
 NACE.Manufacturing.OtherFoodProducts.error = Select the type of other food products your undertaking manufactures
-NACE.Manufacturing.Lvl3.OtherFoodProducts = Other food products
+NACE.radio.10.8 = Other food products
 NACE.Manufacturing.Lvl3.OtherFoodProducts.hint = Includes cocoa, chocolate and confectionery, condiments and seasonings, food preparations (like baby food) and prepared meals, sugar, tea and coffee, and all other food products.
-NACE.Manufacturing.Lvl4.Sugar = Sugar
-NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery = Cocoa, chocolate and confectionery
-NACE.Manufacturing.Lvl4.TeaCoffee = Tea and coffee
-NACE.Manufacturing.Lvl4.CondimentsSeasonings = Condiments and seasonings
-NACE.Manufacturing.Lvl4.PreparedMeals = Prepared meals
-NACE.Manufacturing.Lvl4.HomogenisedFood = Homogenised food preparations and dietetic food
+NACE.radio.10.81 = Sugar
+NACE.radio.10.82 = Cocoa, chocolate and confectionery
+NACE.radio.10.83 = Tea and coffee
+NACE.radio.10.84 = Condiments and seasonings
+NACE.radio.10.85 = Prepared meals
+NACE.radio.10.86 = Homogenised food preparations and dietetic food
 NACE.Manufacturing.Lvl4.HomogenisedFood.hint = Includes baby food.
-NACE.Manufacturing.Lvl4.OtherFoodProducts = Another type of food product
+NACE.radio.10.89 = Another type of food product
 
 NACE.Manufacturing.PreparedAnimalFeeds.title = What type of prepared animal feeds does your undertaking manufacture?
 NACE.Manufacturing.PreparedAnimalFeeds.error = Select the type of prepared animal feeds your undertaking manufactures
-NACE.Manufacturing.Lvl3.PreparedAnimalFeeds = Prepared animal feeds
-NACE.Manufacturing.Lvl4.FarmAnimalFeeds = Food for farm animals
-NACE.Manufacturing.Lvl4.PetFoods = Pet food
+NACE.radio.10.9 = Prepared animal feeds
+NACE.radio.10.91 = Food for farm animals
+NACE.radio.10.92 = Pet food
 
 ### Beverages ###
 NACE.Manufacturing.Beverages.title = What type of beverages does your undertaking manufacture?
 NACE.Manufacturing.Beverages.error = Select the type of beverages your undertaking manufactures
 NACE.Manufacturing.Lvl3.beverages = Manufacture of beverages
-NACE.Manufacturing.Lvl4.spirits = Spirits (distilled, rectified or blended)
-NACE.Manufacturing.Lvl4.wine = Wine from grapes
-NACE.Manufacturing.Lvl4.cider = Cider and other fruit fermented beverages
-NACE.Manufacturing.Lvl4.otherFermentedBeverages = Other non-distilled fermented beverages
-NACE.manufacturing.lvl4.beer = Beer
-NACE.manufacturing.lvl4.malt = Malt
-NACE.Manufacturing.Lvl4.softDrinks = Soft drinks and bottled waters
+NACE.radio.11.01 = Spirits (distilled, rectified or blended)
+NACE.radio.11.02 = Wine from grapes
+NACE.radio.11.03 = Cider and other fruit fermented beverages
+NACE.radio.11.04 = Other non-distilled fermented beverages
+NACE.radio.11.05 = Beer
+NACE.radio.11.06 = Malt
+NACE.radio.11.07 = Soft drinks and bottled waters
 
 ### Tobacco ###
 NACE.Manufacturing.Lvl3.TobaccoProducts = Manufacture of tobacco products

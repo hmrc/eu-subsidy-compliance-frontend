@@ -50,12 +50,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-oilsfats-marg", messages("NACE.Manufacturing.Lvl4.Margarine"))),
+            content = HtmlContent(radioText("sector-label-oilsfats-marg", messages("NACE.radio.10.42"))),
             value = Some(Sector.margarine.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.margarine.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-oilsfats-other", messages("NACE.Manufacturing.Lvl4.OilsFats"))),
+            content = HtmlContent(radioText("sector-label-oilsfats-other", messages("NACE.radio.10.41"))),
             value = Some(Sector.otherOils.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherOils.toString)
         )
@@ -100,18 +100,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Food")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.FoodBeveragesController.loadFoodLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.OilsFats")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.FoodBeveragesController.loadFoodLvl3Page().toString>@messages("NACE.radio.10.4")</a>
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
-<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
-<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Food")" />
-<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Food")" />
-<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.OilsFats")" />
-<input type="hidden" name="level4Display_10.42" value="@messages("NACE.Manufacturing.Lvl4.Margarine")" />
-<input type="hidden" name="level4Display_10.41" value="@messages("NACE.Manufacturing.Lvl4.OilsFats")" />
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(

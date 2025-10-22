@@ -50,37 +50,37 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-beer", messages("NACE.manufacturing.lvl4.beer"))),
+            content = HtmlContent(radioText("sector-label-beer", messages("NACE.radio.11.05"))),
             value = Some(Sector.beer.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.beer.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-cider", messages("NACE.Manufacturing.Lvl4.cider"))),
+            content = HtmlContent(radioText("sector-label-cider", messages("NACE.radio.11.03"))),
             value = Some(Sector.ciders.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ciders.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-malt", messages("NACE.manufacturing.lvl4.malt"))),
+            content = HtmlContent(radioText("sector-label-malt", messages("NACE.radio.11.06"))),
             value = Some(Sector.malt.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.malt.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-softdrinks", messages("NACE.Manufacturing.Lvl4.softDrinks"))),
+            content = HtmlContent(radioText("sector-label-softdrinks", messages("NACE.radio.11.07"))),
             value = Some(Sector.softDrinks.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.softDrinks.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-spirits", messages("NACE.Manufacturing.Lvl4.spirits"))),
+            content = HtmlContent(radioText("sector-label-spirits", messages("NACE.radio.11.01"))),
             value = Some(Sector.spirits.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.spirits.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-wine", messages("NACE.Manufacturing.Lvl4.wine"))),
+            content = HtmlContent(radioText("sector-label-wine", messages("NACE.radio.11.02"))),
             value = Some(Sector.wine.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.wine.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-fermented", messages("NACE.Manufacturing.Lvl4.otherFermentedBeverages"))),
+            content = HtmlContent(radioText("sector-label-other-fermented", messages("NACE.radio.11.04"))),
             value = Some(Sector.otherFermentedBeverages.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherFermentedBeverages.toString)
         )
@@ -126,18 +126,6 @@
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
-<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
-<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Food")" />
-<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Food.Beverages")" />
-<input type="hidden" name="level4Display_11.05" value="@messages("NACE.manufacturing.lvl4.beer")" />
-<input type="hidden" name="level4Display_11.03" value="@messages("NACE.Manufacturing.Lvl4.cider")" />
-<input type="hidden" name="level4Display_11.06" value="@messages("NACE.manufacturing.lvl4.malt")" />
-<input type="hidden" name="level4Display_11.07" value="@messages("NACE.Manufacturing.Lvl4.softDrinks")" />
-<input type="hidden" name="level4Display_11.01" value="@messages("NACE.Manufacturing.Lvl4.spirits")" />
-<input type="hidden" name="level4Display_11.02" value="@messages("NACE.Manufacturing.Lvl4.wine")" />
-<input type="hidden" name="level4Display_11.04" value="@messages("NACE.Manufacturing.Lvl4.otherFermentedBeverages")" />
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
