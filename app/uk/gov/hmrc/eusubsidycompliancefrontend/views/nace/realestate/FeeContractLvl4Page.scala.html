@@ -47,12 +47,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-intermediation", messages("NACE.realEstate.Lvl4.intermediation"))),
+            content = HtmlContent(radioText("sector-label-intermediation", messages("NACE.radio.68.31"))),
             value = Some(Sector.Intermediation.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Intermediation.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-fee-contract", messages("NACE.realEstate.Lvl4.otherFeeContract"))),
+            content = HtmlContent(radioText("sector-label-other-fee-contract", messages("NACE.radio.68.32"))),
             value = Some(Sector.OtherFeeContract.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFeeContract.toString)
         )
@@ -90,7 +90,7 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.realEstate")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadRealEstateLvl3Page().toString>@messages("NACE.realEstate.Lvl3.feeContract")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadRealEstateLvl3Page().toString>@messages("NACE.radio.68.3")</a>
             </li>
         </ol>
     </nav>
