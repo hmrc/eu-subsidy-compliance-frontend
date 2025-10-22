@@ -50,32 +50,32 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-prePrimaryEducation", messages("NACE.education.Lvl3.prePrimary"))),
+content = HtmlContent(radioText("sector-label-prePrimaryEducation", messages("NACE.radio.85.10"))),
 value = Some(Sector.prePrimaryEducation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.prePrimaryEducation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-primaryEducation", messages("NACE.education.Lvl3.primary"))),
+content = HtmlContent(radioText("sector-label-primaryEducation", messages("NACE.radio.85.20"))),
 value = Some(Sector.primaryEducation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.primaryEducation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-secondaryEducation", messages("NACE.education.Lvl3.secondaryNonTertiary"))),
+content = HtmlContent(radioText("sector-label-secondaryEducation", messages("NACE.radio.85.3"))),
 value = Some(Sector.secondaryEducation.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.secondaryEducation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-tertiaryEducation", messages("NACE.education.Lvl3.tertiary"))),
+content = HtmlContent(radioText("sector-label-tertiaryEducation", messages("NACE.radio.85.40"))),
 value = Some(Sector.tertiaryEducation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.tertiaryEducation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherEducation", messages("NACE.education.Lvl3.otherEducation"))),
+content = HtmlContent(radioText("sector-label-otherEducation", messages("NACE.radio.85.5"))),
 value = Some(Sector.otherEducation.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherEducation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-educationalSupport", messages("NACE.education.Lvl3.educationalSupport"))),
+content = HtmlContent(radioText("sector-label-educationalSupport", messages("NACE.radio.85.6"))),
 value = Some(Sector.educationalSupport.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.educationalSupport.toString)
 )

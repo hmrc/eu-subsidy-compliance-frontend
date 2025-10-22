@@ -48,17 +48,17 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-dental", messages("NACE.humanHealth.Lvl4.dental"))),
+content = HtmlContent(radioText("sector-label-dental", messages("NACE.radio.86.23"))),
 value = Some(Sector.dental.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.dental.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-generalPractice", messages("NACE.humanHealth.Lvl4.generalPractice"))),
+content = HtmlContent(radioText("sector-label-generalPractice", messages("NACE.radio.86.21"))),
 value = Some(Sector.generalPractice.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.generalPractice.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-specialists", messages("NACE.humanHealth.Lvl4.specialists"))),
+content = HtmlContent(radioText("sector-label-specialists", messages("NACE.radio.86.22"))),
 value = Some(Sector.specialists.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialists.toString)
 )
@@ -99,10 +99,10 @@ title = Text(messages("common.error.summary.title"))
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.humanHealthSocialWork")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadHumanHealthLvl2Page().toString>@messages("NACE.humanHealth.Lvl2.humanHealth")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadHumanHealthLvl2Page().toString>@messages("NACE.radio.86")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadHumanHealthLvl3Page().toString>@messages("NACE.humanHealth.Lvl3.medicalDental")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadHumanHealthLvl3Page().toString>@messages("NACE.radio.86.2")</a>
   </li>
  </ol>
 </nav>

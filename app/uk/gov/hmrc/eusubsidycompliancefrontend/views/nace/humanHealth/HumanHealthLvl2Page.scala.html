@@ -48,7 +48,7 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-humanHealthActivities", messages("NACE.humanHealth.Lvl2.humanHealth"))),
+content = HtmlContent(radioText("sector-label-humanHealthActivities", messages("NACE.radio.86"))),
 value = Some(Sector.humanHealthActivities.toString),
 hint = Some(Hint(
 content = Text(messages("NACE.humanHealth.Lvl2.humanHealth.hint"))
@@ -56,12 +56,12 @@ content = Text(messages("NACE.humanHealth.Lvl2.humanHealth.hint"))
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.humanHealthActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-residentialCareActivities", messages("NACE.humanHealth.Lvl2.residentialCare"))),
+content = HtmlContent(radioText("sector-label-residentialCareActivities", messages("NACE.radio.87"))),
 value = Some(Sector.residentialCareActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialCareActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherSocialWork", messages("NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation"))),
+content = HtmlContent(radioText("sector-label-otherSocialWork", messages("NACE.radio.88"))),
 value = Some(Sector.otherSocialWork.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSocialWork.toString)
 )
