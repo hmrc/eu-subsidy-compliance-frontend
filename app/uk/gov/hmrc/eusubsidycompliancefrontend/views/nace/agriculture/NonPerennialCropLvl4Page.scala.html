@@ -115,19 +115,10 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.2")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadAgricultureLvl3Page().toString>@messages("NACE.agriculture.Lvl3.growingNonPerennialCrops")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadAgricultureLvl3Page().toString>@messages("NACE.radio.01.1")</a>
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.2")" />
-<input type="hidden" name="level3Display" value="@messages("NACE.agriculture.Lvl3.growingNonPerennialCrops")" />
-<input type="hidden" name="level4Display_01.11" value="@messages("NACE.agriculture.Lvl4.cerealsLeguminousCrops")" />
-<input type="hidden" name="level4Display_01.16" value="@messages("NACE.agriculture.Lvl4.fibreCrops")" />
-<input type="hidden" name="level4Display_01.12" value="@messages("NACE.agriculture.Lvl4.rice")" />
-<input type="hidden" name="level4Display_01.14" value="@messages("NACE.agriculture.Lvl4.sugarCane")" />
-<input type="hidden" name="level4Display_01.15" value="@messages("NACE.agriculture.Lvl4.tobacco")" />
-<input type="hidden" name="level4Display_01.13" value="@messages("NACE.agriculture.Lvl4.vegetables")" />
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
