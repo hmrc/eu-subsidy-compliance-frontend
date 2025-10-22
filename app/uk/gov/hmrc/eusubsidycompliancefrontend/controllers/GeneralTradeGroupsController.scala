@@ -207,13 +207,37 @@ class GeneralTradeGroupsController @Inject() (
 
   def submitClothesTextilesHomewarePage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     clothesTextilesHomewareForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(clothesTextilesHomewarePage(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
+          val sectorEnum = Sector.withName(form.value)
+
+          val naceSelectionOpt = if (form.value == "31.00") {
+            Some(NaceSelection(
+              code = "31.00",
+              sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+              level1Display = formData.get("level1Display").flatMap(_.headOption),
+              level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+              level2Display = formData.get("level2Display_31.00").flatMap(_.headOption),
+              level3Display = formData.get("level3Display_31.00").flatMap(_.headOption),
+              level4Display = formData.get("level4Display_31.00").flatMap(_.headOption).getOrElse("")
+            ))
+          } else {
+            None
+          }
+
+          naceSelectionOpt match {
+            case Some(selection) =>
+              store.update[UndertakingJourney](_.setNaceSelection(selection).setUndertakingSector(sectorEnum.id))
+                .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+            case None =>
+              store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+                .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+          }
         }
       )
   }
