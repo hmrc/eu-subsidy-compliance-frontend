@@ -2033,7 +2033,7 @@ NACE.radio.59.13 = Distribution
 NACE.radio.59.12 = Post-production
 NACE.radio.59.11 = Production
 NACE.radio.59.14 = Projection
-NACE.radio.59.20 = Sound recording and music publishing
+NACE.radio.59.2 = Sound recording and music publishing
 NACE.publishingBroadcasting.Lvl4.SoundRecordingActivities = Sound recording and music publishing activities
 
 NACE.radio.60 = Programming, broadcasting, news agency and other content distribution activities
@@ -2041,7 +2041,7 @@ NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities.title = W
 NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities.error = Select your undertaking’s main business activity in programming, broadcasting, news agency and content distribution
 NACE.radio.60.10 = Radio broadcasting and audio distribution
 NACE.publishingBroadcasting.Lvl4.radioBroadcastingActivities = Radio broadcasting and audio distribution activities
-NACE.radio.60.20 = TV programming, broadcasting and video distribution
+NACE.radio.60.2 = TV programming, broadcasting and video distribution
 NACE.publishingBroadcasting.Lvl4.televisionBroadcasting = Television programming, broadcasting and video distribution activities
 NACE.radio.60.3 = News agency and other content distribution activities
 NACE.publishingBroadcasting.Lvl3.newsAgency.title = What is your undertaking’s main business activity in news agency and content distribution?
@@ -2381,13 +2381,13 @@ NACE.radio.93.29 = Other amusement and recreation activities
 #OtherService NACE Sector2,3,4
 NACE.otherService.Lvl1.title = What type of services does your undertaking provide?
 NACE.otherService.Lvl1.error = Select the type of services your undertaking provides
-NACE.otherService.Lvl2.membershipOrganisations = Activities of membership organisations
+NACE.radio.94 = Activities of membership organisations
 NACE.otherService.Lvl2.membershipOrganisations.title = What type of membership organisation does your undertaking operate?
 NACE.otherService.Lvl2.membershipOrganisations.error = Select the type of membership organisation your undertaking operates
 NACE.otherService.Lvl3.businessEmployersProfessional = Business, employers and professional membership organisations
 NACE.otherService.Lvl3.businessEmployersProfessional.title = What type of business membership organisation does your undertaking operate?
 NACE.otherService.Lvl3.businessEmployersProfessional.error = Select the type of business membership organisation your undertaking operates
-NACE.otherService.Lvl4.businessEmployersMembership = Business and employers membership organisations
+NACE.radio.94.11 = Business and employers membership organisations
 NACE.otherService.Lvl4.professionalMembership = Professional membership organisations
 NACE.otherService.Lvl3.tradeUnions = Trade unions
 NACE.otherService.Lvl4.tradeUnions = Activities of trade unions
@@ -2398,13 +2398,13 @@ NACE.otherService.Lvl4.religiousOrganisations =  Religious organisations
 NACE.otherService.Lvl4.politicalOrganisations = Political organisations
 NACE.otherService.Lvl4.otherMembershipOrganisations = Another type of other membership organisation
 
-NACE.otherService.Lvl2.repairMaintenance = Repair and maintenance of computers, personal and household goods, motor vehicles and motorcycles
+NACE.radio.95 = Repair and maintenance of computers, personal and household goods, motor vehicles and motorcycles
 NACE.otherService.Lvl2.repairMaintenance.title =  What type of goods does your undertaking repair or maintain?
 NACE.otherService.Lvl2.repairMaintenance.error = Select the type of goods your undertaking repairs or maintains
-NACE.otherService.Lvl3.repairComputersCommunication = Computers and communication equipment
+NACE.radio.95.1 = Computers and communication equipment
 NACE.otherService.Lvl4.repairComputersCommunication = Repair and maintenance of computers and communication equipment
 
-NACE.otherService.Lvl3.repairHouseholdGoods = Personal and household goods
+NACE.radio.95.2 = Personal and household goods
 NACE.otherService.Lvl3.repairHouseholdGoods.title = What type of personal or household goods does your undertaking repair or maintain?
 NACE.otherService.Lvl3.repairHouseholdGoods.error = Select the type of personal or household goods your undertaking repairs or maintains
 NACE.otherService.Lvl4.repairConsumerElectronics = Consumer electronics
@@ -2414,28 +2414,29 @@ NACE.otherService.Lvl4.repairFurnitureHome = Furniture and home furnishings
 NACE.otherService.Lvl4.repairWatchesClocksJewellery = Watches, clocks and jewellery
 NACE.otherService.Lvl4.repairOtherPersonalHouseholdGoods = Another type of personal and household goods
 
-NACE.otherService.Lvl3.repairMotorVehiclesMotorcycles = Motor vehicles and motorcycles
+NACE.radio.95.3 = Motor vehicles and motorcycles
 NACE.otherService.Lvl3.repairMotorVehiclesMotorcycles.title = What type of vehicles does your undertaking repair or maintain?
 NACE.otherService.Lvl3.repairMotorVehiclesMotorcycles.error = Select the type of vehicles your undertaking repairs or maintains
 NACE.otherService.Lvl4.repairMotorVehicles = Motor vehicles
 NACE.otherService.Lvl4.repairMotorcycles = Motorcycles
 
-NACE.otherService.Lvl3.intermediationRepairMaintenance =  My undertaking provides intermediation services for repair and maintenance of computers, personal and household goods, motor vehicles and motorcycles
+NACE.radio.95.4 =  My undertaking provides intermediation services for repair and maintenance of computers, personal and household goods, motor vehicles and motorcycles
 NACE.otherService.Lvl4.intermediationRepairMaintenance = My undertaking provides intermediation services for repair and maintenance of computers, personal and household goods, motor vehicles and motorcycles
 
-NACE.otherService.Lvl2.personalServiceActivities = Personal services
+NACE.radio.96 = Personal services
 NACE.otherService.Lvl2.personalServiceActivities.title = What type of personal services does your undertaking provide?
 NACE.otherService.Lvl2.personalServiceActivities.error = Select the type of personal services your undertaking provides
-NACE.otherService.Lvl3.textileFurCleaning = Washing and cleaning of textile and fur products
+NACE.radio.96.1 = Washing and cleaning of textile and fur products
 NACE.otherService.Lvl4.textileFurCleaning = Washing and cleaning of textile and fur products
 
-NACE.otherService.Lvl3.hairdressingBeautySpa = Hairdressing, beauty treatment, day spa and similar activities
+NACE.radio.96.2 = Hairdressing, beauty treatment, day spa and similar activities
 NACE.otherService.Lvl3.hairdressingBeautySpa.title = What type of beauty treatments or similar services does your undertaking provide?
 NACE.otherService.Lvl3.hairdressingBeautySpa.error = Select the type of beauty treatments or similar services your undertaking provides
 NACE.otherService.Lvl4.hairdressingBarber = Hairdressing and barbering
 NACE.otherService.Lvl4.beautyCare = Beauty care and other beauty treatments
 NACE.otherService.Lvl4.daySpaSaunaBath = Day spa, sauna and steam bath activities
 
+NACE.radio.96 = Funeral and related activities
 NACE.otherService.Lvl3.funeralActivities = Funeral and related activities
 NACE.otherService.Lvl4.funeralActivities = Funeral and related activities
 NACE.otherService.Lvl3.intermediationPersonalServices = Intermediation services for personal services
