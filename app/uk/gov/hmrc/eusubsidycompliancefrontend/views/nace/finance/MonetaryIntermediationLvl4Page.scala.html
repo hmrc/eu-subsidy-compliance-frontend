@@ -48,12 +48,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-central-banking", messages("NACE.financialServices.Lvl4.centralBanking"))),
+            content = HtmlContent(radioText("sector-label-central-banking", messages("NACE.radio.64.11"))),
             value = Some(Sector.CentralBanking.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CentralBanking.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-monetary", messages("NACE.financialServices.Lvl4.otherMonetary"))),
+            content = HtmlContent(radioText("sector-label-other-monetary", messages("NACE.radio.64.19"))),
             value = Some(Sector.OtherMonetary.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherMonetary.toString)
         )
@@ -94,10 +94,10 @@ content = Text(messages("NACE.financialServices.Lvl4.monetaryIntermediation.erro
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.financialInsuranceActivities")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.Financial.Lvl2.FinancialServices")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.radio.64")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinancialServicesLvl3Page().toString>@messages("NACE.financialServices.Lvl3.monetaryIntermediation")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinancialServicesLvl3Page().toString>@messages("NACE.radio.64.1")</a>
             </li>
         </ol>
     </nav>

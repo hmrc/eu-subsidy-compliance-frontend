@@ -55,7 +55,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Cleaning.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-combined-facilities", messages("NACE.radio.81.10"))),
+            content = HtmlContent(radioText("sector-label-combined-facilities", messages("NACE.radio.81.1"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-combined-facilities", messages("NACE.Administrative.Lvl3.CombinedFacilities.hint")))
             )),
@@ -63,7 +63,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CombinedFacilitiesSupport.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-landscaping", messages("NACE.radio.81.30"))),
+            content = HtmlContent(radioText("sector-label-landscaping", messages("NACE.radio.81.3"))),
             value = Some(Sector.landscapeServiceActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Landscaping.toString)
         )

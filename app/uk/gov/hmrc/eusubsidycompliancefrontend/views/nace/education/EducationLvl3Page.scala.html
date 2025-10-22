@@ -50,12 +50,12 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-prePrimaryEducation", messages("NACE.radio.85.10"))),
+content = HtmlContent(radioText("sector-label-prePrimaryEducation", messages("NACE.radio.85.1"))),
 value = Some(Sector.prePrimaryEducation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.prePrimaryEducation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-primaryEducation", messages("NACE.radio.85.20"))),
+content = HtmlContent(radioText("sector-label-primaryEducation", messages("NACE.radio.85.2"))),
 value = Some(Sector.primaryEducation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.primaryEducation.toString)
 ),
@@ -65,7 +65,7 @@ value = Some(Sector.secondaryEducation.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.secondaryEducation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-tertiaryEducation", messages("NACE.radio.85.40"))),
+content = HtmlContent(radioText("sector-label-tertiaryEducation", messages("NACE.radio.85.4"))),
 value = Some(Sector.tertiaryEducation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.tertiaryEducation.toString)
 ),

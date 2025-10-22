@@ -48,7 +48,7 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-financial-services", messages("NACE.Financial.Lvl2.FinancialServices"))),
+            content = HtmlContent(radioText("sector-label-financial-services", messages("NACE.radio.64"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-financial-services", messages("NACE.Financial.Lvl2.FinancialServices.hint")))
             )),
@@ -56,12 +56,12 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FinancialServices.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-insurance", messages("NACE.Financial.Lvl2.Insurance"))),
+            content = HtmlContent(radioText("sector-label-insurance", messages("NACE.radio.65"))),
             value = Some(Sector.InsuranceReinsurancePensionFunding.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.InsuranceReinsurancePensionFunding.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-auxiliary", messages("NACE.Financial.Lvl2.Auxiliary"))),
+            content = HtmlContent(radioText("sector-label-auxiliary", messages("NACE.radio.66"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-auxiliary", messages("NACE.Financial.Lvl2.Auxiliary.hint")))
             )),

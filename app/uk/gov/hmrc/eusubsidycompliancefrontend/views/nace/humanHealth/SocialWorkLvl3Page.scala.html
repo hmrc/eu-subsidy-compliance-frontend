@@ -49,7 +49,7 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-socialWorkDisabilities", messages("NACE.radio.88.10"))),
+content = HtmlContent(radioText("sector-label-socialWorkDisabilities", messages("NACE.radio.88.1"))),
 value = Some(Sector.socialWorkDisabilities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.socialWorkDisabilities.toString)
 ),

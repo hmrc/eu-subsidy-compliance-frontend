@@ -56,7 +56,7 @@
             hint = Some(Hint(content = Text(messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.hint"))))
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-soundRecordingAndMusicPublishing", messages("NACE.radio.59.20"))),
+            content = HtmlContent(radioText("sector-label-soundRecordingAndMusicPublishing", messages("NACE.radio.59.2"))),
             value = Some(Sector.soundRecordingAndMusicPublishingActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.soundRecordingAndMusicPublishing.toString)
         )

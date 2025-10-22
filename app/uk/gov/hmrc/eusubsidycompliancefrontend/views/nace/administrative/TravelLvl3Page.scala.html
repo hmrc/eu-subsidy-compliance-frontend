@@ -52,7 +52,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.TravelAgency.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-reservation", messages("NACE.radio.79.90"))),
+            content = HtmlContent(radioText("sector-label-other-reservation", messages("NACE.radio.79.9"))),
             value = Some(Sector.OtherReservationServices4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherReservationServices.toString)
         )

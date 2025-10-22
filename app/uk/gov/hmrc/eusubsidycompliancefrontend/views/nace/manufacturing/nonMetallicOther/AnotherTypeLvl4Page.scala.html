@@ -49,12 +49,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-abrasive", messages("NACE.Manufacturing.Lvl4.AbrasiveProducts"))),
+            content = HtmlContent(radioText("sector-label-abrasive", messages("NACE.radio.23.91"))),
             value = Some(Sector.abrasiveProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.abrasiveProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherNonMetallicMinerals"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.23.99"))),
             value = Some(Sector.otherNonMetallicMineral.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNonMetallicMineral.toString)
         )
@@ -98,7 +98,7 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.NonMetallicOtherController.loadNonMetallicMineralLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.AbrasiveProducts")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.NonMetallicOtherController.loadNonMetallicMineralLvl3Page().toString>@messages("NACE.radio.23.9")</a>
             </li>
         </ol>
     </nav>

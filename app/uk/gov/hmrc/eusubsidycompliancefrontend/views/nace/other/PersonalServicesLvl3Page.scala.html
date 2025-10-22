@@ -55,12 +55,12 @@ value = Some(Sector.funeralActivities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.funeralActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-beautyTreatment", messages("NACE.otherService.Lvl3.hairdressingBeautySpa"))),
+content = HtmlContent(radioText("sector-label-beautyTreatment", messages("NACE.radio.96.2"))),
 value = Some(Sector.beautyTreatment.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.beautyTreatment.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-textileFurCleaning", messages("NACE.otherService.Lvl3.textileFurCleaning"))),
+content = HtmlContent(radioText("sector-label-textileFurCleaning", messages("NACE.radio.96.1"))),
 value = Some(Sector.cleaningTextileProducts4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.textileFurCleaning.toString)
 ),

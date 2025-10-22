@@ -50,7 +50,7 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-general", messages("NACE.Manufacturing.Lvl3.GeneralPurposeMachinery"))),
+            content = HtmlContent(radioText("sector-label-general", messages("NACE.radio.28.1"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-general", messages("NACE.Manufacturing.Lvl3.GeneralPurposeMachinery.hint")))
             )),
@@ -58,7 +58,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.generalPurposeMachinery.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-general", messages("NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery"))),
+            content = HtmlContent(radioText("sector-label-other-general", messages("NACE.radio.28.2"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other-general", messages("NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery.hint")))
             )),
@@ -66,17 +66,17 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherGeneralPurposeMachinery.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-agricultural", messages("NACE.Manufacturing.Lvl3.AgriculturalForestryMachinery"))),
+            content = HtmlContent(radioText("sector-label-agricultural", messages("NACE.radio.28.3"))),
             value = Some(Sector.agriculturalMachineryManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.agriculturalMachinery.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-metal-forming", messages("NACE.Manufacturing.Lvl3.MetalFormingMachinery"))),
+            content = HtmlContent(radioText("sector-label-metal-forming", messages("NACE.radio.28.4"))),
             value = Some(Sector.metalFormingMachinery.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalFormingMachinery.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-special", messages("NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery"))),
+            content = HtmlContent(radioText("sector-label-other-special", messages("NACE.radio.28.9"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other-special", messages("NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery.hint")))
             )),

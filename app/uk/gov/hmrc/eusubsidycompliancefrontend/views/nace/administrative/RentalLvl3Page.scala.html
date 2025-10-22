@@ -62,7 +62,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherMachineryRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-intellectual-property", messages("NACE.radio.77.40"))),
+            content = HtmlContent(radioText("sector-label-intellectual-property", messages("NACE.radio.77.4"))),
             value = Some(Sector.LeasingIntellectualProperty.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.IntellectualProperty.toString)
         ),

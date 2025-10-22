@@ -50,27 +50,27 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-bearings", messages("NACE.Manufacturing.Lvl4.BearingsGears"))),
+            content = HtmlContent(radioText("sector-label-bearings", messages("NACE.radio.28.15"))),
             value = Some(Sector.bearings.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.bearings.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-engines", messages("NACE.Manufacturing.Lvl4.EnginesTurbines"))),
+            content = HtmlContent(radioText("sector-label-engines", messages("NACE.radio.28.11"))),
             value = Some(Sector.engines.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.engines.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-fluid-power", messages("NACE.Manufacturing.Lvl4.FluidPowerEquipment"))),
+            content = HtmlContent(radioText("sector-label-fluid-power", messages("NACE.radio.28.12"))),
             value = Some(Sector.fluidPowerEquipment.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.fluidPowerEquipment.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-others", messages("NACE.Manufacturing.Lvl4.PumpsCompressors"))),
+            content = HtmlContent(radioText("sector-label-others", messages("NACE.radio.28.13"))),
             value = Some(Sector.otherPumps.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPumps.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-machining", messages("NACE.Manufacturing.Lvl4.TapsValves"))),
+            content = HtmlContent(radioText("sector-label-machining", messages("NACE.radio.28.14"))),
             value = Some(Sector.otherTaps.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTaps.toString)
         )
@@ -115,7 +115,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Computers.Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ComputersElectronicsController.loadOtherMachineryLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.GeneralPurposeMachinery")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ComputersElectronicsController.loadOtherMachineryLvl3Page().toString>@messages("NACE.radio.28.1")</a>
         </li>
     </ol>
 </nav>
