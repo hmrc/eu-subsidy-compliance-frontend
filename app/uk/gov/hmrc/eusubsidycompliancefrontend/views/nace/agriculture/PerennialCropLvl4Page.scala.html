@@ -50,22 +50,22 @@ controllers.routes.AgricultureController.submitPerennialCropLvl4Page()
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-beverageCrops", messages("NACE.agriculture.Lvl4.beverageCrops"))),
+content = HtmlContent(radioText("sector-label-beverageCrops", messages("NACE.radio.01.27"))),
 value = Some(Sector.beverageCrops.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.beverageCrops.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-citrusFruits", messages("NACE.agriculture.Lvl4.citrusFruits"))),
+content = HtmlContent(radioText("sector-label-citrusFruits", messages("NACE.radio.01.23"))),
 value = Some(Sector.citrusFruits.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.citrusFruits.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-grapes", messages("NACE.agriculture.Lvl4.grapes"))),
+content = HtmlContent(radioText("sector-label-grapes", messages("NACE.radio.01.21"))),
 value = Some(Sector.grapes.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.grapes.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-oleaginousFruits", messages("NACE.agriculture.Lvl4.oleaginousFruits"))),
+content = HtmlContent(radioText("sector-label-oleaginousFruits", messages("NACE.radio.01.26"))),
 hint = Some(Hint(
 content = HtmlContent(radioText("sector-label-oleaginousFruits-hint", messages("NACE.agriculture.Lvl4.oleaginousFruits.hint")))
 )),
@@ -73,18 +73,18 @@ value = Some(Sector.oleaginousFruits.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.oleaginousFruits.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-stoneFruits", messages("NACE.agriculture.Lvl4.stoneFruits"))),
+content = HtmlContent(radioText("sector-label-stoneFruits", messages("NACE.radio.01.24"))),
 hint = Some(Hint(content = HtmlContent(radioText("sector-label-stoneFruits-hint", messages("NACE.agriculture.Lvl4.stoneFruits.hint"))))),
 value = Some(Sector.stoneFruits.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.stoneFruits.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-spicesPharmaceuticalCrops", messages("NACE.agriculture.Lvl4.spicesPharmaceuticalCrops"))),
+content = HtmlContent(radioText("sector-label-spicesPharmaceuticalCrops", messages("NACE.radio.01.28"))),
 value = Some(Sector.spicesPharmaceuticalCrops.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.spicesPharmaceuticalCrops.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-tropicalFruits", messages("NACE.agriculture.Lvl4.tropicalFruits"))),
+content = HtmlContent(radioText("sector-label-tropicalFruits", messages("NACE.radio.01.22"))),
 hint = Some(Hint(
 content = HtmlContent(radioText("sector-label-tropicalFruits-hint", messages("NACE.agriculture.Lvl4.tropicalFruits.hint")))
 )),
@@ -92,12 +92,12 @@ value = Some(Sector.tropicalFruits.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.tropicalFruits.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherTree", messages("NACE.agriculture.Lvl4.otherTree"))),
+content = HtmlContent(radioText("sector-label-otherTree", messages("NACE.radio.01.25"))),
 value = Some(Sector.otherTree.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTree.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherPerennialCrops", messages("NACE.agriculture.Lvl4.otherPerennialCrops"))),
+content = HtmlContent(radioText("sector-label-otherPerennialCrops", messages("NACE.radio.01.29"))),
 value = Some(Sector.otherPerennialCrops.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPerennialCrops.toString)
 )

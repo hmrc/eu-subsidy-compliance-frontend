@@ -49,17 +49,17 @@ controllers.routes.AgricultureController.submitSupportActivitiesLvl4Page()
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-postHarvestActivities", messages("NACE.agriculture.Lvl4.postHarvestActivities"))),
+content = HtmlContent(radioText("sector-label-postHarvestActivities", messages("NACE.radio.01.63"))),
 value = Some(Sector.postHarvestActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.postHarvestActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-supportActivitiesAnimal", messages("NACE.agriculture.Lvl4.supportActivitiesAnimal"))),
+content = HtmlContent(radioText("sector-label-supportActivitiesAnimal", messages("NACE.radio.01.62"))),
 value = Some(Sector.supportActivitiesAnimal.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivitiesAnimal.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-supportActivitiesCrop", messages("NACE.agriculture.Lvl4.supportActivitiesCrop"))),
+content = HtmlContent(radioText("sector-label-supportActivitiesCrop", messages("NACE.radio.01.61"))),
 value = Some(Sector.supportActivitiesCrop.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivitiesCrop.toString)
 )
