@@ -50,7 +50,7 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-plastic", messages("NACE.Manufacturing.Lvl3.PlasticProducts"))),
+            content = HtmlContent(radioText("sector-label-plastic", messages("NACE.radio.22.2"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-plastic", messages("NACE.Manufacturing.Lvl3.PlasticProducts.hint")))
             )),
@@ -58,7 +58,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.plasticProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-rubber", messages("NACE.Manufacturing.Lvl3.RubberProducts"))),
+            content = HtmlContent(radioText("sector-label-rubber", messages("NACE.radio.22.1"))),
             value = Some(Sector.rubberProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.rubberProducts.toString)
         )
@@ -91,16 +91,16 @@
             <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.UndertakingController.getSector.toString">@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.Manufacturing.Lvl2.1.Metals")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString">@messages("NACE.Manufacturing.Lvl2.1.Metals")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Metals.Rubber")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString">@messages("NACE.radio.22")</a>
         </li>
     </ol>
 </nav>

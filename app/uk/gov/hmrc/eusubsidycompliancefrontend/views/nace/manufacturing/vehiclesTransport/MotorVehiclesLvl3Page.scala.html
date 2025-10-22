@@ -50,17 +50,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-motor", messages("NACE.Manufacturing.Lvl3.MotorVehicles"))),
+            content = HtmlContent(radioText("sector-label-motor", messages("NACE.radio.29.1"))),
             value = Some(Sector.motorVehiclesManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.motorVehicles3.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-bodies-trailers", messages("NACE.Manufacturing.Lvl3.BodiesTrailers"))),
+            content = HtmlContent(radioText("sector-label-other-bodies-trailers", messages("NACE.radio.29.2"))),
             value = Some(Sector.motorVehiclesBodies4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.motorVehiclesBodies.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-parts-accessories", messages("NACE.Manufacturing.Lvl3.MotorVehiclePartsAccessories"))),
+            content = HtmlContent(radioText("sector-label-parts-accessories", messages("NACE.radio.29.3"))),
             value = Some(Sector.motorVehiclesParts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.motorVehiclesParts.toString)
         )

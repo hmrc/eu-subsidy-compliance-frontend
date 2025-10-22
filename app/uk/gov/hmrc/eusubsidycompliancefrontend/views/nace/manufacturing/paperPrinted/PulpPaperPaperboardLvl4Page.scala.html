@@ -50,12 +50,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-pulp", messages("NACE.Manufacturing.Lvl4.Pulp"))),
+            content = HtmlContent(radioText("sector-label-pulp", messages("NACE.radio.17.11"))),
             value = Some(Sector.pulp4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.pulp4.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-paper", messages("NACE.Manufacturing.Lvl4.PaperPaperboard"))),
+            content = HtmlContent(radioText("sector-label-paper", messages("NACE.radio.17.12"))),
             value = Some(Sector.paper.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.paper.toString)
         )
@@ -100,7 +100,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Paper")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PaperPrintedController.loadPaperLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.PulpPaperPaperboard")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PaperPrintedController.loadPaperLvl3Page().toString>@messages("NACE.radio.17.1")</a>
         </li>
     </ol>
 </nav>
