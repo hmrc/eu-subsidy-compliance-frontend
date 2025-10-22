@@ -48,17 +48,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-motor-vehicles", messages("NACE.Wholesale.MotorVehicles.Lvl4.Vehicles"))),
+            content = HtmlContent(radioText("sector-label-motor-vehicles", messages("NACE.radio.46.71"))),
             value = Some(Sector.MotorVehicleWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.MotorVehicleWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-vehicle-parts", messages("NACE.Wholesale.MotorVehicles.Lvl4.Parts"))),
+            content = HtmlContent(radioText("sector-label-vehicle-parts", messages("NACE.radio.46.72"))),
             value = Some(Sector.MotorVehiclePartsWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.MotorVehiclePartsWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-motorcycles", messages("NACE.Wholesale.MotorVehicles.Lvl4.Motorcycles"))),
+            content = HtmlContent(radioText("sector-label-motorcycles", messages("NACE.radio.46.73"))),
             value = Some(Sector.MotorcyclePartsWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.MotorcyclePartsWholesale.toString)
         )
@@ -95,10 +95,10 @@
                     <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.wholesaleRetail")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page().toString>@messages("NACE.RetailWholesale.Lvl2.Wholesale")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page().toString>@messages("NACE.radio.46")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadWholesaleLvl3Page().toString>@messages("NACE.Wholesale.Lvl3.MotorVehicles")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadWholesaleLvl3Page().toString>@messages("NACE.radio.46.7")</a>
                 </li>
             </ol>
         </nav>

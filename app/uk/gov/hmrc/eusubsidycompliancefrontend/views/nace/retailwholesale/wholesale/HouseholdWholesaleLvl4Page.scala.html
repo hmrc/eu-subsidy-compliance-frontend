@@ -48,47 +48,47 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-china", messages("NACE.Wholesale.Household.Lvl4.China"))),
+            content = HtmlContent(radioText("sector-label-china", messages("NACE.radio.46.44"))),
             value = Some(Sector.ChinaWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ChinaWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-clothing", messages("NACE.Wholesale.Household.Lvl4.Clothing"))),
+            content = HtmlContent(radioText("sector-label-clothing", messages("NACE.radio.46.42"))),
             value = Some(Sector.ClothingWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ClothingWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-electrical", messages("NACE.Wholesale.Household.Lvl4.Electrical"))),
+            content = HtmlContent(radioText("sector-label-electrical", messages("NACE.radio.46.43"))),
             value = Some(Sector.ElectricalHouseholdWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricalHouseholdWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-household", messages("NACE.Wholesale.Household.Lvl4.Household"))),
+            content = HtmlContent(radioText("sector-label-household", messages("NACE.radio.46.47"))),
             value = Some(Sector.HouseholdWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.HouseholdWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-perfume", messages("NACE.Wholesale.Household.Lvl4.Perfume"))),
+            content = HtmlContent(radioText("sector-label-perfume", messages("NACE.radio.46.45"))),
             value = Some(Sector.PerfumeWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PerfumeWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-pharmaceutical", messages("NACE.Wholesale.Household.Lvl4.Pharmaceutical"))),
+            content = HtmlContent(radioText("sector-label-pharmaceutical", messages("NACE.radio.46.46"))),
             value = Some(Sector.PharmaceuticalWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PharmaceuticalWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-textiles", messages("NACE.Wholesale.Household.Lvl4.Textiles"))),
+            content = HtmlContent(radioText("sector-label-textiles", messages("NACE.radio.46.41"))),
             value = Some(Sector.TextilesWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.TextilesWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-watches", messages("NACE.Wholesale.Household.Lvl4.Watches"))),
+            content = HtmlContent(radioText("sector-label-watches", messages("NACE.radio.46.48"))),
             value = Some(Sector.WatchesWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.WatchesWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-household", messages("NACE.Wholesale.Household.Lvl4.Other"))),
+            content = HtmlContent(radioText("sector-label-other-household", messages("NACE.radio.46.49"))),
             value = Some(Sector.OtherHouseholdGoodsWholesale.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherHouseholdGoodsWholesale.toString)
         )
@@ -125,10 +125,10 @@
                     <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.wholesaleRetail")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page().toString>@messages("NACE.RetailWholesale.Lvl2.Wholesale")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page().toString>@messages("NACE.radio.46")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadWholesaleLvl3Page().toString>@messages("NACE.Wholesale.Lvl3.Household")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadWholesaleLvl3Page().toString>@messages("NACE.radio.46.4")</a>
                 </li>
             </ol>
         </nav>
