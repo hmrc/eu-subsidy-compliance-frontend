@@ -47,22 +47,22 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-call-centres", messages("NACE.radio.82.20"))),
+            content = HtmlContent(radioText("sector-label-call-centres", messages("NACE.radio.82.2"))),
             value = Some(Sector.callCentresActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CallCentres.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-intermediation", messages("NACE.radio.82.40"))),
+            content = HtmlContent(radioText("sector-label-intermediation", messages("NACE.radio.82.4"))),
             value = Some(Sector.businessSupportIntermediation4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.businessSupportIntermediation.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-office-admin", messages("NACE.radio.82.10"))),
+            content = HtmlContent(radioText("sector-label-office-admin", messages("NACE.radio.82.1"))),
             value = Some(Sector.officeAdministrativeActivities4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OfficeAdministrative.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-conventions", messages("NACE.radio.82.30"))),
+            content = HtmlContent(radioText("sector-label-conventions", messages("NACE.radio.82.3"))),
             value = Some(Sector.conventionsOrganisation4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.conventionsOrganisation.toString)
         ),

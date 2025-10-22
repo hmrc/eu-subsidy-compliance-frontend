@@ -2729,11 +2729,11 @@ NACE.realEstate.Lvl3.realEstate.error = Select your undertaking’s main busines
 NACE.Administrative.Buildings.title = What type of building or landscape service does your undertaking provide?
 NACE.Administrative.Buildings.hint = Select one option that best describes your undertaking''s main business activity.
 NACE.Administrative.Buildings.error = Select the type of building or landscape service your undertaking provides
-NACE.radio.81.10 = Combined facilities support
+NACE.radio.81.1 = Combined facilities support
 NACE.Administrative.Lvl3.CombinedFacilities.hint =
 NACE.radio.81.2 = Cleaning
 NACE.Administrative.Lvl3.Cleaning.hint =
-NACE.radio.81.30 = Landscaping
+NACE.radio.81.3 = Landscaping
 
 NACE.Administrative.Cleaning.title = What type of cleaning does your undertaking do?
 NACE.Administrative.Cleaning.hint = Select one option that best describes your undertaking''s main business activity.
@@ -2744,8 +2744,8 @@ NACE.radio.81.23 = Other cleaning activities
 
 NACE.Administrative.Employment.title = What is your undertaking'''s main business activity in employment services?
 NACE.Administrative.Employment.error = Select your undertaking’'s main business activity in employment services
-NACE.radio.78.10 = Activities of employment placement agencies
-NACE.radio.78.20 = Temporary employment agency activities and other human resource provisions
+NACE.radio.78.1 = Activities of employment placement agencies
+NACE.radio.78.2 = Temporary employment agency activities and other human resource provisions
 
 NACE.Administrative.Investigation.title = What is your undertaking''s main business activity in investigation and security?
 NACE.Administrative.Investigation.hint = Select one option that best describes your undertaking''s main business activity.
@@ -2756,15 +2756,15 @@ NACE.radio.80.09 = Another type of security activities
 NACE.Administrative.Office.title = What type of office or business support does your undertaking provide?
 NACE.Administrative.Office.hint = Includes call centres, collection agencies and credit bureaus, organisation of conventions and trade shows, and other business support services.
 NACE.Administrative.Office.error = Select the type of office or business support your undertaking does
-NACE.radio.82.10 = Office administrative and support activities
+NACE.radio.82.1 = Office administrative and support activities
 NACE.Administrative.Lvl3.OfficeAdministrative.hint =
-NACE.radio.82.20 = Call centres
+NACE.radio.82.2 = Call centres
 NACE.Administrative.Lvl3.CallCentres.hint =
-NACE.radio.82.30 = Organisation of conventions and trade shows
+NACE.radio.82.3 = Organisation of conventions and trade shows
 NACE.Administrative.Lvl3.ConventionsTradeShows.hint =
 NACE.radio.82.9 = Other business support service activities
 NACE.Administrative.Lvl3.OtherBusinessSupport.hint = Includes collection agencies and credit bureaus, packaging activities and other business support.
-NACE.radio.82.40 = Intermediation services for business support
+NACE.radio.82.4 = Intermediation services for business support
 
 NACE.Administrative.OtherBusinessSupport.title = What type of other business support services does your undertaking provide?
 NACE.Administrative.OtherBusinessSupport.hint = Select one option that best describes your undertaking''s main business activity.
@@ -2806,7 +2806,7 @@ NACE.radio.77.12 = Trucks
 
 NACE.radio.77.2 = Personal and household goods
 NACE.radio.77.3 = Other machinery, equipment and tangible goods
-NACE.radio.77.40 = Intellectual property and similar products (except copyrighted works)
+NACE.radio.77.4 = Intellectual property and similar products (except copyrighted works)
 NACE.radio.77.5 = My undertaking provides intermediation services for rental and leasing of tangible goods and non-financial intangible assets
 
 NACE.Administrative.TravelAgency.title = What is your undertaking''s main business activity in travel agency and tour operator activities?
@@ -2819,7 +2819,7 @@ NACE.Administrative.Travel.title = What is your undertaking''s main business act
 NACE.Administrative.Travel.hint = Select one option that best describes your undertaking''s main business activity.
 NACE.Administrative.Travel.error = Select your undertaking'’s main business activity in travel and other reservation services
 NACE.radio.79.1 = Travel agency and tour operator activities
-NACE.radio.79.90 = Other reservation services and related activities
+NACE.radio.79.9 = Other reservation services and related activities
 
 NACE.Administrative.title = What type of administrative and support services does your undertaking provide?
 NACE.Administrative.hint = Select one option that best describes your undertaking''s main business activity.
@@ -2827,7 +2827,7 @@ NACE.Administrative.error = Select the type of administrative and support servic
 NACE.radio.77 = Rental and leasing
 NACE.radio.78 = Employment
 NACE.radio.79 = Travel agency, tour operator and other reservation services
-NACE.radio.80.0 = Investigation and security
+NACE.radio.80 = Investigation and security
 NACE.radio.81 = Services to buildings and landscaping
 NACE.Administrative.Lvl2.BuildingsLandscaping.hint = Includes cleaning and combined facilities support.
 NACE.radio.82 = Office administrative, office support and other business support
