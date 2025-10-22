@@ -1619,20 +1619,20 @@ NACE.Manufacturing.Lvl4.OtherManufacturing = Another type of product
 NACE.Manufacturing.RepairMaintains.title = What is your undertaking’s main business activity in repair, maintenance or installation of machinery and equipment?
 NACE.Manufacturing.RepairMaintains.error = Select your undertaking’s main business activity in repair, maintenance or installation of machinery and equipment
 
-NACE.Manufacturing.Lvl3.RepairMaintenanceFabricatedMetal = Repair and maintenance of fabricated metal products, machinery and equipment
+NACE.radio.33.1 = Repair and maintenance of fabricated metal products, machinery and equipment
 NACE.Manufacturing.RepairMaintenanceFabricatedMetal.title = What type of machinery or equipment does your undertaking repair or maintain?
 NACE.Manufacturing.RepairMaintenanceFabricatedMetal.error = Select the type of machinery or equipment your undertaking repairs or maintains
-NACE.Manufacturing.Lvl4.RepairFabricatedMetalProducts = Fabricated metal products
-NACE.Manufacturing.Lvl4.RepairMachinery = Machinery
-NACE.Manufacturing.Lvl4.RepairElectronicOptical = Electronic and optical equipment
-NACE.Manufacturing.Lvl4.RepairElectrical = Electrical equipment
-NACE.Manufacturing.Lvl4.RepairCivilianShipsBoats = Civilian ships and boats
-NACE.Manufacturing.Lvl4.RepairCivilianAirSpacecraft = Civilian air and spacecraft
-NACE.Manufacturing.Lvl4.RepairOtherTransport = Other civilian transport equipment
-NACE.Manufacturing.Lvl4.RepairMilitaryVehicles = Military fighting vehicles, ships, boats, air and spacecraft
-NACE.Manufacturing.Lvl4.RepairOtherEquipment = Another type of equipment
+NACE.radio.33.11 = Fabricated metal products
+NACE.radio.33.12 = Machinery
+NACE.radio.33.13 = Electronic and optical equipment
+NACE.radio.33.14 = Electrical equipment
+NACE.radio.33.15 = Civilian ships and boats
+NACE.radio.33.16 = Civilian air and spacecraft
+NACE.radio.33.17 = Other civilian transport equipment
+NACE.radio.33.18 = Military fighting vehicles, ships, boats, air and spacecraft
+NACE.radio.33.19 = Another type of equipment
 
-NACE.Manufacturing.Lvl3.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
+NACE.radio.33.2 = Installation of industrial machinery and equipment
 NACE.Manufacturing.Lvl4.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
 
 #ElectricityGasSteamAir NACE Sector2,3,4

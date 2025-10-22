@@ -70,7 +70,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ovens.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-hand-tools", messages("NACE.radio.28.24))),
+            content = HtmlContent(radioText("sector-label-hand-tools", messages("NACE.radio.28.24"))),
             value = Some(Sector.powerDrivenHandTools.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.powerDrivenHandTools.toString)
         ),
