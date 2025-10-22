@@ -50,12 +50,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.masonryAndBricklaying"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43.91"))),
                 value = Some(Sector.masonryAndBricklaying.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.masonryAndBricklaying.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.otherSpecialisedConstructionActivities"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43.99"))),
                 value = Some(Sector.otherSpecialisedConstructionActivities.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSpecialisedConstructionActivities.toString)
         )
@@ -93,10 +93,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.construction")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadConstructionLvl2Page().toString>@messages("NACE.construction.Lvl2.specialisedConstructionActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadConstructionLvl2Page().toString>@messages("NACE.radio.43")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadSpecialisedConstructionLvl3Page().toString>@messages("NACE.construction.Lvl3.otherSpecialisedConstruction")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadSpecialisedConstructionLvl3Page().toString>@messages("NACE.radio.43.9")</a>
         </li>
     </ol>
 </nav>

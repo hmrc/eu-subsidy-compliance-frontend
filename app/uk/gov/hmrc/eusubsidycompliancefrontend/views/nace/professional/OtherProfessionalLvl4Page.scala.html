@@ -50,12 +50,12 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-patentBrokering", messages("NACE.professional.Lvl4.patentBrokering"))),
+content = HtmlContent(radioText("sector-label-patentBrokering", messages("NACE.radio.74.91"))),
 value = Some(Sector.patentBrokering.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.patentBrokering.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherProfessionalScientificActivities4", messages("NACE.professional.Lvl4.otherProfessionalNEC"))),
+content = HtmlContent(radioText("sector-label-otherProfessionalScientificActivities4", messages("NACE.radio.74.99"))),
 value = Some(Sector.otherProfessionalScientificActivities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherProfessionalScientificActivities4.toString)
 )
@@ -94,10 +94,10 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.professionalScientificTechnicalActivities")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page().toString>@messages("NACE.professional.Lvl2.advertisingMarketResearchPR")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page().toString>@messages("NACE.radio.73")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadOtherProfessionalLvl3Page().toString>@messages("NACE.professional.Lvl3.otherProfessionalActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadOtherProfessionalLvl3Page().toString>@messages("NACE.radio.74.9")</a>
         </li>
     </ol>
 </nav>

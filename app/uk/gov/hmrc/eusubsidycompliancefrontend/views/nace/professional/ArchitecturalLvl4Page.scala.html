@@ -50,12 +50,12 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-architecturalEngineering", messages("NACE.professional.Lvl4.architectural"))),
+content = HtmlContent(radioText("sector-label-architecturalEngineering", messages("NACE.radio.71.11"))),
 value = Some(Sector.architecturalEngineering.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.architecturalEngineering.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-engineeringConsultancy", messages("NACE.professional.Lvl4.engineeringConsultancy"))),
+content = HtmlContent(radioText("sector-label-engineeringConsultancy", messages("NACE.radio.71.12"))),
 value = Some(Sector.engineeringConsultancy.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.engineeringConsultancy.toString)
 )
@@ -94,7 +94,7 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.professionalScientificTechnicalActivities")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page().toString>@messages("NACE.professional.Lvl2.advertisingMarketResearchPR")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page().toString>@messages("NACE.radio.73")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadArchitecturalLvl3Page().toString>@messages("NACE.professional.Lvl3.architecturalEngineering")</a>

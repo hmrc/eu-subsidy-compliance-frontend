@@ -49,12 +49,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-eventCatering", messages("NACE.accommodationAndFoodService.Lvl4.eventCatering"))),
+            content = HtmlContent(radioText("sector-label-eventCatering", messages("NACE.radio.56.21"))),
             value = Some(Sector.eventCatering.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.eventCatering.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl4.contractCatering"))),
+                content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.radio.56.22"))),
                 value = Some(Sector.contractCatering.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.contractCatering.toString)
         )
@@ -98,7 +98,7 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadAccommodationFoodLvl2Page().toString>@messages("NACE.radio.56")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadFoodBeverageActivitiesLvl3Page().toString>@messages("NACE.accommodationAndFoodService.Lvl3.eventAndContractCatering")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadFoodBeverageActivitiesLvl3Page().toString>@messages("NACE.radio.56.2")</a>
             </li>
         </ol>
     </nav>

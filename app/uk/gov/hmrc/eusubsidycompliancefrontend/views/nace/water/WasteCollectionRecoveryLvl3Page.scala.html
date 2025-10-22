@@ -48,18 +48,18 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-waste-collection", messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteCollection"))),
+      content = HtmlContent(radioText("sector-label-waste-collection", messages("NACE.radio.38.1"))),
       value = Some(Sector.wasteCollection.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteCollection.toString)
     ),
     RadioItem(
-    content = HtmlContent(radioText("sector-label-waste-disposal-without-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery"))),
+    content = HtmlContent(radioText("sector-label-waste-disposal-without-recovery", messages("NACE.radio.38.3"))),
     value = Some(Sector.wasteDisposal.toString),
     hint = Some(Hint(content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery.hint")))),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteDisposal.toString)
     ),
     RadioItem(
-    content = HtmlContent(radioText("sector-label-waste-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery"))),
+    content = HtmlContent(radioText("sector-label-waste-recovery", messages("NACE.radio.38.2"))),
     value = Some(Sector.wasteRecovery.toString),
     checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteRecovery.toString)
     )
@@ -99,7 +99,7 @@ content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.waterSupply")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWaterLvl2Page().toString>@messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWaterLvl2Page().toString>@messages("NACE.radio.38")</a>
         </li>
     </ol>
 </nav>

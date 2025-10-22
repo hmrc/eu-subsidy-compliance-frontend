@@ -50,23 +50,23 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-photography", messages("NACE.professional.Lvl3.photographic"))),
+content = HtmlContent(radioText("sector-label-photography", messages("NACE.radio.74.2"))),
 value = Some(Sector.photographicActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.photography.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-specialisedDesign", messages("NACE.professional.Lvl3.specialisedDesign"))),
+content = HtmlContent(radioText("sector-label-specialisedDesign", messages("NACE.radio.74.1"))),
 value = Some(Sector.specialisedDesign.toString),
 hint = Some(Hint(content = Text(messages("NACE.professional.Lvl3.specialisedDesign.hint")))),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedDesign.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-translationInterpretation", messages("NACE.professional.Lvl3.translationInterpretation"))),
+content = HtmlContent(radioText("sector-label-translationInterpretation", messages("NACE.radio.74.3"))),
 value = Some(Sector.translationActivities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.translationInterpretation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherProfessionalScientificActivities", messages("NACE.professional.Lvl3.otherProfessionalActivities"))),
+content = HtmlContent(radioText("sector-label-otherProfessionalScientificActivities", messages("NACE.radio.74.9"))),
 value = Some(Sector.otherProfessionalScientificActivities.toString),
 hint = Some(Hint(content = Text(messages("NACE.professional.Lvl3.otherProfessionalActivities.hint")))),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherProfessionalScientificActivities.toString)
@@ -106,7 +106,7 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.professionalScientificTechnicalActivities")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page().toString>@messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page().toString>@messages("NACE.radio.74")</a>
         </li>
     </ol>
 </nav>

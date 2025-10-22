@@ -49,12 +49,12 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-crudePetroleumExtraction", messages("NACE.mining.Lvl3.crudePetroleum"))),
+content = HtmlContent(radioText("sector-label-crudePetroleumExtraction", messages("NACE.radio.06.1"))),
 value = Some(Sector.crudePetroleumExtraction.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.crudePetroleum.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-naturalGasExtraction", messages("NACE.mining.Lvl3.naturalGas"))),
+content = HtmlContent(radioText("sector-label-naturalGasExtraction", messages("NACE.radio.06.2"))),
 value = Some(Sector.naturalGasExtraction.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.naturalGas.toString)
 )
@@ -96,13 +96,10 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.mining")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MiningController.loadMiningLvl2Page().toString>@messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MiningController.loadMiningLvl2Page().toString>@messages("NACE.radio.06")</a>
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.mining")" />
-
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(

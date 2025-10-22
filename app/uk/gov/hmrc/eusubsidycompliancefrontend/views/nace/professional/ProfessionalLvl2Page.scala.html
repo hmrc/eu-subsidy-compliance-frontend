@@ -50,37 +50,37 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-advertisingMarketResearch", messages("NACE.professional.Lvl2.advertisingMarketResearchPR"))),
+content = HtmlContent(radioText("sector-label-advertisingMarketResearch", messages("NACE.radio.73"))),
 value = Some(Sector.advertisingMarketResearch.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.advertisingMarketResearch.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-architecturalAndTechnical", messages("NACE.professional.Lvl2.architecturalEngineeringTesting"))),
+content = HtmlContent(radioText("sector-label-architecturalAndTechnical", messages("NACE.radio.71"))),
 value = Some(Sector.architecturalAndTechnical.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.architecturalAndTechnical.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-headOfficesAndManagementConsultancy", messages("NACE.professional.Lvl2.headOfficeManagement"))),
+content = HtmlContent(radioText("sector-label-headOfficesAndManagementConsultancy", messages("NACE.radio.70"))),
 value = Some(Sector.headOfficesAndManagementConsultancy.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.headOfficesAndManagementConsultancy.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-legalAndAccounting", messages("NACE.professional.Lvl2.legalAccounting"))),
+content = HtmlContent(radioText("sector-label-legalAndAccounting", messages("NACE.radio.69"))),
 value = Some(Sector.legalAndAccounting.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.legalAndAccounting.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-ScientificResearchAndDevelopment", messages("NACE.professional.Lvl2.scientificResearchDevelopment"))),
+content = HtmlContent(radioText("sector-label-ScientificResearchAndDevelopment", messages("NACE.radio.72"))),
 value = Some(Sector.scientificResearchAndDevelopment.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.scientificResearchAndDevelopment.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-veterinary", messages("NACE.professional.Lvl2.veterinary"))),
+content = HtmlContent(radioText("sector-label-veterinary", messages("NACE.radio.75"))),
 value = Some(Sector.veterinaryActivities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.veterinary.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherProfessionalScientific", messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical"))),
+content = HtmlContent(radioText("sector-label-otherProfessionalScientific", messages("NACE.radio.74"))),
 value = Some(Sector.otherProfessionalScientific.toString),
 hint = Some(Hint(
 content = Text(messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical.hint"))

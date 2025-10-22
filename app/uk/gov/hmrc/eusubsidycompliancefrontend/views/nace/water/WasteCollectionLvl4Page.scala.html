@@ -49,12 +49,12 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-hazardous-waste", messages("NACE.WaterSewerageWasteRemediation.Lvl4.HazardousWaste"))),
+      content = HtmlContent(radioText("sector-label-hazardous-waste", messages("NACE.radio.38.12"))),
       value = Some(Sector.hazardousWaste.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.hazardousWaste.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-non-hazardous-waste", messages("NACE.WaterSewerageWasteRemediation.Lvl4.NonHazardousWaste"))),
+      content = HtmlContent(radioText("sector-label-non-hazardous-waste", messages("NACE.radio.38.11"))),
       value = Some(Sector.nonHazardousWaste.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonHazardousWaste.toString)
     )
@@ -95,10 +95,10 @@ content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.waterSupply")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWaterLvl2Page().toString>@messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWaterLvl2Page().toString>@messages("NACE.radio.38")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWasteCollectionRecoveryLvl3Page().toString>@messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteCollection")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWasteCollectionRecoveryLvl3Page().toString>@messages("NACE.radio.38.1")</a>
         </li>
     </ol>
 </nav>
