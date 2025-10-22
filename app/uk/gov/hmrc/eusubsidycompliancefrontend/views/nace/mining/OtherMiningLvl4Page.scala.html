@@ -49,22 +49,22 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-peatExtraction", messages("NACE.mining.Lvl4.peatExtraction"))),
+content = HtmlContent(radioText("sector-label-peatExtraction", messages("NACE.radio.08.92"))),
 value = Some(Sector.peatExtraction.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.peatExtraction.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-saltExtraction", messages("NACE.mining.Lvl4.saltExtraction"))),
+content = HtmlContent(radioText("sector-label-saltExtraction", messages("NACE.radio.08.93"))),
 value = Some(Sector.saltExtraction.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.saltExtraction.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-chemicalMineralsMining", messages("NACE.mining.Lvl4.chemicalMineralsMining"))),
+content = HtmlContent(radioText("sector-label-chemicalMineralsMining", messages("NACE.radio.08.91"))),
 value = Some(Sector.chemicalMineralsMining.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.chemicalMineralsMining.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherNEC", messages("NACE.mining.Lvl4.otherNEC"))),
+content = HtmlContent(radioText("sector-label-otherNEC", messages("NACE.radio.08.99"))),
 value = Some(Sector.otherNEC.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNEC.toString)
 )
@@ -97,24 +97,22 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.UndertakingController.getSector.toString">@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("Other")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.mining")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString">@messages("NACE.Lvl1.mining")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MiningController.loadMiningLvl2Page().toString>@messages("NACE.mining.Lvl2.otherMiningQuarrying")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.MiningController.loadMiningLvl2Page().toString">@messages("NACE.radio.08")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MiningController.loadOtherMiningLvl3Page().toString>@messages("NACE.mining.Lvl3.miningAndQuarryingNEC")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.MiningController.loadOtherMiningLvl3Page().toString">@messages("NACE.radio.08.9")</a>
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.mining")" />
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(

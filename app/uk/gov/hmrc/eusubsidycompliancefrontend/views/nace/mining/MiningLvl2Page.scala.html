@@ -49,22 +49,22 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-petroleumNaturalGasExtraction", messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction"))),
+content = HtmlContent(radioText("sector-label-petroleumNaturalGasExtraction", messages("NACE.radio.06"))),
 value = Some(Sector.petroleumNaturalGasExtraction.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.petroleumNaturalGasExtraction.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-coalAndLigniteMining", messages("NACE.mining.Lvl2.coalAndLigniteMining"))),
+content = HtmlContent(radioText("sector-label-coalAndLigniteMining", messages("NACE.radio.05"))),
 value = Some(Sector.coalAndLigniteMining.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.coalAndLigniteMining.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-metalOresMining", messages("NACE.mining.Lvl2.metalOresMining"))),
+content = HtmlContent(radioText("sector-label-metalOresMining", messages("NACE.radio.07"))),
 value = Some(Sector.metalOresMining.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalOresMining.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherMiningQuarrying", messages("NACE.mining.Lvl2.otherMiningQuarrying"))),
+content = HtmlContent(radioText("sector-label-otherMiningQuarrying", messages("NACE.radio.08"))),
 hint = Some(Hint(
 content = Text(messages("NACE.mining.Lvl2.otherMiningQuarrying.hint"))
 )),
@@ -72,7 +72,7 @@ value = Some(Sector.otherMiningQuarrying.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMiningQuarrying.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-miningSupportServices", messages("NACE.mining.Lvl2.miningSupportServices"))),
+content = HtmlContent(radioText("sector-label-miningSupportServices", messages("NACE.radio.09"))),
 value = Some(Sector.miningSupportServices.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningSupportServices.toString)
 )
@@ -115,8 +115,6 @@ title = Text(messages("common.error.summary.title"))
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.mining")" />
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
