@@ -1965,7 +1965,7 @@ NACE.TransportationAndStorage.Lvl4.IntermediationPostalCourier = Intermediation 
 #accommodationAndFoodService NACE Sector2,3,4
 NACE.accommodationAndFoodService.Lvl1.title = What is your undertaking’s main business activity in accommodation and food services?
 NACE.accommodationAndFoodService.Lvl1.error = Select your undertaking’s main business activity in accommodation and food services
-NACE.accommodationAndFoodService.Lvl2.accommodation = Accommodation
+NACE.radio.55 = Accommodation
 NACE.accommodationAndFoodService.Lvl2.accommodation.title = What is your undertaking’s main business activity in accommodation?
 NACE.accommodationAndFoodService.Lvl2.accommodation.hint = Includes hotels and other short-stay accommodation, camping grounds and related intermediation services.
 NACE.accommodationAndFoodService.Lvl2.accommodation.error = Select your undertaking’s main business activity in accommodation
@@ -1980,7 +1980,7 @@ NACE.accommodationAndFoodService.Lvl4.intermediationAccommodation = Intermediati
 NACE.accommodationAndFoodService.Lvl3.otherAccommodation = Other accommodation
 NACE.accommodationAndFoodService.Lvl4.otherAccommodation = Other accommodation
 
-NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities = Food and beverage service activities
+NACE.radio.56 = Food and beverage service activities
 NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities.title = What is your undertaking’s main business activity in food and beverage services?
 NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities.hint = Includes restaurants and mobile food services, catering, beverage serving and related intermediation services.
 NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities.error = Select your undertaking’s main business activity in food and beverage services
