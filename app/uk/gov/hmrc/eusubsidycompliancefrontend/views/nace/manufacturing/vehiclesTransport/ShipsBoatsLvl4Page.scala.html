@@ -50,17 +50,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-civilians", messages("NACE.Manufacturing.Lvl4.CivilianShips"))),
+            content = HtmlContent(radioText("sector-label-civilians", messages("NACE.radio.30.11"))),
             value = Some(Sector.civilianShips.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.civilianShips.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-military", messages("NACE.Manufacturing.Lvl4.MilitaryShips"))),
+            content = HtmlContent(radioText("sector-label-military", messages("NACE.radio.30.13"))),
             value = Some(Sector.militaryShips.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.militaryShips.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-pleasure", messages("NACE.Manufacturing.Lvl4.PleasureSportingBoats"))),
+            content = HtmlContent(radioText("sector-label-pleasure", messages("NACE.radio.30.12"))),
             value = Some(Sector.pleasureShips.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.pleasureShips.toString)
         )
@@ -105,7 +105,7 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadVehiclesTransportPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Vehicles.Other")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.VehiclesManuTransportController.loadOtherTransportEquipmentLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.ShipsBoats")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.VehiclesManuTransportController.loadOtherTransportEquipmentLvl3Page().toString>@messages("NACE.radio.30.1")</a>
             </li>
         </ol>
     </nav>

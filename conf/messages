@@ -1174,35 +1174,35 @@ NACE.Manufacturing.Lvl4.OtherWoodCorkStrawPlaiting = Other products of wood, cor
 ### Paper products ###
 NACE.Manufacturing.PaperProducts.title = What type of paper products does your undertaking manufacture?
 NACE.Manufacturing.PaperProducts.error = Select the type of paper products your undertaking manufactures
-NACE.Manufacturing.Lvl3.PulpPaperPaperboard = Pulp, paper and paperboard
+NACE.radio.17.1 = Pulp, paper and paperboard
 NACE.Manufacturing.PulpPaperPaperboard.title = What type of pulp, paper or paperboard does your undertaking manufacture?
 NACE.Manufacturing.PulpPaperPaperboard.error = Select the type of pulp, paper or paperboard your undertaking manufactures
-NACE.Manufacturing.Lvl4.Pulp = Pulp
-NACE.Manufacturing.Lvl4.PaperPaperboard = Paper and paperboard
+NACE.radio.17.11 = Pulp
+NACE.radio.17.12 = Paper and paperboard
 
 NACE.Manufacturing.ArticlesPaperPaperboard.title = What type of paper or paperboard products does your undertaking manufacture?
 NACE.Manufacturing.ArticlesPaperPaperboard.error = Select the type of paper or paperboard products your undertaking manufactures
-NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard = Articles of paper and paperboard
+NACE.radio.17.2 = Articles of paper and paperboard
 NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard.hint = Includes corrugated paper, household and sanitary goods, stationery and wallpaper.
-NACE.Manufacturing.Lvl4.CorrugatedPaper = Corrugated paper, paperboard and containers of paper and paperboard
-NACE.Manufacturing.Lvl4.HouseholdSanitaryGoods = Household and sanitary goods and of toilet requisites
-NACE.Manufacturing.Lvl4.PaperStationery = Paper stationery
-NACE.Manufacturing.Lvl4.Wallpaper = Wallpaper
-NACE.Manufacturing.Lvl4.OtherPaperArticles = Other articles of paper and paperboard
+NACE.radio.17.21 = Corrugated paper, paperboard and containers of paper and paperboard
+NACE.radio.17.22 = Household and sanitary goods and of toilet requisites
+NACE.radio.17.23 = Paper stationery
+NACE.radio.17.24 = Wallpaper
+NACE.radio.17.25 = Other articles of paper and paperboard
 
 ### Printed products ###
 NACE.Manufacturing.Printing.title = What is your undertaking’s main business activity in printing?
 NACE.Manufacturing.Printing.error = Select your undertaking’s main business activity in printing
-NACE.Manufacturing.Lvl3.PrintingServices = Printing and service activities related to printing
+NACE.radio.18.1 = Printing and service activities related to printing
 NACE.Manufacturing.Lvl3.PrintingServices.hint = Includes binding, pre-press and pre-media services, other printing and related services.
 NACE.Manufacturing.PrintingServices.title = What type of printing or service activity does your undertaking do?
 NACE.Manufacturing.PrintingServices.error = Select the type of printing or service activity your undertaking does
-NACE.Manufacturing.Lvl4.Newspapers = Printing of newspapers
-NACE.Manufacturing.Lvl4.OtherPrinting = Other printing
-NACE.Manufacturing.Lvl4.PrePressMedia = Pre-press and pre-media services
-NACE.Manufacturing.Lvl4.Binding = Binding and related services
+NACE.radio.18.11 = Printing of newspapers
+NACE.radio.18.12 = Other printing
+NACE.radio.18.13 = Pre-press and pre-media services
+NACE.radio.18.14 = Binding and related services
 
-NACE.Manufacturing.Lvl3.ReproductionRecordedMedia = Reproduction of recorded media
+NACE.radio.18.2 = Reproduction of recorded media
 NACE.Manufacturing.Lvl4.ReproductionRecordedMedia = Reproduction of recorded media
 
 ### Coke and petroleum ###
@@ -1538,48 +1538,48 @@ NACE.Manufacturing.Lvl4.OtherSpecialPurposeMachinery = Other special-purpose mac
 ### Motor vehicles, trailers and parts ###
 NACE.Manufacturing.MotorVehicles.title = What type of motor vehicles, trailers or parts does your undertaking manufacture?
 NACE.Manufacturing.MotorVehicles.error = Select the type of motor vehicles, trailers or parts your undertaking manufactures
-NACE.Manufacturing.Lvl3.MotorVehicles = Motor vehicles
+NACE.radio.29.1 = Motor vehicles
 NACE.Manufacturing.Lvl4.MotorVehicles = Manufacture of motor vehicles
 
-NACE.Manufacturing.Lvl3.BodiesTrailers = Bodies and coachwork for motor vehicles; trailers and semi-trailers
+NACE.radio.29.2 = Bodies and coachwork for motor vehicles; trailers and semi-trailers
 NACE.Manufacturing.Lvl4.BodiesTrailers = Manufacture of bodies and coachwork for motor vehicles; manufacture of trailers and semi-trailers
 
-NACE.Manufacturing.Lvl3.MotorVehiclePartsAccessories = Motor vehicle parts and accessories
+NACE.radio.29.3 = Motor vehicle parts and accessories
 NACE.Manufacturing.MotorVehiclePartsAccessories.title = What type of motor vehicle parts and accessories does your undertaking manufacture?
 NACE.Manufacturing.MotorVehiclePartsAccessories.error = Select the type of motor vehicle parts and accessories your undertaking manufactures
-NACE.Manufacturing.Lvl4.ElectricalElectronicEquipmentVehicles = Electrical and electronic equipment for motor vehicles
-NACE.Manufacturing.Lvl4.OtherPartsAccessoriesVehicles = Other parts and accessories for motor vehicles
+NACE.radio.29.31 = Electrical and electronic equipment for motor vehicles
+NACE.radio.29.32 = Other parts and accessories for motor vehicles
 
 ### Other transport equipment ###
 NACE.Manufacturing.OtherTransportEquipment.title = What type of transport equipment does your undertaking manufacture?
 NACE.Manufacturing.OtherTransportEquipment.error = Select the type of transport equipment your undertaking manufactures
 
-NACE.Manufacturing.Lvl3.ShipsBoats = Ships and boats
+NACE.radio.30.1 = Ships and boats
 NACE.Manufacturing.ShipsBoats.title = What type of ships and boats does your undertaking build?
 NACE.Manufacturing.ShipsBoats.error = Select the type of ships and boats your undertaking builds
-NACE.Manufacturing.Lvl4.CivilianShips = Civilian ships and floating structures
-NACE.Manufacturing.Lvl4.PleasureSportingBoats = Pleasure and sporting boats
-NACE.Manufacturing.Lvl4.MilitaryShips = Military ships and vessels
+NACE.radio.30.11 = Civilian ships and floating structures
+NACE.radio.30.12 = Pleasure and sporting boats
+NACE.radio.30.13 = Military ships and vessels
 
-NACE.Manufacturing.Lvl3.RailwayLocomotives = Railway locomotives and rolling stock
+NACE.radio.30.2 = Railway locomotives and rolling stock
 NACE.Manufacturing.Lvl4.RailwayLocomotives = Manufacture of railway locomotives and rolling stock
 
-NACE.Manufacturing.Lvl3.AirSpacecraft = Aircraft, spacecraft and related machinery
+NACE.radio.30.3 = Aircraft, spacecraft and related machinery
 NACE.Manufacturing.AirSpacecraft.title = What type of aircraft, spacecraft and related machinery does your undertaking manufacture?
 NACE.Manufacturing.AirSpacecraft.error = Select the type of aircraft, spacecraft and related machinery your undertaking manufactures
-NACE.Manufacturing.Lvl4.CivilianAirSpacecraft = Civilian aircraft, spacecraft and related machinery
-NACE.Manufacturing.Lvl4.MilitaryAirSpacecraft = Military aircraft, spacecraft and related machinery
+NACE.radio.30.31 = Civilian aircraft, spacecraft and related machinery
+NACE.radio.30.32 = Military aircraft, spacecraft and related machinery
 
-NACE.Manufacturing.Lvl3.MilitaryVehicles = Military fighting vehicles
+NACE.radio.30.4 = Military fighting vehicles
 NACE.Manufacturing.Lvl4.MilitaryVehicles = Manufacture of military fighting vehicles
 
-NACE.Manufacturing.Lvl3.OtherTransportEquipment = Other transport equipment
+NACE.radio.30.9 = Other transport equipment
 NACE.Manufacturing.Lvl3.OtherTransportEquipment.hint = Includes bicycles, motorcycles and invalid carriages (like mobility scooters).
 NACE.Manufacturing.OtherTransportEquipment.2.title = What type of other transport equipment does your undertaking manufacture?
 NACE.Manufacturing.OtherTransportEquipment.2.error = Select the type of other transport equipment your undertaking manufactures
-NACE.Manufacturing.Lvl4.Motorcycles = Motorcycles
-NACE.Manufacturing.Lvl4.BicyclesInvalidCarriages = Bicycles and invalid carriages
-NACE.Manufacturing.Lvl4.OtherTransport = Another type of transport equipment
+NACE.radio.30.91 = Motorcycles
+NACE.radio.30.92 = Bicycles and invalid carriages
+NACE.radio.30.99 = Another type of transport equipment
 
 ### Furniture ###
 NACE.Manufacturing.Lvl3.Furniture = Manufacture of furniture

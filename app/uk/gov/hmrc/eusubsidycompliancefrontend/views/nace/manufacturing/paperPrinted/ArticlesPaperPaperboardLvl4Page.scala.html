@@ -50,27 +50,27 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-corrugated", messages("NACE.Manufacturing.Lvl4.CorrugatedPaper"))),
+            content = HtmlContent(radioText("sector-label-corrugated", messages("NACE.radio.17.21"))),
             value = Some(Sector.corrugatedPaperBoardAndContainers.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.corrugatedPaperBoardAndContainers.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-sanitary", messages("NACE.Manufacturing.Lvl4.HouseholdSanitaryGoods"))),
+            content = HtmlContent(radioText("sector-label-sanitary", messages("NACE.radio.17.22"))),
             value = Some(Sector.sanitaryGoods.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.sanitaryGoods.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-stationary", messages("NACE.Manufacturing.Lvl4.PaperStationery"))),
+            content = HtmlContent(radioText("sector-label-stationary", messages("NACE.radio.17.23"))),
             value = Some(Sector.paperStationery.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.paperStationery.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-wallpaper", messages("NACE.Manufacturing.Lvl4.Wallpaper"))),
+            content = HtmlContent(radioText("sector-label-wallpaper", messages("NACE.radio.17.24"))),
             value = Some(Sector.wallpaper.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.wallpaper.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherPaperArticles"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.17.25"))),
             value = Some(Sector.otherPaper.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPaper.toString)
         )
@@ -116,7 +116,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Paper")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PaperPrintedController.loadPaperLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PaperPrintedController.loadPaperLvl3Page().toString>@messages("NACE.radio.17.2")</a>
         </li>
     </ol>
 </nav>

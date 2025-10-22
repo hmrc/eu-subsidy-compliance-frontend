@@ -50,22 +50,22 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-binding", messages("NACE.Manufacturing.Lvl4.Binding"))),
+            content = HtmlContent(radioText("sector-label-binding", messages("NACE.radio.18.14"))),
             value = Some(Sector.bindingServices.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.bindingServices.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-pre-press", messages("NACE.Manufacturing.Lvl4.PrePressMedia"))),
+            content = HtmlContent(radioText("sector-label-pre-press", messages("NACE.radio.18.13"))),
             value = Some(Sector.preMediaServices.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.preMediaServices.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-newspapers", messages("NACE.Manufacturing.Lvl4.Newspapers"))),
+            content = HtmlContent(radioText("sector-label-newspapers", messages("NACE.radio.18.11"))),
             value = Some(Sector.newspapersPrinting.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.newspapersPrinting.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-media", messages("NACE.Manufacturing.Lvl4.OtherPrinting"))),
+            content = HtmlContent(radioText("sector-label-media", messages("NACE.radio.18.12"))),
             value = Some(Sector.otherPrinting.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPrinting.toString)
         )
@@ -110,7 +110,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Printed")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PaperPrintedController.loadPrintedLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.PrintingServices")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PaperPrintedController.loadPrintedLvl3Page().toString>@messages("NACE.radio.18.1")</a>
         </li>
     </ol>
 </nav>
