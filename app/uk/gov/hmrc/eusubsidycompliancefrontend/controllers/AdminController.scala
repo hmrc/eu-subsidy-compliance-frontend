@@ -342,7 +342,8 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") IntermediationServicesLvl4Form else IntermediationServicesLvl4Form.fill(FormValues(sector))
+      val form =
+        if (sector == "") IntermediationServicesLvl4Form else IntermediationServicesLvl4Form.fill(FormValues(sector))
       Ok(IntermediationServicesLvl4Page(form, journey.mode)).toFuture
     }
   }
@@ -483,7 +484,8 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") OtherBusinessSupportLvl4Form else OtherBusinessSupportLvl4Form.fill(FormValues(sector))
+      val form =
+        if (sector == "") OtherBusinessSupportLvl4Form else OtherBusinessSupportLvl4Form.fill(FormValues(sector))
       Ok(OtherBusinessSupportLvl4Page(form, journey.mode)).toFuture
     }
   }

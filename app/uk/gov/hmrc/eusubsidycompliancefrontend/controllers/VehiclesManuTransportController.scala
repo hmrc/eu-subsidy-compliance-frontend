@@ -90,7 +90,7 @@ class VehiclesManuTransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-    Ok(MotorVehiclesLvl3Page(MotorVehiclesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(MotorVehiclesLvl3Page(MotorVehiclesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -131,7 +131,9 @@ class VehiclesManuTransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-    Ok(OtherTransportEquipmentLvl3Page(OtherTransportEquipmentLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        OtherTransportEquipmentLvl3Page(OtherTransportEquipmentLvl3Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -172,7 +174,9 @@ class VehiclesManuTransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(OtherTransportEquipmentLvl4Page(OtherTransportEquipmentLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        OtherTransportEquipmentLvl4Page(OtherTransportEquipmentLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -196,7 +200,7 @@ class VehiclesManuTransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(PartsAccessoriesLvl4Page(PartsAccessoriesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(PartsAccessoriesLvl4Page(PartsAccessoriesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -220,7 +224,7 @@ class VehiclesManuTransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(ShipsBoatsLvl4Page(ShipsBoatsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(ShipsBoatsLvl4Page(ShipsBoatsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 

@@ -32,18 +32,18 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4Catalogue
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class NACECheckDetailsController @Inject()(
-                                            mcc: MessagesControllerComponents,
-                                            store: Store,
-                                            actionBuilders: ActionBuilders,
-                                            naceCYAView: ConfirmDetailsPage,
-                                            navigator: Navigator
-                                          )(implicit ec: ExecutionContext, appConfig: AppConfig) extends BaseController(mcc) {
+class NACECheckDetailsController @Inject() (
+  mcc: MessagesControllerComponents,
+  store: Store,
+  actionBuilders: ActionBuilders,
+  naceCYAView: ConfirmDetailsPage,
+  navigator: Navigator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends BaseController(mcc) {
 
   import actionBuilders._
 
@@ -90,14 +90,14 @@ class NACECheckDetailsController @Inject()(
 
   def deriveLevel1Code(level2Code: String): String = level2Code match {
     case "01" | "02" | "03" => "A"
-    case "05"|"06"|"07"|"08"|"09" => "B"
+    case "05" | "06" | "07" | "08" | "09" => "B"
     case "35" => "D"
-    case "36"| "37" |"38" |"39" => "E"
-    case "41"| "42" |"43" => "F"
+    case "36" | "37" | "38" | "39" => "E"
+    case "41" | "42" | "43" => "F"
     case "46" | "47" => "G"
-    case "49"| "50" |"51" |"52" |"53" => "H"
-    case "55"| "56" => "I"
-    case "58"| "59"| "60" => "J"
+    case "49" | "50" | "51" | "52" | "53" => "H"
+    case "55" | "56" => "I"
+    case "58" | "59" | "60" => "J"
     case "61" | "62" | "63" => "K"
     case "64" | "65" | "66" => "L"
     case "68" => "M"
@@ -106,9 +106,9 @@ class NACECheckDetailsController @Inject()(
     case "84" => "P"
     case "85" => "Q"
     case "86" | "87" | "88" => "R"
-    case "90"| "91"| "92" | "93" => "S"
-    case "94" | "95" |"96" => "T"
-    case "97"| "98" => "U"
+    case "90" | "91" | "92" | "93" => "S"
+    case "94" | "95" | "96" => "T"
+    case "97" | "98" => "U"
     case "99" => "V"
     case _ => "C"
   }
@@ -152,7 +152,7 @@ class NACECheckDetailsController @Inject()(
 
     val showLevel2 = {
       naceLevel1Code match {
-        case "D" | "A"| "Q" | "M" => false
+        case "D" | "A" | "Q" | "M" => false
         case _ => true
       }
     }
@@ -214,8 +214,8 @@ class NACECheckDetailsController @Inject()(
   }
 
   private def buildViewModelFromSelection(
-                                           selection: NaceSelection
-                                         )(implicit messages: Messages): NaceCheckDetailsViewModel = {
+    selection: NaceSelection
+  )(implicit messages: Messages): NaceCheckDetailsViewModel = {
 
     val naceLevel4Code = selection.code
     val naceLevel3Code = if (naceLevel4Code.length >= 4) naceLevel4Code.take(4) else naceLevel4Code
@@ -289,7 +289,7 @@ class NACECheckDetailsController @Inject()(
     )
   }
 
-  def getCheckDetails() : Action[AnyContent] = enrolled.async { implicit request =>
+  def getCheckDetails(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val messages: Messages = mcc.messagesApi.preferred(request)
 
@@ -309,7 +309,8 @@ class NACECheckDetailsController @Inject()(
             buildViewModel(usersLastAnswer)(messages)
         }
 
-        val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(usersLastAnswer)(messages)
+        val naceLevel4Notes = NaceLevel4Catalogue
+          .fromMessages(usersLastAnswer)(messages)
           .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $usersLastAnswer"))
 
         println(
@@ -359,10 +360,13 @@ class NACECheckDetailsController @Inject()(
                     buildViewModel(naceLevel4Code)(messages)
                 }
 
-                val naceLevel4Notes = NaceLevel4Catalogue.fromMessages(naceLevel4Code)(messages)
+                val naceLevel4Notes = NaceLevel4Catalogue
+                  .fromMessages(naceLevel4Code)(messages)
                   .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $naceLevel4Code"))
 
-                BadRequest(naceCYAView(formWithErrors, viewModel, naceLevel4Notes)(request, messages, appConfig)).toFuture
+                BadRequest(
+                  naceCYAView(formWithErrors, viewModel, naceLevel4Notes)(request, messages, appConfig)
+                ).toFuture
               }
             case None =>
               Redirect(routes.UndertakingController.getSector).toFuture

@@ -84,7 +84,12 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(ComputerInfrastructureDataHostingLvl3Page(ComputerInfrastructureDataHostingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        ComputerInfrastructureDataHostingLvl3Page(
+          ComputerInfrastructureDataHostingLvl3Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
     }
   }
 
@@ -125,7 +130,12 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(ComputerProgrammingConsultancyLvl3Page(ComputerProgrammingConsultancyLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        ComputerProgrammingConsultancyLvl3Page(
+          ComputerProgrammingConsultancyLvl3Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
     }
   }
 
@@ -361,7 +371,12 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(NewsOtherContentDistributionLvl4Page(NewsOtherContentDistributionLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        NewsOtherContentDistributionLvl4Page(
+          NewsOtherContentDistributionLvl4Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
     }
   }
 
@@ -385,7 +400,12 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(ProgrammingBroadcastingDistributionLvl3Page(ProgrammingBroadcastingDistributionLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        ProgrammingBroadcastingDistributionLvl3Page(
+          ProgrammingBroadcastingDistributionLvl3Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
     }
   }
 

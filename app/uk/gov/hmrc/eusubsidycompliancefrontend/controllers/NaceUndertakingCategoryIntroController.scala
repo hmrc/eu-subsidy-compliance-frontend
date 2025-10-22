@@ -31,7 +31,7 @@ class NaceUndertakingCategoryIntroController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
   NaceUndertakingCategoryIntroPage: NaceUndertakingCategoryIntroPage,
-  val store: Store,
+  val store: Store
 )(implicit
   val appConfig: AppConfig
 ) extends BaseController(mcc) {
@@ -44,7 +44,6 @@ class NaceUndertakingCategoryIntroController @Inject() (
   }
 
   def continue: Action[AnyContent] = enrolled.async { implicit request =>
-
     implicit val eori: EORI = request.eoriNumber
     store.put[UndertakingJourney](UndertakingJourney())
     store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))

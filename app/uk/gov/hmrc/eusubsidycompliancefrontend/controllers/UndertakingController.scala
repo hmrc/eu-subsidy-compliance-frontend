@@ -165,8 +165,7 @@ class UndertakingController @Inject() (
             journey.mode
           )
         ).toFuture
-      }
-      else {
+      } else {
         getSectorPage()
       }
     }

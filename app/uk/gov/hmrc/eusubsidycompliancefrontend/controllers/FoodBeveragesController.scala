@@ -74,7 +74,8 @@ class FoodBeveragesController @Inject() (
         case None => ""
       }
       Ok(foodLvl3Page(foodLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitFoodLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -115,7 +116,8 @@ class FoodBeveragesController @Inject() (
         case None => ""
       }
       Ok(animalFeedsLvl4Page(animalFeedsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitAnimalFeedsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -139,7 +141,8 @@ class FoodBeveragesController @Inject() (
 
           val sectorEnum = Sector.withName(form.value)
 
-          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -153,7 +156,8 @@ class FoodBeveragesController @Inject() (
         case None => ""
       }
       Ok(bakeryAndFarinaceousLvl4Page(bakeryAndFarinaceousLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitBakeryAndFarinaceousLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -177,7 +181,8 @@ class FoodBeveragesController @Inject() (
 
           val sectorEnum = Sector.withName(form.value)
 
-          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -191,7 +196,8 @@ class FoodBeveragesController @Inject() (
         case None => ""
       }
       Ok(dairyProductsLvl4Page(dairyProductsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitDairyProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -215,7 +221,8 @@ class FoodBeveragesController @Inject() (
 
           val sectorEnum = Sector.withName(form.value)
 
-          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -229,7 +236,8 @@ class FoodBeveragesController @Inject() (
         case None => ""
       }
       Ok(fruitAndVegLvl4Page(fruitAndVegLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitFruitAndVegLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -253,13 +261,12 @@ class FoodBeveragesController @Inject() (
 
           val sectorEnum = Sector.withName(form.value)
 
-          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
-
-
 
   def loadGrainAndStarchLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -269,7 +276,8 @@ class FoodBeveragesController @Inject() (
         case None => ""
       }
       Ok(grainAndStarchLvl4Page(grainAndStarchLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitGrainAndStarchLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -293,7 +301,8 @@ class FoodBeveragesController @Inject() (
 
           val sectorEnum = Sector.withName(form.value)
 
-          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -307,7 +316,8 @@ class FoodBeveragesController @Inject() (
         case None => ""
       }
       Ok(meatLvl4Page(meatLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitMeatLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -331,7 +341,8 @@ class FoodBeveragesController @Inject() (
 
           val sectorEnum = Sector.withName(form.value)
 
-          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -345,7 +356,8 @@ class FoodBeveragesController @Inject() (
         case None => ""
       }
       Ok(oilsAndFatsLvl4Page(oilsAndFatsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitOilsAndFatsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -369,7 +381,8 @@ class FoodBeveragesController @Inject() (
 
           val sectorEnum = Sector.withName(form.value)
 
-          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -384,7 +397,8 @@ class FoodBeveragesController @Inject() (
         case None => ""
       }
       Ok(otherFoodProductsLvl4Page(otherFoodProductsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitOtherFoodProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -408,7 +422,8 @@ class FoodBeveragesController @Inject() (
 
           val sectorEnum = Sector.withName(form.value)
 
-          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -422,7 +437,8 @@ class FoodBeveragesController @Inject() (
         case None => ""
       }
       Ok(beveragesLvl4Page(beveragesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitBeveragesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -445,7 +461,8 @@ class FoodBeveragesController @Inject() (
 
           val sectorEnum = Sector.withName(form.value)
 
-          store.update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )

@@ -78,7 +78,8 @@ class ConstructionController @Inject() (
         case None => ""
       }
       Ok(constructionLvl2Page(constructionLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitConstructionLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -119,7 +120,8 @@ class ConstructionController @Inject() (
         case None => ""
       }
       Ok(civilEngineeringLvl3Page(civilEngineeringLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitCivilEngineeringLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -159,8 +161,11 @@ class ConstructionController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(specialisedConstructionLvl3Page(specialisedConstructionLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        specialisedConstructionLvl3Page(specialisedConstructionLvl3Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
+    }
+  }
 
   def submitSpecialisedConstructionLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -201,7 +206,8 @@ class ConstructionController @Inject() (
         case None => ""
       }
       Ok(buildingCompletionLvl4Page(buildingCompletionLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitBuildingCompletionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -224,8 +230,11 @@ class ConstructionController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(constructionRoadsRailwaysLvl4Page(constructionRoadsRailwaysLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        constructionRoadsRailwaysLvl4Page(constructionRoadsRailwaysLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
+    }
+  }
 
   def submitConstructionRoadsRailwaysLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -248,8 +257,11 @@ class ConstructionController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(constructionUtilityProjectsLvl4Page(constructionUtilityProjectsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        constructionUtilityProjectsLvl4Page(constructionUtilityProjectsLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
+    }
+  }
 
   def submitConstructionUtilityProjectsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -272,8 +284,11 @@ class ConstructionController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(demolitionSitePreparationLvl4Page(demolitionSitePreparationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        demolitionSitePreparationLvl4Page(demolitionSitePreparationLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
+    }
+  }
 
   def submitDemolitionSitePreparationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -296,8 +311,14 @@ class ConstructionController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(electricalPlumbingConstructionLvl4Page(electricalPlumbingConstructionLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        electricalPlumbingConstructionLvl4Page(
+          electricalPlumbingConstructionLvl4Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
+    }
+  }
 
   def submitElectricalPlumbingConstructionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -320,8 +341,14 @@ class ConstructionController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(otherCivilEngineeringProjectsLvl4Page(otherCivilEngineeringProjectsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        otherCivilEngineeringProjectsLvl4Page(
+          otherCivilEngineeringProjectsLvl4Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
+    }
+  }
 
   def submitOtherCivilEngineeringProjectsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -344,8 +371,14 @@ class ConstructionController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(otherSpecialisedConstructionLvl4Page(otherSpecialisedConstructionLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        otherSpecialisedConstructionLvl4Page(
+          otherSpecialisedConstructionLvl4Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
+    }
+  }
 
   def submitOtherSpecialisedConstructionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -368,8 +401,14 @@ class ConstructionController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(specialisedConstructionActivitiesLvl4Page(specialisedConstructionActivitiesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        specialisedConstructionActivitiesLvl4Page(
+          specialisedConstructionActivitiesLvl4Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
+    }
+  }
 
   def submitSpecialisedConstructionActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

@@ -307,7 +307,9 @@ class NonMetallicOtherController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(otherPorcelainAndCeramicsLvl4Page(otherPorcelainAndCeramicsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        otherPorcelainAndCeramicsLvl4Page(otherPorcelainAndCeramicsLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
