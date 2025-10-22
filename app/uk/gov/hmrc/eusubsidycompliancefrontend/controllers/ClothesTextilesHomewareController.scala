@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NaceSelection}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -34,24 +34,27 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ClothesTextilesHomewareController @Inject() (
-  mcc: MessagesControllerComponents,
-  actionBuilders: ActionBuilders,
-  val store: Store,
-  navigator: Navigator,
-  clothingLvl3Page: ClothingLvl3Page,
-  leatherLvl3Page: LeatherLvl3Page,
-  rubberPlasticLvl3Page: RubberPlasticLvl3Page,
-  textilesLvl3Page: TextilesLvl3Page,
-  woodCorkStrawLvl3Page: WoodCorkStrawLvl3Page,
-  manufactureOfTextilesLvl4Page: ManufactureOfTextilesLvl4Page,
-  otherClothingLvl4Page: OtherClothingLvl4Page,
-  plasticLvl4Page: PlasticLvl4Page,
-  rubberLvl4Page: RubberLvl4Page,
-  sawmillingWoodworkLvl4Page: SawmillingWoodworkLvl4Page,
-  tanningDressingDyeingLvl4Page: TanningDressingDyeingLvl4Page,
-  woodCorkStrawPlaitingLvl4Page: WoodCorkStrawPlaitingLvl4Page
-)(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
-    extends BaseController(mcc) {
+                                                    mcc: MessagesControllerComponents,
+                                                    actionBuilders: ActionBuilders,
+                                                    val store: Store,
+                                                    navigator: Navigator,
+                                                    clothingLvl3Page: ClothingLvl3Page,
+                                                    leatherLvl3Page: LeatherLvl3Page,
+                                                    rubberPlasticLvl3Page: RubberPlasticLvl3Page,
+                                                    textilesLvl3Page: TextilesLvl3Page,
+                                                    woodCorkStrawLvl3Page: WoodCorkStrawLvl3Page,
+                                                    manufactureOfTextilesLvl4Page: ManufactureOfTextilesLvl4Page,
+                                                    otherClothingLvl4Page: OtherClothingLvl4Page,
+                                                    plasticLvl4Page: PlasticLvl4Page,
+                                                    rubberLvl4Page: RubberLvl4Page,
+                                                    sawmillingWoodworkLvl4Page: SawmillingWoodworkLvl4Page,
+                                                    tanningDressingDyeingLvl4Page: TanningDressingDyeingLvl4Page,
+                                                    woodCorkStrawPlaitingLvl4Page: WoodCorkStrawPlaitingLvl4Page
+                                                  )(implicit
+                                                    val appConfig: AppConfig,
+                                                    val executionContext: ExecutionContext
+                                                  ) extends BaseController(mcc) {
+
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
 
@@ -68,6 +71,7 @@ class ClothesTextilesHomewareController @Inject() (
   private val tanningDressingDyeingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("tanning4")
   private val woodCorkStrawPlaitingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("strawPlaiting4")
 
+  // ClothingLvl3Page
   def loadClothingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -81,7 +85,6 @@ class ClothesTextilesHomewareController @Inject() (
 
   def submitClothingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     clothingLvl3Form
       .bindFromRequest()
       .fold(
@@ -98,56 +101,19 @@ class ClothesTextilesHomewareController @Inject() (
               case None => ""
             }
 
-            val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-            val naceSelectionOpt = if (form.value == "14.10") {
-              Some(
-                NaceSelection(
-                  code = "14.10",
-                  sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-                  level1Display = formData.get("level1Display").flatMap(_.headOption),
-                  level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-                  level2Display = formData.get("level2Display").flatMap(_.headOption),
-                  level3Display = formData.get("level3Display_14.10").flatMap(_.headOption),
-                  level4Display = formData.get("level4Display_14.10").flatMap(_.headOption).getOrElse("")
-                )
-              )
-            } else {
-              None
-            }
-
-            if (previousAnswer.equals(form.value) && journey.isNaceCYA) {
-              naceSelectionOpt match {
-                case Some(selection) =>
-                  store
-                    .update[UndertakingJourney](_.setNaceSelection(selection))
-                    .flatMap(_ => Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture)
-                case None =>
-                  Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
-              }
-            } else {
-              naceSelectionOpt match {
-                case Some(selection) =>
-                  store
-                    .update[UndertakingJourney] { j =>
-                      j.setNaceSelection(selection)
-                        .setUndertakingSector(Sector.withName(form.value).id)
-                        .copy(isNaceCYA = false)
-                    }
-                    .flatMap(_ => Redirect(navigator.nextPage(form.value, journey.mode)).toFuture)
-                case None =>
-                  store
-                    .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-                    .flatMap(_ => store.update[UndertakingJourney](_.copy(isNaceCYA = false)))
-                    .flatMap(_ => Redirect(navigator.nextPage(form.value, journey.mode)).toFuture)
-              }
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
       )
   }
 
-  //leatherLvl3Page
+  // LeatherLvl3Page
   def loadLeatherLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -161,7 +127,6 @@ class ClothesTextilesHomewareController @Inject() (
 
   def submitLeatherLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     leatherLvl3Form
       .bindFromRequest()
       .fold(
@@ -178,57 +143,19 @@ class ClothesTextilesHomewareController @Inject() (
               case None => ""
             }
 
-            val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-            // Check if this is Footwear (auto-Level 4: 15.20)
-            val naceSelectionOpt = if (form.value == "15.20") {
-              Some(
-                NaceSelection(
-                  code = "15.20",
-                  sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-                  level1Display = formData.get("level1Display").flatMap(_.headOption),
-                  level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-                  level2Display = formData.get("level2Display").flatMap(_.headOption),
-                  level3Display = formData.get("level3Display_15.20").flatMap(_.headOption),
-                  level4Display = formData.get("level4Display_15.20").flatMap(_.headOption).getOrElse("")
-                )
-              )
-            } else {
-              None
-            }
-
-            if (previousAnswer.equals(form.value) && journey.isNaceCYA) {
-              naceSelectionOpt match {
-                case Some(selection) =>
-                  store
-                    .update[UndertakingJourney](_.setNaceSelection(selection))
-                    .flatMap(_ => Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture)
-                case None =>
-                  Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
-              }
-            } else {
-              naceSelectionOpt match {
-                case Some(selection) =>
-                  store
-                    .update[UndertakingJourney] { j =>
-                      j.setNaceSelection(selection)
-                        .setUndertakingSector(Sector.withName(form.value).id)
-                        .copy(isNaceCYA = false)
-                    }
-                    .flatMap(_ => Redirect(navigator.nextPage(form.value, journey.mode)).toFuture)
-                case None =>
-                  store
-                    .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-                    .flatMap(_ => store.update[UndertakingJourney](_.copy(isNaceCYA = false)))
-                    .flatMap(_ => Redirect(navigator.nextPage(form.value, journey.mode)).toFuture)
-              }
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
       )
   }
 
-  //RubberPlasticLvl3Page
+  // RubberPlasticLvl3Page
   def loadRubberPlasticLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -270,6 +197,7 @@ class ClothesTextilesHomewareController @Inject() (
       )
   }
 
+  // TextilesLvl3Page
   def loadTextilesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -283,7 +211,6 @@ class ClothesTextilesHomewareController @Inject() (
 
   def submitTextilesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     textilesLvl3Form
       .bindFromRequest()
       .fold(
@@ -300,58 +227,19 @@ class ClothesTextilesHomewareController @Inject() (
               case None => ""
             }
 
-            val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-            val isAutoLevel4 = form.value == "13.10" || form.value == "13.20" || form.value == "13.30"
-
-            val naceSelectionOpt = if (isAutoLevel4) {
-              Some(
-                NaceSelection(
-                  code = form.value,
-                  sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-                  level1Display = formData.get("level1Display").flatMap(_.headOption),
-                  level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-                  level2Display = formData.get("level2Display").flatMap(_.headOption),
-                  level3Display = formData.get(s"level3Display_${form.value}").flatMap(_.headOption),
-                  level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-                )
-              )
-            } else {
-              None
-            }
-
-            if (previousAnswer.equals(form.value) && journey.isNaceCYA) {
-              naceSelectionOpt match {
-                case Some(selection) =>
-                  store
-                    .update[UndertakingJourney](_.setNaceSelection(selection))
-                    .flatMap(_ => Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture)
-                case None =>
-                  Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
-              }
-            } else {
-              naceSelectionOpt match {
-                case Some(selection) =>
-                  store
-                    .update[UndertakingJourney] { j =>
-                      j.setNaceSelection(selection)
-                        .setUndertakingSector(Sector.withName(form.value).id)
-                        .copy(isNaceCYA = false)
-                    }
-                    .flatMap(_ => Redirect(navigator.nextPage(form.value, journey.mode)).toFuture)
-                case None =>
-                  store
-                    .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-                    .flatMap(_ => store.update[UndertakingJourney](_.copy(isNaceCYA = false)))
-                    .flatMap(_ => Redirect(navigator.nextPage(form.value, journey.mode)).toFuture)
-              }
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
         }
       )
   }
 
-  //woodCorkStrawLvl3Page
+  // WoodCorkStrawLvl3Page
   def loadWoodCorkStrawLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -393,7 +281,7 @@ class ClothesTextilesHomewareController @Inject() (
       )
   }
 
-  //manufactureOfTextilesLvl4Page
+  // ManufactureOfTextilesLvl4Page
   def loadManufactureOfTextilesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -401,40 +289,26 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(manufactureOfTextilesLvl4Page(manufactureOfTextilesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") manufactureOfTextilesLvl4Form else manufactureOfTextilesLvl4Form.fill(FormValues(sector))
+      Ok(manufactureOfTextilesLvl4Page(form, journey.mode)).toFuture
     }
   }
 
   def submitManufactureOfTextilesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     manufactureOfTextilesLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(manufactureOfTextilesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level1Display = formData.get("level1Display").flatMap(_.headOption),
-            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-            level2Display = formData.get("level2Display").flatMap(_.headOption),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
-  //otherClothingLvl4Page
+  // OtherClothingLvl4Page
   def loadOtherClothingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -442,40 +316,26 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(otherClothingLvl4Page(otherClothingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") otherClothingLvl4Form else otherClothingLvl4Form.fill(FormValues(sector))
+      Ok(otherClothingLvl4Page(form, journey.mode)).toFuture
     }
   }
 
   def submitOtherClothingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     otherClothingLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(otherClothingLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level1Display = formData.get("level1Display").flatMap(_.headOption),
-            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-            level2Display = formData.get("level2Display").flatMap(_.headOption),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
-  //plasticLvl4Page
+  // PlasticLvl4Page
   def loadPlasticLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -483,40 +343,26 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(plasticLvl4Page(plasticLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") plasticLvl4Form else plasticLvl4Form.fill(FormValues(sector))
+      Ok(plasticLvl4Page(form, journey.mode)).toFuture
     }
   }
 
   def submitPlasticLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     plasticLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(plasticLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level1Display = formData.get("level1Display").flatMap(_.headOption),
-            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-            level2Display = formData.get("level2Display").flatMap(_.headOption),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
-  //rubberLvl4Page
+  // RubberLvl4Page
   def loadRubberLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -524,40 +370,26 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(rubberLvl4Page(rubberLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") rubberLvl4Form else rubberLvl4Form.fill(FormValues(sector))
+      Ok(rubberLvl4Page(form, journey.mode)).toFuture
     }
   }
 
   def submitRubberLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     rubberLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(rubberLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level1Display = formData.get("level1Display").flatMap(_.headOption),
-            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-            level2Display = formData.get("level2Display").flatMap(_.headOption),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
-  //sawmillingWoodworkLvl4Page
+  // SawmillingWoodworkLvl4Page
   def loadSawmillingWoodworkLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -565,40 +397,26 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(sawmillingWoodworkLvl4Page(sawmillingWoodworkLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") sawmillingWoodworkLvl4Form else sawmillingWoodworkLvl4Form.fill(FormValues(sector))
+      Ok(sawmillingWoodworkLvl4Page(form, journey.mode)).toFuture
     }
   }
 
   def submitSawmillingWoodworkLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     sawmillingWoodworkLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(sawmillingWoodworkLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level1Display = formData.get("level1Display").flatMap(_.headOption),
-            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-            level2Display = formData.get("level2Display").flatMap(_.headOption),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
-  //tanningDressingDyeingLvl4Page
+  // TanningDressingDyeingLvl4Page
   def loadTanningDressingDyeingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -606,40 +424,26 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(tanningDressingDyeingLvl4Page(tanningDressingDyeingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") tanningDressingDyeingLvl4Form else tanningDressingDyeingLvl4Form.fill(FormValues(sector))
+      Ok(tanningDressingDyeingLvl4Page(form, journey.mode)).toFuture
     }
   }
 
   def submitTanningDressingDyeingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     tanningDressingDyeingLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(tanningDressingDyeingLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level1Display = formData.get("level1Display").flatMap(_.headOption),
-            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-            level2Display = formData.get("level2Display").flatMap(_.headOption),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
-  //woodCorkStrawPlaitingLvl4Page
+  // WoodCorkStrawPlaitingLvl4Page
   def loadWoodCorkStrawPlaitingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -647,37 +451,22 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(woodCorkStrawPlaitingLvl4Page(woodCorkStrawPlaitingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") woodCorkStrawPlaitingLvl4Form else woodCorkStrawPlaitingLvl4Form.fill(FormValues(sector))
+      Ok(woodCorkStrawPlaitingLvl4Page(form, journey.mode)).toFuture
     }
   }
 
   def submitWoodCorkStrawPlaitingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     woodCorkStrawPlaitingLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(woodCorkStrawPlaitingLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level1Display = formData.get("level1Display").flatMap(_.headOption),
-            level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-            level2Display = formData.get("level2Display").flatMap(_.headOption),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
-
 }
