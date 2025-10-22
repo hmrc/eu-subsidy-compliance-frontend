@@ -50,22 +50,22 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-videoProductionDistribution", messages("NACE.publishingBroadcasting.Lvl4.videoProductionDistribution"))),
+            content = HtmlContent(radioText("sector-label-videoProductionDistribution", messages("NACE.radio.59.13"))),
             value = Some(Sector.videoProductionDistribution.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.videoProductionDistribution.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-videoPostProduction", messages("NACE.publishingBroadcasting.Lvl4.videoPostProduction"))),
+            content = HtmlContent(radioText("sector-label-videoPostProduction", messages("NACE.radio.59.12"))),
             value = Some(Sector.videoPostProduction.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.videoPostProduction.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-videoProduction", messages("NACE.publishingBroadcasting.Lvl4.videoProduction"))),
+            content = HtmlContent(radioText("sector-label-videoProduction", messages("NACE.radio.59.11"))),
             value = Some(Sector.videoProduction.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.videoProduction.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-projection", messages("NACE.publishingBroadcasting.Lvl4.projection"))),
+            content = HtmlContent(radioText("sector-label-projection", messages("NACE.radio.59.14"))),
             value = Some(Sector.projection.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.projection.toString)
         )
@@ -103,10 +103,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.publishingBroadcasting")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.radio.59")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page().toString>@messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page().toString>@messages("NACE.radio.59.1")</a>
         </li>
     </ol>
 </nav>

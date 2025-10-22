@@ -50,12 +50,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-webSearchPortalActivities", messages("NACE.telecommunicationsComputing.Lvl4.webSearchPortalActivities"))),
+            content = HtmlContent(radioText("sector-label-webSearchPortalActivities", messages("NACE.radio.63.91"))),
             value = Some(Sector.webSearchPortalActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.webSearchPortalActivities.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl4.otherInformationServices"))),
+                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.radio.63.92"))),
                 value = Some(Sector.otherInformationServices.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherInformationServices.toString)
         )
@@ -93,10 +93,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.telecommunications")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadTelecommunicationLvl2Page().toString>@messages("NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadTelecommunicationLvl2Page().toString>@messages("NACE.radio.63")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadComputerInfrastructureDataHostingLvl3Page().toString>@messages("NACE.telecommunicationsComputing.Lvl3.webSearchPortal")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadComputerInfrastructureDataHostingLvl3Page().toString>@messages("NACE.radio.63.9")</a>
         </li>
     </ol>
 </nav>

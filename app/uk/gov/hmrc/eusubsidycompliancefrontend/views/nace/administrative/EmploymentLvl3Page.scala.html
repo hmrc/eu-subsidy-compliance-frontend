@@ -47,12 +47,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-employment-placement", messages("NACE.Administrative.Lvl3.EmploymentPlacement"))),
+            content = HtmlContent(radioText("sector-label-employment-placement", messages("NACE.radio.78.10"))),
             value = Some(Sector.employmentPlacementActivities4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.employmentPlacementActivities.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-temporary-employment", messages("NACE.Administrative.Lvl3.TemporaryEmployment"))),
+            content = HtmlContent(radioText("sector-label-temporary-employment", messages("NACE.radio.78.20"))),
             value = Some(Sector.tempEmploymentPlacementActivities4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.tempEmploymentPlacementActivities.toString)
         )
@@ -89,7 +89,7 @@
                     <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.administration")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.Administrative.Lvl2.Employment")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.radio.78")</a>
                 </li>
             </ol>
         </nav>

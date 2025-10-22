@@ -50,12 +50,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-newsAgencyActivities", messages("NACE.publishingBroadcasting.Lvl4.newsAgency"))),
+            content = HtmlContent(radioText("sector-label-newsAgencyActivities", messages("NACE.radio.60.31"))),
             value = Some(Sector.newsAgencyActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.newsAgencyActivities.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-otherContentDistributionActivities", messages("NACE.publishingBroadcasting.Lvl4.otherContentDistributionActivities"))),
+            content = HtmlContent(radioText("sector-label-otherContentDistributionActivities", messages("NACE.radio.60.39"))),
             value = Some(Sector.otherContentDistributionActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherContentDistributionActivities.toString)
         )
@@ -93,10 +93,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.publishingBroadcasting")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.radio.60")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadProgrammingBroadcastingDistributionLvl3Page().toString>@messages("NACE.publishingBroadcasting.Lvl3.newsAgency")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadProgrammingBroadcastingDistributionLvl3Page().toString>@messages("NACE.radio.60.3")</a>
         </li>
     </ol>
 </nav>

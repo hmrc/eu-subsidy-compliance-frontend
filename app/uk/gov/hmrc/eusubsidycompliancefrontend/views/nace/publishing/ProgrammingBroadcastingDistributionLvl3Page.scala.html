@@ -50,17 +50,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-radioBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.radioBroadcasting"))),
+            content = HtmlContent(radioText("sector-label-radioBroadcasting", messages("NACE.radio.60.10"))),
             value = Some(Sector.radioBroadcasting4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.radioBroadcasting.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-programmingBroadcastingVideoDistribution", messages("NACE.publishingBroadcasting.Lvl3.programmingBroadcastingVideoDistribution"))),
+            content = HtmlContent(radioText("sector-label-programmingBroadcastingVideoDistribution", messages("NACE.radio.60.20"))),
             value = Some(Sector.programmingBroadcastingVideoDistribution4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.programmingBroadcastingVideoDistribution.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-newsAgency", messages("NACE.publishingBroadcasting.Lvl3.newsAgency"))),
+            content = HtmlContent(radioText("sector-label-newsAgency", messages("NACE.radio.60.3"))),
             value = Some(Sector.newsAgency.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.newsAgency.toString)
         )
@@ -98,7 +98,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.publishingBroadcasting")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.radio.60")</a>
         </li>
     </ol>
 </nav>
