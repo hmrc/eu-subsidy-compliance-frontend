@@ -49,22 +49,22 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-    content = HtmlContent(radioText("sector-label-distribution-gas", messages("NACE.electricityGasSteamAir.Lvl4.distributionGas"))),
+    content = HtmlContent(radioText("sector-label-distribution-gas", messages("NACE.radio.35.22"))),
     value = Some(Sector.gaseousFuelDistribution.toString),
     checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelDistribution.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-manufacture-gas", messages("NACE.electricityGasSteamAir.Lvl4.manufactureGas"))),
+      content = HtmlContent(radioText("sector-label-manufacture-gas", messages("NACE.radio.35.21"))),
       value = Some(Sector.gaseousFuelManufacture.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelManufacture.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-storage-gas", messages("NACE.electricityGasSteamAir.Lvl4.storageGas"))),
+      content = HtmlContent(radioText("sector-label-storage-gas", messages("NACE.radio.35.24"))),
       value = Some(Sector.gaseousFuelStorage.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelStorage.toString)
     ),
     RadioItem(
-    content = HtmlContent(radioText("sector-label-trade-gas", messages("NACE.electricityGasSteamAir.Lvl4.tradeGas"))),
+    content = HtmlContent(radioText("sector-label-trade-gas", messages("NACE.radio.35.23"))),
     value = Some(Sector.gaseousFuelTrade.toString),
     checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelTrade.toString)
     )
@@ -106,7 +106,7 @@ content = Text(messages("NACE.electricityGasSteamAir.Lvl3.gasDistribution.error"
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.electricityGas")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadElectricityLvl3Page().toString>@messages("NACE.electricityGasSteamAir.Lvl3.gasDistribution")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadElectricityLvl3Page().toString>@messages("NACE.radio.35.2")</a>
         </li>
     </ol>
 </nav>

@@ -48,22 +48,22 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-electric-power", messages("NACE.electricityGasSteamAir.Lvl3.electricPower"))),
+      content = HtmlContent(radioText("sector-label-electric-power", messages("NACE.radio.35.1"))),
       value = Some(Sector.electricPowerGenerationAndDistribution.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricPowerGenerationAndDistribution.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-gas-distribution", messages("NACE.electricityGasSteamAir.Lvl3.gasDistribution"))),
+      content = HtmlContent(radioText("sector-label-gas-distribution", messages("NACE.radio.35.2"))),
       value = Some(Sector.gaseousFuelsManufacture.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelsManufacture.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.electricityGasSteamAir.Lvl3.steamAirConditioning"))),
+      content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.radio.35.3"))),
       value = Some(Sector.steamAndAirConditioningSupply4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.steamAndAirConditioningSupply.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-brokers-agents-power-gas", messages("NACE.electricityGasSteamAir.Lvl3.brokersAgentsPowerGas"))),
+      content = HtmlContent(radioText("sector-label-brokers-agents-power-gas", messages("NACE.radio.35.4"))),
       value = Some(Sector.electricPowerAndGasBrokers4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricPowerAndGasBrokers.toString)
     )

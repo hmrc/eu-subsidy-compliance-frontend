@@ -49,22 +49,22 @@
 @radioOptions = @{
   Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-airTransport", messages("NACE.TransportationAndStorage.Lvl2.AirTransport"))),
+content = HtmlContent(radioText("sector-label-airTransport", messages("NACE.radio.51"))),
 value = Some(Sector.airTransport.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.airTransport.toString)
 ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-landTransport", messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport"))),
+      content = HtmlContent(radioText("sector-label-landTransport", messages("NACE.radio.49"))),
       value = Some(Sector.landTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.landTransport.toString)
     ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-postalAndCourierActivities", messages("NACE.TransportationAndStorage.Lvl2.PostalCourier"))),
+content = HtmlContent(radioText("sector-label-postalAndCourierActivities", messages("NACE.radio.53"))),
 value = Some(Sector.postalAndCourierActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.postalAndCourierActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-warehousingStorageTransportSupportActivities", messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport"))),
+content = HtmlContent(radioText("sector-label-warehousingStorageTransportSupportActivities", messages("NACE.radio.52"))),
 value = Some(Sector.warehousingStorageTransportSupportActivities.toString),
 hint = Some(Hint(
 content = Text(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint"))
@@ -72,7 +72,7 @@ content = Text(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.h
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.warehousingStorageTransportSupportActivities.toString)
 ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-waterTransport", messages("NACE.TransportationAndStorage.Lvl2.WaterTransport"))),
+      content = HtmlContent(radioText("sector-label-waterTransport", messages("NACE.radio.50"))),
       value = Some(Sector.waterTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.waterTransport.toString)
     )
