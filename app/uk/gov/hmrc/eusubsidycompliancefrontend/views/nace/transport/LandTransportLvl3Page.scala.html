@@ -68,7 +68,7 @@
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightRoadTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-freight-road-removal", messages("NACE.TransportationAndStorage.Lvl3.PipelineTransport"))),
+      content = HtmlContent(radioText("sector-label-pipeline-transport", messages("NACE.TransportationAndStorage.Lvl3.PipelineTransport"))),
       value = Some(Sector.pipelineTransport4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.pipelineTransport.toString)
     )

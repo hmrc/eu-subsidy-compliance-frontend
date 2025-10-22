@@ -53,7 +53,7 @@ class VehiclesManuTransportController @Inject() (
   override val messagesApi: MessagesApi = mcc.messagesApi
 
   private val AircraftSpacecraftLvl4Form: Form[FormValues] = formWithSingleMandatoryField("aircraft4")
-  private val MotorVehiclesLvl3Form: Form[FormValues] = formWithSingleMandatoryField("vehilcesMan3")
+  private val MotorVehiclesLvl3Form: Form[FormValues] = formWithSingleMandatoryField("vehiclesMan3")
   private val OtherTransportEquipmentLvl3Form: Form[FormValues] = formWithSingleMandatoryField("otherTransport3")
   private val OtherTransportEquipmentLvl4Form: Form[FormValues] = formWithSingleMandatoryField("otherTransport4")
   private val PartsAccessoriesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("parts4")
