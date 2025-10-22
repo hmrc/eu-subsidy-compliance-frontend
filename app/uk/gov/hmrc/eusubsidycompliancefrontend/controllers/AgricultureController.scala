@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NaceSelection}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -36,23 +36,23 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AgricultureController @Inject() (
-  mcc: MessagesControllerComponents,
-  actionBuilders: ActionBuilders,
-  val store: Store,
-  navigator: Navigator,
-  AgricultureLvl3Page: AgricultureLvl3Page,
-  AnimalProductionLvl4Page: AnimalProductionLvl4Page,
-  NonPerennialCropLvl4Page: NonPerennialCropLvl4Page,
-  PerennialCropLvl4Page: PerennialCropLvl4Page,
-  SupportActivitiesLvl4Page: SupportActivitiesLvl4Page,
-  ForestryLvl3Page: ForestryLvl3Page,
-  FishingAndAquacultureLvl3Page: FishingAndAquacultureLvl3Page,
-  AquacultureLvl4Page: AquacultureLvl4Page,
-  FishingLvl4Page: FishingLvl4Page
-)(implicit
-  val appConfig: AppConfig,
-  val executionContext: ExecutionContext
-) extends BaseController(mcc) {
+                                        mcc: MessagesControllerComponents,
+                                        actionBuilders: ActionBuilders,
+                                        val store: Store,
+                                        navigator: Navigator,
+                                        AgricultureLvl3Page: AgricultureLvl3Page,
+                                        AnimalProductionLvl4Page: AnimalProductionLvl4Page,
+                                        NonPerennialCropLvl4Page: NonPerennialCropLvl4Page,
+                                        PerennialCropLvl4Page: PerennialCropLvl4Page,
+                                        SupportActivitiesLvl4Page: SupportActivitiesLvl4Page,
+                                        ForestryLvl3Page: ForestryLvl3Page,
+                                        FishingAndAquacultureLvl3Page: FishingAndAquacultureLvl3Page,
+                                        AquacultureLvl4Page: AquacultureLvl4Page,
+                                        FishingLvl4Page: FishingLvl4Page
+                                      )(implicit
+                                        val appConfig: AppConfig,
+                                        val executionContext: ExecutionContext
+                                      ) extends BaseController(mcc) {
 
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
@@ -122,25 +122,13 @@ class AgricultureController @Inject() (
 
   def submitSupportActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     SupportActivitiesLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(SupportActivitiesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -160,25 +148,13 @@ class AgricultureController @Inject() (
 
   def submitAnimalProductionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     AnimalProductionLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(AnimalProductionLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -198,25 +174,13 @@ class AgricultureController @Inject() (
 
   def submitPerennialCropLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     PerennialCropLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(PerennialCropLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -236,25 +200,13 @@ class AgricultureController @Inject() (
 
   def submitNonPerennialCropLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     NonPerennialCropLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(NonPerennialCropLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -309,8 +261,7 @@ class AgricultureController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") FishingAndAquacultureLvl3Form else FishingAndAquacultureLvl3Form.fill(FormValues(sector))
+      val form = if (sector == "") FishingAndAquacultureLvl3Form else FishingAndAquacultureLvl3Form.fill(FormValues(sector))
       Ok(FishingAndAquacultureLvl3Page(form, journey.mode)).toFuture
     }
   }
@@ -359,25 +310,13 @@ class AgricultureController @Inject() (
 
   def submitAquacultureLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     AquacultureLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(AquacultureLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -396,28 +335,15 @@ class AgricultureController @Inject() (
 
   def submitFishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     FishingLvl4Form
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(FishingLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val formData = request.body.asFormUrlEncoded.getOrElse(Map.empty)
-
-          val naceSelection = NaceSelection(
-            code = form.value,
-            sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-            level3Display = formData.get("level3Display").flatMap(_.headOption),
-            level4Display = formData.get(s"level4Display_${form.value}").flatMap(_.headOption).getOrElse("")
-          )
-
           val sectorEnum = Sector.withName(form.value)
-
-          store
-            .update[UndertakingJourney](_.setNaceSelection(naceSelection).setUndertakingSector(sectorEnum.id))
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
-
 }
