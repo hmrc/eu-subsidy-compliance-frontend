@@ -1290,59 +1290,59 @@ NACE.radio.22.26 = Another type of plastic product
 NACE.Manufacturing.nonMetallicMineral.title = What type of non-metallic mineral products does your undertaking manufacture?
 NACE.Manufacturing.nonMetallicMineral.error = Select the type of non-metallic mineral products your undertaking manufactures
 
-NACE.Manufacturing.Lvl3.GlassProducts = Glass and glass products
+NACE.radio.23.1 = Glass and glass products
 NACE.Manufacturing.Lvl3.GlassProducts.hint = Includes shaping and processing of flat glass.
 NACE.Manufacturing.GlassProducts.title = What type of glass or glass products does your undertaking manufacture?
 NACE.Manufacturing.GlassProducts.error = Select the type of glass or glass products your undertaking manufactures
-NACE.Manufacturing.Lvl4.FlatGlass = Flat glass
-NACE.Manufacturing.Lvl4.ShapedFlatGlass = My undertaking carries out shaping and processing of flat glass
-NACE.Manufacturing.Lvl4.HollowGlass = Hollow glass
-NACE.Manufacturing.Lvl4.GlassFibres = Glass fibres
-NACE.Manufacturing.Lvl4.OtherGlass = Another type of glass product
+NACE.radio.23.11 = Flat glass
+NACE.radio.23.12 = My undertaking carries out shaping and processing of flat glass
+NACE.radio.23.13 = Hollow glass
+NACE.radio.23.14 = Glass fibres
+NACE.radio.23.19 = Another type of glass product
 NACE.Manufacturing.Lvl4.OtherGlass.hint = Includes technical glassware and processing of glass (except of flat glass).
 
-NACE.Manufacturing.Lvl3.RefractoryProducts = Refractory products
-NACE.Manufacturing.Lvl4.RefractoryProducts = Manufacture of refractory products
+NACE.radio.23.2 = Refractory products
+NACE.radio.23.20 = Manufacture of refractory products
 
-NACE.Manufacturing.Lvl3.ClayBuildingMaterials = Clay building materials
+NACE.radio.23.3 = Clay building materials
 NACE.Manufacturing.ClayBuildingMaterials.title = What type of clay building materials does your undertaking manufacture?
 NACE.Manufacturing.ClayBuildingMaterials.error = Select the type of clay building materials your undertaking manufactures
-NACE.Manufacturing.Lvl4.CeramicTilesFlags = Ceramic tiles and flags
-NACE.Manufacturing.Lvl4.BricksTilesClay = Bricks, tiles and construction products in baked clay
+NACE.radio.23.31 = Ceramic tiles and flags
+NACE.radio.23.32 = Bricks, tiles and construction products in baked clay
 
-NACE.Manufacturing.Lvl3.PorcelainCeramicProducts = Other porcelain and ceramic products
+NACE.radio.23.4 = Other porcelain and ceramic products
 NACE.Manufacturing.PorcelainCeramic.title = What type of porcelain or ceramic products does your undertaking manufacture?
 NACE.Manufacturing.PorcelainCeramic.error = Select the type of porcelain or ceramic products your undertaking manufactures
-NACE.Manufacturing.Lvl4.CeramicHouseholdOrnamental = Ceramic household and ornamental articles
-NACE.Manufacturing.Lvl4.CeramicSanitaryFixtures = Ceramic sanitary fixtures
-NACE.Manufacturing.Lvl4.CeramicInsulators = Ceramic insulators and insulating fittings
-NACE.Manufacturing.Lvl4.OtherTechnicalCeramics = Other technical ceramic products
-NACE.Manufacturing.Lvl4.OtherCeramicProducts = Another type of ceramic product
+NACE.radio.23.41 = Ceramic household and ornamental articles
+NACE.radio.23.42 = Ceramic sanitary fixtures
+NACE.radio.23.43 = Ceramic insulators and insulating fittings
+NACE.radio.23.44 = Other technical ceramic products
+NACE.radio.23.49 = Another type of ceramic product
 
-NACE.Manufacturing.Lvl3.CementLimePlaster = Cement, lime and plaster
+NACE.radio.23.5 = Cement, lime and plaster
 NACE.Manufacturing.CementLimePlaster.title = What type of materials does your undertaking manufacture?
 NACE.Manufacturing.CementLimePlaster.error = Select the type of materials your undertaking manufactures
-NACE.Manufacturing.Lvl4.Cement = Cement
-NACE.Manufacturing.Lvl4.LimePlaster = Lime and plaster
+NACE.radio.23.51 = Cement
+NACE.radio.23.52 = Lime and plaster
 
-NACE.Manufacturing.Lvl3.ConcreteCementPlasterArticles = Articles of concrete, cement and plaster
+NACE.radio.23.6 = Articles of concrete, cement and plaster
 NACE.Manufacturing.ConcreteCementPlasterArticles.title = What type of concrete, cement or plaster articles does your undertaking manufacture?
 NACE.Manufacturing.ConcreteCementPlasterArticles.error = Select the type of concrete, cement or plaster articles your undertaking manufactures
-NACE.Manufacturing.Lvl4.ConcreteProducts = Concrete products for construction purposes
-NACE.Manufacturing.Lvl4.PlasterProducts = Plaster products for construction purposes
-NACE.Manufacturing.Lvl4.ReadyMixedConcrete = Ready-mixed concrete
-NACE.Manufacturing.Lvl4.Mortars = Mortars
-NACE.Manufacturing.Lvl4.FibreCement = Fibre cement
-NACE.Manufacturing.Lvl4.OtherConcretePlasterArticles = Other articles of concrete, cement and plaster
+NACE.radio.23.61 = Concrete products for construction purposes
+NACE.radio.23.62 = Plaster products for construction purposes
+NACE.radio.23.63 = Ready-mixed concrete
+NACE.radio.23.64 = Mortars
+NACE.radio.23.65 = Fibre cement
+NACE.radio.23.69 = Other articles of concrete, cement and plaster
 
-NACE.Manufacturing.Lvl3.CuttingStone = Cutting, shaping and finishing of stone
-NACE.Manufacturing.Lvl4.CuttingStone = Cutting, shaping and finishing of stone
+NACE.radio.23.7 = Cutting, shaping and finishing of stone
+NACE.radio.23.70 = Cutting, shaping and finishing of stone
 
-NACE.Manufacturing.Lvl3.AbrasiveProducts = Another type of abrasive or non-metallic mineral product.
+NACE.radio.23.9 = Another type of abrasive or non-metallic mineral product.
 NACE.Manufacturing.AnotherType.title = What type of abrasive or non-metallic mineral products does your undertaking manufacture?
 NACE.Manufacturing.AnotherType.error = Select the type of abrasive or non-metallic mineral products your undertaking manufactures
-NACE.Manufacturing.Lvl4.AbrasiveProducts = Abrasive products
-NACE.Manufacturing.Lvl4.OtherNonMetallicMinerals = Other non-metallic mineral products
+NACE.radio.23.91 = Abrasive products
+NACE.radio.23.99 = Other non-metallic mineral products
 
 ### Basic Metals ###
 NACE.Manufacturing.BasicMetals.title = What type of basic metals does your undertaking manufacture?
@@ -1593,31 +1593,31 @@ NACE.Manufacturing.Lvl4.Furniture = Manufacture of furniture
 NACE.Manufacturing.OtherManufacturing.title = What type of products does your undertaking manufacture?
 NACE.Manufacturing.OtherManufacturing.error = Select the type of products your undertaking manufactures
 
-NACE.Manufacturing.Lvl3.JewelleryCoins = Jewellery, coins and related articles
+NACE.radio.32.1 = Jewellery, coins and related articles
 NACE.Manufacturing.JewelleryCoins.title = What type of jewellery or related manufacturing does your undertaking do?
 NACE.Manufacturing.JewelleryCoins.error = Select the type of jewellery or related manufacturing your undertaking does
-NACE.Manufacturing.Lvl4.StrikingCoins = Striking of coins
-NACE.Manufacturing.Lvl4.JewelleryArticles = Manufacture of jewellery and related articles
-NACE.Manufacturing.Lvl4.ImitationJewellery = Manufacture of imitation jewellery and related articles
+NACE.radio.32.11  = Striking of coins
+NACE.radio.32.12 = Manufacture of jewellery and related articles
+NACE.radio.32.13 = Manufacture of imitation jewellery and related articles
 
-NACE.Manufacturing.Lvl3.MusicalInstruments = Musical instruments
-NACE.Manufacturing.Lvl4.MusicalInstruments = Manufacture of musical instruments
+NACE.radio.32.2 = Musical instruments
+NACE.radio.32.20 = Manufacture of musical instruments
 
-NACE.Manufacturing.Lvl3.SportsGoods = Sports goods
-NACE.Manufacturing.Lvl4.SportsGoods = Manufacture of sports goods
+NACE.radio.32.3 = Sports goods
+NACE.radio.32.30 = Manufacture of sports goods
 
-NACE.Manufacturing.Lvl3.GamesToys = Games and toys
-NACE.Manufacturing.Lvl4.GamesToys = Manufacture of games and toys
+NACE.radio.32.4 = Games and toys
+NACE.radio.32.40= Manufacture of games and toys
 
-NACE.Manufacturing.Lvl3.MedicalDentalInstruments = Medical and dental instruments and supplies
-NACE.Manufacturing.Lvl4.MedicalDentalInstruments = Manufacture of medical and dental instruments and supplies
+NACE.radio.32.5 = Medical and dental instruments and supplies
+NACE.radio.32.50 = Manufacture of medical and dental instruments and supplies
 
-NACE.Manufacturing.Lvl3.OtherManufacturing = Other products
+NACE.radio.32.9 = Other products
 NACE.Manufacturing.Lvl3.OtherManufacturing.hint = Includes brooms and brushes and all other products.
 NACE.Manufacturing.OtherManufacturing.2.title = What type of other products does your undertaking manufacture?
 NACE.Manufacturing.OtherManufacturing.2.error = Select the type of other products your undertaking manufactures
-NACE.Manufacturing.Lvl4.BroomsBrushes = Brooms and brushes
-NACE.Manufacturing.Lvl4.OtherManufacturing = Another type of product
+NACE.radio.32.91= Brooms and brushes
+NACE.radio.32.99 = Another type of product
 
 ### repairs and maintains ###
 NACE.Manufacturing.RepairMaintains.title = What is your undertaking’s main business activity in repair, maintenance or installation of machinery and equipment?

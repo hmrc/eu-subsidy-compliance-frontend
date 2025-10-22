@@ -50,12 +50,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-brooms", messages("NACE.Manufacturing.Lvl4.BroomsBrushes"))),
+            content = HtmlContent(radioText("sector-label-brooms", messages("NACE.radio.32.91"))),
             value = Some(Sector.broomsAndBrushes.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.broomsAndBrushes.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherManufacturing"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.32.99"))),
             value = Some(Sector.otherProductManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherProductManufacture.toString)
         )
@@ -97,7 +97,7 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.Manufacturing.Lvl2.1.OtherManufacturing")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.NonMetallicOtherController.loadOtherManufacturingLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.OtherManufacturing")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.NonMetallicOtherController.loadOtherManufacturingLvl3Page().toString>@messages("NACE.radio.32.9")</a>
             </li>
         </ol>
     </nav>

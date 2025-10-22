@@ -18,7 +18,6 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
-
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
@@ -29,43 +28,40 @@
     formHelper: FormWithCSRF,
     button: Button,
     govukErrorSummary: GovukErrorSummary,
-    govukRadios : GovukRadios
+    govukRadios: GovukRadios
 )
 
-
-@(form:  Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"glass4"}
 
 @actionUrl = @{
-
-        controllers.routes.NonMetallicOtherController.submitGlassProductsLvl4Page()
+    controllers.routes.NonMetallicOtherController.submitGlassProductsLvl4Page()
 }
 
-
 @radioText(id: String, content: String) = {
-<span id="@id">@content</span>
+    <span id="@id">@content</span>
 }
 
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-flatglass", messages("NACE.Manufacturing.Lvl4.FlatGlass"))),
+            content = HtmlContent(radioText("sector-label-flatglass", messages("NACE.radio.23.11"))),
             value = Some(Sector.flatGlass.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.flatGlass.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-glassfibres", messages("NACE.Manufacturing.Lvl4.GlassFibres"))),
+            content = HtmlContent(radioText("sector-label-glassfibres", messages("NACE.radio.23.14"))),
             value = Some(Sector.glassFibres.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.glassFibres.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-hollow", messages("NACE.Manufacturing.Lvl4.HollowGlass"))),
+            content = HtmlContent(radioText("sector-label-hollow", messages("NACE.radio.23.13"))),
             value = Some(Sector.hollowGlass.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.hollowGlass.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherGlass"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.23.19"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherGlass.hint")))
             )),
@@ -76,75 +72,73 @@
             divider = Some(messages("common.radioItem.or"))
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-shaping", messages("NACE.Manufacturing.Lvl4.ShapedFlatGlass"))),
+            content = HtmlContent(radioText("sector-label-shaping", messages("NACE.radio.23.12"))),
             value = Some(Sector.shapingFlatGlass.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.shapingFlatGlass.toString)
         )
     )
 }
 
-
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.GlassProducts.title")),
-  backLinkEnabled = false,
-  hasErrors = form.hasErrors
+    pageTitle = Some(messages("NACE.Manufacturing.GlassProducts.title")),
+    backLinkEnabled = false,
+    hasErrors = form.hasErrors
 ) {
+    @formHelper(action = actionUrl) {
+        @form.errors.map { err =>
+            @govukErrorSummary(ErrorSummary(
+                errorList = Seq(
+                    ErrorLink(
+                        href = Some(s"#${err.key}"),
+                        content = Text(messages("NACE.Manufacturing.GlassProducts.error"))
+                    )
+                ),
+                title = Text(messages("common.error.summary.title"))
+            ))
+        }
 
-  @formHelper(action = actionUrl) {
-    @form.errors.map { err =>
-      @govukErrorSummary(ErrorSummary(
-        errorList = Seq(
-          ErrorLink(
-            href = Some(s"#${err.key}"),
-            content = Text(messages("NACE.Manufacturing.GlassProducts.error"))
-          )
-        ),
-        title = Text(messages("common.error.summary.title"))
-      ))
-    }
+        <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+            <ol class="govuk-breadcrumbs__list">
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href="@controllers.routes.UndertakingController.getSector.toString">@messages("sector.label.0")</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString">@messages("NACE.Manufacturing.Lvl2.1.Metals")</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString">@messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic")</a>
+                </li>
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-breadcrumbs__link" href="@controllers.routes.NonMetallicOtherController.loadNonMetallicMineralLvl3Page().toString">@messages("NACE.radio.23.1")</a>
+                </li>
+            </ol>
+        </nav>
 
-    <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
-        <ol class="govuk-breadcrumbs__list">
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
-            </li>
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
-            </li>
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
-            </li>
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.Manufacturing.Lvl2.1.Metals")</a>
-            </li>
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic")</a>
-            </li>
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.NonMetallicOtherController.loadNonMetallicMineralLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.GlassProducts")</a>
-            </li>
-        </ol>
-    </nav>
-
-    @govukRadios(Radios(
-      errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("NACE.Manufacturing.GlassProducts.error"))
-      ))} else None,
-      fieldset = Some(Fieldset(
-        legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.GlassProducts.title")),
-        classes = "govuk-fieldset__legend--xl",
-        isPageHeading = true
+        @govukRadios(Radios(
+            errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+                content = Text(messages("NACE.Manufacturing.GlassProducts.error"))
+            ))} else None,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("NACE.Manufacturing.GlassProducts.title")),
+                    classes = "govuk-fieldset__legend--xl",
+                    isPageHeading = true
+                ))
+            )),
+            hint = Some(Hint(
+                content = Text(messages("NACE.Manufacturing.Lvl3.GlassProducts.hint"))
+            )),
+            idPrefix = Some(fieldName),
+            name = fieldName,
+            items = radioOptions
         ))
-    )),
-        hint = Some(Hint(
-        content = Text(messages("NACE.general.hint"))
-      )),
-      idPrefix = Some(fieldName),
-      name = fieldName,
-      items = radioOptions
-    ))
 
-    @button("continue.button")
-  }
+        @button("continue.button")
+    }
 }

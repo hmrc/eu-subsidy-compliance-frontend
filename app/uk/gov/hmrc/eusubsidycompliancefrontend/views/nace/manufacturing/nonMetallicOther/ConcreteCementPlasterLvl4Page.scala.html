@@ -50,32 +50,32 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-concrete", messages("NACE.Manufacturing.Lvl4.ConcreteProducts"))),
+            content = HtmlContent(radioText("sector-label-concrete", messages("NACE.radio.23.61"))),
             value = Some(Sector.concreteProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.concreteProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-fibre-cement", messages("NACE.Manufacturing.Lvl4.FibreCement"))),
+            content = HtmlContent(radioText("sector-label-fibre-cement", messages("NACE.radio.23.65"))),
             value = Some(Sector.fibreCement.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.fibreCement.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-mortars", messages("NACE.Manufacturing.Lvl4.Mortars"))),
+            content = HtmlContent(radioText("sector-label-mortars", messages("NACE.radio.23.64"))),
             value = Some(Sector.mortars.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.mortars.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-plaster-products", messages("NACE.Manufacturing.Lvl4.PlasterProducts"))),
+            content = HtmlContent(radioText("sector-label-plaster-products", messages("NACE.radio.23.62"))),
             value = Some(Sector.plasterProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.plasterProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-readymix", messages("NACE.Manufacturing.Lvl4.ReadyMixedConcrete"))),
+            content = HtmlContent(radioText("sector-label-readymix", messages("NACE.radio.23.63"))),
             value = Some(Sector.readyMixedConcrete.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.readyMixedConcrete.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherConcretePlasterArticles"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.23.69"))),
             value = Some(Sector.otherConcreteProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherConcreteProducts.toString)
         )
@@ -120,7 +120,7 @@
                 <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.NonMetallicOtherController.loadNonMetallicMineralLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.ConcreteCementPlasterArticles")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.NonMetallicOtherController.loadNonMetallicMineralLvl3Page().toString>@messages("NACE.radio.23.6")</a>
             </li>
         </ol>
     </nav>
