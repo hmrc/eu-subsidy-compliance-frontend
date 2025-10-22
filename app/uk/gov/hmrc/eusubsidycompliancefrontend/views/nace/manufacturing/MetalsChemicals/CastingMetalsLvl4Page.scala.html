@@ -50,22 +50,22 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-iron", messages("NACE.Manufacturing.Lvl4.CastingIron"))),
+            content = HtmlContent(radioText("sector-label-iron", messages("NACE.radio.24.51"))),
             value = Some(Sector.iron.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.iron.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-light-metals", messages("NACE.Manufacturing.Lvl4.CastingLightMetals"))),
+            content = HtmlContent(radioText("sector-label-light-metals", messages("NACE.radio.24.53"))),
             value = Some(Sector.lightMetals.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.lightMetals.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-steel", messages("NACE.Manufacturing.Lvl4.CastingSteel"))),
+            content = HtmlContent(radioText("sector-label-steel", messages("NACE.radio.24.52"))),
             value = Some(Sector.steel.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.steel.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-non-ferrous", messages("NACE.Manufacturing.Lvl4.CastingOtherNonFerrous"))),
+            content = HtmlContent(radioText("sector-label-non-ferrous", messages("NACE.radio.24.54"))),
             value = Some(Sector.otherMetals.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMetals.toString)
         )
@@ -111,7 +111,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Metals.BasicMetal")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MetalsChemicalsController.loadBasicMetalsLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.CastingMetals")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MetalsChemicalsController.loadBasicMetalsLvl3Page().toString>@messages("NACE.radio.24.5")</a>
         </li>
     </ol>
 </nav>

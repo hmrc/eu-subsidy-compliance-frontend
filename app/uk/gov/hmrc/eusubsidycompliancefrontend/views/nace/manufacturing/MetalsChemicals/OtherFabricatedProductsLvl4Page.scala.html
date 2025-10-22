@@ -50,27 +50,27 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-fasteners", messages("NACE.Manufacturing.Lvl4.Fasteners"))),
+            content = HtmlContent(radioText("sector-label-fasteners", messages("NACE.radio.25.94"))),
             value = Some(Sector.fastenerProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.fastenerProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-light-packaging", messages("NACE.Manufacturing.Lvl4.LightMetalPackaging"))),
+            content = HtmlContent(radioText("sector-label-light-packaging", messages("NACE.radio.25.92"))),
             value = Some(Sector.lightMetalPackaging.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.lightMetalPackaging.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-steel-drums", messages("NACE.Manufacturing.Lvl4.SteelDrumsContainers"))),
+            content = HtmlContent(radioText("sector-label-steel-drums", messages("NACE.radio.25.91"))),
             value = Some(Sector.steelDrums.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.steelDrums.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-wire-springs", messages("NACE.Manufacturing.Lvl4.WireProductsSprings"))),
+            content = HtmlContent(radioText("sector-label-wire-springs", messages("NACE.radio.25.93"))),
             value = Some(Sector.wireProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.wireProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherFabricatedMetalProducts"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.25.99"))),
             value = Some(Sector.otherFabricatedMetalProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherFabricatedMetalProducts.toString)
         )
@@ -115,7 +115,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Metals.FabricatedMetal")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MetalsChemicalsController.loadFabricatedMetalsLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.OtherFabricatedMetalProducts")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MetalsChemicalsController.loadFabricatedMetalsLvl3Page().toString>@messages("NACE.radio.25.9")</a>
         </li>
     </ol>
 </nav>

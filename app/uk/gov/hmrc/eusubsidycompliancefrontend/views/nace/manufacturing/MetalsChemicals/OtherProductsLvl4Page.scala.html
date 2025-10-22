@@ -49,12 +49,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-biofuels", messages("NACE.Manufacturing.Lvl4.LiquidBiofuels"))),
+            content = HtmlContent(radioText("sector-label-biofuels", messages("NACE.radio.20.51"))),
             value = Some(Sector.liquidBiofuels.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.liquidBiofuels.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-detergents.", messages("NACE.Manufacturing.Lvl4.OtherChemicals"))),
+            content = HtmlContent(radioText("sector-label-detergents.", messages("NACE.radio.20.59"))),
             value = Some(Sector.otherChemicalProducts4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherChemicalProducts4.toString)
         )
@@ -99,7 +99,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Metals.Chemicals")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MetalsChemicalsController.loadChemicalsProductsLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.OtherChemicals")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MetalsChemicalsController.loadChemicalsProductsLvl3Page().toString>@messages("NACE.radio.20.5")</a>
         </li>
     </ol>
 </nav>

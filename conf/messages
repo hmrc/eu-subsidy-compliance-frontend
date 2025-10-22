@@ -1212,57 +1212,57 @@ NACE.Manufacturing.Lvl4.ReproductionRecordedMedia = Reproduction of recorded med
 ### Coke and petroleum ###
 NACE.Manufacturing.CokePetroleum.title = What type of fuel products does your undertaking manufacture?
 NACE.Manufacturing.CokePetroleum.error = Select the type of fuel products your undertaking manufactures
-NACE.Manufacturing.Lvl3.CokeOvenProducts = Coke oven products
+NACE.radio.19.1 = Coke oven products
 NACE.Manufacturing.Lvl4.CokeOvenProducts = Manufacture of coke oven products
-NACE.Manufacturing.Lvl3.RefinedPetroleumProducts = Refined petroleum and fossil fuel products
+NACE.radio.19.2 = Refined petroleum and fossil fuel products
 NACE.Manufacturing.Lvl4.RefinedPetroleumProducts = Manufacture of refined petroleum products and fossil fuel products
 
 ### Chemicals ###
 NACE.Manufacturing.Chemicals.title = What type of chemical or chemical product does your undertaking manufacture?
 NACE.Manufacturing.Chemicals.error = Select the type of chemical or chemical product your undertaking manufactures
-NACE.Manufacturing.Lvl3.BasicChemicals = Basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms
+NACE.radio.20.1 = Basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms
 NACE.Manufacturing.Lvl3.BasicChemicals.hint = Includes dyes and pigments and other inorganic and organic basic chemicals.
 
 NACE.Manufacturing.BasicChemicals.title = What type of basic chemicals or polymer-based materials does your undertaking manufacture?
 NACE.Manufacturing.BasicChemicals.error = Select the type of basic chemicals or polymer-based materials your undertaking manufactures
-NACE.Manufacturing.Lvl4.IndustrialGases = Industrial gases
-NACE.Manufacturing.Lvl4.DyesPigments = Dyes and pigments
-NACE.Manufacturing.Lvl4.OtherInorganicChemicals = Other inorganic basic chemicals
-NACE.Manufacturing.Lvl4.OtherOrganicChemicals = Other organic basic chemicals
-NACE.Manufacturing.Lvl4.FertilisersNitrogen = Fertilisers and nitrogen compounds
-NACE.Manufacturing.Lvl4.PlasticsPrimaryForms = Plastics in primary forms
-NACE.Manufacturing.Lvl4.SyntheticRubber = Synthetic rubber in primary forms
+NACE.radio.20.11 = Industrial gases
+NACE.radio.20.12 = Dyes and pigments
+NACE.radio.20.13 = Other inorganic basic chemicals
+NACE.radio.20.14 = Other organic basic chemicals
+NACE.radio.20.15 = Fertilisers and nitrogen compounds
+NACE.radio.20.16 = Plastics in primary forms
+NACE.radio.20.17 = Synthetic rubber in primary forms
 
-NACE.Manufacturing.Lvl3.PesticidesAgrochemicals = Pesticides, disinfectants and other agrochemical products
+NACE.radio.20.2 = Pesticides, disinfectants and other agrochemical products
 NACE.Manufacturing.Lvl4.PesticidesAgrochemicals = Manufacture of pesticides, disinfectants and other agrochemical products
 
-NACE.Manufacturing.Lvl3.PaintsVarnishes = Paints, varnishes and similar coatings, printing ink and mastics
+NACE.radio.20.3 = Paints, varnishes and similar coatings, printing ink and mastics
 NACE.Manufacturing.Lvl4.PaintsVarnishes = Manufacture of paints, varnishes and similar coatings, printing ink and mastics
 
-NACE.Manufacturing.Lvl3.WashingCleaning = Washing, cleaning and polishing preparations
+NACE.radio.20.4 = Washing, cleaning and polishing preparations
 NACE.Manufacturing.Lvl3.WashingCleaning.hint = Includes detergents, perfume and soap.
 NACE.Manufacturing.WashingChemicals.title = What type of washing, cleaning and polishing preparations does your undertaking manufacture?
 NACE.Manufacturing.WashingChemicals.error = Select the type of washing, cleaning and polishing preparations your undertaking manufactures
-NACE.Manufacturing.Lvl4.SoapDetergents = Soap and detergents, cleaning and polishing preparations
-NACE.Manufacturing.Lvl4.PerfumesToiletPreparations = Perfumes and toilet preparations
+NACE.radio.20.41 = Soap and detergents, cleaning and polishing preparations
+NACE.radio.20.42 = Perfumes and toilet preparations
 
-NACE.Manufacturing.Lvl3.OtherChemicals = Other chemical products
+NACE.radio.20.5 = Other chemical products
 NACE.Manufacturing.Lvl3.OtherChemicals.hint = Includes liquid biofuels.
 NACE.Manufacturing.OtherChemicals.title = What type of other chemical products does your undertaking manufacture?
 NACE.Manufacturing.OtherChemicals.error = Select the type of other chemical products your undertaking manufactures
-NACE.Manufacturing.Lvl4.LiquidBiofuels = Liquid biofuels
-NACE.Manufacturing.Lvl4.OtherChemicals = Another type of chemical product
+NACE.radio.20.51 = Liquid biofuels
+NACE.radio.20.59 = Another type of chemical product
 
-NACE.Manufacturing.Lvl3.ManMadeFibres = Manmade fibres
+NACE.radio.20.6 = Manmade fibres
 NACE.Manufacturing.Lvl4.ManMadeFibres = Manufacture of man-made fibres
 
 ### Pharmaceuticals ###
 NACE.Manufacturing.Pharmaceuticals.title = What type of pharmaceuticals does your undertaking manufacture?
 NACE.Manufacturing.Pharmaceuticals.error = Select the type of pharmaceuticals your undertaking manufactures
-NACE.Manufacturing.Lvl3.BasicPharmaceuticals = Basic pharmaceutical products
+NACE.radio.21.1 = Basic pharmaceutical products
 NACE.Manufacturing.Lvl4.BasicPharmaceuticals = Manufacture of basic pharmaceutical products
 
-NACE.Manufacturing.Lvl3.PharmaceuticalPreparations = Pharmaceutical preparations
+NACE.radio.21.2 = Pharmaceutical preparations
 NACE.Manufacturing.Lvl4.PharmaceuticalPreparations = Manufacture of pharmaceutical preparations
 
 ### Rubber and plastic ###
@@ -1348,86 +1348,86 @@ NACE.Manufacturing.Lvl4.OtherNonMetallicMinerals = Other non-metallic mineral pr
 NACE.Manufacturing.BasicMetals.title = What type of basic metals does your undertaking manufacture?
 NACE.Manufacturing.BasicMetals.error = Select the type of basic metals your undertaking manufactures
 
-NACE.Manufacturing.Lvl3.BasicIronSteel = Basic iron, steel and ferro-alloys
+NACE.radio.24.1 = Basic iron, steel and ferro-alloys
 NACE.Manufacturing.Lvl4.IronSteelFerroAlloys = Manufacture of basic iron and steel and of ferro-alloys
 
-NACE.Manufacturing.Lvl3.TubesPipesSteel = Steel tubes, pipes, hollow profiles and related fittings
+NACE.radio.24.2 = Steel tubes, pipes, hollow profiles and related fittings
 NACE.Manufacturing.Lvl4.TubesPipesSteel = Manufacture of tubes, pipes, hollow profiles and related fittings, of steel
 
-NACE.Manufacturing.Lvl3.OtherSteelProducts = Other products of first processing of steel
+NACE.radio.24.3 = Other products of first processing of steel
 NACE.Manufacturing.OtherSteelProducts.title = What type of steel processing does your undertaking do?
 NACE.Manufacturing.OtherSteelProducts.error = Select the type of steel processing your undertaking does
 NACE.Manufacturing.Lvl3.OtherSteelProducts.hint = Includes cold drawing of bars and wire, cold forming or folding, and cold rolling of narrow strip.
-NACE.Manufacturing.Lvl4.ColdDrawingBars = Cold drawing of bars
-NACE.Manufacturing.Lvl4.ColdRollingStrip = Cold rolling of narrow strip
-NACE.Manufacturing.Lvl4.ColdFormingFolding = Cold forming or folding
-NACE.Manufacturing.Lvl4.ColdDrawingWire = Cold drawing of wire
+NACE.radio.24.31 = Cold drawing of bars
+NACE.radio.24.32 = Cold rolling of narrow strip
+NACE.radio.24.33 = Cold forming or folding
+NACE.radio.24.34 = Cold drawing of wire
 
-NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals = Basic precious and other non-ferrous metals
+NACE.radio.24.4 = Basic precious and other non-ferrous metals
 NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals.hint = Includes production of aluminium, copper, lead, tin, zinc, other non-ferrous metals and precious metals, and processing of nuclear fuel.
 NACE.Manufacturing.PreciousNonFerrousMetals.title = What type of metal production or processing does your undertaking do?
 NACE.Manufacturing.PreciousNonFerrousMetals.error = Select the type of metal production or processing your undertaking does
-NACE.Manufacturing.Lvl4.PreciousMetals = Production of precious metals
-NACE.Manufacturing.Lvl4.Aluminium = Production of aluminium
-NACE.Manufacturing.Lvl4.LeadZincTin = Production of lead, zinc and tin
-NACE.Manufacturing.Lvl4.Copper = Production of copper
-NACE.Manufacturing.Lvl4.OtherNonFerrous = Production of other non-ferrous metals
-NACE.Manufacturing.Lvl4.NuclearFuelProcessing = Processing of nuclear fuel
+NACE.radio.24.41 = Production of precious metals
+NACE.radio.24.42 = Production of aluminium
+NACE.radio.24.43 = Production of lead, zinc and tin
+NACE.radio.24.44 = Production of copper
+NACE.radio.24.45 = Production of other non-ferrous metals
+NACE.radio.24.46 = Processing of nuclear fuel
 
-NACE.Manufacturing.Lvl3.CastingMetals = My undertaking carries out casting of metals
+NACE.radio.24.5 = My undertaking carries out casting of metals
 NACE.Manufacturing.CastingMetals.title = What type of metals does your undertaking cast?
 NACE.Manufacturing.CastingMetals.error = Select the type of metals your undertaking casts
-NACE.Manufacturing.Lvl4.CastingIron = Iron
-NACE.Manufacturing.Lvl4.CastingSteel = Steel
-NACE.Manufacturing.Lvl4.CastingLightMetals = Light metals
-NACE.Manufacturing.Lvl4.CastingOtherNonFerrous = Other non-ferrous metals
+NACE.radio.24.51 = Iron
+NACE.radio.24.52 = Steel
+NACE.radio.24.53 = Light metals
+NACE.radio.24.54 = Other non-ferrous metals
 
 ### Fabricated metal products ###
 NACE.Manufacturing.FabricatedMetal.title = What type of fabricated metal manufacturing or processing does your undertaking do?
 NACE.Manufacturing.FabricatedMetal.error = Select the type of fabricated metal manufacturing or processing your undertaking does
 
-NACE.Manufacturing.Lvl3.StructuralMetalProducts = Manufacture of structural metal products
+NACE.radio.25.1 = Manufacture of structural metal products
 NACE.Manufacturing.Lvl3.StructuralMetalProducts.hint = Includes doors, windows and other structures or parts of structures.
 NACE.Manufacturing.MetalStructures.title = What type of structural metal products does your undertaking manufacture?
 NACE.Manufacturing.MetalStructures.error = Select the type of structural metal products your undertaking manufactures
-NACE.Manufacturing.Lvl4.MetalStructures = Metal structures and parts of structures
-NACE.Manufacturing.Lvl4.MetalDoorsWindows = Doors and windows
+NACE.radio.25.11 = Metal structures and parts of structures
+NACE.radio.25.12 = Doors and windows
 
-NACE.Manufacturing.Lvl3.TanksReservoirs = Manufacture of tanks, reservoirs and containers of metal
+NACE.radio.25.2 = Manufacture of tanks, reservoirs and containers of metal
 NACE.Manufacturing.Lvl3.TanksReservoirs.hint = Includes central heating radiators, steam generators and boilers.
 NACE.Manufacturing.TanksReservoirsContainers.title = What type of metal products does your undertaking manufacture?
 NACE.Manufacturing.TanksReservoirsContainers.error = Select the type of metal products your undertaking manufactures
-NACE.Manufacturing.Lvl4.CentralHeatingBoilers = Central heating radiators, steam generators and boilers
-NACE.Manufacturing.Lvl4.OtherTanksReservoirs = Other tanks, reservoirs and containers of metal
+NACE.radio.25.21 = Central heating radiators, steam generators and boilers
+NACE.radio.25.22 = Other tanks, reservoirs and containers of metal
 
-NACE.Manufacturing.Lvl3.WeaponsAmmunition = Manufacture of weapons and ammunition
+NACE.radio.25.3 = Manufacture of weapons and ammunition
 NACE.Manufacturing.Lvl4.WeaponsAmmunition = Manufacture of weapons and ammunition
 
-NACE.Manufacturing.Lvl3.ForgingShaping = Forging and shaping metal and powder metallurgy
+NACE.radio.25.4 = Forging and shaping metal and powder metallurgy
 NACE.Manufacturing.Lvl4.ForgingShaping = Forging and shaping metal and powder metallurgy
 
-NACE.Manufacturing.Lvl3.TreatmentCoatingMachining = Treatment and coating of metals; machining
+NACE.radio.25.5 = Treatment and coating of metals; machining
 NACE.Manufacturing.TreatmentCoatingMachining.title = What type of metal finishing or processing does your undertaking do?
 NACE.Manufacturing.TreatmentCoatingMachining.error = Select the type of metal finishing or processing your undertaking does
-NACE.Manufacturing.Lvl4.CoatingMetals = Coating
-NACE.Manufacturing.Lvl4.HeatTreatment = Heat treatment
-NACE.Manufacturing.Lvl4.Machining = Machining
+NACE.radio.25.51 = Coating
+NACE.radio.25.52 = Heat treatment
+NACE.radio.25.53 = Machining
 
-NACE.Manufacturing.Lvl3.CutleryToolsHardware = Manufacture of cutlery, tools and general hardware
+NACE.radio.25.6 = Manufacture of cutlery, tools and general hardware
 NACE.Manufacturing.CutleryToolsHardware.title = What type of cutlery or hardware does your undertaking manufacture?
 NACE.Manufacturing.CutleryToolsHardware.error = Select the type of cutlery or hardware your undertaking manufactures
-NACE.Manufacturing.Lvl4.Cutlery = Cutlery
-NACE.Manufacturing.Lvl4.LocksHinges = Locks and hinges
-NACE.Manufacturing.Lvl4.Tools = Tools
+NACE.radio.25.61 = Cutlery
+NACE.radio.25.62 = Locks and hinges
+NACE.radio.25.63 = Tools
 
-NACE.Manufacturing.Lvl3.OtherFabricatedMetalProducts = Manufacture of other fabricated metal products
+NACE.radio.25.9 = Manufacture of other fabricated metal products
 NACE.Manufacturing.OtherFabricatedMetalProducts.title = What type of fabricated metal products does your undertaking manufacture?
 NACE.Manufacturing.OtherFabricatedMetalProducts.error = Select the type of fabricated metal products your undertaking manufactures
-NACE.Manufacturing.Lvl4.SteelDrumsContainers = Steel drums and similar containers
-NACE.Manufacturing.Lvl4.LightMetalPackaging = Light metal packaging
-NACE.Manufacturing.Lvl4.WireProductsSprings = Wire products, chain and springs
-NACE.Manufacturing.Lvl4.Fasteners = Fasteners and screw machine products
-NACE.Manufacturing.Lvl4.OtherFabricatedMetalProducts = Another type of fabricated metal product
+NACE.radio.25.91 = Steel drums and similar containers
+NACE.radio.25.92 = Light metal packaging
+NACE.radio.25.93 = Wire products, chain and springs
+NACE.radio.25.94 = Fasteners and screw machine products
+NACE.radio.25.99 = Another type of fabricated metal product
 
 ### Computers electronics ###
 NACE.Manufacturing.ComputersElectronics.title = What type of computers, electronics or optical products does your undertaking manufacture?

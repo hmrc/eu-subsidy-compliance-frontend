@@ -50,17 +50,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-coating", messages("NACE.Manufacturing.Lvl4.CoatingMetals"))),
+            content = HtmlContent(radioText("sector-label-coating", messages("NACE.radio.25.51"))),
             value = Some(Sector.coating.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.coating.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-heat-treatment", messages("NACE.Manufacturing.Lvl4.HeatTreatment"))),
+            content = HtmlContent(radioText("sector-label-heat-treatment", messages("NACE.radio.25.52"))),
             value = Some(Sector.heatTreatment.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.heatTreatment.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-machining", messages("NACE.Manufacturing.Lvl4.Machining"))),
+            content = HtmlContent(radioText("sector-label-machining", messages("NACE.radio.25.53"))),
             value = Some(Sector.machining.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.machining.toString)
         )
@@ -105,7 +105,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Metals.FabricatedMetal")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MetalsChemicalsController.loadFabricatedMetalsLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.TreatmentCoatingMachining")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.MetalsChemicalsController.loadFabricatedMetalsLvl3Page().toString>@messages("NACE.radio.25.5")</a>
         </li>
     </ol>
 </nav>

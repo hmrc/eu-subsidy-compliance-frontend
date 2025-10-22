@@ -50,17 +50,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-basic-iron", messages("NACE.Manufacturing.Lvl3.BasicIronSteel"))),
+            content = HtmlContent(radioText("sector-label-basic-iron", messages("NACE.radio.24.1"))),
             value = Some(Sector.basicIronSteelManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.basicIronSteel.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-tubes", messages("NACE.Manufacturing.Lvl3.TubesPipesSteel"))),
+            content = HtmlContent(radioText("sector-label-tubes", messages("NACE.radio.24.2"))),
             value = Some(Sector.steelTubesFittingsManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.steelTubesFittings.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherSteelProducts"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.24.3"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.OtherSteelProducts.hint")))
             )),
@@ -68,7 +68,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSteelProductsProcessing.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-precious", messages("NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals"))),
+            content = HtmlContent(radioText("sector-label-precious", messages("NACE.radio.24.4"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-precious", messages("NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals.hint")))
             )),
@@ -79,7 +79,7 @@
             divider = Some(messages("common.radioItem.or"))
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-casting", messages("NACE.Manufacturing.Lvl3.CastingMetals"))),
+            content = HtmlContent(radioText("sector-label-casting", messages("NACE.radio.24.5"))),
             value = Some(Sector.metalsCasting.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalsCasting.toString)
         )
