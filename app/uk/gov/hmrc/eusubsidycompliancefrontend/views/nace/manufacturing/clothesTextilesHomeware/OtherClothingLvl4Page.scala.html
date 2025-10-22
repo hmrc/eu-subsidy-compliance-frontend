@@ -50,27 +50,27 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-leather-fur", messages("NACE.Manufacturing.Lvl4.LeatherAndFurClothing"))),
+            content = HtmlContent(radioText("sector-label-leather-fur", messages("NACE.radio.14.24"))),
             value = Some(Sector.leatherAndFurClothing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.leatherAndFurClothing.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-outerwear", messages("NACE.Manufacturing.Lvl4.Outerwear"))),
+            content = HtmlContent(radioText("sector-label-outerwear", messages("NACE.radio.14.21"))),
             value = Some(Sector.outerwear.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.outerwear.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-underwear", messages("NACE.Manufacturing.Lvl4.Underwear"))),
+            content = HtmlContent(radioText("sector-label-underwear", messages("NACE.radio.14.22"))),
             value = Some(Sector.underwear.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.underwear.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-workwear", messages("NACE.Manufacturing.Lvl4.Workwear"))),
+            content = HtmlContent(radioText("sector-label-workwear", messages("NACE.radio.14.23"))),
             value = Some(Sector.workwear.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.workwear.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherClothingAccessories"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.14.29"))),
             value = Some(Sector.otherClothing4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherClothing4.toString)
         )
@@ -103,33 +103,22 @@
             <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.UndertakingController.getSector.toString">@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.Manufacturing.Lvl2.1.Clothes")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString">@messages("NACE.Manufacturing.Lvl2.1.Clothes")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().toString>@messages("NACE.Manufacturing.Lvl2.2.Clothes.Clothing")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().toString">@messages("NACE.radio.14")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ClothesTextilesHomewareController.loadClothingLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.OtherClothing")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.ClothesTextilesHomewareController.loadClothingLvl3Page().toString">@messages("NACE.radio.14.2")</a>
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
-<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
-<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Clothes")" />
-<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Clothes.Clothing")" />
-<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.OtherClothing")" />
-<input type="hidden" name="level4Display_14.24" value="@messages("NACE.Manufacturing.Lvl4.LeatherAndFurClothing")" />
-<input type="hidden" name="level4Display_14.21" value="@messages("NACE.Manufacturing.Lvl4.Outerwear")" />
-<input type="hidden" name="level4Display_14.22" value="@messages("NACE.Manufacturing.Lvl4.Underwear")" />
-<input type="hidden" name="level4Display_14.23" value="@messages("NACE.Manufacturing.Lvl4.Workwear")" />
-<input type="hidden" name="level4Display_14.29" value="@messages("NACE.Manufacturing.Lvl4.OtherClothingAccessories")" />
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(

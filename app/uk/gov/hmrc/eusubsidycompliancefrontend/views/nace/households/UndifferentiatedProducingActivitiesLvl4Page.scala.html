@@ -49,12 +49,12 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-undifferentiatedGoods4", messages("NACE.households.Lvl4.undifferentiatedGoods"))),
+content = HtmlContent(radioText("sector-label-undifferentiatedGoods4", messages("NACE.radio.98.10"))),
 value = Some(Sector.undifferentiatedGoods4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.undifferentiatedGoods4.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-undifferentiatedServices4", messages("NACE.households.Lvl4.undifferentiatedServices"))),
+content = HtmlContent(radioText("sector-label-undifferentiatedServices4", messages("NACE.radio.98.20"))),
 value = Some(Sector.undifferentiatedProduction.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.undifferentiatedProduction.toString)
 )
@@ -95,7 +95,7 @@ title = Text(messages("common.error.summary.title"))
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.households")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadHouseholdsLvl2Page().toString>@messages("NACE.households.Lvl2.undifferentiatedProduction")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadHouseholdsLvl2Page().toString>@messages("NACE.radio.98")</a>
   </li>
  </ol>
 </nav>

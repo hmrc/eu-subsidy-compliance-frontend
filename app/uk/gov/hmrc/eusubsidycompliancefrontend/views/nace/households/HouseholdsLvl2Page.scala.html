@@ -49,12 +49,12 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-domesticPersonnel", messages("NACE.households.Lvl2.domesticPersonnel"))),
+content = HtmlContent(radioText("sector-label-domesticPersonnel", messages("NACE.radio.97"))),
 value = Some(Sector.domesticPersonnel.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.domesticPersonnel.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-undifferentiatedProduction", messages("NACE.households.Lvl2.undifferentiatedProduction"))),
+content = HtmlContent(radioText("sector-label-undifferentiatedProduction", messages("NACE.radio.98"))),
 value = Some(Sector.undifferentiatedGoodsAndServiceActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.undifferentiatedGoodsAndServiceActivities.toString)
 )

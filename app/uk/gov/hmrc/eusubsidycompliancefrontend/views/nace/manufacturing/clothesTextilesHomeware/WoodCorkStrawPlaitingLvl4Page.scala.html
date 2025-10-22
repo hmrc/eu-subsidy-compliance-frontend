@@ -50,37 +50,37 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-parquet", messages("NACE.Manufacturing.Lvl4.ParquetFloors"))),
+            content = HtmlContent(radioText("sector-label-parquet", messages("NACE.radio.16.22"))),
             value = Some(Sector.assembledParquetFloors.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.assembledParquetFloors.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-solid-fuels", messages("NACE.Manufacturing.Lvl4.SolidFuelsBiomass"))),
+            content = HtmlContent(radioText("sector-label-solid-fuels", messages("NACE.radio.16.26"))),
             value = Some(Sector.solidFuelsVegetableBiomass.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.solidFuelsVegetableBiomass.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-veneer-sheets", messages("NACE.Manufacturing.Lvl4.VeneerSheetsPanels"))),
+            content = HtmlContent(radioText("sector-label-veneer-sheets", messages("NACE.radio.16.21"))),
             value = Some(Sector.veneerSheetsPanels.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.veneerSheetsPanels.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-wooden-containers", messages("NACE.Manufacturing.Lvl4.WoodenContainers"))),
+            content = HtmlContent(radioText("sector-label-wooden-containers", messages("NACE.radio.16.24"))),
             value = Some(Sector.woodenContainers.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodenContainers.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-doors-windows", messages("NACE.Manufacturing.Lvl4.DoorsWindowsWood"))),
+            content = HtmlContent(radioText("sector-label-doors-windows", messages("NACE.radio.16.25"))),
             value = Some(Sector.woodenWindowsDoors.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodenWindowsDoors.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-builders", messages("NACE.Manufacturing.Lvl4.BuildersCarpentryJoinery"))),
+            content = HtmlContent(radioText("sector-label-builders", messages("NACE.radio.16.23"))),
             value = Some(Sector.otherBuildersCarpentryJoinery.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherBuildersCarpentryJoinery.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-wood", messages("NACE.Manufacturing.Lvl4.OtherWoodCorkStrawPlaiting"))),
+            content = HtmlContent(radioText("sector-label-other-wood", messages("NACE.radio.16.28"))),
             value = Some(Sector.otherWoodProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherWoodProducts.toString)
         ),
@@ -88,7 +88,7 @@
             divider = Some(messages("common.radioItem.or"))
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-finishing", messages("NACE.Manufacturing.Lvl4.FinishingWoodenProducts"))),
+            content = HtmlContent(radioText("sector-label-finishing", messages("NACE.radio.16.27"))),
             value = Some(Sector.woodenProductsFinishing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodenProductsFinishing.toString)
         )
@@ -121,36 +121,22 @@
             <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.UndertakingController.getSector.toString">@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.Manufacturing.Lvl2.1.Metals")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString">@messages("NACE.Manufacturing.Lvl2.1.Metals")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Metals.Wood")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString">@messages("NACE.radio.16")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ClothesTextilesHomewareController.loadWoodCorkStrawLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting")</a>
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.ClothesTextilesHomewareController.loadWoodCorkStrawLvl3Page().toString">@messages("NACE.radio.16.2")</a>
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
-<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
-<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Metals")" />
-<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Metals.Wood")" />
-<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting")" />
-<input type="hidden" name="level4Display_16.22" value="@messages("NACE.Manufacturing.Lvl4.ParquetFloors")" />
-<input type="hidden" name="level4Display_16.26" value="@messages("NACE.Manufacturing.Lvl4.SolidFuelsBiomass")" />
-<input type="hidden" name="level4Display_16.21" value="@messages("NACE.Manufacturing.Lvl4.VeneerSheetsPanels")" />
-<input type="hidden" name="level4Display_16.24" value="@messages("NACE.Manufacturing.Lvl4.WoodenContainers")" />
-<input type="hidden" name="level4Display_16.25" value="@messages("NACE.Manufacturing.Lvl4.DoorsWindowsWood")" />
-<input type="hidden" name="level4Display_16.23" value="@messages("NACE.Manufacturing.Lvl4.BuildersCarpentryJoinery")" />
-<input type="hidden" name="level4Display_16.28" value="@messages("NACE.Manufacturing.Lvl4.OtherWoodCorkStrawPlaiting")" />
-<input type="hidden" name="level4Display_16.27" value="@messages("NACE.Manufacturing.Lvl4.FinishingWoodenProducts")" />
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(

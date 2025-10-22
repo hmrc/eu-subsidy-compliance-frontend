@@ -47,17 +47,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-collection-agencies", messages("NACE.Administrative.Lvl4.CollectionAgencies"))),
+            content = HtmlContent(radioText("sector-label-collection-agencies", messages("NACE.radio.82.91"))),
             value = Some(Sector.CollectionAgencies.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CollectionAgencies.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-packaging", messages("NACE.Administrative.Lvl4.PackagingActivities"))),
+            content = HtmlContent(radioText("sector-label-packaging", messages("NACE.radio.82.92"))),
             value = Some(Sector.PackagingActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PackagingActivities.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-business-activities", messages("NACE.Administrative.Lvl4.OtherBusinessSupportActivities"))),
+            content = HtmlContent(radioText("sector-label-other-business-activities", messages("NACE.radio.82.99"))),
             value = Some(Sector.OtherBusinessSupport.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherBusinessSupport.toString)
         )
@@ -94,10 +94,10 @@
                     <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.administration")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.Administrative.Lvl2.OfficeSupport")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.radio.82")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadOfficeLvl3Page().toString>@messages("NACE.Administrative.Lvl3.OtherBusinessSupport")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadOfficeLvl3Page().toString>@messages("NACE.radio.82.9")</a>
                 </li>
             </ol>
         </nav>

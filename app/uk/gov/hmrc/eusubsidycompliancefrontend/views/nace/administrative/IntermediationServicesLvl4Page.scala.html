@@ -47,12 +47,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-cars-motorhomes", messages("NACE.Administrative.Lvl4.CarsMotorhomesTrailers"))),
+            content = HtmlContent(radioText("sector-label-cars-motorhomes", messages("NACE.radio.77.51"))),
             value = Some(Sector.CarsMotorhomesTrailers.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CarsMotorhomesTrailers.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-tangible", messages("NACE.Administrative.Lvl4.OtherTangibleGoods"))),
+            content = HtmlContent(radioText("sector-label-other-tangible", messages("NACE.radio.77.52"))),
             value = Some(Sector.otherTangibleGoodsRental.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.RentalAndLeasing.toString)
         )
@@ -89,10 +89,10 @@
                     <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.administration")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.Administrative.Lvl2.RentalLeasing")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.radio.77")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadRentalLvl3Page().toString>@messages("NACE.Administrative.Lvl3.TangibleGoodsRentalIntermediation")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadRentalLvl3Page().toString>@messages("NACE.radio.77.5")</a>
                 </li>
             </ol>
         </nav>

@@ -49,22 +49,22 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-culturalEducation", messages("NACE.education.Lvl4.culturalEducation"))),
+content = HtmlContent(radioText("sector-label-culturalEducation", messages("NACE.radio.85.52"))),
 value = Some(Sector.culturalEducation.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.culturalEducation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-drivingSchool", messages("NACE.education.Lvl4.drivingSchool"))),
+content = HtmlContent(radioText("sector-label-drivingSchool", messages("NACE.radio.85.53"))),
 value = Some(Sector.drivingSchool.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.drivingSchool.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-sportsRecreationEducation", messages("NACE.education.Lvl4.sportsEducation"))),
+content = HtmlContent(radioText("sector-label-sportsRecreationEducation", messages("NACE.radio.85.51"))),
 value = Some(Sector.sportsRecreationEducation.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsRecreationEducation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherEducationNEC", messages("NACE.education.Lvl4.otherEducationNEC"))),
+content = HtmlContent(radioText("sector-label-otherEducationNEC", messages("NACE.radio.85.59"))),
 value = Some(Sector.otherEducationNEC.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherEducationNEC.toString)
 )
@@ -106,7 +106,7 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.education")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadEducationLvl3Page().toString>@messages("NACE.education.Lvl3.otherEducation")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadEducationLvl3Page().toString>@messages("NACE.radio.85.5")</a>
         </li>
     </ol>
 </nav>

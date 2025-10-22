@@ -50,13 +50,13 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-filmVideoActivities", messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities"))),
+            content = HtmlContent(radioText("sector-label-filmVideoActivities", messages("NACE.radio.59.1"))),
             value = Some(Sector.filmVideoActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.filmVideoActivities.toString),
             hint = Some(Hint(content = Text(messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.hint"))))
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-soundRecordingAndMusicPublishing", messages("NACE.publishingBroadcasting.Lvl3.soundRecordingAndMusicPublishing"))),
+            content = HtmlContent(radioText("sector-label-soundRecordingAndMusicPublishing", messages("NACE.radio.59.20"))),
             value = Some(Sector.soundRecordingAndMusicPublishingActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.soundRecordingAndMusicPublishing.toString)
         )
@@ -94,7 +94,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.publishingBroadcasting")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.radio.59")</a>
         </li>
     </ol>
 </nav>
