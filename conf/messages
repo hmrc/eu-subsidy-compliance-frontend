@@ -963,8 +963,8 @@ NACE.Manufacturing.Lvl2.1.Machinery = My undertaking repairs, maintains or insta
 NACE.Manufacturing.Lvl2.2.Metals.title = What type of metals, chemicals or materials does your undertaking manufacture?
 NACE.Manufacturing.Lvl2.2.Metals.error = Select the type of metals, chemicals or materials your undertaking manufactures
 NACE.Manufacturing.Lvl2.2.Metals.FabricatedMetal = Fabricated metal products (except machinery and equipment)
-NACE.Manufacturing.Lvl2.2.Metals.Wood = Wood, cork and straw products (except furniture)
-NACE.Manufacturing.Lvl2.2.Metals.Rubber = Rubber and plastic products
+NACE.radio.16 = Wood, cork and straw products (except furniture)
+NACE.radio.22 = Rubber and plastic products
 NACE.Manufacturing.Lvl2.2.Metals.Chemicals = Chemicals and chemical products
 NACE.Manufacturing.Lvl2.2.Metals.Chemicals.hint = Includes basic chemicals, fertilisers, liquid biofuels, manmade fibres, paints and varnishes, pesticides, plastics and synthetic rubber in primary forms, and washing, cleaning and polishing preparations.
 NACE.Manufacturing.Lvl2.2.Metals.BasicMetal = Basic metals
@@ -993,10 +993,12 @@ NACE.Manufacturing.Lvl2.2.Computers.Other.hint = Includes general-purpose and sp
 NACE.Manufacturing.Lvl2.2.Clothes.title = What type of clothes, textiles or homeware does your undertaking manufacture?
 NACE.Manufacturing.Lvl2.2.Clothes.error = Select the type of clothes, textiles or homeware your undertaking manufactures
 NACE.Manufacturing.Lvl2.2.Clothes.Furniture = Furniture
+NACE.radio.31 = Furniture
 NACE.Manufacturing.Lvl2.2.Clothes.Clothing = Clothing
 NACE.Manufacturing.Lvl2.2.Clothes.Textiles = Textiles
+NACE.radio.13 = Textiles
 NACE.Manufacturing.Lvl2.2.Clothes.Textiles.hint = Includes preparation, spinning, weaving and finishing of textiles.
-NACE.Manufacturing.Lvl2.2.Clothes.Leather = Leather and related products
+NACE.radio.15 = Leather and related products
 NACE.Manufacturing.Lvl2.2.Clothes.Leather.hint = Includes bags, footwear and fur.
 
 NACE.Manufacturing.Lvl2.2.Paper.title = What type of paper or printed products does your undertaking manufacture?
@@ -1099,77 +1101,79 @@ NACE.Manufacturing.Lvl4.TobaccoProducts = Manufacture of tobacco products
 ### Textiles ###
 NACE.Manufacturing.Textiles.title = What type of textile manufacturing does your undertaking do?
 NACE.Manufacturing.Textiles.error = Select the type of textile manufacturing your undertaking does
-NACE.Manufacturing.Lvl3.TextileFibreSpinning = Preparation and spinning of textile fibres
-NACE.Manufacturing.Lvl4.TextileFibreSpinning = Preparation and spinning of textile fibres
+NACE.radio.13.1 = Preparation and spinning of textile fibres
+NACE.radio.13.10 = Preparation and spinning of textile fibres
 
-NACE.Manufacturing.Lvl3.Weaving = Weaving of textiles
-NACE.Manufacturing.Lvl4.Weaving = Weaving of textiles
+NACE.radio.13.2 = Weaving of textiles
+NACE.radio.13.20 = Weaving of textiles
 
-NACE.Manufacturing.Lvl3.FinishingTextiles = Finishing of textiles
-NACE.Manufacturing.Lvl4.FinishingTextiles = Finishing of textiles
+NACE.radio.13.3 = Finishing of textiles
+NACE.radio.13.30 = Finishing of textiles
 
 NACE.Manufacturing.OtherTextiles.title = What type of textiles does your undertaking manufacture?
 NACE.Manufacturing.OtherTextiles.error = Select the type of textiles your undertaking manufactures
-NACE.Manufacturing.Lvl3.OtherTextiles = Manufacture of textiles (except clothes)
-NACE.Manufacturing.Lvl4.KnittedCrochetedFabrics = Knitted and crocheted fabrics
-NACE.Manufacturing.Lvl4.HouseholdFurnishingTextiles = Household textiles and made-up furnishing articles
-NACE.Manufacturing.Lvl4.CarpetsRugs = Carpets and rugs
-NACE.Manufacturing.Lvl4.CordageRopeTwineNetting = Cordage, rope, twine and netting
-NACE.Manufacturing.Lvl4.NonWovens = Non-wovens and non-woven articles
-NACE.Manufacturing.Lvl4.TechnicalIndustrialTextiles = Other technical and industrial textiles
-NACE.Manufacturing.Lvl4.OtherTextiles = Another type of textile
+NACE.radio.13.9 = Manufacture of textiles (except clothes)
+NACE.radio.13.91 = Knitted and crocheted fabrics
+NACE.radio.13.92 = Household textiles and made-up furnishing articles
+NACE.radio.13.93 = Carpets and rugs
+NACE.radio.13.94 = Cordage, rope, twine and netting
+NACE.radio.13.95 = Non-wovens and non-woven articles
+NACE.radio.13.96 = Other technical and industrial textiles
+NACE.radio.13.99 = Another type of textile
 
 ### Clothing ###
 NACE.Manufacturing.Clothing.title = What type of clothing does your undertaking manufacture?
 NACE.Manufacturing.Clothing.error = Select the type of clothing your undertaking manufactures
-NACE.Manufacturing.Lvl3.KnittedCrochetedClothing = Knitted and crocheted clothing
-NACE.Manufacturing.Lvl4.KnittedCrochetedApparel = Manufacture of knitted and crocheted apparel
+NACE.radio.14 = Clothing
+NACE.radio.14.1 = Knitted and crocheted clothing
+NACE.radio.14.10 = Manufacture of knitted and crocheted apparel
 
 NACE.Manufacturing.OtherClothing.title = What type of clothing or accessories does your undertaking manufacture?
 NACE.Manufacturing.OtherClothing.error = Select the type of clothing or accessories your undertaking manufactures
-NACE.Manufacturing.Lvl3.OtherClothing = Other clothing and accessories
+
+NACE.radio.14.2 = Other clothing and accessories
 NACE.Manufacturing.Lvl3.OtherClothing.hint = Includes leather and fur clothing, outerwear, underwear, workwear and all other clothes and accessories.
-NACE.Manufacturing.Lvl4.Outerwear = Outerwear
-NACE.Manufacturing.Lvl4.Underwear = Underwear
-NACE.Manufacturing.Lvl4.Workwear = Workwear
-NACE.Manufacturing.Lvl4.LeatherAndFurClothing = Leather and fur clothing
-NACE.Manufacturing.Lvl4.OtherClothingAccessories = Other clothing and accessories
+NACE.radio.14.21 = Outerwear
+NACE.radio.14.22 = Underwear
+NACE.radio.14.23 = Workwear
+NACE.radio.14.24 = Leather and fur clothing
+NACE.radio.14.29 = Other clothing and accessories
 
 ### Leather ###
-NACE.manufacturing.Leather.title = What is your undertaking’s main business activity in leather or related products?
-NACE.manufacturing.Leather.error = Select your undertaking’s main business activity in leather or related products
+NACE.manufacturing.Leather.title = What is your undertaking's main business activity in leather or related products?
+NACE.manufacturing.Leather.error = Select your undertaking's main business activity in leather or related products
 
 NACE.Manufacturing.TanningLeather.title = What type of manufacturing or related activity does your undertaking do?
 NACE.Manufacturing.TanningLeather.error = Select the type of manufacturing or related activity your undertaking does
-NACE.Manufacturing.Lvl3.TanningLeather = Tanning, dyeing, dressing of leather and fur; manufacture of luggage, handbags, saddlery and harnesses
-NACE.Manufacturing.Lvl4.TanningLeatherFur = Tanning, dressing, dyeing of leather and fur
-NACE.Manufacturing.Lvl4.LuggageHandbagsSaddlery = Manufacture of luggage, handbags, saddlery and harnesses of any material
+NACE.radio.15.1 = Tanning, dyeing, dressing of leather and fur; manufacture of luggage, handbags, saddlery and harnesses
+NACE.radio.15.11 = Tanning, dressing, dyeing of leather and fur
+NACE.radio.15.12 = Manufacture of luggage, handbags, saddlery and harnesses of any material
 
-NACE.Manufacturing.Lvl3.Footwear = Manufacture of footwear
-NACE.Manufacturing.Lvl4.Footwear = Manufacture of footwear
+NACE.radio.15.2 = Manufacture of footwear
+NACE.radio.15.20 = Manufacture of footwear
 
 ### Wood cork and straw ###
-NACE.Manufacturing.WoodCorkStraw.title = What is your undertaking’s main business activity in wood, cork or straw products?
-NACE.Manufacturing.WoodCorkStraw.error = Select your undertaking’s main business activity in wood, cork or straw products
+NACE.Manufacturing.WoodCorkStraw.title = What is your undertaking's main business activity in wood, cork or straw products?
+NACE.Manufacturing.WoodCorkStraw.error = Select your undertaking's main business activity in wood, cork or straw products
 
-NACE.Manufacturing.Lvl3.SawmillingWood = Sawmilling, planing, processing or finishing of wood
+NACE.radio.16.1 = Sawmilling, planing, processing or finishing of wood
 NACE.Manufacturing.SawmillingWood.Lvl4.error = Select how your undertaking manufactures or processes wood
 NACE.Manufacturing.SawmillingWood.Lvl4.title = How does your undertaking manufacture or process wood?
-NACE.Manufacturing.Lvl4.SawmillingWood = Sawmilling and planing
-NACE.Manufacturing.Lvl4.ProcessingFinishingWood = Processing and finishing
+NACE.radio.16.11 = Sawmilling and planing
+NACE.radio.16.12 = Processing and finishing
 
-NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting = Manufacture of products of wood, cork, straw and plaiting materials
+NACE.radio.16.2 = Manufacture of products of wood, cork, straw and plaiting materials
 NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting.hint = Includes finishing of wood products.
 NACE.Manufacturing.WoodCorkStrawPlaiting.Lvl4.title = What type of wood, cork, straw or plaited product does your undertaking manufacture?
 NACE.Manufacturing.WoodCorkStrawPlaiting.Lvl4.error = Select the type of wood, cork, straw or plaited product your undertaking manufactures
-NACE.Manufacturing.Lvl4.VeneerSheetsPanels = Veneer sheets and wood-based panels
-NACE.Manufacturing.Lvl4.ParquetFloors = Assembled parquet floors
-NACE.Manufacturing.Lvl4.BuildersCarpentryJoinery = Other builders’ carpentry and joinery
-NACE.Manufacturing.Lvl4.WoodenContainers = Wooden containers
-NACE.Manufacturing.Lvl4.DoorsWindowsWood = Wooden windows and doors
-NACE.Manufacturing.Lvl4.SolidFuelsBiomass = Solid fuels from vegetable biomass
-NACE.Manufacturing.Lvl4.FinishingWoodenProducts = My undertaking carries out finishing of wooden products
-NACE.Manufacturing.Lvl4.OtherWoodCorkStrawPlaiting = Other products of wood, cork, straw and plaiting materials
+NACE.radio.16.21 = Veneer sheets and wood-based panels
+NACE.radio.16.22 = Assembled parquet floors
+NACE.radio.16.23 = Other builders' carpentry and joinery
+NACE.radio.16.24 = Wooden containers
+NACE.radio.16.25 = Wooden windows and doors
+NACE.radio.16.26 = Solid fuels from vegetable biomass
+NACE.radio.16.27 = My undertaking carries out finishing of wooden products
+NACE.radio.16.28 = Other products of wood, cork, straw and plaiting materials
 
 ### Paper products ###
 NACE.Manufacturing.PaperProducts.title = What type of paper products does your undertaking manufacture?
@@ -1264,23 +1268,23 @@ NACE.Manufacturing.Lvl4.PharmaceuticalPreparations = Manufacture of pharmaceutic
 ### Rubber and plastic ###
 NACE.Manufacturing.RubberPlastic.title = What type of rubber or plastic products does your undertaking manufacture?
 NACE.Manufacturing.RubberPlastic.error = Select the type of rubber or plastic products your undertaking manufactures
-NACE.Manufacturing.Lvl3.RubberProducts = Rubber products
+NACE.radio.22.1 = Rubber products
 NACE.Manufacturing.Rubber.title = What type of rubber products does your undertaking manufacture?
 NACE.Manufacturing.Rubber.error = Select the type of rubber products your undertaking manufactures
-NACE.Manufacturing.Lvl4.RubberTyresTubes = Rubber tyres and tubes
+NACE.radio.22.11 = Rubber tyres and tubes
 NACE.Manufacturing.Lvl4.RubberTyresTubes.hint = Includes retreading and rebuilding of tyres.
-NACE.Manufacturing.Lvl4.OtherRubberProducts = Another type of rubber products
+NACE.radio.22.19 = Another type of rubber products
 
-NACE.Manufacturing.Lvl3.PlasticProducts = Plastic products
+NACE.radio.22.2 = Plastic products
 NACE.Manufacturing.Lvl3.PlasticProducts.hint = Includes processing and finishing of plastic products.
 NACE.Manufacturing.Plastic.title = What type of plastic products does your undertaking manufacture?
 NACE.Manufacturing.Plastic.error = Select the type of plastic products your undertaking manufactures
-NACE.Manufacturing.Lvl4.PlasticPlatesSheets = Plates, sheets, tubes and profiles
-NACE.Manufacturing.Lvl4.PlasticPackingGoods = Packing goods
-NACE.Manufacturing.Lvl4.PlasticDoorsWindows = Doors and windows
-NACE.Manufacturing.Lvl4.BuildersWarePlastic = Builders’ ware
-NACE.Manufacturing.Lvl4.FinishingPlasticProducts = My undertaking carries out processing and finishing of plastic products
-NACE.Manufacturing.Lvl4.OtherPlasticProducts = Another type of plastic product
+NACE.radio.22.21 = Plates, sheets, tubes and profiles
+NACE.radio.22.22 = Packing goods
+NACE.radio.22.23 = Doors and windows
+NACE.radio.22.24 = Builders’ ware
+NACE.radio.22.25 = My undertaking carries out processing and finishing of plastic products
+NACE.radio.22.26 = Another type of plastic product
 
 ### Non metallic mineral products ###
 NACE.Manufacturing.nonMetallicMineral.title = What type of non-metallic mineral products does your undertaking manufacture?
