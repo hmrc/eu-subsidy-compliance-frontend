@@ -62,7 +62,7 @@ class NACECheckDetailsController @Inject() (
   }
 
   private def getLevel1_1ChangeUrl(level2Code: String): String = level2Code match {
-    case "13" | "14" | "15" | "16" | "22" =>
+    case "13" | "14" | "15" | "16" | "22" | "31" =>
       routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
     case "26" | "27" | "28" | "33" =>
       routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().url
@@ -79,7 +79,7 @@ class NACECheckDetailsController @Inject() (
   }
 
   private def getLevel1_1Display(level2Code: String)(implicit messages: Messages): String = level2Code match {
-    case "13" | "14" | "15" | "16" | "22" => messages("NACE.Manufacturing.Lvl2.1.Clothes")
+    case "13" | "14" | "15" | "16" | "22" | "31" => messages("NACE.Manufacturing.Lvl2.1.Clothes")
     case "26" | "27" | "28" | "33" => messages("NACE.Manufacturing.Lvl2.1.Computers")
     case "10" | "11" | "12" => messages("NACE.Manufacturing.Lvl2.1.Food")
     case "19" | "20" | "21" | "23" | "24" | "25" => messages("NACE.Manufacturing.Lvl2.1.Metals")
