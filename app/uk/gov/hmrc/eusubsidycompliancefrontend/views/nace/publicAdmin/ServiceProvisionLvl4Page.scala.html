@@ -49,27 +49,27 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-defence", messages("NACE.publicAdministration.Lvl4.defence"))),
+content = HtmlContent(radioText("sector-label-defence", messages("NACE.radio.84.22"))),
 value = Some(Sector.defence.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.defence.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-fireService", messages("NACE.publicAdministration.Lvl4.fireService"))),
+content = HtmlContent(radioText("sector-label-fireService", messages("NACE.radio.84.25"))),
 value = Some(Sector.fireService.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.fireService.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-foreignAffairs", messages("NACE.publicAdministration.Lvl4.foreignAffairs"))),
+content = HtmlContent(radioText("sector-label-foreignAffairs", messages("NACE.radio.84.21"))),
 value = Some(Sector.foreignAffairs.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.foreignAffairs.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-justiceJudicial", messages("NACE.publicAdministration.Lvl4.justiceJudicial"))),
+content = HtmlContent(radioText("sector-label-justiceJudicial", messages("NACE.radio.84.23"))),
 value = Some(Sector.justiceJudicial.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.justiceJudicial.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-publicOrderSafety", messages("NACE.publicAdministration.Lvl4.publicOrderSafety"))),
+content = HtmlContent(radioText("sector-label-publicOrderSafety", messages("NACE.radio.84.24"))),
 value = Some(Sector.publicOrderSafety.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.publicOrderSafety.toString)
 )
@@ -111,7 +111,7 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.publicAdministration")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadPublicAdminDefenceLvl3Page().toString>@messages("NACE.publicAdministration.Lvl3.communityServices")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadPublicAdminDefenceLvl3Page().toString>@messages("NACE.radio.84.2")</a>
         </li>
     </ol>
 </nav>
