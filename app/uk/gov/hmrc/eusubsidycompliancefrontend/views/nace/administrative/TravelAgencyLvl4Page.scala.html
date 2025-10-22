@@ -47,12 +47,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-tour-operator", messages("NACE.Administrative.Lvl4.TourOperatorActivities"))),
+            content = HtmlContent(radioText("sector-label-tour-operator", messages("NACE.radio.79.12"))),
             value = Some(Sector.TourOperator.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.TourOperator.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-travel-agency", messages("NACE.Administrative.Lvl4.TravelAgencyActivities"))),
+            content = HtmlContent(radioText("sector-label-travel-agency", messages("NACE.radio.79.11"))),
             value = Some(Sector.TravelAgencyActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.TravelAgencyActivities.toString)
         )
@@ -89,10 +89,10 @@
                     <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.administration")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.Administrative.Lvl2.TravelTourReservation")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.radio.79")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadTravelLvl3Page().toString>@messages("NACE.Administrative.Lvl3.TravelAgencyTourOperator")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadTravelLvl3Page().toString>@messages("NACE.radio.79.1")</a>
                 </li>
             </ol>
         </nav>

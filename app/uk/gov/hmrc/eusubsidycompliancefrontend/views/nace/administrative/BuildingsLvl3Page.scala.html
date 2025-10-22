@@ -47,7 +47,7 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-cleaning", messages("NACE.Administrative.Lvl3.Cleaning"))),
+            content = HtmlContent(radioText("sector-label-cleaning", messages("NACE.radio.81.2"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-cleaning", messages("NACE.Administrative.Lvl3.Cleaning.hint")))
             )),
@@ -55,7 +55,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Cleaning.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-combined-facilities", messages("NACE.Administrative.Lvl3.CombinedFacilities"))),
+            content = HtmlContent(radioText("sector-label-combined-facilities", messages("NACE.radio.81.10"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-combined-facilities", messages("NACE.Administrative.Lvl3.CombinedFacilities.hint")))
             )),
@@ -63,7 +63,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CombinedFacilitiesSupport.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-landscaping", messages("NACE.Administrative.Lvl3.Landscaping"))),
+            content = HtmlContent(radioText("sector-label-landscaping", messages("NACE.radio.81.30"))),
             value = Some(Sector.landscapeServiceActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Landscaping.toString)
         )
@@ -100,7 +100,7 @@
                     <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.administration")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.Administrative.Lvl2.BuildingsLandscaping")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.radio.81")</a>
                 </li>
             </ol>
         </nav>

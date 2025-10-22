@@ -50,12 +50,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-computingInfrastructureActivities3", messages("NACE.telecommunicationsComputing.Lvl3.computingInfrastructureActivities"))),
+            content = HtmlContent(radioText("sector-label-computingInfrastructureActivities3", messages("NACE.radio.63.1"))),
             value = Some(Sector.computingInfrastructureActivities4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.computingInfrastructureActivities3.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-webSearchPortal", messages("NACE.telecommunicationsComputing.Lvl3.webSearchPortal"))),
+                content = HtmlContent(radioText("sector-label-webSearchPortal", messages("NACE.radio.63.9"))),
                 value = Some(Sector.webSearchPortal.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.webSearchPortal.toString)
         )
@@ -93,7 +93,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.telecommunications")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadTelecommunicationLvl2Page().toString>@messages("NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadTelecommunicationLvl2Page().toString>@messages("NACE.radio.63")</a>
         </li>
     </ol>
 </nav>

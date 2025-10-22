@@ -47,32 +47,32 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-agricultural-machinery", messages("NACE.Administrative.Lvl4.AgriculturalMachinery"))),
+            content = HtmlContent(radioText("sector-label-agricultural-machinery", messages("NACE.radio.77.31"))),
             value = Some(Sector.AgriculturalMachineryRental.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.AgriculturalMachineryRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-air-transport-equipment", messages("NACE.Administrative.Lvl4.AirTransportEquipment"))),
+            content = HtmlContent(radioText("sector-label-air-transport-equipment", messages("NACE.radio.77.35"))),
             value = Some(Sector.AirTransportRental.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.AirTransportRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-construction-machinery", messages("NACE.Administrative.Lvl4.ConstructionMachinery"))),
+            content = HtmlContent(radioText("sector-label-construction-machinery", messages("NACE.radio.77.32"))),
             value = Some(Sector.ConstructionMachineryRental.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ConstructionMachineryRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-office-machinery", messages("NACE.Administrative.Lvl4.OfficeMachinery"))),
+            content = HtmlContent(radioText("sector-label-office-machinery", messages("NACE.radio.77.33"))),
             value = Some(Sector.OfficeMachineryRental.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OfficeMachineryRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-water-transport-equipment", messages("NACE.Administrative.Lvl4.WaterTransportEquipment"))),
+            content = HtmlContent(radioText("sector-label-water-transport-equipment", messages("NACE.radio.77.34"))),
             value = Some(Sector.WaterTransportRental.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.WaterTransportRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-machinery", messages("NACE.Administrative.Lvl4.OtherMachinery"))),
+            content = HtmlContent(radioText("sector-label-other-machinery", messages("NACE.radio.77.39"))),
             value = Some(Sector.OtherMachineryRental4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherMachineryRental4.toString)
         )
@@ -109,10 +109,10 @@
                     <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.administration")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.Administrative.Lvl2.RentalLeasing")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.radio.77")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadRentalLvl3Page().toString>@messages("NACE.Administrative.Lvl3.OtherMachineryRental")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadRentalLvl3Page().toString>@messages("NACE.radio.77.3")</a>
                 </li>
             </ol>
         </nav>

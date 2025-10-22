@@ -50,17 +50,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-confectionary", messages("NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery"))),
+            content = HtmlContent(radioText("sector-label-confectionary", messages("NACE.radio.10.82"))),
             value = Some(Sector.confectionery.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.confectionery.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-condiments", messages("NACE.Manufacturing.Lvl4.CondimentsSeasonings"))),
+            content = HtmlContent(radioText("sector-label-condiments", messages("NACE.radio.10.84"))),
             value = Some(Sector.condiments.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.condiments.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-homogenised", messages("NACE.Manufacturing.Lvl4.HomogenisedFood"))),
+            content = HtmlContent(radioText("sector-label-homogenised", messages("NACE.radio.10.86"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-homogenised", messages("NACE.Manufacturing.Lvl4.HomogenisedFood.hint")))
             )),
@@ -68,22 +68,22 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.homogenisedFoodPreparations.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-prepared-meals", messages("NACE.Manufacturing.Lvl4.PreparedMeals"))),
+            content = HtmlContent(radioText("sector-label-prepared-meals", messages("NACE.radio.10.85"))),
             value = Some(Sector.preparedMeals.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.preparedMeals.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-sugar", messages("NACE.Manufacturing.Lvl4.Sugar"))),
+            content = HtmlContent(radioText("sector-label-sugar", messages("NACE.radio.10.81"))),
             value = Some(Sector.sugar.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.sugar.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-tea-coffee", messages("NACE.Manufacturing.Lvl4.TeaCoffee"))),
+            content = HtmlContent(radioText("sector-label-tea-coffee", messages("NACE.radio.10.83"))),
             value = Some(Sector.teaAndCoffee.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.teaAndCoffee.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherFoodProducts"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.10.89"))),
             value = Some(Sector.otherFoodProduct.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherFoodProduct.toString)
         )
@@ -128,23 +128,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Food")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.FoodBeveragesController.loadFoodLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.OtherFoodProducts")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.FoodBeveragesController.loadFoodLvl3Page().toString>@messages("NACE.radio.10.8")</a>
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
-<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
-<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Food")" />
-<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Food")" />
-<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.OtherFoodProducts")" />
-<input type="hidden" name="level4Display_10.82" value="@messages("NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery")" />
-<input type="hidden" name="level4Display_10.84" value="@messages("NACE.Manufacturing.Lvl4.CondimentsSeasonings")" />
-<input type="hidden" name="level4Display_10.86" value="@messages("NACE.Manufacturing.Lvl4.HomogenisedFood")" />
-<input type="hidden" name="level4Display_10.85" value="@messages("NACE.Manufacturing.Lvl4.PreparedMeals")" />
-<input type="hidden" name="level4Display_10.81" value="@messages("NACE.Manufacturing.Lvl4.Sugar")" />
-<input type="hidden" name="level4Display_10.83" value="@messages("NACE.Manufacturing.Lvl4.TeaCoffee")" />
-<input type="hidden" name="level4Display_10.89" value="@messages("NACE.Manufacturing.Lvl4.OtherFoodProducts")" />
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(

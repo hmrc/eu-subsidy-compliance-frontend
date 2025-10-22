@@ -50,17 +50,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-rusks", messages("NACE.Manufacturing.Lvl4.RusksBiscuits"))),
+            content = HtmlContent(radioText("sector-label-rusks", messages("NACE.radio.10.72"))),
             value = Some(Sector.biscuitsAndPreservedCakes.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.biscuitsAndPreservedCakes.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-bread-pastry", messages("NACE.Manufacturing.Lvl4.BreadPastry"))),
+            content = HtmlContent(radioText("sector-label-bread-pastry", messages("NACE.radio.10.71"))),
             value = Some(Sector.breadAndFreshPastry.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.breadAndFreshPastry.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-farinaceous", messages("NACE.Manufacturing.Lvl4.FarinaceousProducts"))),
+            content = HtmlContent(radioText("sector-label-farinaceous", messages("NACE.radio.10.73"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-farinaceous", messages("NACE.Manufacturing.Lvl4.FarinaceousProducts.hint")))
             )),
@@ -110,19 +110,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage().toString>@messages("NACE.Manufacturing.Lvl2.2.Food")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.FoodBeveragesController.loadFoodLvl3Page().toString>@messages("NACE.Manufacturing.Lvl3.BakeryProducts")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.FoodBeveragesController.loadFoodLvl3Page().toString>@messages("NACE.radio.10.7")</a>
         </li>
     </ol>
 </nav>
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
-<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
-<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Food")" />
-<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Food")" />
-<input type="hidden" name="level3Display" value="@messages("NACE.Manufacturing.Lvl3.BakeryProducts")" />
-<input type="hidden" name="level4Display_10.72" value="@messages("NACE.Manufacturing.Lvl4.RusksBiscuits")" />
-<input type="hidden" name="level4Display_10.71" value="@messages("NACE.Manufacturing.Lvl4.BreadPastry")" />
-<input type="hidden" name="level4Display_10.73" value="@messages("NACE.Manufacturing.Lvl4.FarinaceousProducts")" />
-
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(

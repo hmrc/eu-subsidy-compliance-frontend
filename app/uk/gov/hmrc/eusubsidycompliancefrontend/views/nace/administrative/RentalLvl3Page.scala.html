@@ -47,22 +47,22 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-motor-vehicles", messages("NACE.Administrative.Lvl3.MotorVehiclesRental"))),
+            content = HtmlContent(radioText("sector-label-motor-vehicles", messages("NACE.radio.77.1"))),
             value = Some(Sector.MotorVehiclesRental.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.MotorVehiclesRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-personal-household", messages("NACE.Administrative.Lvl3.PersonalRental"))),
+            content = HtmlContent(radioText("sector-label-personal-household", messages("NACE.radio.77.2"))),
             value = Some(Sector.PersonalRental.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PersonalRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-machinery-equipment", messages("NACE.Administrative.Lvl3.OtherMachineryRental"))),
+            content = HtmlContent(radioText("sector-label-machinery-equipment", messages("NACE.radio.77.3"))),
             value = Some(Sector.OtherMachineryRental.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherMachineryRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-intellectual-property", messages("NACE.Administrative.Lvl3.IntellectualProperty"))),
+            content = HtmlContent(radioText("sector-label-intellectual-property", messages("NACE.radio.77.40"))),
             value = Some(Sector.LeasingIntellectualProperty.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.IntellectualProperty.toString)
         ),
@@ -70,7 +70,7 @@
             divider = Some(messages("common.radioItem.or"))
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-intermediation", messages("NACE.Administrative.Lvl3.TangibleGoodsRentalIntermediation"))),
+            content = HtmlContent(radioText("sector-label-intermediation", messages("NACE.radio.77.5"))),
             value = Some(Sector.TangibleGoodsRentalIntermediation.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.TangibleGoodsRentalIntermediation.toString)
         )
@@ -107,7 +107,7 @@
                     <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.administration")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.Administrative.Lvl2.RentalLeasing")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.AdminController.loadAdministrativeLvl2Page().toString>@messages("NACE.radio.77")</a>
                 </li>
             </ol>
         </nav>

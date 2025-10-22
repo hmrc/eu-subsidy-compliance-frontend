@@ -963,8 +963,8 @@ NACE.Manufacturing.Lvl2.1.Machinery = My undertaking repairs, maintains or insta
 NACE.Manufacturing.Lvl2.2.Metals.title = What type of metals, chemicals or materials does your undertaking manufacture?
 NACE.Manufacturing.Lvl2.2.Metals.error = Select the type of metals, chemicals or materials your undertaking manufactures
 NACE.Manufacturing.Lvl2.2.Metals.FabricatedMetal = Fabricated metal products (except machinery and equipment)
-NACE.radio.16 = Wood, cork and straw products (except furniture)
-NACE.radio.22 = Rubber and plastic products
+NACE.Manufacturing.Lvl2.2.Metals.Wood = Wood, cork and straw products (except furniture)
+NACE.Manufacturing.Lvl2.2.Metals.Rubber = Rubber and plastic products
 NACE.Manufacturing.Lvl2.2.Metals.Chemicals = Chemicals and chemical products
 NACE.Manufacturing.Lvl2.2.Metals.Chemicals.hint = Includes basic chemicals, fertilisers, liquid biofuels, manmade fibres, paints and varnishes, pesticides, plastics and synthetic rubber in primary forms, and washing, cleaning and polishing preparations.
 NACE.Manufacturing.Lvl2.2.Metals.BasicMetal = Basic metals
@@ -993,12 +993,10 @@ NACE.Manufacturing.Lvl2.2.Computers.Other.hint = Includes general-purpose and sp
 NACE.Manufacturing.Lvl2.2.Clothes.title = What type of clothes, textiles or homeware does your undertaking manufacture?
 NACE.Manufacturing.Lvl2.2.Clothes.error = Select the type of clothes, textiles or homeware your undertaking manufactures
 NACE.Manufacturing.Lvl2.2.Clothes.Furniture = Furniture
-NACE.radio.31 = Furniture
 NACE.Manufacturing.Lvl2.2.Clothes.Clothing = Clothing
 NACE.Manufacturing.Lvl2.2.Clothes.Textiles = Textiles
-NACE.radio.13 = Textiles
 NACE.Manufacturing.Lvl2.2.Clothes.Textiles.hint = Includes preparation, spinning, weaving and finishing of textiles.
-NACE.radio.15 = Leather and related products
+NACE.Manufacturing.Lvl2.2.Clothes.Leather = Leather and related products
 NACE.Manufacturing.Lvl2.2.Clothes.Leather.hint = Includes bags, footwear and fur.
 
 NACE.Manufacturing.Lvl2.2.Paper.title = What type of paper or printed products does your undertaking manufacture?
@@ -1018,81 +1016,81 @@ NACE.Manufacturing.Lvl2.2.Vehicles.Other.hint = Includes aircraft, bicycles, boa
 NACE.Manufacturing.Food.title = What type of food does your undertaking manufacture?
 NACE.Manufacturing.Food.error = Select the type of food your undertaking manufactures
 
-NACE.Manufacturing.Lvl3.MeatProducts = Meat
+NACE.radio.10.1 = Meat
 NACE.Manufacturing.Food.Meat.title = What type of meat production or processing does your undertaking do?
 NACE.Manufacturing.Food.Meat.error = Select the type of meat production or processing your undertaking does
-NACE.Manufacturing.Lvl4.MeatExceptPoultry = Processing and preserving of meat (except poultry)
-NACE.Manufacturing.Lvl4.PoultryMeat = Processing and preserving of poultry meat
-NACE.Manufacturing.Lvl4.MeatPoultryProducts = Production of meat and poultry meat products
+NACE.radio.10.11 = Processing and preserving of meat (except poultry)
+NACE.radio.10.12 = Processing and preserving of poultry meat
+NACE.radio.10.13 = Production of meat and poultry meat products
 
-NACE.Manufacturing.Lvl3.FishProducts = Fish, crustaceans and molluscs
+NACE.radio.10.2 = Fish, crustaceans and molluscs
 NACE.Manufacturing.Lvl4.FishProducts = Processing and preserving of fish, crustaceans and molluscs
 
 NACE.Manufacturing.Food.FruitAndVeg.title = What type of fruit and vegetable production or processing does your undertaking do?
 NACE.Manufacturing.Food.FruitAndVeg.error = Select the type of fruit and vegetable production or processing your undertaking does
-NACE.Manufacturing.Lvl3.FruitVegetables = Fruit and vegetables
-NACE.Manufacturing.Lvl4.Potatoes = Processing and preserving of potatoes
-NACE.Manufacturing.Lvl4.FruitVegetableJuice = Manufacture of fruit and vegetable juice
-NACE.Manufacturing.Lvl4.OtherFruitVegetables = Other processing and preserving of fruit and vegetables
+NACE.radio.10.3 = Fruit and vegetables
+NACE.radio.10.31 = Processing and preserving of potatoes
+NACE.radio.10.32 = Manufacture of fruit and vegetable juice
+NACE.radio.10.39 = Other processing and preserving of fruit and vegetables
 
 NACE.Manufacturing.Food.OilsAndFats.title = What type of oils and fats does your undertaking manufacture?
 NACE.Manufacturing.Food.OilsAndFats.error = Select the type of oils and fats your undertaking manufactures
-NACE.Manufacturing.Lvl3.OilsFats = Oils and fats
-NACE.Manufacturing.Lvl4.OilsFats = Other oils and fats
-NACE.Manufacturing.Lvl4.Margarine = Margarine and similar edible fats
+NACE.radio.10.4 = Oils and fats
+NACE.radio.10.41 = Other oils and fats
+NACE.radio.10.42 = Margarine and similar edible fats
 
 NACE.Manufacturing.DairyProducts.title = What type of dairy products or ice does your undertaking manufacture?
 NACE.Manufacturing.DairyProducts.error = Select the type of dairy products or ice your undertaking manufactures
-NACE.Manufacturing.Lvl3.DairyProducts = Dairy products and ice
-NACE.Manufacturing.Lvl4.DairyProducts = Dairy products
-NACE.Manufacturing.Lvl4.IceCream = Ice cream and other edible ice
+NACE.radio.10.5 = Dairy products and ice
+NACE.radio.10.51 = Dairy products
+NACE.radio.10.52 = Ice cream and other edible ice
 
 NACE.Manufacturing.GrainMillProducts.title = What type of grain mill products or starch does your undertaking manufacture?
 NACE.Manufacturing.GrainMillProducts.error = Select the type of grain mill products or starch your undertaking manufactures
-NACE.Manufacturing.Lvl3.GrainMillProducts = Grain mill products and starch
+NACE.radio.10.6 = Grain mill products and starch
 NACE.Manufacturing.Lvl3.GrainMillProducts.hint = Includes cereals and flour.
-NACE.Manufacturing.Lvl4.GrainMillProducts = Grain mill products
-NACE.Manufacturing.Lvl4.Starches = Starches and starch products
+NACE.radio.10.61 = Grain mill products
+NACE.radio.10.62 = Starches and starch products
 
 NACE.Manufacturing.BakeryProducts.title = What type of bakery and farinaceous products does your undertaking manufacture?
 NACE.Manufacturing.BakeryProducts.error = Select the type of bakery and farinaceous products your undertaking manufactures
-NACE.Manufacturing.Lvl3.BakeryProducts = Bakery and farinaceous products
+NACE.radio.10.7 = Bakery and farinaceous products
 NACE.Manufacturing.Lvl3.BakeryProducts.hint = For example bread, biscuits, cakes, pastries and pasta.
-NACE.Manufacturing.Lvl4.BreadPastry = Bread, cakes and fresh pastry goods
-NACE.Manufacturing.Lvl4.RusksBiscuits = Biscuits, rusks and preserved pastries and cakes
-NACE.Manufacturing.Lvl4.FarinaceousProducts = Farinaceous products
+NACE.radio.10.71 = Bread, cakes and fresh pastry goods
+NACE.radio.10.72 = Biscuits, rusks and preserved pastries and cakes
+NACE.radio.10.73 = Farinaceous products
 NACE.Manufacturing.Lvl4.FarinaceousProducts.hint = For example pasta and couscous.
 
 NACE.Manufacturing.OtherFoodProducts.title = What type of other food products does your undertaking manufacture?
 NACE.Manufacturing.OtherFoodProducts.error = Select the type of other food products your undertaking manufactures
-NACE.Manufacturing.Lvl3.OtherFoodProducts = Other food products
+NACE.radio.10.8 = Other food products
 NACE.Manufacturing.Lvl3.OtherFoodProducts.hint = Includes cocoa, chocolate and confectionery, condiments and seasonings, food preparations (like baby food) and prepared meals, sugar, tea and coffee, and all other food products.
-NACE.Manufacturing.Lvl4.Sugar = Sugar
-NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery = Cocoa, chocolate and confectionery
-NACE.Manufacturing.Lvl4.TeaCoffee = Tea and coffee
-NACE.Manufacturing.Lvl4.CondimentsSeasonings = Condiments and seasonings
-NACE.Manufacturing.Lvl4.PreparedMeals = Prepared meals
-NACE.Manufacturing.Lvl4.HomogenisedFood = Homogenised food preparations and dietetic food
+NACE.radio.10.81 = Sugar
+NACE.radio.10.82 = Cocoa, chocolate and confectionery
+NACE.radio.10.83 = Tea and coffee
+NACE.radio.10.84 = Condiments and seasonings
+NACE.radio.10.85 = Prepared meals
+NACE.radio.10.86 = Homogenised food preparations and dietetic food
 NACE.Manufacturing.Lvl4.HomogenisedFood.hint = Includes baby food.
-NACE.Manufacturing.Lvl4.OtherFoodProducts = Another type of food product
+NACE.radio.10.89 = Another type of food product
 
 NACE.Manufacturing.PreparedAnimalFeeds.title = What type of prepared animal feeds does your undertaking manufacture?
 NACE.Manufacturing.PreparedAnimalFeeds.error = Select the type of prepared animal feeds your undertaking manufactures
-NACE.Manufacturing.Lvl3.PreparedAnimalFeeds = Prepared animal feeds
-NACE.Manufacturing.Lvl4.FarmAnimalFeeds = Food for farm animals
-NACE.Manufacturing.Lvl4.PetFoods = Pet food
+NACE.radio.10.9 = Prepared animal feeds
+NACE.radio.10.91 = Food for farm animals
+NACE.radio.10.92 = Pet food
 
 ### Beverages ###
 NACE.Manufacturing.Beverages.title = What type of beverages does your undertaking manufacture?
 NACE.Manufacturing.Beverages.error = Select the type of beverages your undertaking manufactures
 NACE.Manufacturing.Lvl3.beverages = Manufacture of beverages
-NACE.Manufacturing.Lvl4.spirits = Spirits (distilled, rectified or blended)
-NACE.Manufacturing.Lvl4.wine = Wine from grapes
-NACE.Manufacturing.Lvl4.cider = Cider and other fruit fermented beverages
-NACE.Manufacturing.Lvl4.otherFermentedBeverages = Other non-distilled fermented beverages
-NACE.manufacturing.lvl4.beer = Beer
-NACE.manufacturing.lvl4.malt = Malt
-NACE.Manufacturing.Lvl4.softDrinks = Soft drinks and bottled waters
+NACE.radio.11.01 = Spirits (distilled, rectified or blended)
+NACE.radio.11.02 = Wine from grapes
+NACE.radio.11.03 = Cider and other fruit fermented beverages
+NACE.radio.11.04 = Other non-distilled fermented beverages
+NACE.radio.11.05 = Beer
+NACE.radio.11.06 = Malt
+NACE.radio.11.07 = Soft drinks and bottled waters
 
 ### Tobacco ###
 NACE.Manufacturing.Lvl3.TobaccoProducts = Manufacture of tobacco products
@@ -1101,112 +1099,110 @@ NACE.Manufacturing.Lvl4.TobaccoProducts = Manufacture of tobacco products
 ### Textiles ###
 NACE.Manufacturing.Textiles.title = What type of textile manufacturing does your undertaking do?
 NACE.Manufacturing.Textiles.error = Select the type of textile manufacturing your undertaking does
-NACE.radio.13.1 = Preparation and spinning of textile fibres
-NACE.radio.13.10 = Preparation and spinning of textile fibres
+NACE.Manufacturing.Lvl3.TextileFibreSpinning = Preparation and spinning of textile fibres
+NACE.Manufacturing.Lvl4.TextileFibreSpinning = Preparation and spinning of textile fibres
 
-NACE.radio.13.2 = Weaving of textiles
-NACE.radio.13.20 = Weaving of textiles
+NACE.Manufacturing.Lvl3.Weaving = Weaving of textiles
+NACE.Manufacturing.Lvl4.Weaving = Weaving of textiles
 
-NACE.radio.13.3 = Finishing of textiles
-NACE.radio.13.30 = Finishing of textiles
+NACE.Manufacturing.Lvl3.FinishingTextiles = Finishing of textiles
+NACE.Manufacturing.Lvl4.FinishingTextiles = Finishing of textiles
 
 NACE.Manufacturing.OtherTextiles.title = What type of textiles does your undertaking manufacture?
 NACE.Manufacturing.OtherTextiles.error = Select the type of textiles your undertaking manufactures
-NACE.radio.13.9 = Manufacture of textiles (except clothes)
-NACE.radio.13.91 = Knitted and crocheted fabrics
-NACE.radio.13.92 = Household textiles and made-up furnishing articles
-NACE.radio.13.93 = Carpets and rugs
-NACE.radio.13.94 = Cordage, rope, twine and netting
-NACE.radio.13.95 = Non-wovens and non-woven articles
-NACE.radio.13.96 = Other technical and industrial textiles
-NACE.radio.13.99 = Another type of textile
+NACE.Manufacturing.Lvl3.OtherTextiles = Manufacture of textiles (except clothes)
+NACE.Manufacturing.Lvl4.KnittedCrochetedFabrics = Knitted and crocheted fabrics
+NACE.Manufacturing.Lvl4.HouseholdFurnishingTextiles = Household textiles and made-up furnishing articles
+NACE.Manufacturing.Lvl4.CarpetsRugs = Carpets and rugs
+NACE.Manufacturing.Lvl4.CordageRopeTwineNetting = Cordage, rope, twine and netting
+NACE.Manufacturing.Lvl4.NonWovens = Non-wovens and non-woven articles
+NACE.Manufacturing.Lvl4.TechnicalIndustrialTextiles = Other technical and industrial textiles
+NACE.Manufacturing.Lvl4.OtherTextiles = Another type of textile
 
 ### Clothing ###
 NACE.Manufacturing.Clothing.title = What type of clothing does your undertaking manufacture?
 NACE.Manufacturing.Clothing.error = Select the type of clothing your undertaking manufactures
-NACE.radio.14 = Clothing
-NACE.radio.14.1 = Knitted and crocheted clothing
-NACE.radio.14.10 = Manufacture of knitted and crocheted apparel
+NACE.Manufacturing.Lvl3.KnittedCrochetedClothing = Knitted and crocheted clothing
+NACE.Manufacturing.Lvl4.KnittedCrochetedApparel = Manufacture of knitted and crocheted apparel
 
 NACE.Manufacturing.OtherClothing.title = What type of clothing or accessories does your undertaking manufacture?
 NACE.Manufacturing.OtherClothing.error = Select the type of clothing or accessories your undertaking manufactures
-
-NACE.radio.14.2 = Other clothing and accessories
+NACE.Manufacturing.Lvl3.OtherClothing = Other clothing and accessories
 NACE.Manufacturing.Lvl3.OtherClothing.hint = Includes leather and fur clothing, outerwear, underwear, workwear and all other clothes and accessories.
-NACE.radio.14.21 = Outerwear
-NACE.radio.14.22 = Underwear
-NACE.radio.14.23 = Workwear
-NACE.radio.14.24 = Leather and fur clothing
-NACE.radio.14.29 = Other clothing and accessories
+NACE.Manufacturing.Lvl4.Outerwear = Outerwear
+NACE.Manufacturing.Lvl4.Underwear = Underwear
+NACE.Manufacturing.Lvl4.Workwear = Workwear
+NACE.Manufacturing.Lvl4.LeatherAndFurClothing = Leather and fur clothing
+NACE.Manufacturing.Lvl4.OtherClothingAccessories = Other clothing and accessories
 
 ### Leather ###
-NACE.manufacturing.Leather.title = What is your undertaking's main business activity in leather or related products?
-NACE.manufacturing.Leather.error = Select your undertaking's main business activity in leather or related products
+NACE.manufacturing.Leather.title = What is your undertaking’s main business activity in leather or related products?
+NACE.manufacturing.Leather.error = Select your undertaking’s main business activity in leather or related products
 
 NACE.Manufacturing.TanningLeather.title = What type of manufacturing or related activity does your undertaking do?
 NACE.Manufacturing.TanningLeather.error = Select the type of manufacturing or related activity your undertaking does
-NACE.radio.15.1 = Tanning, dyeing, dressing of leather and fur; manufacture of luggage, handbags, saddlery and harnesses
-NACE.radio.15.11 = Tanning, dressing, dyeing of leather and fur
-NACE.radio.15.12 = Manufacture of luggage, handbags, saddlery and harnesses of any material
+NACE.Manufacturing.Lvl3.TanningLeather = Tanning, dyeing, dressing of leather and fur; manufacture of luggage, handbags, saddlery and harnesses
+NACE.Manufacturing.Lvl4.TanningLeatherFur = Tanning, dressing, dyeing of leather and fur
+NACE.Manufacturing.Lvl4.LuggageHandbagsSaddlery = Manufacture of luggage, handbags, saddlery and harnesses of any material
 
-NACE.radio.15.2 = Manufacture of footwear
-NACE.radio.15.20 = Manufacture of footwear
+NACE.Manufacturing.Lvl3.Footwear = Manufacture of footwear
+NACE.Manufacturing.Lvl4.Footwear = Manufacture of footwear
 
 ### Wood cork and straw ###
-NACE.Manufacturing.WoodCorkStraw.title = What is your undertaking's main business activity in wood, cork or straw products?
-NACE.Manufacturing.WoodCorkStraw.error = Select your undertaking's main business activity in wood, cork or straw products
+NACE.Manufacturing.WoodCorkStraw.title = What is your undertaking’s main business activity in wood, cork or straw products?
+NACE.Manufacturing.WoodCorkStraw.error = Select your undertaking’s main business activity in wood, cork or straw products
 
-NACE.radio.16.1 = Sawmilling, planing, processing or finishing of wood
+NACE.Manufacturing.Lvl3.SawmillingWood = Sawmilling, planing, processing or finishing of wood
 NACE.Manufacturing.SawmillingWood.Lvl4.error = Select how your undertaking manufactures or processes wood
 NACE.Manufacturing.SawmillingWood.Lvl4.title = How does your undertaking manufacture or process wood?
-NACE.radio.16.11 = Sawmilling and planing
-NACE.radio.16.12 = Processing and finishing
+NACE.Manufacturing.Lvl4.SawmillingWood = Sawmilling and planing
+NACE.Manufacturing.Lvl4.ProcessingFinishingWood = Processing and finishing
 
-NACE.radio.16.2 = Manufacture of products of wood, cork, straw and plaiting materials
+NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting = Manufacture of products of wood, cork, straw and plaiting materials
 NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting.hint = Includes finishing of wood products.
 NACE.Manufacturing.WoodCorkStrawPlaiting.Lvl4.title = What type of wood, cork, straw or plaited product does your undertaking manufacture?
 NACE.Manufacturing.WoodCorkStrawPlaiting.Lvl4.error = Select the type of wood, cork, straw or plaited product your undertaking manufactures
-NACE.radio.16.21 = Veneer sheets and wood-based panels
-NACE.radio.16.22 = Assembled parquet floors
-NACE.radio.16.23 = Other builders' carpentry and joinery
-NACE.radio.16.24 = Wooden containers
-NACE.radio.16.25 = Wooden windows and doors
-NACE.radio.16.26 = Solid fuels from vegetable biomass
-NACE.radio.16.27 = My undertaking carries out finishing of wooden products
-NACE.radio.16.28 = Other products of wood, cork, straw and plaiting materials
+NACE.Manufacturing.Lvl4.VeneerSheetsPanels = Veneer sheets and wood-based panels
+NACE.Manufacturing.Lvl4.ParquetFloors = Assembled parquet floors
+NACE.Manufacturing.Lvl4.BuildersCarpentryJoinery = Other builders’ carpentry and joinery
+NACE.Manufacturing.Lvl4.WoodenContainers = Wooden containers
+NACE.Manufacturing.Lvl4.DoorsWindowsWood = Wooden windows and doors
+NACE.Manufacturing.Lvl4.SolidFuelsBiomass = Solid fuels from vegetable biomass
+NACE.Manufacturing.Lvl4.FinishingWoodenProducts = My undertaking carries out finishing of wooden products
+NACE.Manufacturing.Lvl4.OtherWoodCorkStrawPlaiting = Other products of wood, cork, straw and plaiting materials
 
 ### Paper products ###
 NACE.Manufacturing.PaperProducts.title = What type of paper products does your undertaking manufacture?
 NACE.Manufacturing.PaperProducts.error = Select the type of paper products your undertaking manufactures
-NACE.radio.17.1 = Pulp, paper and paperboard
+NACE.Manufacturing.Lvl3.PulpPaperPaperboard = Pulp, paper and paperboard
 NACE.Manufacturing.PulpPaperPaperboard.title = What type of pulp, paper or paperboard does your undertaking manufacture?
 NACE.Manufacturing.PulpPaperPaperboard.error = Select the type of pulp, paper or paperboard your undertaking manufactures
-NACE.radio.17.11 = Pulp
-NACE.radio.17.12 = Paper and paperboard
+NACE.Manufacturing.Lvl4.Pulp = Pulp
+NACE.Manufacturing.Lvl4.PaperPaperboard = Paper and paperboard
 
 NACE.Manufacturing.ArticlesPaperPaperboard.title = What type of paper or paperboard products does your undertaking manufacture?
 NACE.Manufacturing.ArticlesPaperPaperboard.error = Select the type of paper or paperboard products your undertaking manufactures
-NACE.radio.17.2 = Articles of paper and paperboard
+NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard = Articles of paper and paperboard
 NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard.hint = Includes corrugated paper, household and sanitary goods, stationery and wallpaper.
-NACE.radio.17.21 = Corrugated paper, paperboard and containers of paper and paperboard
-NACE.radio.17.22 = Household and sanitary goods and of toilet requisites
-NACE.radio.17.23 = Paper stationery
-NACE.radio.17.24 = Wallpaper
-NACE.radio.17.25 = Other articles of paper and paperboard
+NACE.Manufacturing.Lvl4.CorrugatedPaper = Corrugated paper, paperboard and containers of paper and paperboard
+NACE.Manufacturing.Lvl4.HouseholdSanitaryGoods = Household and sanitary goods and of toilet requisites
+NACE.Manufacturing.Lvl4.PaperStationery = Paper stationery
+NACE.Manufacturing.Lvl4.Wallpaper = Wallpaper
+NACE.Manufacturing.Lvl4.OtherPaperArticles = Other articles of paper and paperboard
 
 ### Printed products ###
 NACE.Manufacturing.Printing.title = What is your undertaking’s main business activity in printing?
 NACE.Manufacturing.Printing.error = Select your undertaking’s main business activity in printing
-NACE.radio.18.1 = Printing and service activities related to printing
+NACE.Manufacturing.Lvl3.PrintingServices = Printing and service activities related to printing
 NACE.Manufacturing.Lvl3.PrintingServices.hint = Includes binding, pre-press and pre-media services, other printing and related services.
 NACE.Manufacturing.PrintingServices.title = What type of printing or service activity does your undertaking do?
 NACE.Manufacturing.PrintingServices.error = Select the type of printing or service activity your undertaking does
-NACE.radio.18.11 = Printing of newspapers
-NACE.radio.18.12 = Other printing
-NACE.radio.18.13 = Pre-press and pre-media services
-NACE.radio.18.14 = Binding and related services
+NACE.Manufacturing.Lvl4.Newspapers = Printing of newspapers
+NACE.Manufacturing.Lvl4.OtherPrinting = Other printing
+NACE.Manufacturing.Lvl4.PrePressMedia = Pre-press and pre-media services
+NACE.Manufacturing.Lvl4.Binding = Binding and related services
 
-NACE.radio.18.2 = Reproduction of recorded media
+NACE.Manufacturing.Lvl3.ReproductionRecordedMedia = Reproduction of recorded media
 NACE.Manufacturing.Lvl4.ReproductionRecordedMedia = Reproduction of recorded media
 
 ### Coke and petroleum ###
@@ -1268,23 +1264,23 @@ NACE.Manufacturing.Lvl4.PharmaceuticalPreparations = Manufacture of pharmaceutic
 ### Rubber and plastic ###
 NACE.Manufacturing.RubberPlastic.title = What type of rubber or plastic products does your undertaking manufacture?
 NACE.Manufacturing.RubberPlastic.error = Select the type of rubber or plastic products your undertaking manufactures
-NACE.radio.22.1 = Rubber products
+NACE.Manufacturing.Lvl3.RubberProducts = Rubber products
 NACE.Manufacturing.Rubber.title = What type of rubber products does your undertaking manufacture?
 NACE.Manufacturing.Rubber.error = Select the type of rubber products your undertaking manufactures
-NACE.radio.22.11 = Rubber tyres and tubes
+NACE.Manufacturing.Lvl4.RubberTyresTubes = Rubber tyres and tubes
 NACE.Manufacturing.Lvl4.RubberTyresTubes.hint = Includes retreading and rebuilding of tyres.
-NACE.radio.22.19 = Another type of rubber products
+NACE.Manufacturing.Lvl4.OtherRubberProducts = Another type of rubber products
 
-NACE.radio.22.2 = Plastic products
+NACE.Manufacturing.Lvl3.PlasticProducts = Plastic products
 NACE.Manufacturing.Lvl3.PlasticProducts.hint = Includes processing and finishing of plastic products.
 NACE.Manufacturing.Plastic.title = What type of plastic products does your undertaking manufacture?
 NACE.Manufacturing.Plastic.error = Select the type of plastic products your undertaking manufactures
-NACE.radio.22.21 = Plates, sheets, tubes and profiles
-NACE.radio.22.22 = Packing goods
-NACE.radio.22.23 = Doors and windows
-NACE.radio.22.24 = Builders’ ware
-NACE.radio.22.25 = My undertaking carries out processing and finishing of plastic products
-NACE.radio.22.26 = Another type of plastic product
+NACE.Manufacturing.Lvl4.PlasticPlatesSheets = Plates, sheets, tubes and profiles
+NACE.Manufacturing.Lvl4.PlasticPackingGoods = Packing goods
+NACE.Manufacturing.Lvl4.PlasticDoorsWindows = Doors and windows
+NACE.Manufacturing.Lvl4.BuildersWarePlastic = Builders’ ware
+NACE.Manufacturing.Lvl4.FinishingPlasticProducts = My undertaking carries out processing and finishing of plastic products
+NACE.Manufacturing.Lvl4.OtherPlasticProducts = Another type of plastic product
 
 ### Non metallic mineral products ###
 NACE.Manufacturing.nonMetallicMineral.title = What type of non-metallic mineral products does your undertaking manufacture?
@@ -1433,63 +1429,63 @@ NACE.Manufacturing.Lvl4.OtherFabricatedMetalProducts = Another type of fabricate
 NACE.Manufacturing.ComputersElectronics.title = What type of computers, electronics or optical products does your undertaking manufacture?
 NACE.Manufacturing.ComputersElectronics.error = Select the type of computers, electronics or optical products your undertaking manufactures
 
-NACE.radio.26.1 = Electronic components and boards
+NACE.Manufacturing.Lvl3.ElectronicComponentsBoards = Electronic components and boards
 NACE.Manufacturing.ElectronicComponentsBoards.title = What type of electronic components and boards does your undertaking manufacture?
 NACE.Manufacturing.ElectronicComponentsBoards.error = Select the type of electronic components and boards your undertaking manufactures
-NACE.radio.26.11 = Electronic components
-NACE.radio.26.12 = Loaded electronic boards
+NACE.Manufacturing.Lvl4.ElectronicComponents = Electronic components
+NACE.Manufacturing.Lvl4.LoadedElectronicBoards = Loaded electronic boards
 
-NACE.radio.26.2 = Computers and peripheral equipment
+NACE.Manufacturing.Lvl3.ComputersPeripherals = Computers and peripheral equipment
 NACE.Manufacturing.Lvl4.ComputersPeripherals = Manufacture of computers and peripheral equipment
 
-NACE.radio.26.3 = Communication equipment
+NACE.Manufacturing.Lvl3.CommunicationEquipment = Communication equipment
 NACE.Manufacturing.Lvl4.CommunicationEquipment = Manufacture of communication equipment
 
-NACE.radio.26.4 = Consumer electronics
+NACE.Manufacturing.Lvl3.ConsumerElectronics = Consumer electronics
 NACE.Manufacturing.Lvl4.ConsumerElectronics = Manufacture of consumer electronics
 
-NACE.radio.26.5 = Measuring testing instruments, clocks and watches
+NACE.Manufacturing.Lvl3.MeasuringTestingInstruments = Measuring testing instruments, clocks and watches
 NACE.Manufacturing.MeasuringTestingInstruments.title = What type of instruments does your undertaking manufacture?
 NACE.Manufacturing.MeasuringTestingInstruments.error = Select the type of instruments your undertaking manufactures
-NACE.radio.26.51 = Instruments and appliances for measuring, testing and navigation
-NACE.radio.26.52 = Watches and clocks
+NACE.Manufacturing.Lvl4.MeasuringTestingNavigation = Instruments and appliances for measuring, testing and navigation
+NACE.Manufacturing.Lvl4.WatchesClocks = Watches and clocks
 
-NACE.radio.26.6 = Irradiation, electromedical and electrotherapeutic equipment
+NACE.Manufacturing.Lvl3.IrradiationElectromedical = Irradiation, electromedical and electrotherapeutic equipment
 NACE.Manufacturing.Lvl4.IrradiationElectromedical = Manufacture of irradiation, electromedical and electrotherapeutic equipment
 
-NACE.radio.26.7 = Optical instruments, magnetic and optical media, photographic equipment
+NACE.Manufacturing.Lvl3.OpticalInstruments = Optical instruments, magnetic and optical media, photographic equipment
 NACE.Manufacturing.Lvl4.OpticalInstruments = Manufacture of optical instruments, magnetic and optical media and photographic equipment
 
 ### Electrical equipment ###
 NACE.Manufacturing.ElectricalEquipment.title = What type of electrical equipment does your undertaking manufacture?
 NACE.Manufacturing.ElectricalEquipment.error = Select the type of electrical equipment your undertaking manufactures
 
-NACE.radio.27.1 = Electric motors, generators, transformers; electricity distribution and control apparatus
+NACE.Manufacturing.Lvl3.ElectricMotorsGenerators = Electric motors, generators, transformers; electricity distribution and control apparatus
 NACE.Manufacturing.Lvl3.ElectricMotorsGenerators.title = What type of equipment for power generation, transmission or distribution does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.ElectricMotorsGenerators.error = Select the type of equipment for power generation, transmission or distribution your undertaking manufactures
-NACE.radio.27.11 = Electric motors, generators and transformers
-NACE.radio.27.12 = Electricity distribution and control apparatus
+NACE.Manufacturing.Lvl4.ElectricMotorsGenerators = Electric motors, generators and transformers
+NACE.Manufacturing.Lvl4.ElectricityDistributionControl = Electricity distribution and control apparatus
 
-NACE.radio.27.2 = Batteries and accumulators
+NACE.Manufacturing.Lvl3.BatteriesAccumulators = Batteries and accumulators
 NACE.Manufacturing.Lvl4.BatteriesAccumulators = Manufacture of batteries and accumulators
 
-NACE.radio.27.3 = Wiring and wiring devices
+NACE.Manufacturing.Lvl3.WiringDevices = Wiring and wiring devices
 NACE.Manufacturing.WiringDevices.title = What type of wiring or wiring device does your undertaking manufacture?
 NACE.Manufacturing.WiringDevices.error = Select the type of wiring or wiring device your undertaking manufactures
-NACE.radio.27.31 = Fibreoptic cables
-NACE.radio.27.32 = Other electronic and electric wires and cables
-NACE.radio.27.33 = Wiring devices
+NACE.Manufacturing.Lvl4.FibreOpticCables = Fibreoptic cables
+NACE.Manufacturing.Lvl4.OtherWiresCables = Other electronic and electric wires and cables
+NACE.Manufacturing.Lvl4.WiringDevices = Wiring devices
 
-NACE.radio.27.4 = Lighting equipment
+NACE.Manufacturing.Lvl3.LightingEquipment = Lighting equipment
 NACE.Manufacturing.Lvl4.LightingEquipment = Manufacture of lighting equipment
 
-NACE.radio.27.5 = Domestic appliances
+NACE.Manufacturing.Lvl3.DomesticAppliances = Domestic appliances
 NACE.Manufacturing.DomesticAppliances.title = What type of domestic appliances does your undertaking manufacture?
 NACE.Manufacturing.DomesticAppliances.error = Select the type of domesic appliances your undertaking manufactures
-NACE.radio.27.51 = Electric domestic appliances
-NACE.radio.27.52 = Non-electric domestic appliances
+NACE.Manufacturing.Lvl4.ElectricDomesticAppliances = Electric domestic appliances
+NACE.Manufacturing.Lvl4.NonElectricDomesticAppliances = Non-electric domestic appliances
 
-NACE.radio.27.9 = Other electrical equipment
+NACE.Manufacturing.Lvl3.OtherElectricalEquipment = Other electrical equipment
 NACE.Manufacturing.Lvl4.OtherElectricalEquipment = Manufacture of other electrical equipment
 
 ### Other machinery and equipment ###
@@ -1542,48 +1538,48 @@ NACE.radio.28.99 = Other special-purpose machinery
 ### Motor vehicles, trailers and parts ###
 NACE.Manufacturing.MotorVehicles.title = What type of motor vehicles, trailers or parts does your undertaking manufacture?
 NACE.Manufacturing.MotorVehicles.error = Select the type of motor vehicles, trailers or parts your undertaking manufactures
-NACE.radio.29.1 = Motor vehicles
+NACE.Manufacturing.Lvl3.MotorVehicles = Motor vehicles
 NACE.Manufacturing.Lvl4.MotorVehicles = Manufacture of motor vehicles
 
-NACE.radio.29.2 = Bodies and coachwork for motor vehicles; trailers and semi-trailers
+NACE.Manufacturing.Lvl3.BodiesTrailers = Bodies and coachwork for motor vehicles; trailers and semi-trailers
 NACE.Manufacturing.Lvl4.BodiesTrailers = Manufacture of bodies and coachwork for motor vehicles; manufacture of trailers and semi-trailers
 
-NACE.radio.29.3 = Motor vehicle parts and accessories
+NACE.Manufacturing.Lvl3.MotorVehiclePartsAccessories = Motor vehicle parts and accessories
 NACE.Manufacturing.MotorVehiclePartsAccessories.title = What type of motor vehicle parts and accessories does your undertaking manufacture?
 NACE.Manufacturing.MotorVehiclePartsAccessories.error = Select the type of motor vehicle parts and accessories your undertaking manufactures
-NACE.radio.29.31 = Electrical and electronic equipment for motor vehicles
-NACE.radio.29.32 = Other parts and accessories for motor vehicles
+NACE.Manufacturing.Lvl4.ElectricalElectronicEquipmentVehicles = Electrical and electronic equipment for motor vehicles
+NACE.Manufacturing.Lvl4.OtherPartsAccessoriesVehicles = Other parts and accessories for motor vehicles
 
 ### Other transport equipment ###
 NACE.Manufacturing.OtherTransportEquipment.title = What type of transport equipment does your undertaking manufacture?
 NACE.Manufacturing.OtherTransportEquipment.error = Select the type of transport equipment your undertaking manufactures
 
-NACE.radio.30.1 = Ships and boats
+NACE.Manufacturing.Lvl3.ShipsBoats = Ships and boats
 NACE.Manufacturing.ShipsBoats.title = What type of ships and boats does your undertaking build?
 NACE.Manufacturing.ShipsBoats.error = Select the type of ships and boats your undertaking builds
-NACE.radio.30.11 = Civilian ships and floating structures
-NACE.radio.30.12 = Pleasure and sporting boats
-NACE.radio.30.13 = Military ships and vessels
+NACE.Manufacturing.Lvl4.CivilianShips = Civilian ships and floating structures
+NACE.Manufacturing.Lvl4.PleasureSportingBoats = Pleasure and sporting boats
+NACE.Manufacturing.Lvl4.MilitaryShips = Military ships and vessels
 
-NACE.radio.30.2 = Railway locomotives and rolling stock
+NACE.Manufacturing.Lvl3.RailwayLocomotives = Railway locomotives and rolling stock
 NACE.Manufacturing.Lvl4.RailwayLocomotives = Manufacture of railway locomotives and rolling stock
 
-NACE.radio.30.3 = Aircraft, spacecraft and related machinery
+NACE.Manufacturing.Lvl3.AirSpacecraft = Aircraft, spacecraft and related machinery
 NACE.Manufacturing.AirSpacecraft.title = What type of aircraft, spacecraft and related machinery does your undertaking manufacture?
 NACE.Manufacturing.AirSpacecraft.error = Select the type of aircraft, spacecraft and related machinery your undertaking manufactures
-NACE.radio.30.31 = Civilian aircraft, spacecraft and related machinery
-NACE.radio.30.32 = Military aircraft, spacecraft and related machinery
+NACE.Manufacturing.Lvl4.CivilianAirSpacecraft = Civilian aircraft, spacecraft and related machinery
+NACE.Manufacturing.Lvl4.MilitaryAirSpacecraft = Military aircraft, spacecraft and related machinery
 
-NACE.radio.30.4 = Military fighting vehicles
+NACE.Manufacturing.Lvl3.MilitaryVehicles = Military fighting vehicles
 NACE.Manufacturing.Lvl4.MilitaryVehicles = Manufacture of military fighting vehicles
 
-NACE.radio.30.9 = Other transport equipment
+NACE.Manufacturing.Lvl3.OtherTransportEquipment = Other transport equipment
 NACE.Manufacturing.Lvl3.OtherTransportEquipment.hint = Includes bicycles, motorcycles and invalid carriages (like mobility scooters).
 NACE.Manufacturing.OtherTransportEquipment.2.title = What type of other transport equipment does your undertaking manufacture?
 NACE.Manufacturing.OtherTransportEquipment.2.error = Select the type of other transport equipment your undertaking manufactures
-NACE.radio.30.91 = Motorcycles
-NACE.radio.30.92 = Bicycles and invalid carriages
-NACE.radio.30.99 = Another type of transport equipment
+NACE.Manufacturing.Lvl4.Motorcycles = Motorcycles
+NACE.Manufacturing.Lvl4.BicyclesInvalidCarriages = Bicycles and invalid carriages
+NACE.Manufacturing.Lvl4.OtherTransport = Another type of transport equipment
 
 ### Furniture ###
 NACE.Manufacturing.Lvl3.Furniture = Manufacture of furniture
@@ -2052,38 +2048,38 @@ NACE.publishingBroadcasting.Lvl4.otherContentDistributionActivities = Other cont
 #telecommunicationsComputing NACE Sector2,3,4
 NACE.telecommunicationsComputing.Lvl1.title = What is your undertaking’s main business activity in telecommunications and computing?
 NACE.telecommunicationsComputing.Lvl1.error = Select your undertaking’s main business activity in telecommunications and computing
-NACE.telecommunicationsComputing.Lvl2.telecommunication = Telecommunication
+NACE.radio.61 = Telecommunication
 NACE.telecommunicationsComputing.Lvl2.telecommunication.title = What is your undertaking’s main business activity in telecommunications?
 NACE.telecommunicationsComputing.Lvl2.telecommunication.error = Select your undertaking’s main business activity in telecommunications
-NACE.telecommunicationsComputing.Lvl3.wiredTelecommunication = Wired, wireless and satellite telecommunication
+NACE.radio.61.1 = Wired, wireless and satellite telecommunication
 NACE.telecommunicationsComputing.Lvl4.wiredWirelessSatellite = Wired, wireless, and satellite telecommunication activities
-NACE.telecommunicationsComputing.Lvl3.resellingTelecommunication = Telecommunication reselling and intermediation services for telecommunication
+NACE.radio.61.2 = Telecommunication reselling and intermediation services for telecommunication
 NACE.telecommunicationsComputing.Lvl4.resellingTelecom = Telecommunication reselling activities and intermediation service activities for telecommunication
-NACE.telecommunicationsComputing.Lvl3.otherTelecommunications = Other telecommunication activities
+NACE.radio.61.9 = Other telecommunication activities
 NACE.Telecommunications.Lvl4.otherTelecom = Other telecommunication activities
 
-NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy = Computer programming, consultancy and related activities
+NACE.radio.62 = Computer programming, consultancy and related activities
 NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.title = What is your undertaking’s main business activity in computer programming, consultancy and related activities?
 NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.hint = Includes computer facilities management and other information technology and computer service activities.
 NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.error = Select your undertaking’s main business activity in computer programming, consultancy and related activities
-NACE.telecommunicationsComputing.Lvl3.computerProgrammingActivities = Computer programming
+NACE.radio.62.1 = Computer programming
 NACE.telecommunicationsComputing.Lvl4.computerProgrammingActivities = Computer programming activities
-NACE.telecommunicationsComputing.Lvl3.computerFacilitiesConsultancy = Computer facilities management and consultancy
+NACE.radio.62.2 = Computer facilities management and consultancy
 NACE.telecommunicationsComputing.Lvl4.consultancy = Computer consultancy and computer facilities management activities
-NACE.telecommunicationsComputing.Lvl3.otherComputerServiceActivities = Other information technology and computer service activities
+NACE.radio.62.9 = Other information technology and computer service activities
 NACE.telecommunicationsComputing.Lvl4.otherComputerServiceActivities = Other information technology and computer service activities
 
-NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities = Computing infrastructure, data processing, hosting and other information service activities
+NACE.radio.63 = Computing infrastructure, data processing, hosting and other information service activities
 NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities.title = What is your undertaking’s main business activity in information services?
 NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities.hint = Includes web search portal activities and other information services.
 NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities.error = Select your undertaking’s main business activity in formation services
-NACE.telecommunicationsComputing.Lvl3.computingInfrastructureActivities = Computing infrastructure, data processing, hosting and related activities
+NACE.radio.63.1 = Computing infrastructure, data processing, hosting and related activities
 NACE.telecommunicationsComputing.Lvl4.infrastructureHosting = Computing infrastructure, data processing, hosting and related activities
-NACE.telecommunicationsComputing.Lvl3.webSearchPortal = Web search portal activities and other information services
+NACE.radio.63.9 = Web search portal activities and other information services
 NACE.telecommunicationsComputing.Lvl3.webSearchPortal.title = What is your undertaking’s main business activity in web search portal activities and other information services?
 NACE.telecommunicationsComputing.Lvl3.webSearchPortal.error = Select your undertaking’s main business activity in web search portal activities and other information services
-NACE.telecommunicationsComputing.Lvl4.webSearchPortalActivities = Web search portal activities
-NACE.telecommunicationsComputing.Lvl4.otherInformationServices = Other information service activities
+NACE.radio.63.91 = Web search portal activities
+NACE.radio.63.92 = Other information service activities
 
 #FinancialServicesInsurance NACE Sector2,3,4
 NACE.FinancialServicesInsurance.Lvl2.FinancialServiceActivities = Financial service activities, except insurance and pension funding
@@ -2216,167 +2212,167 @@ NACE.professional.Lvl4.veterinary = Veterinary activities
 NACE.publicAdministration.Lvl2.publicAdministrationDefence = Public administration and defence; compulsory social security
 NACE.publicAdministration.Lvl2.publicAdministrationDefence.title = What is your undertaking’s main business activity in public administration, defence and compulsory social security?
 NACE.publicAdministration.Lvl2.publicAdministrationDefence.error = Select your undertaking’s main business activity in public administration, defence and social security
-NACE.radio.84.1 = Administration of the State and the economic, social and environmental policies of the community
+NACE.publicAdministration.Lvl3.administrationGeneral = Administration of the State and the economic, social and environmental policies of the community
 NACE.publicAdministration.Lvl3.administrationGeneral.title = What is your undertaking’s main business activity in public administration?
 NACE.publicAdministration.Lvl3.administrationGeneral.error = Select your undertaking’s main business activity in public administration
-NACE.radio.84.11 = General public administration
-NACE.radio.84.12 = Regulation of health care, education, cultural services and other social services
-NACE.radio.84.13 = Regulation of and contribution to more efficient operation of businesses
-NACE.radio.84.2 = Provision of services to the community as a whole
+NACE.publicAdministration.Lvl4.generalPublicAdmin = General public administration
+NACE.publicAdministration.Lvl4.healthEducationRegulation = Regulation of health care, education, cultural services and other social services
+NACE.publicAdministration.Lvl4.businessRegulation = Regulation of and contribution to more efficient operation of businesses
+NACE.publicAdministration.Lvl3.communityServices = Provision of services to the community as a whole
 NACE.publicAdministration.Lvl3.communityServices.title = What is your undertaking’s main business activity in provision of services to the community?
 NACE.publicAdministration.Lvl3.communityServices.error = Select your undertaking’s main business activity in provision of services to the community
-NACE.radio.84.21 = Foreign affairs
-NACE.radio.84.22 = Defence
-NACE.radio.84.23 = Justice and judicial activities
-NACE.radio.84.24 = Public order and safety
-NACE.radio.84.25 = Fire service activities
-NACE.radio.84.30 = Compulsory social security activities
+NACE.publicAdministration.Lvl4.foreignAffairs = Foreign affairs
+NACE.publicAdministration.Lvl4.defence = Defence
+NACE.publicAdministration.Lvl4.justiceJudicial = Justice and judicial activities
+NACE.publicAdministration.Lvl4.publicOrderSafety = Public order and safety
+NACE.publicAdministration.Lvl4.fireService = Fire service activities
+NACE.publicAdministration.Lvl3.compulsorySocialSecurity = Compulsory social security activities
 NACE.publicAdministration.Lvl4.compulsorySocialSecurity = Compulsory social security activities
 
 #Education NACE Sector2,3,4
 NACE.education.Lvl2.education = Education
 NACE.education.Lvl2.education.title = What is your undertaking’s main business activity in education?
 NACE.education.Lvl2.education.error = Select your undertaking’s main business activity in education
-NACE.radio.85.10 = Pre-primary education
+NACE.education.Lvl3.prePrimary = Pre-primary education
 NACE.education.Lvl4.prePrimary = Pre-primary education
-NACE.radio.85.20 = Primary education
+NACE.education.Lvl3.primary = Primary education
 NACE.education.Lvl4.primary = Primary education
-NACE.radio.85.3 = Secondary and post-secondary non-tertiary education
+NACE.education.Lvl3.secondaryNonTertiary = Secondary and post-secondary non-tertiary education
 NACE.education.Lvl3.secondaryNonTertiary.title = What type of secondary or post-secondary education does your undertaking provide?
 NACE.education.Lvl3.secondaryNonTertiary.error = Select the type of secondary or post-secondary education your undertaking provides
-NACE.radio.85.31 = General secondary education
-NACE.radio.85.32 = Vocational secondary education
-NACE.radio.85.33 = Post-secondary non-tertiary education
-NACE.radio.85.40 = Tertiary education
+NACE.education.Lvl4.generalSecondary = General secondary education
+NACE.education.Lvl4.vocationalSecondary = Vocational secondary education
+NACE.education.Lvl4.postSecondaryNonTertiary = Post-secondary non-tertiary education
+NACE.education.Lvl3.tertiary = Tertiary education
 NACE.education.Lvl4.tertiary = Tertiary education
-NACE.radio.85.5 = Other education
+NACE.education.Lvl3.otherEducation = Other education
 NACE.education.Lvl3.otherEducation.title = What type of other education does your undertaking provide?
 NACE.education.Lvl3.otherEducation.error = Select the type of other education your undertaking provides
-NACE.radio.85.51 = Sports and recreation education
-NACE.radio.85.52 = Cultural education
-NACE.radio.85.53 = Driving school
-NACE.radio.85.59 = Another type of education
-NACE.radio.85.6 = Educational support
+NACE.education.Lvl4.sportsEducation = Sports and recreation education
+NACE.education.Lvl4.culturalEducation = Cultural education
+NACE.education.Lvl4.drivingSchool = Driving school
+NACE.education.Lvl4.otherEducationNEC = Another type of education
+NACE.education.Lvl3.educationalSupport = Educational support
 NACE.education.Lvl3.educationalSupport.title = What type of educational support does your undertaking provide?
 NACE.education.Lvl3.educationalSupport.error = Select the type of educational support your undertaking provides
-NACE.radio.85.61 = Intermediation service activities for courses and tutors
-NACE.radio.85.69 = Other educational support
+NACE.education.Lvl4.courseTutors = Intermediation service activities for courses and tutors
+NACE.education.Lvl4.supportNEC = Other educational support
 
 #HumanHealthSocialWork NACE Sector2,3,4
 NACE.humanHealth.Lvl1.title = What is your undertaking’s main business activity in human health and social work?
 NACE.humanHealth.Lvl1.error = Select your undertaking’s main business activity in human healthcare and social work
-NACE.radio.86 = Human health activities
+NACE.humanHealth.Lvl2.humanHealth = Human health activities
 NACE.humanHealth.Lvl2.humanHealth.title = What type of healthcare does your undertaking provide?
 NACE.humanHealth.Lvl2.humanHealth.hint = Includes hospitals and medical and dental practices.
 NACE.humanHealth.Lvl2.humanHealth.error = Select the type of healthcare your undertaking provides
-NACE.radio.86.10 = Hospital
+NACE.humanHealth.Lvl3.hospital = Hospital
 NACE.humanHealth.Lvl4.hospital = Hospital activities
-NACE.radio.86.2 = Medical and dental practice
+NACE.humanHealth.Lvl3.medicalDental = Medical and dental practice
 NACE.humanHealth.Lvl3.medicalDental.title = What is your undertaking’s main business activity in medical and dental practice and related activities?
 NACE.humanHealth.Lvl3.medicalDental.error = Select your undertaking’s main business activity in medical and dental practice and related activities
-NACE.radio.86.21 = General medical practice activities
-NACE.radio.86.22 = Medical specialists activities
-NACE.radio.86.23 = Dental practice care
-NACE.radio.86.9 = Other human health activities
+NACE.humanHealth.Lvl4.generalPractice = General medical practice activities
+NACE.humanHealth.Lvl4.specialists = Medical specialists activities
+NACE.humanHealth.Lvl4.dental = Dental practice care
+NACE.humanHealth.Lvl3.otherHumanHealth = Other human health activities
 NACE.humanHealth.Lvl3.otherHumanHealth.title = What type of other human health activities or services does your undertaking provide?
 NACE.humanHealth.Lvl3.otherHumanHealth.error = Select the type of other human health activities or services your undertaking provides
-NACE.radio.86.91 = Diagnostic imaging services and medical laboratory activities
-NACE.radio.86.92 = Patient transportation by ambulance
-NACE.radio.86.93 = Activities of psychologists and psychotherapists (except medical doctors)
-NACE.radio.86.94 = Nursing and midwifery
-NACE.radio.86.95 = Physiotherapy
-NACE.radio.86.96 = Traditional, complementary and alternative medicine
-NACE.radio.86.97 = Intermediation services for medical, dental and other human health services
-NACE.radio.86.99 = Any other human health activities
-NACE.radio.87 = Residential care activities
+NACE.humanHealth.Lvl4.diagnosticImaging = Diagnostic imaging services and medical laboratory activities
+NACE.humanHealth.Lvl4.ambulance = Patient transportation by ambulance
+NACE.humanHealth.Lvl4.psychologists = Activities of psychologists and psychotherapists (except medical doctors)
+NACE.humanHealth.Lvl4.nursingMidwifery = Nursing and midwifery
+NACE.humanHealth.Lvl4.physiotherapy = Physiotherapy
+NACE.humanHealth.Lvl4.traditionalMedicine = Traditional, complementary and alternative medicine
+NACE.humanHealth.Lvl4.intermediationServices = Intermediation services for medical, dental and other human health services
+NACE.humanHealth.Lvl4.otherHumanHealthNEC = Any other human health activities
+NACE.humanHealth.Lvl2.residentialCare = Residential care activities
 NACE.humanHealth.Lvl2.residentialCare.title = What type of residential care does your undertaking provide?
 NACE.humanHealth.Lvl2.residentialCare.error = Select the type of other residential care activities your undertaking does
-NACE.radio.87.10 = Residential nursing care
+NACE.humanHealth.Lvl3.residentialNursing = Residential nursing care
 NACE.humanHealth.Lvl4.residentialNursing = Residential nursing care activities
-NACE.radio.87.20 = Residential care activities for persons living with or having a diagnosis of a mental illness or substance abuse
+NACE.humanHealth.Lvl3.mentalIllnessSubstanceAbuseCare = Residential care activities for persons living with or having a diagnosis of a mental illness or substance abuse
 NACE.humanHealth.Lvl4.mentalIllnessSubstanceAbuseCare = Residential care activities for persons living with or having a diagnosis of a mental illness or substance abuse
-NACE.radio.87.30 = Residential care activities for older persons or persons with physical disabilities
+NACE.humanHealth.Lvl3.olderPersonsDisabilitiesCare = Residential care activities for older persons or persons with physical disabilities
 NACE.humanHealth.Lvl4.olderPersonsDisabilitiesCare = Residential care activities for older persons or persons with physical disabilities
-NACE.radio.87.9 = Other residential care activities
+NACE.humanHealth.Lvl3.otherResidentialCare = Other residential care activities
 NACE.humanHealth.Lvl3.otherResidentialCare.title = What type of other residential care activities does your undertaking do?
 NACE.humanHealth.Lvl3.otherResidentialCare.hint =  Includes intermediation services for residential care.
 NACE.humanHealth.Lvl3.otherResidentialCare.error =  Select the type of residential care your undertaking provides
 NACE.humanHealth.Lvl4.otherResidentialCare = Other residential care activities
-NACE.radio.87.91 = Intermediation services for residential care activities
-NACE.radio.87.99 = Any other residential care activities
-NACE.radio.88 = Social work activities without accommodation
+NACE.humanHealth.Lvl4.intermediationResidentialCare = Intermediation services for residential care activities
+NACE.humanHealth.Lvl4.otherResidentialCareNEC = Any other residential care activities
+NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation = Social work activities without accommodation
 NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation.title = What type of social work activities does your undertaking do?
 NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation.error = Select the type of social work activities your undertaking does
-NACE.radio.88.10 = Social work activities without accommodation for older persons or persons with disabilities
+NACE.humanHealth.Lvl3.socialWorkDisabilities = Social work activities without accommodation for older persons or persons with disabilities
 NACE.humanHealth.Lvl4.socialWorkDisabilities = Social work activities without accommodation for older persons or persons with disabilities
-NACE.radio.88.9 = Other social work activities without accommodation
+NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation = Other social work activities without accommodation
 NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation.title = What type of other social work activities does your undertaking do?
 NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation.hint = Includes child daycare.
 NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation.error = Select the type of other social work activities your undertaking does.
-NACE.radio.88.91 = Child daycare
-NACE.radio.88.99 = Any other social work activities without accommodation
+NACE.humanHealth.Lvl4.childDayCare = Child daycare
+NACE.humanHealth.Lvl4.otherSocialWorkNEC = Any other social work activities without accommodation
 
 #ArtsSportsRecreation NACE Sector2,3,4
 
 NACE.artsSportsRecreation.Lvl1.title = What is your undertaking’s main business activity in arts, sports and recreation?
 NACE.artsSportsRecreation.Lvl1.error = Select your undertaking’s main business activity in arts, sports and recreation
-NACE.radio.90 = Arts creation and performing arts
+NACE.artsSportsRecreation.Lvl2.artsCreationPerforming = Arts creation and performing arts
 NACE.artsSportsRecreation.Lvl2.artsCreationPerforming.title = What is your undertaking’s main business activity in arts creation and performing arts?
 NACE.artsSportsRecreation.Lvl2.artsCreationPerforming.error = Select your undertaking’s main business activity in arts creation and performing arts
-NACE.radio.90.1 = Arts creation
+NACE.artsSportsRecreation.Lvl3.artsCreation = Arts creation
 NACE.artsSportsRecreation.Lvl3.artsCreation.title = What is your undertaking’s main business activity in arts creation?
 NACE.artsSportsRecreation.Lvl3.artsCreation.error = Select your undertaking’s main business activity in arts creation
-NACE.radio.90.11 = Literary creation and musical composition
-NACE.radio.90.12 = Visual arts creation
-NACE.radio.90.13 = Other arts creation activities
-NACE.radio.90.2 = Performing arts
+NACE.artsSportsRecreation.Lvl4.literaryMusical = Literary creation and musical composition
+NACE.artsSportsRecreation.Lvl4.visualArtsCreation = Visual arts creation
+NACE.artsSportsRecreation.Lvl4.otherArtsCreation = Other arts creation activities
+NACE.artsSportsRecreation.Lvl3.performingArts = Performing arts
 NACE.artsSportsRecreation.Lvl4.performingArts = Activities of performing arts
-NACE.radio.90.3 = Support activities to arts creation and performing arts
+NACE.artsSportsRecreation.Lvl3.performingArtsSupport = Support activities to arts creation and performing arts
 NACE.artsSportsRecreation.Lvl3.performingArtsSupport.title = What is your undertaking’s main business activity in arts support activities?
 NACE.artsSportsRecreation.Lvl3.performingArtsSupport.error = Select your undertaking’s main business activity in arts support activities
-NACE.radio.90.31 = Operation of arts facilities and sites
-NACE.radio.90.39 = Other support activities to arts and performing arts
+NACE.artsSportsRecreation.Lvl4.artsFacilitiesOperation = Operation of arts facilities and sites
+NACE.artsSportsRecreation.Lvl4.otherPerformingArtsSupport = Other support activities to arts and performing arts
 
-NACE.radio.91 = Libraries, archives, museums and other cultural activities
+NACE.artsSportsRecreation.Lvl2.librariesArchivesMuseums = Libraries, archives, museums and other cultural activities
 NACE.artsSportsRecreation.Lvl2.librariesArchivesMuseums.title = What type of cultural organisation does your undertaking operate?
 NACE.artsSportsRecreation.Lvl2.librariesArchivesMuseums.error = Select the type of cultural organisation your undertaking operates
-NACE.radio.91.1 = Libraries and archives
+NACE.artsSportsRecreation.Lvl3.libraryArchives = Libraries and archives
 NACE.artsSportsRecreation.Lvl3.libraryArchives.title = What type of library or archive does your undertaking operate?
 NACE.artsSportsRecreation.Lvl3.libraryArchives.error = Select the type of library or archive your undertaking operates
-NACE.radio.91.11 = Libraries
-NACE.radio.91.12 = Archives
-NACE.radio.91.2 = Museums, collections, historical sites and monuments
+NACE.artsSportsRecreation.Lvl4.libraries = Libraries
+NACE.artsSportsRecreation.Lvl4.archives = Archives
+NACE.artsSportsRecreation.Lvl3.museumCollectionsMonuments = Museums, collections, historical sites and monuments
 NACE.artsSportsRecreation.Lvl3.museumCollectionsMonuments.title = What type of museum, collection or site does your undertaking operate?
 NACE.artsSportsRecreation.Lvl3.museumCollectionsMonuments.error = Select the type of museum, collection or site your undertaking operates
-NACE.radio.91.21 = Museums and collections
-NACE.radio.91.22 = Historical sites and monuments
-NACE.radio.91.3 = Conservation, restoration and other support activities for cultural heritage
+NACE.artsSportsRecreation.Lvl4.museumsCollections = Museums and collections
+NACE.artsSportsRecreation.Lvl4.historicalSitesMonuments = Historical sites and monuments
+NACE.artsSportsRecreation.Lvl3.culturalHeritageConservation = Conservation, restoration and other support activities for cultural heritage
 NACE.artsSportsRecreation.Lvl4.culturalHeritageConservation = Conservation, restoration and other support activities for cultural heritage
-NACE.radio.91.4 = Botanical and zoological gardens and nature reserves
+NACE.artsSportsRecreation.Lvl3.botanicalGardensAndNatureReserves = Botanical and zoological gardens and nature reserves
 NACE.artsSportsRecreation.Lvl3.botanicalGardensAndNatureReserves.title = What type of garden or reserve does your undertaking operate?
 NACE.artsSportsRecreation.Lvl3.botanicalGardensAndNatureReserves.error = Select the type of garden or reserve your undertaking operates
-NACE.radio.91.41 = Botanical and zoological gardens
-NACE.radio.91.42 = Nature reserves
+NACE.artsSportsRecreation.Lvl4.botanicalZoologicalGardens = Botanical and zoological gardens
+NACE.artsSportsRecreation.Lvl4.natureReserves = Nature reserves
 
-NACE.radio.92 = Gambling and betting
+NACE.artsSportsRecreation.Lvl2.gamblingBetting = Gambling and betting
 #### NACE.artsSportsRecreation.Lvl3.gamblingBettingActivities = Gambling and betting activities
 NACE.artsSportsRecreation.Lvl4.gamblingBettingActivities = Gambling and betting activities
 
-NACE.radio.93 = Sports, amusement and recreation
+NACE.artsSportsRecreation.Lvl2.sportsAndRecreation = Sports, amusement and recreation
 NACE.artsSportsRecreation.Lvl2.sportsAndRecreation.title = What is your undertaking’s main business activity in sports, amusement and recreation?
 NACE.artsSportsRecreation.Lvl2.sportsAndRecreation.error = Select your undertaking’s main business activity in sports, amusement and recreation
-NACE.radio.93.1 = Sports
+NACE.artsSportsRecreation.Lvl3.sports = Sports
 NACE.artsSportsRecreation.Lvl3.sports.title = What type of sports activity does your undertaking do?
 NACE.artsSportsRecreation.Lvl3.sports.error = Select the type of sports activity your undertaking does
-NACE.radio.93.11 = Operation of sports facilities
-NACE.radio.93.12 = Activities of sports clubs
-NACE.radio.93.13 = Activities of fitness centres
-NACE.radio.93.19 = Other sports activities
-NACE.radio.93.2 = Amusement and recreation
+NACE.artsSportsRecreation.Lvl4.sportsFacilitiesOperation = Operation of sports facilities
+NACE.artsSportsRecreation.Lvl4.sportsClubsActivities = Activities of sports clubs
+NACE.artsSportsRecreation.Lvl4.fitnessCentresActivities = Activities of fitness centres
+NACE.artsSportsRecreation.Lvl4.otherSportsActivities = Other sports activities
+NACE.artsSportsRecreation.Lvl3.amusementRecreation = Amusement and recreation
 NACE.artsSportsRecreation.Lvl3.amusementRecreation.title = What is your undertaking’s main business activity in amusement and recreation?
 NACE.artsSportsRecreation.Lvl3.amusementRecreation.error = Select your undertaking’s main business activity in amusement and recreation
-NACE.radio.93.21 = Amusement and theme parks
-NACE.radio.93.29 = Other amusement and recreation activities
+NACE.artsSportsRecreation.Lvl4.amusementParks = Amusement and theme parks
+NACE.artsSportsRecreation.Lvl4.otherRecreationActivities = Other amusement and recreation activities
 
 #OtherService NACE Sector2,3,4
 NACE.otherService.Lvl1.title = What type of services does your undertaking provide?
@@ -2449,16 +2445,16 @@ NACE.otherService.Lvl4.otherPersonalServices = Any other personal service activi
 #Households NACE Sector2,3,4
 NACE.households.Lvl1.title =What is your undertaking’s main business activity in households as employers or producers of goods or services?
 NACE.households.Lvl1.error = Select your undertaking’s main business activity in households as employers or as producers of goods or services
-NACE.radio.97 = Activities of households as employers of domestic personnel
+NACE.households.Lvl2.domesticPersonnel = Activities of households as employers of domestic personnel
 NACE.households.Lvl3.domesticPersonnel = Activities of households as employers of domestic personnel
 NACE.households.Lvl4.domesticPersonnel = Activities of households as employers of domestic personnel
-NACE.radio.98 = Undifferentiated goods and service-producing activities of private households for own use
+NACE.households.Lvl2.undifferentiatedProduction = Undifferentiated goods and service-producing activities of private households for own use
 NACE.households.Lvl2.undifferentiatedProduction.title = What type of private household activities does your undertaking carry out?
 NACE.households.Lvl2.undifferentiatedProduction.error = Select the type of private household activities your undertaking carries out
 NACE.households.Lvl3.undifferentiatedGoods = Undifferentiated goods-producing activities of private households for own use
-NACE.radio.98.10 = Undifferentiated goods-producing activities of private households for own use
+NACE.households.Lvl4.undifferentiatedGoods = Undifferentiated goods-producing activities of private households for own use
 NACE.households.Lvl3.undifferentiatedServices = Undifferentiated service-producing activities of private households for own use
-NACE.radio.98.20 = Undifferentiated service-producing activities of private households for own use
+NACE.households.Lvl4.undifferentiatedServices = Undifferentiated service-producing activities of private households for own use
 
 #ActivitiesExtraterritorial NACE Sector2,3,4
 NACE.ActivitiesExtraterritorial.Lvl2.CYAOnly.OrganisationsBodies = Activities of extraterritorial organisations and bodies
@@ -2469,163 +2465,163 @@ NACE.ActivitiesExtraterritorial.Lvl4.OrganisationsBodies = Activities of extrate
 
 NACE.RetailWholesale.title = What is your undertaking''s main business activity in retail and wholesale?
 NACE.RetailWholesale.error = Select your undertaking’s main business activity in retail and wholesale
-NACE.radio.46 = Wholesale
-NACE.radio.47 = Retail
+NACE.RetailWholesale.Lvl2.Wholesale = Wholesale
+NACE.RetailWholesale.Lvl2.Retail = Retail
 
 NACE.Retail.AutomotiveFuel.Lvl3.automotiveFuel = Retail sale of automotive fuel
 
 # Retail Level 3 Messages
 NACE.Retail.title = What type of products does your undertaking retail?
 NACE.Retail.error = Select the type of products your undertaking retails
-NACE.radio.47.1 = Non-specialised retail
-NACE.radio.47.2 = Food, beverages and tobacco
-NACE.radio.47.3 = Automotive fuel
-NACE.radio.47.4 = Information and communication equipment
-NACE.radio.47.5 = Other household equipment
+NACE.Retail.Lvl3.NonSpecialised = Non-specialised retail
+NACE.Retail.Lvl3.Food = Food, beverages and tobacco
+NACE.Retail.Lvl3.AutomotiveFuel = Automotive fuel
+NACE.Retail.Lvl3.InformationCommunication = Information and communication equipment
+NACE.Retail.Lvl3.OtherHouseholdEquipment = Other household equipment
 NACE.Retail.Lvl3.OtherHouseholdEquipment.hint = Includes carpets and rugs, electrical household appliances, furniture, hardware and building materials, textiles, wall and floor coverings, and all other household goods.
-NACE.radio.47.6 = Cultural and recreational goods
+NACE.Retail.Lvl3.CulturalRecreational = Cultural and recreational goods
 NACE.Retail.Lvl3.CulturalRecreational.hint = Includes books, games and toys, newspapers and stationery, and sports equipment.
-NACE.radio.47.7 = Another type of goods
+NACE.Retail.Lvl3.AnotherTypeGoods = Another type of goods
 NACE.Retail.Lvl3.AnotherTypeGoods.hint = Includes clothing, cosmetics, flowers and plants, footwear, leather goods, medical and orthopaedic goods, pets and pet food, pharmaceuticals, watches and jewellery, all other new goods, and second-hand goods.
-NACE.radio.47.8 = Motor vehicles, motorcycles and related parts and accessories
-NACE.radio.47.9 = My undertaking provides intermediation services for retail sale
+NACE.Retail.Lvl3.MotorVehicles = Motor vehicles, motorcycles and related parts and accessories
+NACE.Retail.Lvl3.IntermediationServices = My undertaking provides intermediation services for retail sale
 
 NACE.Retail.Household.title = What type of other household equipment does your undertaking retail?
 NACE.Retail.Household.error = Select the type of other household equipment your undertaking retails
-NACE.radio.47.53 = Carpets, rugs, wall and floor coverings
-NACE.radio.47.54 = Electrical household appliances
-NACE.radio.47.52 = Hardware, building materials, paints and glass
-NACE.radio.47.51 = Textiles
-NACE.radio.47.55 = Furniture, lighting equipment, tableware and other household goods
+NACE.Retail.Household.Lvl4.Carpets = Carpets, rugs, wall and floor coverings
+NACE.Retail.Household.Lvl4.Electrical = Electrical household appliances
+NACE.Retail.Household.Lvl4.Hardware = Hardware, building materials, paints and glass
+NACE.Retail.Household.Lvl4.Textiles = Textiles
+NACE.Retail.Household.Lvl4.Furniture = Furniture, lighting equipment, tableware and other household goods
 
 NACE.Retail.Cultural.title = What type of cultural or recreational goods does your undertaking retail?
 NACE.Retail.Cultural.error = Select the type of cultural or recreational goods your undertaking retails
-NACE.radio.47.61 = Books
-NACE.radio.47.64 = Games and toys
-NACE.radio.47.62 = Newspapers, other periodical publications and stationery
-NACE.radio.47.63 = Sporting equipment
-NACE.radio.47.69 = Other cultural and recreational goods
+NACE.Retail.Cultural.Lvl4.Books = Books
+NACE.Retail.Cultural.Lvl4.Games = Games and toys
+NACE.Retail.Cultural.Lvl4.Newspapers = Newspapers, other periodical publications and stationery
+NACE.Retail.Cultural.Lvl4.Sporting = Sporting equipment
+NACE.Retail.Cultural.Lvl4.OtherCultural = Other cultural and recreational goods
 
 NACE.Retail.OtherGoods.title = What type of goods does your undertaking retail?
 NACE.Retail.OtherGoods.error = Select the type of goods your undertaking retails
-NACE.radio.47.71 = Clothing
-NACE.radio.47.75 = Cosmetic and toilet articles
-NACE.radio.47.76 = Flowers, plants, fertilisers, pets and pet food
-NACE.radio.47.72 = Footwear and leather goods
-NACE.radio.47.74 = Medical and orthopaedic goods
-NACE.radio.47.73 = Pharmaceutical products
-NACE.radio.47.77 = Watches and jewellery
-NACE.radio.47.78 = Other new goods
-NACE.radio.47.79 = Second-hand goods
+NACE.Retail.OtherGoods.Lvl4.Clothing = Clothing
+NACE.Retail.OtherGoods.Lvl4.Cosmetic = Cosmetic and toilet articles
+NACE.Retail.OtherGoods.Lvl4.Flowers = Flowers, plants, fertilisers, pets and pet food
+NACE.Retail.OtherGoods.Lvl4.Footwear = Footwear and leather goods
+NACE.Retail.OtherGoods.Lvl4.Medical = Medical and orthopaedic goods
+NACE.Retail.OtherGoods.Lvl4.Pharmaceutical = Pharmaceutical products
+NACE.Retail.OtherGoods.Lvl4.Watches = Watches and jewellery
+NACE.Retail.OtherGoods.Lvl4.OtherNewGoods = Other new goods
+NACE.Retail.OtherGoods.Lvl4.SecondHand = Second-hand goods
 
 NACE.Retail.MotorVehicles.title = What type of motor vehicles, motorcycles or parts and accessories does your undertaking retail?
 NACE.Retail.MotorVehicles.error = Select the type of motor vehicles, motorcycles or parts and accessories your undertaking retails
-NACE.radio.47.81 = Motor vehicles
-NACE.radio.47.82 = Motor vehicle parts and accessories
-NACE.radio.47.83 = Motorcycles, motorcycle parts and accessories
+NACE.Retail.MotorVehicles.Lvl4.Vehicles = Motor vehicles
+NACE.Retail.MotorVehicles.Lvl4.Parts = Motor vehicle parts and accessories
+NACE.Retail.MotorVehicles.Lvl4.Motorcycles = Motorcycles, motorcycle parts and accessories
 
 NACE.Retail.Intermediation.title = What type of retail does your undertaking provide intermediation services for?
 NACE.Retail.Intermediation.error = Select the type of retail your undertaking provides intermediation services for
-NACE.radio.47.91 = Non-specialised retail
-NACE.radio.47.92 = Specialised retail
+NACE.Retail.Intermediation.Lvl4.NonSpecialised = Non-specialised retail
+NACE.Retail.Intermediation.Lvl4.Specialised = Specialised retail
 
 NACE.Wholesale.title = What type of wholesale does your undertaking do?
 NACE.Wholesale.error = Select the type of wholesale your undertaking does
-NACE.radio.46.1 = Wholesale on a fee or contract basis
-NACE.radio.46.2 = Wholesale of agricultural raw materials and live animals
-NACE.radio.46.3 = Wholesale of food, beverages and tobacco
-NACE.radio.46.4 = Wholesale of household goods
-NACE.radio.46.5 = Wholesale of information and communication equipment
-NACE.radio.46.6 = Wholesale of other machinery, equipment and supplies
-NACE.radio.46.7 = Wholesale of motor vehicles, motorcycles and parts and accessories
-NACE.radio.46.8 = Other specialised wholesale
+NACE.Wholesale.Lvl3.ContractBasis = Wholesale on a fee or contract basis
+NACE.Wholesale.Lvl3.Agricultural = Wholesale of agricultural raw materials and live animals
+NACE.Wholesale.Lvl3.Food = Wholesale of food, beverages and tobacco
+NACE.Wholesale.Lvl3.Household = Wholesale of household goods
+NACE.Wholesale.Lvl3.Information = Wholesale of information and communication equipment
+NACE.Wholesale.Lvl3.Machinery = Wholesale of other machinery, equipment and supplies
+NACE.Wholesale.Lvl3.MotorVehicles = Wholesale of motor vehicles, motorcycles and parts and accessories
+NACE.Wholesale.Lvl3.OtherSpecialised = Other specialised wholesale
 NACE.Wholesale.Lvl3.OtherSpecialised.hint = Includes chemical products, fuels, hardware, metals and metal ores, waste and scrap, wood and construction materials, other intermediate products and all other specialised wholesale.
-NACE.radio.46.9 = Non-specialised wholesale
+NACE.Wholesale.Lvl3.NonSpecialised = Non-specialised wholesale
 
 # Food Retail Level 4 Messages
 NACE.Retail.Food.title = What type of food, beverages or tobacco does your undertaking retail?
 NACE.Retail.Food.error = Select the type of food, beverages or tobacco your undertaking retails
-NACE.radio.47.25 = Beverages
-NACE.radio.47.24 = Bread, cake and confectionery
-NACE.radio.47.23 = Fish, crustaceans and molluscs
-NACE.radio.47.21 = Fruit and vegetables
-NACE.radio.47.22 = Meat and meat products
-NACE.radio.47.26 = Tobacco products
-NACE.radio.47.27 = Other food
+NACE.Retail.Food.Lvl4.Beverages = Beverages
+NACE.Retail.Food.Lvl4.Bread = Bread, cake and confectionery
+NACE.Retail.Food.Lvl4.Fish = Fish, crustaceans and molluscs
+NACE.Retail.Food.Lvl4.Fruit = Fruit and vegetables
+NACE.Retail.Food.Lvl4.Meat = Meat and meat products
+NACE.Retail.Food.Lvl4.Tobacco = Tobacco products
+NACE.Retail.Food.Lvl4.OtherFood = Other food
 
 NACE.Retail.NonSpecialised.title = What type of non-specialised retail does your undertaking do?
 NACE.Retail.NonSpecialised.error = Select the type of non-specialised retail your undertaking does
-NACE.radio.47.11 = Non-specialised retail sale of predominately food, beverages or tobacco
-NACE.radio.47.12 = Other non-specialised retail sale
+NACE.Retail.NonSpecialised.Lvl4.Food = Non-specialised retail sale of predominately food, beverages or tobacco
+NACE.Retail.NonSpecialised.Lvl4.Other = Other non-specialised retail sale
 
 NACE.Wholesale.ContractBasis.title = What type of products does your undertaking wholesale on a fee or contract basis?
 NACE.Wholesale.ContractBasis.error = Select the type of products your undertaking wholesales on a fee or contract basis
-NACE.radio.46.11 = Agricultural raw materials, live animals, textile raw materials and semi-finished goods
-NACE.radio.46.17 = Food, beverages and tobacco
-NACE.radio.46.12 = Fuels, ores, metals and industrial chemicals
-NACE.radio.46.15 = Furniture, household goods, hardware and ironmongery
-NACE.radio.46.14 = Machinery, industrial equipment, ships and aircraft
-NACE.radio.46.16 = Textiles, clothing, fur, footwear and leather goods
-NACE.radio.46.13 = Timber and building materials
-NACE.radio.46.18 = Other particular products
-NACE.radio.46.19 = My undertaking carries out non-specialised wholesale
+NACE.Wholesale.ContractBasis.Lvl4.Agricultural = Agricultural raw materials, live animals, textile raw materials and semi-finished goods
+NACE.Wholesale.ContractBasis.Lvl4.Food = Food, beverages and tobacco
+NACE.Wholesale.ContractBasis.Lvl4.Fuels = Fuels, ores, metals and industrial chemicals
+NACE.Wholesale.ContractBasis.Lvl4.Furniture = Furniture, household goods, hardware and ironmongery
+NACE.Wholesale.ContractBasis.Lvl4.Machinery = Machinery, industrial equipment, ships and aircraft
+NACE.Wholesale.ContractBasis.Lvl4.Textiles = Textiles, clothing, fur, footwear and leather goods
+NACE.Wholesale.ContractBasis.Lvl4.Timber = Timber and building materials
+NACE.Wholesale.ContractBasis.Lvl4.Other = Other particular products
+NACE.Wholesale.ContractBasis.Lvl4.NonSpecialised = My undertaking carries out non-specialised wholesale
 
 NACE.Wholesale.Agricultural.title = What type of agricultural products does your undertaking wholesale?
 NACE.Wholesale.Agricultural.error = Select the type of agricultural products your undertaking wholesales
-NACE.radio.46.22 = Flowers and plants
-NACE.radio.46.21 = Grain, unmanufactured tobacco, seeds and animal feeds
-NACE.radio.46.24 = Hides, skins and leather
-NACE.radio.46.23 = Live animals
+NACE.Wholesale.Agricultural.Lvl4.Flowers = Flowers and plants
+NACE.Wholesale.Agricultural.Lvl4.Grain = Grain, unmanufactured tobacco, seeds and animal feeds
+NACE.Wholesale.Agricultural.Lvl4.Hides = Hides, skins and leather
+NACE.Wholesale.Agricultural.Lvl4.LiveAnimals = Live animals
 
 NACE.wholesale.Lvl4.foodWholesale.title = What type of food, beverages or tobacco does your undertaking wholesale?
 NACE.wholesale.Lvl4.foodWholesale.error = Select the type of food, beverages or tobacco your undertaking wholesales
-NACE.radio.46.34 = Beverages
+NACE.wholesale.Lvl4.BeveragesWholesale = Beverages
 NACE.wholesale.Lvl4.BeveragesWholesale.hint = For example, wholesale of alcoholic and non-alcoholic beverages
-NACE.radio.46.37 = Coffee, tea, cocoa and spices
-NACE.radio.46.33 = Dairy products, eggs and edible oils and fats
-NACE.radio.46.31 = Fruit and vegetables
-NACE.radio.46.32 = Meat, meat products, fish and fish products
-NACE.radio.46.36 = Sugar, chocolate and confectionery
-NACE.radio.46.35 = Tobacco products
-NACE.radio.46.38 = Other food
-NACE.radio.46.39 = Non-specialised wholesale of food, beverages and tobacco
+NACE.wholesale.Lvl4.CoffeeAndSpicesWholesale = Coffee, tea, cocoa and spices
+NACE.wholesale.Lvl4.DairyProductsWholesale = Dairy products, eggs and edible oils and fats
+NACE.wholesale.Lvl4.FruitWholesale = Fruit and vegetables
+NACE.wholesale.Lvl4.MeatWholesale = Meat, meat products, fish and fish products
+NACE.wholesale.Lvl4.SugarWholesale = Sugar, chocolate and confectionery
+NACE.wholesale.Lvl4.TobaccoProductsWholesale = Tobacco products
+NACE.wholesale.Lvl4.OtherFoodWholesale = Other food
+NACE.wholesale.Lvl4.NonSpecialisedFoodWholesale = Non-specialised wholesale of food, beverages and tobacco
 NACE.wholesale.Lvl4.foodWholesale.error.required = Select the type of food, beverages or tobacco your undertaking wholesales
 
 NACE.Wholesale.Household.title = What type of household goods does your undertaking wholesale?
 NACE.Wholesale.Household.error = Select the type of household goods your undertaking wholesales
-NACE.radio.46.44 = China, glassware and cleaning materials
-NACE.radio.46.42 = Clothing and footwear
-NACE.radio.46.43 = Electrical household appliances
-NACE.radio.46.47 = Household, office and shop furniture, carpets and lighting equipment
-NACE.radio.46.45 = Perfume and cosmetics
-NACE.radio.46.46 = Pharmaceutical and medical goods
-NACE.radio.46.41 = Textiles
-NACE.radio.46.48 = Watches and jewellery
-NACE.radio.46.49 = Other household goods
+NACE.Wholesale.Household.Lvl4.China = China, glassware and cleaning materials
+NACE.Wholesale.Household.Lvl4.Clothing = Clothing and footwear
+NACE.Wholesale.Household.Lvl4.Electrical = Electrical household appliances
+NACE.Wholesale.Household.Lvl4.Household = Household, office and shop furniture, carpets and lighting equipment
+NACE.Wholesale.Household.Lvl4.Perfume = Perfume and cosmetics
+NACE.Wholesale.Household.Lvl4.Pharmaceutical = Pharmaceutical and medical goods
+NACE.Wholesale.Household.Lvl4.Textiles = Textiles
+NACE.Wholesale.Household.Lvl4.Watches = Watches and jewellery
+NACE.Wholesale.Household.Lvl4.Other = Other household goods
 
 NACE.Wholesale.Machinery.title = What type of machinery, equipment or supplies does your undertaking wholesale?
 NACE.Wholesale.Machinery.error = Select the type of machinery, equipment or supplies your undertaking wholesales
-NACE.radio.46.61 = Agricultural machinery, equipment and supplies
-NACE.radio.46.62 = Machine tools
-NACE.radio.46.63 = Mining, construction and civil engineering machinery
-NACE.radio.46.64 = Other machinery and equipment
+NACE.Wholesale.Machinery.Lvl4.Agricultural = Agricultural machinery, equipment and supplies
+NACE.Wholesale.Machinery.Lvl4.MachineTools = Machine tools
+NACE.Wholesale.Machinery.Lvl4.Mining = Mining, construction and civil engineering machinery
+NACE.Wholesale.Machinery.Lvl4.Other = Other machinery and equipment
 
 NACE.Wholesale.MotorVehicles.title = What type of motor vehicles, motorcycles or parts and accessories does your undertaking wholesale?
 NACE.Wholesale.MotorVehicles.error = Select the type of motor vehicles, motorcycles or parts and accessories your undertaking wholesales
-NACE.radio.46.71 = Motor vehicles
-NACE.radio.46.72 = Motor vehicle parts and accessories
-NACE.radio.46.73 = Motorcycles, motorcycle parts and accessories
+NACE.Wholesale.MotorVehicles.Lvl4.Vehicles = Motor vehicles
+NACE.Wholesale.MotorVehicles.Lvl4.Parts = Motor vehicle parts and accessories
+NACE.Wholesale.MotorVehicles.Lvl4.Motorcycles = Motorcycles, motorcycle parts and accessories
 
 NACE.Wholesale.Specialised.title = What type of other products does your undertaking wholesale?
 NACE.Wholesale.Specialised.error = Select the type of other products your undertaking wholesales
-NACE.radio.46.85 = Chemical products
-NACE.radio.46.84 = Hardware, plumbing and heating equipment and supplies
-NACE.radio.46.82 = Metals and metal ores
-NACE.radio.46.81 = Solid, liquid and gaseous fuels and related products
-NACE.radio.46.87 = Waste and scrap
-NACE.radio.46.83 = Wood, construction materials and sanitary equipment
-NACE.radio.46.86 = Other intermediate products
-NACE.radio.46.89 = Other specialised wholesale
+NACE.Wholesale.Specialised.Lvl4.Chemical = Chemical products
+NACE.Wholesale.Specialised.Lvl4.Hardware = Hardware, plumbing and heating equipment and supplies
+NACE.Wholesale.Specialised.Lvl4.Metals = Metals and metal ores
+NACE.Wholesale.Specialised.Lvl4.Fuels = Solid, liquid and gaseous fuels and related products
+NACE.Wholesale.Specialised.Lvl4.Waste = Waste and scrap
+NACE.Wholesale.Specialised.Lvl4.Wood = Wood, construction materials and sanitary equipment
+NACE.Wholesale.Specialised.Lvl4.OtherIntermediate = Other intermediate products
+NACE.Wholesale.Specialised.Lvl4.OtherSpecialised = Other specialised wholesale
 
 # Financial services
 

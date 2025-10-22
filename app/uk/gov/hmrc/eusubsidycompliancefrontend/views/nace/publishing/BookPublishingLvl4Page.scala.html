@@ -50,22 +50,22 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-books", messages("NACE.publishingBroadcasting.Lvl4.books"))),
+            content = HtmlContent(radioText("sector-label-books", messages("NACE.radio.58.11"))),
             value = Some(Sector.books.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.books.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-journalsPeriodicals", messages("NACE.publishingBroadcasting.Lvl4.journalsPeriodicals"))),
+            content = HtmlContent(radioText("sector-label-journalsPeriodicals", messages("NACE.radio.58.13"))),
             value = Some(Sector.journalsPeriodicals.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.journalsPeriodicals.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-newspapers", messages("NACE.publishingBroadcasting.Lvl4.newspapers"))),
+            content = HtmlContent(radioText("sector-label-newspapers", messages("NACE.radio.58.12"))),
             value = Some(Sector.newspapers.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.newspapers.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-otherPublishing", messages("NACE.publishingBroadcasting.Lvl4.otherPublishing"))),
+            content = HtmlContent(radioText("sector-label-otherPublishing", messages("NACE.radio.58.19"))),
             value = Some(Sector.otherPublishing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPublishing.toString)
         )
@@ -103,10 +103,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.publishingBroadcasting")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.publishingBroadcasting.Lvl2.publishing")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.radio.60")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl3Page().toString>@messages("NACE.publishingBroadcasting.Lvl3.publishingBooksNewspapers")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl3Page().toString>@messages("NACE.radio.58.1")</a>
         </li>
     </ol>
 </nav>
