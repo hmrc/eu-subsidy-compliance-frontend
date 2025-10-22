@@ -51,18 +51,18 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.roadAndRailConstruction"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.42.1"))),
                 value = Some(Sector.roadAndRailConstruction.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.roadAndRailConstruction.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.roadAndRailConstruction.hint"))))
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.utilityConstruction"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.42.2"))),
                 value = Some(Sector.utilityConstruction.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.utilityConstruction.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.otherUtilityConstructionProjects"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.42.9"))),
                 value = Some(Sector.otherUtilityConstructionProjects.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherUtilityConstructionProjects.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.otherUtilityConstructionProjects.hint"))))
@@ -101,7 +101,7 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.construction")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadConstructionLvl2Page().toString>@messages("NACE.construction.Lvl2.civilEngineering")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadConstructionLvl2Page().toString>@messages("NACE.radio.42")</a>
         </li>
     </ol>
 </nav>

@@ -50,22 +50,22 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.electricalInstallation"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43.21"))),
                 value = Some(Sector.electricalInstallation.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricalInstallation.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.insulationInstallation"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43.23"))),
                 value = Some(Sector.insulationInstallation.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.insulationInstallation.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.plumbingHeatingAC"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43.22"))),
                 value = Some(Sector.plumbingHeatingAC.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.plumbingHeatingAC.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.otherConstructionInstallation"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43.24"))),
                 value = Some(Sector.otherConstructionInstallation.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherConstructionInstallation.toString)
         )
@@ -103,10 +103,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.construction")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadConstructionLvl2Page().toString>@messages("NACE.construction.Lvl2.specialisedConstructionActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadConstructionLvl2Page().toString>@messages("NACE.radio.43")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadSpecialisedConstructionLvl3Page().toString>@messages("NACE.construction.Lvl3.electricalAndPlumbingInstallation")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadSpecialisedConstructionLvl3Page().toString>@messages("NACE.radio.43.2")</a>
         </li>
     </ol>
 </nav>

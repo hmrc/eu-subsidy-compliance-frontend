@@ -49,17 +49,17 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-energy-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl4.EnergyRecovery"))),
+      content = HtmlContent(radioText("sector-label-energy-recovery", messages("NACE.radio.38.22"))),
       value = Some(Sector.energyRecovery.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.energyRecovery.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-materials-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl4.MaterialsRecovery"))),
+      content = HtmlContent(radioText("sector-label-materials-recovery", messages("NACE.radio.38.21"))),
       value = Some(Sector.materialsRecovery.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.materialsRecovery.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-other-waste-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl4.OtherWasteRecovery"))),
+      content = HtmlContent(radioText("sector-label-other-waste-recovery", messages("NACE.radio.38.23"))),
       value = Some(Sector.otherWasteRecovery.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherWasteRecovery.toString)
     )
@@ -100,10 +100,10 @@ content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery.e
           <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.waterSupply")</a>
       </li>
       <li class="govuk-breadcrumbs__list-item">
-          <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWaterLvl2Page().toString>@messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities")</a>
+          <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWaterLvl2Page().toString>@messages("NACE.radio.38")</a>
       </li>
     <li class="govuk-breadcrumbs__list-item">
-      <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWasteCollectionRecoveryLvl3Page().toString>@messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery")</a>
+      <a class="govuk-breadcrumbs__link" href=@controllers.routes.AccomodationUtilitiesController.loadWasteCollectionRecoveryLvl3Page().toString>@messages("NACE.radio.38.2")</a>
     </li>
   </ol>
 </nav>

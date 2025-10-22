@@ -50,12 +50,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.waterProjects"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.42.91"))),
                 value = Some(Sector.waterProjects.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.waterProjects.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.otherCivilEngineering"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.42.99"))),
                 value = Some(Sector.otherCivilEngineering.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherCivilEngineering.toString)
         )
@@ -93,10 +93,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.construction")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadConstructionLvl2Page().toString>@messages("NACE.construction.Lvl2.civilEngineering")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadConstructionLvl2Page().toString>@messages("NACE.radio.42")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadCivilEngineeringLvl3Page().toString>@messages("NACE.construction.Lvl3.otherUtilityConstructionProjects")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadCivilEngineeringLvl3Page().toString>@messages("NACE.radio.42.9")</a>
         </li>
     </ol>
 </nav>

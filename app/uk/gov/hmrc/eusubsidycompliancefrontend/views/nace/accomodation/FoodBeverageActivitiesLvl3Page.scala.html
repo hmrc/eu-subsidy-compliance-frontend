@@ -49,22 +49,22 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-beverageServing", messages("NACE.accommodationAndFoodService.Lvl3.beverageServing"))),
+                content = HtmlContent(radioText("sector-label-beverageServing", messages("NACE.radio.sector.56.3"))),
                 value = Some(Sector.beverageServing4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.beverageServing.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl3.eventAndContractCatering"))),
+                content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.radio.56.2"))),
                 value = Some(Sector.eventAndContractCatering.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.eventAndContractCatering.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-foodBeverageServiceIntermediationActivities", messages("NACE.accommodationAndFoodService.Lvl3.foodBeverageServiceIntermediationActivities"))),
+                content = HtmlContent(radioText("sector-label-foodBeverageServiceIntermediationActivities", messages("NACE.radio.56.4"))),
                 value = Some(Sector.foodBeverageServiceIntermediationActivities4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.foodBeverageServiceIntermediationActivities.toString)
         ),
        RadioItem(
-            content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl3.restaurantsMobile"))),
+            content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.radio.56.1"))),
             value = Some(Sector.restaurantsMobile.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.restaurantsMobile.toString)
         )
