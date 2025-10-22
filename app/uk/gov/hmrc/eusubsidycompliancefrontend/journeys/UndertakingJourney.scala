@@ -27,7 +27,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.NaceSelection
 
 import scala.concurrent.Future
 
@@ -36,7 +35,6 @@ case class UndertakingJourney(
   sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
   hasVerifiedEmail: Option[UndertakingConfirmEmailFormPage] = Some(UndertakingConfirmEmailFormPage()),
   addBusiness: UndertakingAddBusinessFormPage = UndertakingAddBusinessFormPage(),
-  naceSelection: Option[NaceSelection] = None,
   cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
   confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
   submitted: Option[Boolean] = None,
@@ -74,9 +72,6 @@ case class UndertakingJourney(
   private def requiredDetailsProvided =
     Seq(about, sector, hasVerifiedEmail.getOrElse(UndertakingConfirmEmailFormPage()))
       .map(_.value.isDefined) == Seq(true, true, true)
-
-  def setNaceSelection(selection: NaceSelection): UndertakingJourney =
-    this.copy(naceSelection = Some(selection))
 
   def setUndertakingName(n: String): UndertakingJourney = this.copy(about = about.copy(value = Some(n)))
 

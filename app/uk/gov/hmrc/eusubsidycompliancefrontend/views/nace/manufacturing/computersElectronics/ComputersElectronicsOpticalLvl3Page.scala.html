@@ -127,6 +127,21 @@
     </ol>
 </nav>
 
+<input type="hidden" name="sectorDisplay" value="@messages("sector.label.0")" />
+<input type="hidden" name="level1Display" value="@messages("NACE.Lvl1.manufacturing")" />
+<input type="hidden" name="level1_1Display" value="@messages("NACE.Manufacturing.Lvl2.1.Computers")" />
+<input type="hidden" name="level2Display" value="@messages("NACE.Manufacturing.Lvl2.2.Computers")" />
+<input type="hidden" name="level3Display_26.30" value="@messages("NACE.Manufacturing.Lvl3.CommunicationEquipment")" />
+<input type="hidden" name="level3Display_26.20" value="@messages("NACE.Manufacturing.Lvl3.ComputersPeripherals")" />
+<input type="hidden" name="level3Display_26.40" value="@messages("NACE.Manufacturing.Lvl3.ConsumerElectronics")" />
+<input type="hidden" name="level3Display_26.60" value="@messages("NACE.Manufacturing.Lvl3.IrradiationElectromedical")" />
+<input type="hidden" name="level3Display_26.70" value="@messages("NACE.Manufacturing.Lvl3.OpticalInstruments")" />
+<input type="hidden" name="level4Display_26.30" value="@messages("NACE.Manufacturing.Lvl3.CommunicationEquipment")" />
+<input type="hidden" name="level4Display_26.20" value="@messages("NACE.Manufacturing.Lvl3.ComputersPeripherals")" />
+<input type="hidden" name="level4Display_26.40" value="@messages("NACE.Manufacturing.Lvl3.ConsumerElectronics")" />
+<input type="hidden" name="level4Display_26.60" value="@messages("NACE.Manufacturing.Lvl3.IrradiationElectromedical")" />
+<input type="hidden" name="level4Display_26.70" value="@messages("NACE.Manufacturing.Lvl3.OpticalInstruments")" />
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("NACE.Manufacturing.ComputersElectronics.error"))

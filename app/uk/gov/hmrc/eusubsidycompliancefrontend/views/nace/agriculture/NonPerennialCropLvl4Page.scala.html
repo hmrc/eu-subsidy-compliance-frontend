@@ -49,37 +49,37 @@ controllers.routes.AgricultureController.submitNonPerennialCropLvl4Page()
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-cerealsLeguminousCrops", messages("NACE.agriculture.Lvl4.cerealsLeguminousCrops"))),
+content = HtmlContent(radioText("sector-label-cerealsLeguminousCrops", messages("NACE.radio.01.11"))),
 value = Some(Sector.cerealsLeguminousCrops.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.cerealsLeguminousCrops.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-fibreCrops", messages("NACE.agriculture.Lvl4.fibreCrops"))),
+content = HtmlContent(radioText("sector-label-fibreCrops", messages("NACE.radio.01.16"))),
 value = Some(Sector.fibreCrops.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.fibreCrops.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-rice", messages("NACE.agriculture.Lvl4.rice"))),
+content = HtmlContent(radioText("sector-label-rice", messages("NACE.radio.01.12"))),
 value = Some(Sector.rice.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.rice.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-sugarCane", messages("NACE.agriculture.Lvl4.sugarCane"))),
+content = HtmlContent(radioText("sector-label-sugarCane", messages("NACE.radio.01.14"))),
 value = Some(Sector.sugarCane.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.sugarCane.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-tobacco", messages("NACE.agriculture.Lvl4.tobacco"))),
+content = HtmlContent(radioText("sector-label-tobacco", messages("NACE.radio.01.15"))),
 value = Some(Sector.tobacco.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.tobacco.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-vegetables", messages("NACE.agriculture.Lvl4.vegetables"))),
+content = HtmlContent(radioText("sector-label-vegetables", messages("NACE.radio.01.13"))),
 value = Some(Sector.vegetables.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.vegetables.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherNonPerennialCrops", messages("NACE.agriculture.Lvl4.otherNonPerennialCrops"))),
+content = HtmlContent(radioText("sector-label-otherNonPerennialCrops", messages("NACE.radio.01.19"))),
 value = Some(Sector.otherNonPerennialCrops.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNonPerennialCrops.toString)
 )
@@ -115,19 +115,10 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.2")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadAgricultureLvl3Page().toString>@messages("NACE.agriculture.Lvl3.growingNonPerennialCrops")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadAgricultureLvl3Page().toString>@messages("NACE.radio.01.1")</a>
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.2")" />
-<input type="hidden" name="level3Display" value="@messages("NACE.agriculture.Lvl3.growingNonPerennialCrops")" />
-<input type="hidden" name="level4Display_01.11" value="@messages("NACE.agriculture.Lvl4.cerealsLeguminousCrops")" />
-<input type="hidden" name="level4Display_01.16" value="@messages("NACE.agriculture.Lvl4.fibreCrops")" />
-<input type="hidden" name="level4Display_01.12" value="@messages("NACE.agriculture.Lvl4.rice")" />
-<input type="hidden" name="level4Display_01.14" value="@messages("NACE.agriculture.Lvl4.sugarCane")" />
-<input type="hidden" name="level4Display_01.15" value="@messages("NACE.agriculture.Lvl4.tobacco")" />
-<input type="hidden" name="level4Display_01.13" value="@messages("NACE.agriculture.Lvl4.vegetables")" />
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(

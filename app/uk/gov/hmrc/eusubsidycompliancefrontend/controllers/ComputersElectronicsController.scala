@@ -34,28 +34,28 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ComputersElectronicsController @Inject() (
-  mcc: MessagesControllerComponents,
-  actionBuilders: ActionBuilders,
-  val store: Store,
-  navigator: Navigator,
-  ComponentsBoardsLvl4Page: ComponentsBoardsLvl4Page,
-  ComputersElectronicsOpticalLvl3Page: ComputersElectronicsOpticalLvl3Page,
-  DomesticAppliancesLvl4Page: DomesticAppliancesLvl4Page,
-  ElectricalEquipmentLvl3Page: ElectricalEquipmentLvl3Page,
-  GeneralPurposeLvl4Page: GeneralPurposeLvl4Page,
-  MeasuringTestingInstrumentsLvl4Page: MeasuringTestingInstrumentsLvl4Page,
-  MetalFormingLvl4Page: MetalFormingLvl4Page,
-  MotorsGeneratorsLvl4Page: MotorsGeneratorsLvl4Page,
-  OtherGeneralPurposeLvl4Page: OtherGeneralPurposeLvl4Page,
-  OtherMachineryLvl3Page: OtherMachineryLvl3Page,
-  OtherSpecialPurposeLvl4Page: OtherSpecialPurposeLvl4Page,
-  RepairMaintenanceLvl4Page: RepairMaintenanceLvl4Page,
-  RepairsMaintainInstallLvl3Page: RepairsMaintainInstallLvl3Page,
-  WiringAndDevicesLvl4Page: WiringAndDevicesLvl4Page
-)(implicit
-  val appConfig: AppConfig,
-  val executionContext: ExecutionContext
-) extends BaseController(mcc) {
+                                                 mcc: MessagesControllerComponents,
+                                                 actionBuilders: ActionBuilders,
+                                                 val store: Store,
+                                                 navigator: Navigator,
+                                                 ComponentsBoardsLvl4Page: ComponentsBoardsLvl4Page,
+                                                 ComputersElectronicsOpticalLvl3Page: ComputersElectronicsOpticalLvl3Page,
+                                                 DomesticAppliancesLvl4Page: DomesticAppliancesLvl4Page,
+                                                 ElectricalEquipmentLvl3Page: ElectricalEquipmentLvl3Page,
+                                                 GeneralPurposeLvl4Page: GeneralPurposeLvl4Page,
+                                                 MeasuringTestingInstrumentsLvl4Page: MeasuringTestingInstrumentsLvl4Page,
+                                                 MetalFormingLvl4Page: MetalFormingLvl4Page,
+                                                 MotorsGeneratorsLvl4Page: MotorsGeneratorsLvl4Page,
+                                                 OtherGeneralPurposeLvl4Page: OtherGeneralPurposeLvl4Page,
+                                                 OtherMachineryLvl3Page: OtherMachineryLvl3Page,
+                                                 OtherSpecialPurposeLvl4Page: OtherSpecialPurposeLvl4Page,
+                                                 RepairMaintenanceLvl4Page: RepairMaintenanceLvl4Page,
+                                                 RepairsMaintainInstallLvl3Page: RepairsMaintainInstallLvl3Page,
+                                                 WiringAndDevicesLvl4Page: WiringAndDevicesLvl4Page
+                                               )(implicit
+                                                 val appConfig: AppConfig,
+                                                 val executionContext: ExecutionContext
+                                               ) extends BaseController(mcc) {
 
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
@@ -77,118 +77,7 @@ class ComputersElectronicsController @Inject() (
   private val RepairsMaintainInstallLvl3Form: Form[FormValues] = formWithSingleMandatoryField("repair3")
   private val WiringAndDevicesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("wiring4")
 
-  def loadOtherSpecialPurposeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-      val sector = journey.sector.value match {
-        case Some(value) => value.toString
-        case None => ""
-      }
-      Ok(OtherSpecialPurposeLvl4Page(OtherSpecialPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }
-  }
-
-  def submitOtherSpecialPurposeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    OtherSpecialPurposeLvl4Form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(OtherSpecialPurposeLvl4Page(formWithErrors, "")).toFuture,
-        form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
-        }
-      )
-  }
-
-  def loadRepairMaintenanceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-      val sector = journey.sector.value match {
-        case Some(value) => value.toString
-        case None => ""
-      }
-      Ok(RepairMaintenanceLvl4Page(RepairMaintenanceLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }
-  }
-
-  def submitRepairMaintenanceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    RepairMaintenanceLvl4Form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(RepairMaintenanceLvl4Page(formWithErrors, "")).toFuture,
-        form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
-        }
-      )
-  }
-
-  def loadWiringAndDevicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-      val sector = journey.sector.value match {
-        case Some(value) => value.toString
-        case None => ""
-      }
-      Ok(WiringAndDevicesLvl4Page(WiringAndDevicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }
-  }
-
-  def submitWiringAndDevicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    WiringAndDevicesLvl4Form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(WiringAndDevicesLvl4Page(formWithErrors, "")).toFuture,
-        form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
-        }
-      )
-  }
-
-  def loadRepairsMaintainInstallLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-      val sector = journey.sector.value match {
-        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
-        case None => ""
-      }
-      Ok(RepairsMaintainInstallLvl3Page(RepairsMaintainInstallLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }
-  }
-
-  def submitRepairsMaintainInstallLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    RepairsMaintainInstallLvl3Form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(RepairsMaintainInstallLvl3Page(formWithErrors, "")).toFuture,
-        form => {
-          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-            val previousAnswer = journey.sector.value match {
-              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
-              case None => ""
-            }
-
-            val lvl4Answer = journey.sector.value match {
-              case Some(lvl4Value) => lvl4Value.toString
-              case None => ""
-            }
-
-            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
-              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
-            else {
-              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
-            }
-          }
-        }
-      )
-  }
+  // ComponentsBoardsLvl4Page
   def loadComponentsBoardsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -196,7 +85,8 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(ComponentsBoardsLvl4Page(ComponentsBoardsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") ComponentsBoardsLvl4Form else ComponentsBoardsLvl4Form.fill(FormValues(sector))
+      Ok(ComponentsBoardsLvl4Page(form, journey.mode)).toFuture
     }
   }
 
@@ -207,12 +97,14 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(ComponentsBoardsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val sectorEnum = Sector.withName(form.value)
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
+  // ComputersElectronicsOpticalLvl3Page
   def loadComputersElectronicsOpticalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -220,9 +112,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(
-        ComputersElectronicsOpticalLvl3Page(ComputersElectronicsOpticalLvl3Form.fill(FormValues(sector)), journey.mode)
-      ).toFuture
+      Ok(ComputersElectronicsOpticalLvl3Page(ComputersElectronicsOpticalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -256,6 +146,7 @@ class ComputersElectronicsController @Inject() (
       )
   }
 
+  // DomesticAppliancesLvl4Page
   def loadDomesticAppliancesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -263,7 +154,8 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(DomesticAppliancesLvl4Page(DomesticAppliancesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") DomesticAppliancesLvl4Form else DomesticAppliancesLvl4Form.fill(FormValues(sector))
+      Ok(DomesticAppliancesLvl4Page(form, journey.mode)).toFuture
     }
   }
 
@@ -274,12 +166,14 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(DomesticAppliancesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val sectorEnum = Sector.withName(form.value)
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
+  // ElectricalEquipmentLvl3Page
   def loadElectricalEquipmentLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -321,6 +215,7 @@ class ComputersElectronicsController @Inject() (
       )
   }
 
+  // GeneralPurposeLvl4Page
   def loadGeneralPurposeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -328,7 +223,8 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(GeneralPurposeLvl4Page(GeneralPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") GeneralPurposeLvl4Form else GeneralPurposeLvl4Form.fill(FormValues(sector))
+      Ok(GeneralPurposeLvl4Page(form, journey.mode)).toFuture
     }
   }
 
@@ -339,11 +235,14 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(GeneralPurposeLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val sectorEnum = Sector.withName(form.value)
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
+
+  // MeasuringTestingInstrumentsLvl4Page
   def loadMeasuringTestingInstrumentsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -351,9 +250,8 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(
-        MeasuringTestingInstrumentsLvl4Page(MeasuringTestingInstrumentsLvl4Form.fill(FormValues(sector)), journey.mode)
-      ).toFuture
+      val form = if (sector == "") MeasuringTestingInstrumentsLvl4Form else MeasuringTestingInstrumentsLvl4Form.fill(FormValues(sector))
+      Ok(MeasuringTestingInstrumentsLvl4Page(form, journey.mode)).toFuture
     }
   }
 
@@ -364,12 +262,14 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(MeasuringTestingInstrumentsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val sectorEnum = Sector.withName(form.value)
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
+  // MetalFormingLvl4Page
   def loadMetalFormingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -377,7 +277,8 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(MetalFormingLvl4Page(MetalFormingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") MetalFormingLvl4Form else MetalFormingLvl4Form.fill(FormValues(sector))
+      Ok(MetalFormingLvl4Page(form, journey.mode)).toFuture
     }
   }
 
@@ -388,12 +289,14 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(MetalFormingLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val sectorEnum = Sector.withName(form.value)
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
+  // MotorsGeneratorsLvl4Page
   def loadMotorsGeneratorsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -401,7 +304,8 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(MotorsGeneratorsLvl4Page(MotorsGeneratorsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") MotorsGeneratorsLvl4Form else MotorsGeneratorsLvl4Form.fill(FormValues(sector))
+      Ok(MotorsGeneratorsLvl4Page(form, journey.mode)).toFuture
     }
   }
 
@@ -412,12 +316,14 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(MotorsGeneratorsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val sectorEnum = Sector.withName(form.value)
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
+  // OtherGeneralPurposeLvl4Page
   def loadOtherGeneralPurposeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -425,7 +331,8 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherGeneralPurposeLvl4Page(OtherGeneralPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      val form = if (sector == "") OtherGeneralPurposeLvl4Form else OtherGeneralPurposeLvl4Form.fill(FormValues(sector))
+      Ok(OtherGeneralPurposeLvl4Page(form, journey.mode)).toFuture
     }
   }
 
@@ -436,12 +343,14 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(OtherGeneralPurposeLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-          Redirect(navigator.nextPage(form.value, "")).toFuture
+          val sectorEnum = Sector.withName(form.value)
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }
 
+  // OtherMachineryLvl3Page
   def loadOtherMachineryLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -479,6 +388,129 @@ class ComputersElectronicsController @Inject() (
               Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             }
           }
+        }
+      )
+  }
+
+  // OtherSpecialPurposeLvl4Page
+  def loadOtherSpecialPurposeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") OtherSpecialPurposeLvl4Form else OtherSpecialPurposeLvl4Form.fill(FormValues(sector))
+      Ok(OtherSpecialPurposeLvl4Page(form, journey.mode)).toFuture
+    }
+  }
+
+  def submitOtherSpecialPurposeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    OtherSpecialPurposeLvl4Form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => BadRequest(OtherSpecialPurposeLvl4Page(formWithErrors, "")).toFuture,
+        form => {
+          val sectorEnum = Sector.withName(form.value)
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+        }
+      )
+  }
+
+  // RepairMaintenanceLvl4Page
+  def loadRepairMaintenanceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") RepairMaintenanceLvl4Form else RepairMaintenanceLvl4Form.fill(FormValues(sector))
+      Ok(RepairMaintenanceLvl4Page(form, journey.mode)).toFuture
+    }
+  }
+
+  def submitRepairMaintenanceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    RepairMaintenanceLvl4Form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => BadRequest(RepairMaintenanceLvl4Page(formWithErrors, "")).toFuture,
+        form => {
+          val sectorEnum = Sector.withName(form.value)
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+        }
+      )
+  }
+
+  // RepairsMaintainInstallLvl3Page
+  def loadRepairsMaintainInstallLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+        case None => ""
+      }
+      Ok(RepairsMaintainInstallLvl3Page(RepairsMaintainInstallLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+    }
+  }
+
+  def submitRepairsMaintainInstallLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    RepairsMaintainInstallLvl3Form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => BadRequest(RepairsMaintainInstallLvl3Page(formWithErrors, "")).toFuture,
+        form => {
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else {
+              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+            }
+          }
+        }
+      )
+  }
+
+  // WiringAndDevicesLvl4Page
+  def loadWiringAndDevicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val sector = journey.sector.value match {
+        case Some(value) => value.toString
+        case None => ""
+      }
+      val form = if (sector == "") WiringAndDevicesLvl4Form else WiringAndDevicesLvl4Form.fill(FormValues(sector))
+      Ok(WiringAndDevicesLvl4Page(form, journey.mode)).toFuture
+    }
+  }
+
+  def submitWiringAndDevicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    WiringAndDevicesLvl4Form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => BadRequest(WiringAndDevicesLvl4Page(formWithErrors, "")).toFuture,
+        form => {
+          val sectorEnum = Sector.withName(form.value)
+          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
   }

@@ -49,17 +49,17 @@ controllers.routes.AgricultureController.submitSupportActivitiesLvl4Page()
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-postHarvestActivities", messages("NACE.agriculture.Lvl4.postHarvestActivities"))),
+content = HtmlContent(radioText("sector-label-postHarvestActivities", messages("NACE.radio.01.63"))),
 value = Some(Sector.postHarvestActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.postHarvestActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-supportActivitiesAnimal", messages("NACE.agriculture.Lvl4.supportActivitiesAnimal"))),
+content = HtmlContent(radioText("sector-label-supportActivitiesAnimal", messages("NACE.radio.01.62"))),
 value = Some(Sector.supportActivitiesAnimal.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivitiesAnimal.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-supportActivitiesCrop", messages("NACE.agriculture.Lvl4.supportActivitiesCrop"))),
+content = HtmlContent(radioText("sector-label-supportActivitiesCrop", messages("NACE.radio.01.61"))),
 value = Some(Sector.supportActivitiesCrop.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivitiesCrop.toString)
 )
@@ -95,16 +95,10 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.2")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadAgricultureLvl3Page().toString>@messages("NACE.agriculture.Lvl3.supportActivities")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadAgricultureLvl3Page().toString>@messages("NACE.radio.01.6")</a>
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.2")" />
-<input type="hidden" name="level3Display" value="@messages("NACE.agriculture.Lvl3.supportActivities")" />
-<input type="hidden" name="level4Display_01.63" value="@messages("NACE.agriculture.Lvl4.postHarvestActivities")" />
-<input type="hidden" name="level4Display_01.62" value="@messages("NACE.agriculture.Lvl4.supportActivitiesAnimal")" />
-<input type="hidden" name="level4Display_01.61" value="@messages("NACE.agriculture.Lvl4.supportActivitiesCrop")" />
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(

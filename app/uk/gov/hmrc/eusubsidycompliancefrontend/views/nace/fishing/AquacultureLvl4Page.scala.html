@@ -49,12 +49,12 @@ controllers.routes.AgricultureController.submitAquacultureLvl4Page()
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-freshwaterAquaculture", messages("NACE.fishing.Lvl4.freshwaterAquaculture"))),
+content = HtmlContent(radioText("sector-label-freshwaterAquaculture", messages("NACE.radio.03.22"))),
 value = Some(Sector.freshwaterAquaculture.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.freshwaterAquaculture.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-marineAquaculture", messages("NACE.fishing.Lvl4.marineAquaculture"))),
+content = HtmlContent(radioText("sector-label-marineAquaculture", messages("NACE.radio.03.21"))),
 value = Some(Sector.marineAquaculture.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.marineAquaculture.toString)
 )
@@ -90,15 +90,10 @@ title = Text(messages("common.error.summary.title"))
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.3")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadFishingAndAquacultureLvl3Page().toString>@messages("NACE.fishing.Lvl3.aquaculture")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadFishingAndAquacultureLvl3Page().toString>@messages("NACE.radio.03.2")</a>
         </li>
     </ol>
 </nav>
-
-<input type="hidden" name="sectorDisplay" value="@messages("sector.label.3")" />
-<input type="hidden" name="level3Display" value="@messages("NACE.fishing.Lvl3.aquaculture")" />
-<input type="hidden" name="level4Display_03.22" value="@messages("NACE.fishing.Lvl4.freshwaterAquaculture")" />
-<input type="hidden" name="level4Display_03.21" value="@messages("NACE.fishing.Lvl4.marineAquaculture")" />
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
