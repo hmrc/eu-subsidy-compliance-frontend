@@ -1464,32 +1464,32 @@ NACE.Manufacturing.Lvl4.OpticalInstruments = Manufacture of optical instruments,
 NACE.Manufacturing.ElectricalEquipment.title = What type of electrical equipment does your undertaking manufacture?
 NACE.Manufacturing.ElectricalEquipment.error = Select the type of electrical equipment your undertaking manufactures
 
-NACE.Manufacturing.Lvl3.ElectricMotorsGenerators = Electric motors, generators, transformers; electricity distribution and control apparatus
+NACE.radio.27.1 = Electric motors, generators, transformers; electricity distribution and control apparatus
 NACE.Manufacturing.Lvl3.ElectricMotorsGenerators.title = What type of equipment for power generation, transmission or distribution does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.ElectricMotorsGenerators.error = Select the type of equipment for power generation, transmission or distribution your undertaking manufactures
-NACE.Manufacturing.Lvl4.ElectricMotorsGenerators = Electric motors, generators and transformers
-NACE.Manufacturing.Lvl4.ElectricityDistributionControl = Electricity distribution and control apparatus
+NACE.radio.27.11 = Electric motors, generators and transformers
+NACE.radio.27.12 = Electricity distribution and control apparatus
 
-NACE.Manufacturing.Lvl3.BatteriesAccumulators = Batteries and accumulators
+NACE.radio.27.2 = Batteries and accumulators
 NACE.Manufacturing.Lvl4.BatteriesAccumulators = Manufacture of batteries and accumulators
 
-NACE.Manufacturing.Lvl3.WiringDevices = Wiring and wiring devices
+NACE.radio.27.3 = Wiring and wiring devices
 NACE.Manufacturing.WiringDevices.title = What type of wiring or wiring device does your undertaking manufacture?
 NACE.Manufacturing.WiringDevices.error = Select the type of wiring or wiring device your undertaking manufactures
-NACE.Manufacturing.Lvl4.FibreOpticCables = Fibreoptic cables
-NACE.Manufacturing.Lvl4.OtherWiresCables = Other electronic and electric wires and cables
-NACE.Manufacturing.Lvl4.WiringDevices = Wiring devices
+NACE.radio.27.31 = Fibreoptic cables
+NACE.radio.27.32 = Other electronic and electric wires and cables
+NACE.radio.27.33 = Wiring devices
 
-NACE.Manufacturing.Lvl3.LightingEquipment = Lighting equipment
+NACE.radio.27.4 = Lighting equipment
 NACE.Manufacturing.Lvl4.LightingEquipment = Manufacture of lighting equipment
 
-NACE.Manufacturing.Lvl3.DomesticAppliances = Domestic appliances
+NACE.radio.27.5 = Domestic appliances
 NACE.Manufacturing.DomesticAppliances.title = What type of domestic appliances does your undertaking manufacture?
 NACE.Manufacturing.DomesticAppliances.error = Select the type of domesic appliances your undertaking manufactures
-NACE.Manufacturing.Lvl4.ElectricDomesticAppliances = Electric domestic appliances
-NACE.Manufacturing.Lvl4.NonElectricDomesticAppliances = Non-electric domestic appliances
+NACE.radio.27.51 = Electric domestic appliances
+NACE.radio.27.52 = Non-electric domestic appliances
 
-NACE.Manufacturing.Lvl3.OtherElectricalEquipment = Other electrical equipment
+NACE.radio.27.9 = Other electrical equipment
 NACE.Manufacturing.Lvl4.OtherElectricalEquipment = Manufacture of other electrical equipment
 
 ### Other machinery and equipment ###
