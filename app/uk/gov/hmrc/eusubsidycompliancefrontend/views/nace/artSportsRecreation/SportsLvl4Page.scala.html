@@ -50,22 +50,22 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.fitnessCentresActivities"))),
+                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.93.13"))),
                 value = Some(Sector.fitnessCentresActivities.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.fitnessCentresActivities.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.sportsClubsActivities"))),
+                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.93.12"))),
                 value = Some(Sector.sportsClubsActivities.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsClubsActivities.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.sportsFacilitiesOperation"))),
+                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.93.11"))),
                 value = Some(Sector.sportsFacilitiesOperation.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsFacilitiesOperation.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.otherSportsActivities"))),
+                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.93.19"))),
                 value = Some(Sector.otherSportsActivities.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSportsActivities.toString)
         )
@@ -106,10 +106,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.artsSportsRecreation")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page().toString>@messages("NACE.artsSportsRecreation.Lvl2.sportsAndRecreation")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page().toString>@messages("NACE.radio.93")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadSportsAmusementRecreationLvl3Page().toString>@messages("NACE.artsSportsRecreation.Lvl3.sports")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadSportsAmusementRecreationLvl3Page().toString>@messages("NACE.radio.93.1")</a>
         </li>
     </ol>
 </nav>

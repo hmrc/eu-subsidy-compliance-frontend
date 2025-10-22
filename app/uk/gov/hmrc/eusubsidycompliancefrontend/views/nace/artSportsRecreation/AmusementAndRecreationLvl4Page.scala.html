@@ -50,12 +50,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.amusementParks"))),
+                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.93.21"))),
                 value = Some(Sector.amusementParks.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.amusementParks.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.otherRecreationActivities"))),
+                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.93.29"))),
                 value = Some(Sector.otherRecreationActivities.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherRecreationActivities.toString)
         )
@@ -96,10 +96,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.artsSportsRecreation")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page().toString>@messages("NACE.artsSportsRecreation.Lvl2.sportsAndRecreation")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page().toString>@messages("NACE.radio.93")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadSportsAmusementRecreationLvl3Page().toString>@messages("NACE.artsSportsRecreation.Lvl3.amusementRecreation")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadSportsAmusementRecreationLvl3Page().toString>@messages("NACE.radio.93.2")</a>
         </li>
     </ol>
 </nav>
