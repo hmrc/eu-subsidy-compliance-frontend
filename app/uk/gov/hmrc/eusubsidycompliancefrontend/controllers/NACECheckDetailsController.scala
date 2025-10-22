@@ -22,7 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NaceSelection}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -37,13 +37,13 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class NACECheckDetailsController @Inject() (
-  mcc: MessagesControllerComponents,
-  store: Store,
-  actionBuilders: ActionBuilders,
-  naceCYAView: ConfirmDetailsPage,
-  navigator: Navigator
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends BaseController(mcc) {
+                                             mcc: MessagesControllerComponents,
+                                             store: Store,
+                                             actionBuilders: ActionBuilders,
+                                             naceCYAView: ConfirmDetailsPage,
+                                             navigator: Navigator
+                                           )(implicit ec: ExecutionContext, appConfig: AppConfig)
+  extends BaseController(mcc) {
 
   import actionBuilders._
 
@@ -127,15 +127,9 @@ class NACECheckDetailsController @Inject() (
       }
     }
     val level1_1Display = getLevel1_1Display(naceLevel2Code)
-    val level2Display = messages(s"NACE.$naceLevel2Code")
-    val level3Display = messages(s"NACE.$naceLevel3Code")
-
-    val level4Heading = messages(s"NACE.$naceLevel4Code.heading")
-    val level4Display = if (level4Heading.startsWith(naceLevel4Code)) {
-      level4Heading.substring(naceLevel4Code.length + 1).trim
-    } else {
-      level4Heading
-    }
+    val level2Display = messages(s"NACE.radio.$naceLevel2Code")
+    val level3Display = messages(s"NACE.radio.$naceLevel3Code")
+    val level4Display = messages(s"NACE.radio.$naceLevel4Code")
 
     val sector = naceLevel2Code match {
       case "01" => Sector.agriculture
@@ -213,82 +207,6 @@ class NACECheckDetailsController @Inject() (
     )
   }
 
-  private def buildViewModelFromSelection(
-    selection: NaceSelection
-  )(implicit messages: Messages): NaceCheckDetailsViewModel = {
-
-    val naceLevel4Code = selection.code
-    val naceLevel3Code = if (naceLevel4Code.length >= 4) naceLevel4Code.take(4) else naceLevel4Code
-    val naceLevel2Code = if (naceLevel4Code.length >= 2) naceLevel4Code.take(2) else naceLevel4Code
-    val naceLevel1Code = deriveLevel1Code(naceLevel2Code)
-
-    val sector = naceLevel2Code match {
-      case "01" => Sector.agriculture
-      case "03" => Sector.aquaculture
-      case _ => Sector.other
-    }
-
-    val showLevel1 = naceLevel1Code != "A"
-    val showLevel1_1 = naceLevel1Code == "C"
-    val showLevel2 = naceLevel1Code match {
-      case "D" | "A" | "Q" | "M" => false
-      case _ => true
-    }
-    val showLevel3 = !naceLevel3Code.endsWith(".0")
-    val showLevel4 = {
-      val level4Last2Digits = naceLevel4Code.takeRight(2)
-      val level3LastDigit = naceLevel3Code.takeRight(1)
-      !(level4Last2Digits.endsWith("0") && level4Last2Digits.charAt(0).toString == level3LastDigit)
-    }
-
-    val changeSectorUrl = routes.UndertakingController.getSector.url
-    val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code)
-    val changeLevel1_1Url = routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
-    val navigatorLevel2Code = naceLevel2Code
-
-    val changeLevel2Url = if (showLevel2) {
-      naceLevel1Code match {
-        case "C" => getLevel1_1ChangeUrl(naceLevel2Code)
-        case "F" => navigator.nextPage(naceLevel1Code, "").url
-        case _ => navigator.nextPage(navigatorLevel2Code, "").url
-      }
-    } else {
-      navigator.nextPage(navigatorLevel2Code, "").url
-    }
-
-    val changeLevel3Url = navigator.nextPage(navigatorLevel2Code, "").url
-
-    val changeLevel4Url = if (showLevel3) {
-      navigator.nextPage(naceLevel3Code, "").url
-    } else {
-      navigator.nextPage(navigatorLevel2Code, "").url
-    }
-
-    NaceCheckDetailsViewModel(
-      naceLevel1Display = selection.level1Display.getOrElse(""),
-      naceLevel1_1Display = selection.level1_1Display.getOrElse(""),
-      naceLevel2Display = selection.level2Display.getOrElse(""),
-      naceLevel3Display = selection.level3Display.getOrElse(""),
-      naceLevel4Display = selection.level4Display,
-      naceLevel1Code = naceLevel1Code,
-      naceLevel2Code = naceLevel2Code,
-      naceLevel3Code = naceLevel3Code,
-      naceLevel4Code = naceLevel4Code,
-      sector = sector,
-      changeSectorUrl = changeSectorUrl,
-      changeLevel1Url = changeLevel1Url,
-      changeLevel1_1Url = changeLevel1_1Url,
-      changeLevel2Url = changeLevel2Url,
-      changeLevel3Url = changeLevel3Url,
-      changeLevel4Url = changeLevel4Url,
-      showLevel1 = showLevel1,
-      showLevel1_1 = showLevel1_1,
-      showLevel2 = showLevel2,
-      showLevel3 = showLevel3,
-      showLevel4 = showLevel4
-    )
-  }
-
   def getCheckDetails(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val messages: Messages = mcc.messagesApi.preferred(request)
@@ -302,12 +220,7 @@ class NACECheckDetailsController @Inject() (
       }
 
       if (usersLastAnswer.nonEmpty) {
-        val viewModel = journey.naceSelection match {
-          case Some(selection) if selection.code == usersLastAnswer =>
-            buildViewModelFromSelection(selection)(messages)
-          case _ =>
-            buildViewModel(usersLastAnswer)(messages)
-        }
+        val viewModel = buildViewModel(usersLastAnswer)(messages)
 
         val naceLevel4Notes = NaceLevel4Catalogue
           .fromMessages(usersLastAnswer)(messages)
@@ -353,12 +266,7 @@ class NACECheckDetailsController @Inject() (
           request.body.asFormUrlEncoded.flatMap(_.get("naceCode").flatMap(_.headOption)) match {
             case Some(naceLevel4Code) =>
               store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-                val viewModel = journey.naceSelection match {
-                  case Some(selection) if selection.code == naceLevel4Code =>
-                    buildViewModelFromSelection(selection)(messages)
-                  case _ =>
-                    buildViewModel(naceLevel4Code)(messages)
-                }
+                val viewModel = buildViewModel(naceLevel4Code)(messages)
 
                 val naceLevel4Notes = NaceLevel4Catalogue
                   .fromMessages(naceLevel4Code)(messages)
