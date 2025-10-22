@@ -48,27 +48,27 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-passenger-rail", messages("NACE.TransportationAndStorage.Lvl3.PassengerRail"))),
+      content = HtmlContent(radioText("sector-label-passenger-rail", messages("NACE.radio.49.1"))),
       value = Some(Sector.passengerRailTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.passengerRailTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-other-passenger-land", messages("NACE.TransportationAndStorage.Lvl3.OtherPassengerLand"))),
+      content = HtmlContent(radioText("sector-label-other-passenger-land", messages("NACE.radio.49.3"))),
       value = Some(Sector.otherPassengerLandTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPassengerLandTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-freight-rail", messages("NACE.TransportationAndStorage.Lvl3.FreightRail"))),
+      content = HtmlContent(radioText("sector-label-freight-rail", messages("NACE.radio.49.2"))),
       value = Some(Sector.freightRailTransport4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightRailTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-freight-road-removal", messages("NACE.TransportationAndStorage.Lvl3.FreightRoadRemoval"))),
+      content = HtmlContent(radioText("sector-label-freight-road-removal", messages("NACE.radio.49.4"))),
       value = Some(Sector.freightRoadTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightRoadTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-pipeline-transport", messages("NACE.TransportationAndStorage.Lvl3.PipelineTransport"))),
+      content = HtmlContent(radioText("sector-label-pipeline-transport", messages("NACE.radio.49.5"))),
       value = Some(Sector.pipelineTransport4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.pipelineTransport.toString)
     )
@@ -106,7 +106,7 @@ backLinkEnabled = false,
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.transportStorage")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadTransportLvl2Page().toString>@messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadTransportLvl2Page().toString>@messages("NACE.radio.49")</a>
         </li>
     </ol>
 </nav>

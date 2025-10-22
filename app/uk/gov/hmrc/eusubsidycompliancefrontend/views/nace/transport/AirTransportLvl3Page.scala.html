@@ -48,12 +48,12 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-freight-air-space", messages("NACE.TransportationAndStorage.Lvl3.FreightAirSpace"))),
+      content = HtmlContent(radioText("sector-label-freight-air-space", messages("NACE.radio.51.2"))),
       value = Some(Sector.freightAndSpaceAirTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightAndSpaceAirTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-passenger-air", messages("NACE.TransportationAndStorage.Lvl3.PassengerAir"))),
+      content = HtmlContent(radioText("sector-label-passenger-air", messages("NACE.radio.51.1"))),
       value = Some(Sector.passengerAirTransport4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.passengerAirTransport.toString)
     )
@@ -91,7 +91,7 @@ backLinkEnabled = false,
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.transportStorage")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadTransportLvl2Page().toString>@messages("NACE.TransportationAndStorage.Lvl2.AirTransport")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadTransportLvl2Page().toString>@messages("NACE.radio.51")</a>
         </li>
     </ol>
 </nav>

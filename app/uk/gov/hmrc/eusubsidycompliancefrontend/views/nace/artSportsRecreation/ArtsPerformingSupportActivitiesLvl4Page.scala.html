@@ -50,12 +50,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.artsFacilitiesOperation"))),
+                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.90.31"))),
                 value = Some(Sector.artsFacilitiesOperation.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.artsFacilitiesOperation.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.otherPerformingArtsSupport"))),
+                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.90.39"))),
                 value = Some(Sector.otherPerformingArtsSupport.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPerformingArtsSupport.toString)
         )
@@ -96,10 +96,10 @@
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.artsSportsRecreation")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page().toString>@messages("NACE.artsSportsRecreation.Lvl2.artsCreationPerforming")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsSportsRecreationLvl2Page().toString>@messages("NACE.radio.90")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsCreationPerformingLvl3Page().toString>@messages("NACE.artsSportsRecreation.Lvl3.performingArtsSupport")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ArtsController.loadArtsCreationPerformingLvl3Page().toString>@messages("NACE.radio.90.3")</a>
         </li>
     </ol>
 </nav>

@@ -49,12 +49,12 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-passenger-heavy-rail", messages("NACE.TransportationAndStorage.Lvl4.PassengerHeavyRail"))),
+      content = HtmlContent(radioText("sector-label-passenger-heavy-rail", messages("NACE.radio.49.11"))),
       value = Some(Sector.passengerHeavyRailTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.passengerHeavyRailTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-other-passenger-rail", messages("NACE.TransportationAndStorage.Lvl4.OtherPassengerRail"))),
+      content = HtmlContent(radioText("sector-label-other-passenger-rail", messages("NACE.radio.49.12"))),
       value = Some(Sector.otherPassengerRailTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPassengerRailTransport.toString)
     )
@@ -93,10 +93,10 @@ backLinkEnabled = false,
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.transportStorage")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadTransportLvl2Page().toString>@messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadTransportLvl2Page().toString>@messages("NACE.radio.49")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadLandTransportLvl3Page().toString>@messages("NACE.TransportationAndStorage.Lvl3.PassengerRail")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadLandTransportLvl3Page().toString>@messages("NACE.radio.49.1")</a>
         </li>
     </ol>
 </nav>

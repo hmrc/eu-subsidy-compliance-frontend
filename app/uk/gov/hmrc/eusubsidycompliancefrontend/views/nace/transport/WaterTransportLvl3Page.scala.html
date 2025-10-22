@@ -48,22 +48,22 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-inland-freight", messages("NACE.TransportationAndStorage.Lvl3.InlandFreight"))),
+      content = HtmlContent(radioText("sector-label-inland-freight", messages("NACE.radio.50.4"))),
       value = Some(Sector.inlandFreightWaterTransport4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.inlandFreightWaterTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-inland-passenger", messages("NACE.TransportationAndStorage.Lvl3.InlandPassenger"))),
+      content = HtmlContent(radioText("sector-label-inland-passenger", messages("NACE.radio.50.3"))),
       value = Some(Sector.inlandPassengerWaterTransport4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.inlandPassengerWaterTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-sea-coastal-freight", messages("NACE.TransportationAndStorage.Lvl3.SeaCoastalFreight"))),
+      content = HtmlContent(radioText("sector-label-sea-coastal-freight", messages("NACE.radio.50.2"))),
       value = Some(Sector.coastalFreightWaterTransport4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.coastalFreightWaterTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-sea-coastal-passenger", messages("NACE.TransportationAndStorage.Lvl3.SeaCoastalPassenger"))),
+      content = HtmlContent(radioText("sector-label-sea-coastal-passenger", messages("NACE.radio.50.1"))),
       value = Some(Sector.coastalPassengerWaterTransport4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.coastalPassengerWaterTransport.toString)
     )
@@ -101,7 +101,7 @@ backLinkEnabled = false,
             <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.Lvl1.transportStorage")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadTransportLvl2Page().toString>@messages("NACE.TransportationAndStorage.Lvl2.WaterTransport")</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.TransportController.loadTransportLvl2Page().toString>@messages("NACE.radio.50")</a>
         </li>
     </ol>
 </nav>
