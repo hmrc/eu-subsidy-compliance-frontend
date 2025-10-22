@@ -60,7 +60,7 @@ class FinancialDashboardController @Inject() (
       balanceOpt: Option[UndertakingBalance] <- escService.getUndertakingBalance(eori)
       summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, balanceOpt, today)
       sector = summary.overall.sector.toString.take(2)
-       industrySectorKey: String = sector match {
+      industrySectorKey: String = sector match {
         case "01" => "agriculture"
         case "03" => "fisheryAndAquaculture"
         case _ => "generalTrade"

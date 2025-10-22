@@ -62,7 +62,9 @@ class PaperPrintedController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(ArticlesPaperPaperboardLvl4Page(ArticlesPaperPaperboardLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        ArticlesPaperPaperboardLvl4Page(ArticlesPaperPaperboardLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 

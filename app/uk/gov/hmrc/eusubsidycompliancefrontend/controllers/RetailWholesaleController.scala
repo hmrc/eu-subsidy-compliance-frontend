@@ -57,8 +57,7 @@ class RetailWholesaleController @Inject() (
   machineryLvl4Page: MachineryLvl4Page,
   motorVehiclesWholesaleLvl4Page: MotorVehiclesWholesaleLvl4Page,
   specialisedLvl4Page: SpecialisedLvl4Page
-)(implicit val appConfig: AppConfig,
-  val executionContext: ExecutionContext)
+)(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc) {
 
   import actionBuilders._
@@ -91,7 +90,7 @@ class RetailWholesaleController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-    Ok(retailWholesaleLvl2Page(retailWholesaleLvl2PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(retailWholesaleLvl2Page(retailWholesaleLvl2PageForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -132,7 +131,7 @@ class RetailWholesaleController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-    Ok(retailLvl3Page(retailLvl3PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(retailLvl3Page(retailLvl3PageForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -515,7 +514,9 @@ class RetailWholesaleController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(motorVehiclesWholesaleLvl4Page(motorVehiclesWholesaleLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        motorVehiclesWholesaleLvl4Page(motorVehiclesWholesaleLvl4PageForm.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 

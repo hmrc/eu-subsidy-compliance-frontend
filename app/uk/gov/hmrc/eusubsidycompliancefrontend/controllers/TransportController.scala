@@ -80,7 +80,7 @@ class TransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(AirTransportFreightAirLvl4Page(AirTransportFreightAirLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(AirTransportFreightAirLvl4Page(AirTransportFreightAirLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -104,7 +104,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-    Ok(AirTransportLvl3Page(AirTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(AirTransportLvl3Page(AirTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -145,7 +145,12 @@ class TransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(LandTransportFreightTransportLvl4Page(LandTransportFreightTransportLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        LandTransportFreightTransportLvl4Page(
+          LandTransportFreightTransportLvl4Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
     }
   }
 
@@ -169,7 +174,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-    Ok(LandTransportLvl3Page(LandTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(LandTransportLvl3Page(LandTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -210,7 +215,9 @@ class TransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(LandTransportOtherPassengerLvl4Page(LandTransportOtherPassengerLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        LandTransportOtherPassengerLvl4Page(LandTransportOtherPassengerLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -234,7 +241,9 @@ class TransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(LandTransportPassengerRailLvl4Page(LandTransportPassengerRailLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        LandTransportPassengerRailLvl4Page(LandTransportPassengerRailLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -258,7 +267,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-    Ok(PostalAndCourierLvl3Page(PostalAndCourierLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(PostalAndCourierLvl3Page(PostalAndCourierLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -299,7 +308,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-    Ok(TransportLvl2Page(TransportLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(TransportLvl2Page(TransportLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -340,7 +349,12 @@ class TransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(WarehousingSupportActivitiesTransportLvl4Page(WarehousingSupportActivitiesTransportLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        WarehousingSupportActivitiesTransportLvl4Page(
+          WarehousingSupportActivitiesTransportLvl4Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
     }
   }
 
@@ -364,7 +378,9 @@ class TransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(WarehousingIntermediationLvl4Page(WarehousingIntermediationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        WarehousingIntermediationLvl4Page(WarehousingIntermediationLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -388,7 +404,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-    Ok(WaterTransportLvl3Page(WaterTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(WaterTransportLvl3Page(WaterTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -429,7 +445,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-    Ok(WarehousingSupportLvl3Page(WarehousingSupportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(WarehousingSupportLvl3Page(WarehousingSupportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 

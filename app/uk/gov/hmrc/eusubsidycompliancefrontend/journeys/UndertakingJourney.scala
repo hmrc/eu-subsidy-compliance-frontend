@@ -29,7 +29,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.NaceSelection
 
-
 import scala.concurrent.Future
 
 case class UndertakingJourney(

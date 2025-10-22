@@ -72,13 +72,15 @@ class GeneralTradeGroupsController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val sector = journey.sector.value match {
-        case Some(value) => if (value.toString.length >=  2) value.toString.take(2) else value.toString
+        case Some(value) => if (value.toString.length >= 2) value.toString.take(2) else value.toString
         case None => ""
       }
 
-      val previousLevel1Code = if(sector.length > 1) naceCheckDetailsController.deriveLevel1Code(sector) else sector
+      val previousLevel1Code = if (sector.length > 1) naceCheckDetailsController.deriveLevel1Code(sector) else sector
 
-    Ok(generalTradeUndertakingPage(generalTradeUndertakingForm.fill(FormValues(previousLevel1Code)), journey.mode)).toFuture
+      Ok(
+        generalTradeUndertakingPage(generalTradeUndertakingForm.fill(FormValues(previousLevel1Code)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -90,9 +92,8 @@ class GeneralTradeGroupsController @Inject() (
         formWithErrors => BadRequest(generalTradeUndertakingPage(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-
             val previousAnswer = journey.sector.value match {
-              case Some(value) => if (value.toString.length >=  2) value.toString.take(2) else value.toString
+              case Some(value) => if (value.toString.length >= 2) value.toString.take(2) else value.toString
               case None => ""
             }
 
@@ -123,7 +124,9 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(generalTradeUndertakingOtherPage(generalTradeUndertakingOtherForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        generalTradeUndertakingOtherPage(generalTradeUndertakingOtherForm.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -173,17 +176,13 @@ class GeneralTradeGroupsController @Inject() (
         formWithErrors => BadRequest(lvl2_1GroupsPage(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-
-            if (form.value.equals(journey.internalNaceCode) && journey.isNaceCYA)
-            {
+            if (form.value.equals(journey.internalNaceCode) && journey.isNaceCYA) {
               val lvl4Answer = journey.sector.value match {
                 case Some(lvl4Value) => lvl4Value.toString
                 case None => ""
               }
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
-            }
-            else
-            {
+            } else {
               store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
               store.update[UndertakingJourney](_.copy(internalNaceCode = form.value, isNaceCYA = false))
               Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
@@ -201,7 +200,7 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(clothesTextilesHomewarePage(clothesTextilesHomewareForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(clothesTextilesHomewarePage(clothesTextilesHomewareForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -217,25 +216,29 @@ class GeneralTradeGroupsController @Inject() (
           val sectorEnum = Sector.withName(form.value)
 
           val naceSelectionOpt = if (form.value == "31.00") {
-            Some(NaceSelection(
-              code = "31.00",
-              sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-              level1Display = formData.get("level1Display").flatMap(_.headOption),
-              level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-              level2Display = formData.get("level2Display_31.00").flatMap(_.headOption),
-              level3Display = formData.get("level3Display_31.00").flatMap(_.headOption),
-              level4Display = formData.get("level4Display_31.00").flatMap(_.headOption).getOrElse("")
-            ))
+            Some(
+              NaceSelection(
+                code = "31.00",
+                sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+                level1Display = formData.get("level1Display").flatMap(_.headOption),
+                level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+                level2Display = formData.get("level2Display_31.00").flatMap(_.headOption),
+                level3Display = formData.get("level3Display_31.00").flatMap(_.headOption),
+                level4Display = formData.get("level4Display_31.00").flatMap(_.headOption).getOrElse("")
+              )
+            )
           } else {
             None
           }
 
           naceSelectionOpt match {
             case Some(selection) =>
-              store.update[UndertakingJourney](_.setNaceSelection(selection).setUndertakingSector(sectorEnum.id))
+              store
+                .update[UndertakingJourney](_.setNaceSelection(selection).setUndertakingSector(sectorEnum.id))
                 .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
             case None =>
-              store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+              store
+                .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
                 .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
           }
         }
@@ -250,7 +253,9 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(computersElectronicsMachineryPage(computersElectronicsMachineryForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        computersElectronicsMachineryPage(computersElectronicsMachineryForm.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -275,7 +280,7 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(foodBeveragesTobaccoPage(foodBeveragesTobaccoForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(foodBeveragesTobaccoPage(foodBeveragesTobaccoForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -291,25 +296,29 @@ class GeneralTradeGroupsController @Inject() (
           val sectorEnum = Sector.withName(form.value)
 
           val naceSelectionOpt = if (form.value == "12.00") {
-            Some(NaceSelection(
-              code = "12.00",
-              sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
-              level1Display = formData.get("level1Display").flatMap(_.headOption),
-              level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
-              level2Display = formData.get("level2Display_12.00").flatMap(_.headOption),
-              level3Display = formData.get("level3Display_12.00").flatMap(_.headOption),
-              level4Display = formData.get("level4Display_12.00").flatMap(_.headOption).getOrElse("")
-            ))
+            Some(
+              NaceSelection(
+                code = "12.00",
+                sectorDisplay = formData.get("sectorDisplay").flatMap(_.headOption).getOrElse(""),
+                level1Display = formData.get("level1Display").flatMap(_.headOption),
+                level1_1Display = formData.get("level1_1Display").flatMap(_.headOption),
+                level2Display = formData.get("level2Display_12.00").flatMap(_.headOption),
+                level3Display = formData.get("level3Display_12.00").flatMap(_.headOption),
+                level4Display = formData.get("level4Display_12.00").flatMap(_.headOption).getOrElse("")
+              )
+            )
           } else {
             None
           }
 
           naceSelectionOpt match {
             case Some(selection) =>
-              store.update[UndertakingJourney](_.setNaceSelection(selection).setUndertakingSector(sectorEnum.id))
+              store
+                .update[UndertakingJourney](_.setNaceSelection(selection).setUndertakingSector(sectorEnum.id))
                 .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
             case None =>
-              store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+              store
+                .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
                 .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
           }
         }
@@ -324,7 +333,7 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(metalsChemicalsMaterialsPage(metalsChemicalsMaterialsForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(metalsChemicalsMaterialsPage(metalsChemicalsMaterialsForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -349,7 +358,7 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(paperPrintedProductsPage(paperPrintedProductsForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(paperPrintedProductsPage(paperPrintedProductsForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -374,7 +383,7 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-    Ok(vehiclesTransportPage(vehiclesTransportForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(vehiclesTransportPage(vehiclesTransportForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 

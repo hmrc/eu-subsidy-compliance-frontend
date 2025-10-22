@@ -19,14 +19,14 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 import play.api.libs.json.{Json, OFormat}
 
 case class NaceSelection(
-                          code: String,
-                          sectorDisplay: String,
-                          level1Display: Option[String] = None,
-                          level1_1Display: Option[String] = None,
-                          level2Display: Option[String] = None,
-                          level3Display: Option[String] = None,
-                          level4Display: String
-                        )
+  code: String,
+  sectorDisplay: String,
+  level1Display: Option[String] = None,
+  level1_1Display: Option[String] = None,
+  level2Display: Option[String] = None,
+  level3Display: Option[String] = None,
+  level4Display: String
+)
 
 object NaceSelection {
   implicit val format: OFormat[NaceSelection] = Json.format[NaceSelection]

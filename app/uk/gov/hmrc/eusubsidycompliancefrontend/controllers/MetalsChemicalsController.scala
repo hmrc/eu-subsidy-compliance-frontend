@@ -87,7 +87,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(PharmaceuticalsLvl3Page(PharmaceuticalsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitPharmaceuticalsLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -126,7 +127,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(PreciousNonFerrousLvl4Page(PreciousNonFerrousLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitPreciousNonFerrousLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -148,7 +150,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(StructuralMetalLvl4Page(StructuralMetalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitStructuralMetalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -169,8 +172,11 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(TanksReservoirsContainersLvl4Page(TanksReservoirsContainersLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        TanksReservoirsContainersLvl4Page(TanksReservoirsContainersLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
+    }
+  }
 
   def submitTanksReservoirsContainersLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -191,8 +197,11 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(TreatmentCoatingMachiningLvl4Page(TreatmentCoatingMachiningLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        TreatmentCoatingMachiningLvl4Page(TreatmentCoatingMachiningLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
+    }
+  }
 
   def submitTreatmentCoatingMachiningLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -214,7 +223,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(WashingLvl4Page(WashingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitWashingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -237,7 +247,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(BasicLvl4Page(BasicLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitBasicLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -260,7 +271,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(BasicMetalsLvl3Page(BasicMetalsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitBasicMetalsLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -300,7 +312,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(CastingMetalsLvl4Page(CastingMetalsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitCastingMetalsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -323,7 +336,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(ChemicalsProductsLvl3Page(ChemicalsProductsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitChemicalsProductsLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -363,7 +377,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(CokePetroleumLvl3Page(CokePetroleumLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitCokePetroleumLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -403,7 +418,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(CutleryToolsHardwareLvl4Page(CutleryToolsHardwareLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitCutleryToolsHardwareLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -426,7 +442,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(FabricatedMetalsLvl3Page(FabricatedMetalsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitFabricatedMetalsLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -466,7 +483,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(FirstProcessingSteelLvl4Page(FirstProcessingSteelLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitFirstProcessingSteelLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -488,8 +506,11 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherFabricatedProductsLvl4Page(OtherFabricatedProductsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        OtherFabricatedProductsLvl4Page(OtherFabricatedProductsLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
+    }
+  }
 
   def submitOtherFabricatedProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -512,7 +533,8 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(OtherProductsLvl4Page(OtherProductsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitOtherProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

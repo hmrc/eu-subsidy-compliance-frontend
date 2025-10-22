@@ -85,7 +85,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(OtherSpecialPurposeLvl4Page(OtherSpecialPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitOtherSpecialPurposeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -108,7 +109,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(RepairMaintenanceLvl4Page(RepairMaintenanceLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitRepairMaintenanceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -131,7 +133,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(WiringAndDevicesLvl4Page(WiringAndDevicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitWiringAndDevicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -154,7 +157,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(RepairsMaintainInstallLvl3Page(RepairsMaintainInstallLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitRepairsMaintainInstallLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -193,7 +197,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(ComponentsBoardsLvl4Page(ComponentsBoardsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitComponentsBoardsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -215,8 +220,11 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(ComputersElectronicsOpticalLvl3Page(ComputersElectronicsOpticalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        ComputersElectronicsOpticalLvl3Page(ComputersElectronicsOpticalLvl3Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
+    }
+  }
 
   def submitComputersElectronicsOpticalLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -256,7 +264,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(DomesticAppliancesLvl4Page(DomesticAppliancesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitDomesticAppliancesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -279,7 +288,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(ElectricalEquipmentLvl3Page(ElectricalEquipmentLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitElectricalEquipmentLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -319,7 +329,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(GeneralPurposeLvl4Page(GeneralPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitGeneralPurposeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -340,8 +351,11 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(MeasuringTestingInstrumentsLvl4Page(MeasuringTestingInstrumentsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+      Ok(
+        MeasuringTestingInstrumentsLvl4Page(MeasuringTestingInstrumentsLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
+    }
+  }
 
   def submitMeasuringTestingInstrumentsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -364,7 +378,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(MetalFormingLvl4Page(MetalFormingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitMetalFormingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -387,7 +402,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(MotorsGeneratorsLvl4Page(MotorsGeneratorsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitMotorsGeneratorsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -410,7 +426,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(OtherGeneralPurposeLvl4Page(OtherGeneralPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitOtherGeneralPurposeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -433,7 +450,8 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(OtherMachineryLvl3Page(OtherMachineryLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
-    }}
+    }
+  }
 
   def submitOtherMachineryLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

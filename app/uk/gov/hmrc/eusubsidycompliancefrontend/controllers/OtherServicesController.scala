@@ -48,8 +48,7 @@ class OtherServicesController @Inject() (
   motorVehiclesRepairLvl4Page: MotorVehiclesRepairLvl4Page,
   otherMembershipOrgsLvl4Page: OtherMembershipOrgsLvl4Page,
   otherPersonalServicesLvl4Page: OtherPersonalServicesLvl4Page
-)(implicit val appConfig: AppConfig,
-  val executionContext: ExecutionContext)
+)(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc) {
 
   import actionBuilders._
@@ -115,7 +114,9 @@ class OtherServicesController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(membershipOrgActivitiesLvl3Page(membershipOrgActivitiesLvl3PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        membershipOrgActivitiesLvl3Page(membershipOrgActivitiesLvl3PageForm.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -366,7 +367,9 @@ class OtherServicesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(otherPersonalServicesLvl4Page(otherPersonalServicesLvl4PageForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        otherPersonalServicesLvl4Page(otherPersonalServicesLvl4PageForm.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
