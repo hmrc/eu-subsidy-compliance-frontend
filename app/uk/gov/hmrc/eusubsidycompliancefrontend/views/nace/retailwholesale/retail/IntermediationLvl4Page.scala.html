@@ -48,12 +48,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-non-specialised-intermediation", messages("NACE.Retail.Intermediation.Lvl4.NonSpecialised"))),
+            content = HtmlContent(radioText("sector-label-non-specialised-intermediation", messages("NACE.radio.47.91"))),
             value = Some(Sector.NonSpecialisedRetailIntermediation.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonSpecialisedRetailIntermediation.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-specialised-intermediation", messages("NACE.Retail.Intermediation.Lvl4.Specialised"))),
+            content = HtmlContent(radioText("sector-label-specialised-intermediation", messages("NACE.radio.47.92"))),
             value = Some(Sector.SpecialisedRetailIntermediation.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.SpecialisedRetailIntermediation.toString)
         )
@@ -90,10 +90,10 @@
                     <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.wholesaleRetail")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page().toString>@messages("NACE.RetailWholesale.Lvl2.Retail")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page().toString>@messages("NACE.radio.47")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailLvl3Page().toString>@messages("NACE.Retail.Lvl3.IntermediationServices")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailLvl3Page().toString>@messages("NACE.radio.47.9")</a>
                 </li>
             </ol>
         </nav>

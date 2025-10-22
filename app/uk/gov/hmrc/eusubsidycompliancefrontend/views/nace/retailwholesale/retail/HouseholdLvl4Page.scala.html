@@ -48,27 +48,27 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-carpets", messages("NACE.Retail.Household.Lvl4.Carpets"))),
+            content = HtmlContent(radioText("sector-label-carpets", messages("NACE.radio.47.53"))),
             value = Some(Sector.CarpetsRetail.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CarpetsRetail.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-electrical", messages("NACE.Retail.Household.Lvl4.Electrical"))),
+            content = HtmlContent(radioText("sector-label-electrical", messages("NACE.radio.47.54"))),
             value = Some(Sector.ElectricalRetail.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricalRetail.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-hardware", messages("NACE.Retail.Household.Lvl4.Hardware"))),
+            content = HtmlContent(radioText("sector-label-hardware", messages("NACE.radio.47.52"))),
             value = Some(Sector.HardwareRetail.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.HardwareRetail.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-textiles", messages("NACE.Retail.Household.Lvl4.Textiles"))),
+            content = HtmlContent(radioText("sector-label-textiles", messages("NACE.radio.47.51"))),
             value = Some(Sector.TextilesRetail.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.TextilesRetail.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-furniture", messages("NACE.Retail.Household.Lvl4.Furniture"))),
+            content = HtmlContent(radioText("sector-label-furniture", messages("NACE.radio.47.55"))),
             value = Some(Sector.FurnitureRetail.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FurnitureRetail.toString)
         )
@@ -105,10 +105,10 @@
                     <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.wholesaleRetail")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page().toString>@messages("NACE.RetailWholesale.Lvl2.Retail")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailWholesaleLvl2Page().toString>@messages("NACE.radio.47")</a>
                 </li>
                 <li class="govuk-breadcrumbs__list-item">
-                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailLvl3Page().toString>@messages("NACE.Retail.Lvl3.OtherHouseholdEquipment")</a>
+                    <a class="govuk-breadcrumbs__link" href=@controllers.routes.RetailWholesaleController.loadRetailLvl3Page().toString>@messages("NACE.radio.47.5")</a>
                 </li>
             </ol>
         </nav>
