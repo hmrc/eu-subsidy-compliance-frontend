@@ -49,7 +49,7 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-beverageServing", messages("NACE.radio.sector.56.3"))),
+                content = HtmlContent(radioText("sector-label-beverageServing", messages("NACE.radio.56.3"))),
                 value = Some(Sector.beverageServing4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.beverageServing.toString)
         ),

@@ -58,13 +58,12 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.rubberTubes.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-rubber", messages("NACE.radio.22.19"))),
+            content = HtmlContent(radioText("sector-label-other-rubber", messages("NACE.radio.22.12"))),
             value = Some(Sector.otherRubberProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherRubberProducts.toString)
         )
     )
 }
-
 
 @layout(
   pageTitle = Some(messages("NACE.Manufacturing.Rubber.title")),

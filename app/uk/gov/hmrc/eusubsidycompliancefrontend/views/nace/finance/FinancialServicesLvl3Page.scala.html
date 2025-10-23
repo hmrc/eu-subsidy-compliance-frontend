@@ -56,7 +56,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.MonetaryIntermediation.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-holding-companies", messages("NACE.financialServices.Lvl3.holdingCompanies"))),
+            content = HtmlContent(radioText("sector-label-holding-companies", messages("NACE.radio.64.2"))),
             value = Some(Sector.HoldingCompanies.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.HoldingCompaniesFinal.toString)
         ),
