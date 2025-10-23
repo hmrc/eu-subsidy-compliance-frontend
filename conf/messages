@@ -253,6 +253,13 @@ undertaking.confirmation.p2 = You can now:
 undertaking.confirmation.ul1 = submit reports
 undertaking.confirmation.ul2 = add businesses to your undertaking
 undertaking.confirmation.p3 = You can also add businesses to your undertaking using the <a id="add-remove-business-link" href="{0}" class="govuk-link">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the undertaking.
+
+undertaking.update.confirmation.title = You have updated your undertaking sector
+undertaking.update.confirmation.p1 = You have updated your undertaking’s industry sector and business activity information.
+undertaking.update.confirmation.p2 = You can continue to
+undertaking.update.confirmation.urlText = manage your undertaking and submit reports
+
+
 lead-account-homepage.important = Important
 lead-account-homepage.banner = Your balance may be incorrect.
 lead-account-homepage.banner.link = Review changes to your allowance and what you need to do
