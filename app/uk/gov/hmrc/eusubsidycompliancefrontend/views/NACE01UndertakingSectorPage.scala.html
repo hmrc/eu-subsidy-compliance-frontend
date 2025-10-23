@@ -35,8 +35,7 @@
 @fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
-    if(mode) controllers.routes.UndertakingController.updateIndustrySector
-    else controllers.routes.UndertakingController.postSector
+    controllers.routes.UndertakingController.postSector
 }
 
 
