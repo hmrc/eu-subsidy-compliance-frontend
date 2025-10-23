@@ -2456,9 +2456,9 @@ NACE.radio.98 = Undifferentiated goods and service-producing activities of priva
 NACE.households.Lvl2.undifferentiatedProduction.title = What type of private household activities does your undertaking carry out?
 NACE.households.Lvl2.undifferentiatedProduction.error = Select the type of private household activities your undertaking carries out
 NACE.households.Lvl3.undifferentiatedGoods = Undifferentiated goods-producing activities of private households for own use
-NACE.radio.98.10 = Undifferentiated goods-producing activities of private households for own use
+NACE.radio.98.1 = Undifferentiated goods-producing activities of private households for own use
 NACE.households.Lvl3.undifferentiatedServices = Undifferentiated service-producing activities of private households for own use
-NACE.radio.98.20 = Undifferentiated service-producing activities of private households for own use
+NACE.radio.98.2 = Undifferentiated service-producing activities of private households for own use
 
 #ActivitiesExtraterritorial NACE Sector2,3,4
 NACE.ActivitiesExtraterritorial.Lvl2.CYAOnly.OrganisationsBodies = Activities of extraterritorial organisations and bodies
