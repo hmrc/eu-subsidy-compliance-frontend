@@ -129,9 +129,11 @@ class TransportController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
-              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+              for {
+                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              }
+              yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -199,9 +201,11 @@ class TransportController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
-              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+              for {
+                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              }
+              yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -292,9 +296,11 @@ class TransportController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
-              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+              for {
+                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              }
+              yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -333,9 +339,11 @@ class TransportController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
-              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+              for {
+                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              }
+              yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -429,9 +437,11 @@ class TransportController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
-              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+              for {
+                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              }
+              yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -470,9 +480,11 @@ class TransportController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
-              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+              for {
+                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              }
+              yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }

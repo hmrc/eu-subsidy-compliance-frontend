@@ -159,7 +159,7 @@ class UndertakingController @Inject() (
       if (journey.mode.equals(appConfig.UpdateNaceMode)) {
         Ok(
           undertakingSectorPage(
-            undertakingSectorForm,
+            undertakingSectorForm.fill(FormValues(journey.sector.toString)),
             journey.previous,
             journey.about.value.getOrElse(""),
             journey.mode
