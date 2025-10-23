@@ -50,7 +50,7 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-funeralActivities", messages("NACE.otherService.Lvl3.funeralActivities"))),
+content = HtmlContent(radioText("sector-label-funeralActivities", messages("NACE.radio.96.3"))),
 value = Some(Sector.funeralActivities4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.funeralActivities.toString)
 ),
@@ -65,12 +65,12 @@ value = Some(Sector.cleaningTextileProducts4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.textileFurCleaning.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-personalServicesIntermediation", messages("NACE.otherService.Lvl3.intermediationPersonalServices"))),
+content = HtmlContent(radioText("sector-label-personalServicesIntermediation", messages("NACE.radio.96.4"))),
 value = Some(Sector.personalServicesIntermediation4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.personalServicesIntermediation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherPersonalServices", messages("NACE.otherService.Lvl3.otherPersonalServices"))),
+content = HtmlContent(radioText("sector-label-otherPersonalServices", messages("NACE.radio.96.9"))),
 value = Some(Sector.otherPersonalServices.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPersonalServices.toString)
 )
@@ -108,7 +108,7 @@ title = Text(messages("common.error.summary.title"))
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.Lvl1.otherService")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.radio.T")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadOtherLvl2Page().toString>@messages("NACE.otherService.Lvl2.personalServiceActivities")</a>
