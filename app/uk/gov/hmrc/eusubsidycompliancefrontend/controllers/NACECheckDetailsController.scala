@@ -37,13 +37,13 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class NACECheckDetailsController @Inject() (
-                                             mcc: MessagesControllerComponents,
-                                             store: Store,
-                                             actionBuilders: ActionBuilders,
-                                             naceCYAView: ConfirmDetailsPage,
-                                             navigator: Navigator
-                                           )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends BaseController(mcc) {
+  mcc: MessagesControllerComponents,
+  store: Store,
+  actionBuilders: ActionBuilders,
+  naceCYAView: ConfirmDetailsPage,
+  navigator: Navigator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends BaseController(mcc) {
 
   import actionBuilders._
 

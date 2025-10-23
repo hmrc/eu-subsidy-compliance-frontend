@@ -191,7 +191,6 @@ class UndertakingController @Inject() (
     }
   }
 
-
   def getSectorForUpdate: Action[AnyContent] = enrolled.async { implicit request =>
     getSectorPage()
   }
