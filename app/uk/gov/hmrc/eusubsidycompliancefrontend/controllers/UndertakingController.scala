@@ -191,25 +191,6 @@ class UndertakingController @Inject() (
     }
   }
 
-  private def getSectorPageUpdateMode()(implicit request: AuthenticatedEnrolledRequest[_]) = {
-    implicit val eori: EORI = request.eoriNumber
-    withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
-      runStepIfEligible(journey) {
-        val form = journey.sector.value.fold(undertakingSectorForm) { sector =>
-          undertakingSectorForm.fill(FormValues(sector.id.toString))
-        }
-
-        Ok(
-          undertakingSectorPage(
-            form,
-            journey.previous,
-            journey.about.value.getOrElse(""),
-            journey.mode
-          )
-        ).toFuture
-      }
-    }
-  }
 
   def getSectorForUpdate: Action[AnyContent] = enrolled.async { implicit request =>
     getSectorPage()

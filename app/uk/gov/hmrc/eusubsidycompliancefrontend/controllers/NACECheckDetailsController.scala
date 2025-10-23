@@ -219,7 +219,7 @@ class NACECheckDetailsController @Inject() (
         case None => ""
       }
 
-      if (usersLastAnswer.nonEmpty) {
+      if (usersLastAnswer.nonEmpty && usersLastAnswer.length == 5) {
         val viewModel = buildViewModel(usersLastAnswer)(messages)
 
         val naceLevel4Notes = NaceLevel4Catalogue
@@ -285,6 +285,7 @@ class NACECheckDetailsController @Inject() (
           if (form.value == "true") {
             Redirect(routes.UndertakingController.getAddBusiness).toFuture
           } else {
+            store.update[UndertakingJourney](_.setUndertakingSector(Sector.other.id))
             Redirect(routes.UndertakingController.getSector).toFuture
           }
         }
