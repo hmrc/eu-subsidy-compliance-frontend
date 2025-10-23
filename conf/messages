@@ -1496,48 +1496,48 @@ NACE.Manufacturing.Lvl4.OtherElectricalEquipment = Manufacture of other electric
 NACE.Manufacturing.OtherMachinery.title = What type of other machinery and equipment does your undertaking manufacture?
 NACE.Manufacturing.OtherMachinery.error = Select the type of other machinery and equipment your undertaking manufactures
 
-NACE.Manufacturing.Lvl3.GeneralPurposeMachinery = General-purpose machinery
+NACE.radio.28.1 = General-purpose machinery
 NACE.Manufacturing.Lvl3.GeneralPurposeMachinery.hint = Includes bearings and gears, engines and turbines, fluid power, pumps and compressors, taps and valves.
 NACE.Manufacturing.GeneralPurposeMachinery.title = What type of general-purpose machinery does your undertaking manufacture?
 NACE.Manufacturing.GeneralPurposeMachinery.error = Select the type of general-purpose machinery your undertaking manufactures
-NACE.Manufacturing.Lvl4.EnginesTurbines = Engines and turbines (except aircraft, vehicle and cycle engines)
-NACE.Manufacturing.Lvl4.FluidPowerEquipment = Fluid power equipment
-NACE.Manufacturing.Lvl4.PumpsCompressors = Other pumps and compressors
-NACE.Manufacturing.Lvl4.TapsValves = Other taps and valves
-NACE.Manufacturing.Lvl4.BearingsGears = Bearings, gears, gearing and driving elements
+NACE.radio.28.11 = Engines and turbines (except aircraft, vehicle and cycle engines)
+NACE.radio.28.12 = Fluid power equipment
+NACE.radio.28.13 = Other pumps and compressors
+NACE.radio.28.14 = Other taps and valves
+NACE.radio.28.15 = Bearings, gears, gearing and driving elements
 
-NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery = Other general-purpose machinery
+NACE.radio.28.2 = Other general-purpose machinery
 NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery.hint = Includes lifting and handling equipment, office machinery, non-domestic air conditioning, ovens, furnaces and permanent household heating, power-driven hand tools and any other general-purpose machinery.
 NACE.Manufacturing.OtherGeneralPurposeMachinery.title = What type of other general-purpose machinery does your undertaking manufacture?
 NACE.Manufacturing.OtherGeneralPurposeMachinery.error = Select the type of other general-purpose machinery your undertaking manufactures
-NACE.Manufacturing.Lvl4.OvensFurnacesHeating = Ovens, furnaces and permanent household heating equipment
-NACE.Manufacturing.Lvl4.LiftingHandlingEquipment = Lifting and handling equipment
-NACE.Manufacturing.Lvl4.OfficeMachinery = Office machinery and equipment (except computers and peripheral equipment)
-NACE.Manufacturing.Lvl4.PowerDrivenHandTools = Power-driven hand tools
-NACE.Manufacturing.Lvl4.AirConditioning = Non-domestic air conditioning equipment
-NACE.Manufacturing.Lvl4.OtherGeneralPurposeMachinery = Another type of general-purpose machinery
+NACE.radio.28.21 = Ovens, furnaces and permanent household heating equipment
+NACE.radio.28.22 = Lifting and handling equipment
+NACE.radio.28.23 = Office machinery and equipment (except computers and peripheral equipment)
+NACE.radio.28.24 = Power-driven hand tools
+NACE.radio.28.25 = Non-domestic air conditioning equipment
+NACE.radio.28.29 = Another type of general-purpose machinery
 
-NACE.Manufacturing.Lvl3.AgriculturalForestryMachinery = Agricultural and forestry machinery
+NACE.radio.28.3 = Agricultural and forestry machinery
 NACE.Manufacturing.Lvl4.AgriculturalForestryMachinery = Manufacture of agricultural and forestry machinery
 
-NACE.Manufacturing.Lvl3.MetalFormingMachinery = Metal-forming machinery and machine tools
+NACE.radio.28.4 = Metal-forming machinery and machine tools
 NACE.Manufacturing.MetalFormingMachinery.title = What type of metal-forming machinery and machine tools does your undertaking manufacture?
 NACE.Manufacturing.MetalFormingMachinery.error = Select the type of metal-forming machinery and machine tools your undertaking manufactures
-NACE.Manufacturing.Lvl4.MetalFormingMachinery = Metal-forming machinery and machine tools for metal work
-NACE.Manufacturing.Lvl4.OtherMachineTools = Other machine tools
+NACE.radio.28.41 = Metal-forming machinery and machine tools for metal work
+NACE.radio.28.42 = Other machine tools
 
-NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery = Other special-purpose machinery
+NACE.radio.28.9 = Other special-purpose machinery
 NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery.hint = Includes machinery for: additive manufacturing; food, beverage and tobacco processing; metallurgy; mining, quarrying and construction; production of paper, paperboard, plastic and rubber, textiles and leather; and other special purposes.
 NACE.Manufacturing.OtherSpecialPurposeMachinery.title = What type of other special-purpose machinery does your undertaking manufacture?
 NACE.Manufacturing.OtherSpecialPurposeMachinery.error = Select the type of other special-purpose machinery your undertaking manufactures
-NACE.Manufacturing.Lvl4.MachineryMetallurgy = Machinery for metallurgy
-NACE.Manufacturing.Lvl4.MachineryMiningConstruction = Machinery for mining, quarrying and construction
-NACE.Manufacturing.Lvl4.MachineryFoodBeverageTobacco = Machinery for food, beverage and tobacco processing
-NACE.Manufacturing.Lvl4.MachineryTextileApparelLeather = Machinery for textile, apparel and leather production
-NACE.Manufacturing.Lvl4.MachineryPaperProduction = Machinery for paper and paperboard production
-NACE.Manufacturing.Lvl4.MachineryPlasticsRubber = Plastics and rubber machinery
-NACE.Manufacturing.Lvl4.AdditiveManufacturingMachinery = Additive manufacturing machinery
-NACE.Manufacturing.Lvl4.OtherSpecialPurposeMachinery = Other special-purpose machinery
+NACE.radio.28.91 = Machinery for metallurgy
+NACE.radio.28.92 = Machinery for mining, quarrying and construction
+NACE.radio.28.93 = Machinery for food, beverage and tobacco processing
+NACE.radio.28.94 = Machinery for textile, apparel and leather production
+NACE.radio.28.95 = Machinery for paper and paperboard production
+NACE.radio.28.96 = Plastics and rubber machinery
+NACE.radio.28.97 = Additive manufacturing machinery
+NACE.radio.28.99 = Other special-purpose machinery
 
 ### Motor vehicles, trailers and parts ###
 NACE.Manufacturing.MotorVehicles.title = What type of motor vehicles, trailers or parts does your undertaking manufacture?
@@ -1623,20 +1623,20 @@ NACE.radio.32.99 = Another type of product
 NACE.Manufacturing.RepairMaintains.title = What is your undertaking’s main business activity in repair, maintenance or installation of machinery and equipment?
 NACE.Manufacturing.RepairMaintains.error = Select your undertaking’s main business activity in repair, maintenance or installation of machinery and equipment
 
-NACE.Manufacturing.Lvl3.RepairMaintenanceFabricatedMetal = Repair and maintenance of fabricated metal products, machinery and equipment
+NACE.radio.33.1 = Repair and maintenance of fabricated metal products, machinery and equipment
 NACE.Manufacturing.RepairMaintenanceFabricatedMetal.title = What type of machinery or equipment does your undertaking repair or maintain?
 NACE.Manufacturing.RepairMaintenanceFabricatedMetal.error = Select the type of machinery or equipment your undertaking repairs or maintains
-NACE.Manufacturing.Lvl4.RepairFabricatedMetalProducts = Fabricated metal products
-NACE.Manufacturing.Lvl4.RepairMachinery = Machinery
-NACE.Manufacturing.Lvl4.RepairElectronicOptical = Electronic and optical equipment
-NACE.Manufacturing.Lvl4.RepairElectrical = Electrical equipment
-NACE.Manufacturing.Lvl4.RepairCivilianShipsBoats = Civilian ships and boats
-NACE.Manufacturing.Lvl4.RepairCivilianAirSpacecraft = Civilian air and spacecraft
-NACE.Manufacturing.Lvl4.RepairOtherTransport = Other civilian transport equipment
-NACE.Manufacturing.Lvl4.RepairMilitaryVehicles = Military fighting vehicles, ships, boats, air and spacecraft
-NACE.Manufacturing.Lvl4.RepairOtherEquipment = Another type of equipment
+NACE.radio.33.11 = Fabricated metal products
+NACE.radio.33.12 = Machinery
+NACE.radio.33.13 = Electronic and optical equipment
+NACE.radio.33.14 = Electrical equipment
+NACE.radio.33.15 = Civilian ships and boats
+NACE.radio.33.16 = Civilian air and spacecraft
+NACE.radio.33.17 = Other civilian transport equipment
+NACE.radio.33.18 = Military fighting vehicles, ships, boats, air and spacecraft
+NACE.radio.33.19 = Another type of equipment
 
-NACE.Manufacturing.Lvl3.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
+NACE.radio.33.2 = Installation of industrial machinery and equipment
 NACE.Manufacturing.Lvl4.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
 
 #ElectricityGasSteamAir NACE Sector2,3,4
