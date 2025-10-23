@@ -49,12 +49,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-motor", messages("NACE.Manufacturing.Lvl2.2.Vehicles.Motor"))),
+            content = HtmlContent(radioText("sector-label-motor", messages("NACE.radio.29"))),
             value = Some(Sector.motorVehicles.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.motorVehicles.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl2.2.Vehicles.Other"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.30"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl2.2.Vehicles.Other.hint")))
             )),
@@ -96,7 +96,7 @@
                 <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.Manufacturing.Lvl2.1.Vehicles")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.radio.INT007")</a>
             </li>
         </ol>
     </nav>

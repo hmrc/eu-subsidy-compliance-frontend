@@ -51,7 +51,7 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-paper", messages("NACE.Manufacturing.Lvl2.2.Paper"))),
+            content = HtmlContent(radioText("sector-label-paper", messages("NACE.radio.17"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-paper", messages("NACE.Manufacturing.Lvl2.2.Paper.hint")))
             )),
@@ -59,7 +59,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.paperRelated.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-printed", messages("NACE.Manufacturing.Lvl2.2.Printed"))),
+            content = HtmlContent(radioText("sector-label-printed", messages("NACE.radio.18"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-printed", messages("NACE.Manufacturing.Lvl2.2.Printed.hint")))
             )),
@@ -101,7 +101,7 @@
                 <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.Manufacturing.Lvl2.1.Paper")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.radio.INT006")</a>
             </li>
         </ol>
     </nav>

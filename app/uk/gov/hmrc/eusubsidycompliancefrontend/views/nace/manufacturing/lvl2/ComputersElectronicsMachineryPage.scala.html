@@ -50,7 +50,7 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-computers", messages("NACE.Manufacturing.Lvl2.2.Computers"))),
+            content = HtmlContent(radioText("sector-label-computers", messages("NACE.radio.26"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-computers", messages("NACE.Manufacturing.Lvl2.2.Computers.hint")))
             )),
@@ -58,7 +58,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.computersProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-electrical", messages("NACE.Manufacturing.Lvl2.2.Computers.Electrical"))),
+            content = HtmlContent(radioText("sector-label-electrical", messages("NACE.radio.27"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-electrical", messages("NACE.Manufacturing.Lvl2.2.Computers.Electrical.hint")))
             )),
@@ -66,7 +66,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricalEquipment.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl2.2.Computers.Other"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.28"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl2.2.Computers.Other.hint")))
             )),
@@ -108,7 +108,7 @@
                 <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.Lvl1.manufacturing")</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.Manufacturing.Lvl2.1.Computers")</a>
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.radio.INT003")</a>
             </li>
         </ol>
     </nav>
