@@ -943,51 +943,51 @@ NACE.Manufacturing.title = What type of product does your undertaking manufactur
 
 ### lvl2.1 screens ###
 NACE.Manufacturing.Lvl2.1.error = Select the type of product your undertaking manufactures
-NACE.Manufacturing.Lvl2.1.Metals = Metals, chemicals and materials
+NACE.radio.INT005 = Metals, chemicals and materials
 NACE.Manufacturing.Lvl2.1.Metals.hint = Includes basic metals, fabricated metal products, chemicals, fuel products, mineral products, plastic, rubber and wood.
-NACE.Manufacturing.Lvl2.1.Food = Food, beverages and tobacco
-NACE.Manufacturing.Lvl2.1.Computers = Computers, electronics and machinery
+NACE.radio.INT004 = Food, beverages and tobacco
+NACE.radio.INT003 = Computers, electronics and machinery
 NACE.Manufacturing.Lvl2.1.Computers.hint = Includes communications equipment, consumer electronics, electrical equipment (like batteries, motors and wiring), optical instruments and other machinery and equipment.
-NACE.Manufacturing.Lvl2.1.Clothes = Clothes, textiles and homeware
+NACE.radio.INT002 = Clothes, textiles and homeware
 NACE.Manufacturing.Lvl2.1.Clothes.hint = Includes clothes, bags and footwear, furniture and textiles, and leather.
-NACE.Manufacturing.Lvl2.1.Paper = Paper and printed products
+NACE.radio.INT006 = Paper and printed products
 NACE.Manufacturing.Lvl2.1.Paper.hint = Includes reproduction of recorded media.
-NACE.Manufacturing.Lvl2.1.Vehicles = Vehicles and transport
+NACE.radio.INT007 = Vehicles and transport
 NACE.Manufacturing.Lvl2.1.Vehicles.hint = Includes motor vehicles and parts, bicycles and motorcycles, aircraft, boats, locomotives and trailers.
-NACE.Manufacturing.Lvl2.1.Pharmaceuticals = Pharmaceuticals
-NACE.Manufacturing.Lvl2.1.OtherManufacturing = Other manufacturing
+NACE.radio.21 = Pharmaceuticals
+NACE.radio.32 = Other manufacturing
 NACE.Manufacturing.Lvl2.1.OtherManufacturing.hint = Includes brooms and brushes, games and toys, jewellery, medical and dental instruments and supplies, musical instruments, sports goods and all other products.
-NACE.Manufacturing.Lvl2.1.Machinery = My undertaking repairs, maintains or installs machinery and equipment
+NACE.radio.33 = My undertaking repairs, maintains or installs machinery and equipment
 
 ### Lvl2.2 screens ###
 NACE.Manufacturing.Lvl2.2.Metals.title = What type of metals, chemicals or materials does your undertaking manufacture?
 NACE.Manufacturing.Lvl2.2.Metals.error = Select the type of metals, chemicals or materials your undertaking manufactures
-NACE.Manufacturing.Lvl2.2.Metals.FabricatedMetal = Fabricated metal products (except machinery and equipment)
+NACE.radio.25 = Fabricated metal products (except machinery and equipment)
 NACE.radio.16 = Wood, cork and straw products (except furniture)
 NACE.radio.22 = Rubber and plastic products
-NACE.Manufacturing.Lvl2.2.Metals.Chemicals = Chemicals and chemical products
+NACE.radio.20 = Chemicals and chemical products
 NACE.Manufacturing.Lvl2.2.Metals.Chemicals.hint = Includes basic chemicals, fertilisers, liquid biofuels, manmade fibres, paints and varnishes, pesticides, plastics and synthetic rubber in primary forms, and washing, cleaning and polishing preparations.
-NACE.Manufacturing.Lvl2.2.Metals.BasicMetal = Basic metals
+NACE.radio.24 = Basic metals
 NACE.Manufacturing.Lvl2.2.Metals.BasicMetal.hint = Includes iron, steel, precious and other non-ferrous metals, and casting of metals.
-NACE.Manufacturing.Lvl2.2.Metals.Coke = Coke and refined petroleum products
-NACE.Manufacturing.Lvl2.2.Metals.NonMetallic = Other non-metallic mineral products
+NACE.radio.19 = Coke and refined petroleum products
+NACE.radio.23 = Other non-metallic mineral products
 NACE.Manufacturing.Lvl2.2.Metals.NonMetallic.hint = Includes cement, clay building materials, concrete, glass, porcelain and ceramics, and cutting, finishing and shaping of stone.
 
 NACE.Manufacturing.Lvl2.2.Food.title = What type of food, beverages or tobacco does your undertaking manufacture?
 NACE.Manufacturing.Lvl2.2.Food.error = Select the type of food, beverages or tobacco your undertaking manufactures
-NACE.Manufacturing.Lvl2.2.Food = Food
+NACE.radio.10 = Food
 NACE.Manufacturing.Lvl2.2.Food.hint = Includes processing and preserving of food.
-NACE.Manufacturing.Lvl2.2.Food.Beverages = Beverages
+NACE.radio.11 = Beverages
 NACE.Manufacturing.Lvl2.2.Food.Beverages.hint = Includes alcohol and soft drinks.
-NACE.Manufacturing.Lvl2.2.Food.Tobacco = Tobacco products
+NACE.radio.12 = Tobacco products
 
 NACE.Manufacturing.Lvl2.2.Computers.title = What type of computers, electronics or machinery does your undertaking manufacture?
 NACE.Manufacturing.Lvl2.2.Computers.error = Select the type of computers, electronics or machinery your undertaking manufactures
-NACE.Manufacturing.Lvl2.2.Computers = Computers, electronics and optical products
+NACE.radio.26 = Computers, electronics and optical products
 NACE.Manufacturing.Lvl2.2.Computers.hint = Includes communications equipment, consumer electronics, electronic components and optical instruments.
-NACE.Manufacturing.Lvl2.2.Computers.Electrical = Electrical equipment
+NACE.radio.27 = Electrical equipment
 NACE.Manufacturing.Lvl2.2.Computers.Electrical.hint = Includes batteries, domestic appliances, generators, lighting equipment and wiring.
-NACE.Manufacturing.Lvl2.2.Computers.Other = Other machinery and equipment
+NACE.radio.28 = Other machinery and equipment
 NACE.Manufacturing.Lvl2.2.Computers.Other.hint = Includes general-purpose and special-purpose machinery and machine tools.
 
 NACE.Manufacturing.Lvl2.2.Clothes.title = What type of clothes, textiles or homeware does your undertaking manufacture?
@@ -1003,15 +1003,15 @@ NACE.Manufacturing.Lvl2.2.Clothes.Leather.hint = Includes bags, footwear and fur
 
 NACE.Manufacturing.Lvl2.2.Paper.title = What type of paper or printed products does your undertaking manufacture?
 NACE.Manufacturing.Lvl2.2.Paper.error = Select the type of paper or printed products your undertaking manufactures
-NACE.Manufacturing.Lvl2.2.Paper = Paper and paper products
+NACE.radio.17 = Paper and paper products
 NACE.Manufacturing.Lvl2.2.Paper.hint = Includes pulp, paperboard, stationery and wallpaper.
-NACE.Manufacturing.Lvl2.2.Printed = Printed products
+NACE.radio.18 = Printed products
 NACE.Manufacturing.Lvl2.2.Printed.hint = Includes newspapers, printing services and reproduction of recorded media.
 
 NACE.Manufacturing.Lvl2.2.Vehicles.title = What type of vehicles or transport does your undertaking manufacture?
 NACE.Manufacturing.Lvl2.2.Vehicles.error = Select the type of vehicles or transport your undertaking manufactures
-NACE.Manufacturing.Lvl2.2.Vehicles.Motor = Motor vehicles, trailers and parts
-NACE.Manufacturing.Lvl2.2.Vehicles.Other = Other transport equipment
+NACE.radio.29 = Motor vehicles, trailers and parts
+NACE.radio.30 = Other transport equipment
 NACE.Manufacturing.Lvl2.2.Vehicles.Other.hint = Includes aircraft, bicycles, boats, locomotives and motorcycles, and related parts.
 
 ### Food ###

@@ -79,12 +79,12 @@ class NACECheckDetailsController @Inject() (
   }
 
   private def getLevel1_1Display(level2Code: String)(implicit messages: Messages): String = level2Code match {
-    case "13" | "14" | "15" | "16" | "22" | "31" => messages("NACE.Manufacturing.Lvl2.1.Clothes")
-    case "26" | "27" | "28" | "33" => messages("NACE.Manufacturing.Lvl2.1.Computers")
-    case "10" | "11" | "12" => messages("NACE.Manufacturing.Lvl2.1.Food")
-    case "19" | "20" | "21" | "23" | "24" | "25" => messages("NACE.Manufacturing.Lvl2.1.Metals")
-    case "17" | "18" => messages("NACE.Manufacturing.Lvl2.1.Paper")
-    case "29" | "30" | "32" => messages("NACE.Manufacturing.Lvl2.1.Vehicles")
+    case "13" | "14" | "15" | "16" | "22" | "31" => messages("NACE.radio.INT002")
+    case "26" | "27" | "28" | "33" => messages("NACE.radio.INT003")
+    case "10" | "11" | "12" => messages("NACE.radio.INT004")
+    case "19" | "20" | "21" | "23" | "24" | "25" => messages("NACE.radio.INT005")
+    case "17" | "18" => messages("NACE.radio.INT006")
+    case "29" | "30" | "32" => messages("NACE.radio.INT007")
     case _ => ""
   }
 
