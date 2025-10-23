@@ -2406,18 +2406,18 @@ NACE.otherService.Lvl4.repairComputersCommunication = Repair and maintenance of 
 NACE.radio.95.2 = Personal and household goods
 NACE.otherService.Lvl3.repairHouseholdGoods.title = What type of personal or household goods does your undertaking repair or maintain?
 NACE.otherService.Lvl3.repairHouseholdGoods.error = Select the type of personal or household goods your undertaking repairs or maintains
-NACE.otherService.Lvl4.repairConsumerElectronics = Consumer electronics
-NACE.otherService.Lvl4.repairHouseholdAppliances = Household appliances and home and garden equipment
-NACE.otherService.Lvl4.repairFootwearLeather = Footwear and leather goods
-NACE.otherService.Lvl4.repairFurnitureHome = Furniture and home furnishings
-NACE.otherService.Lvl4.repairWatchesClocksJewellery = Watches, clocks and jewellery
-NACE.otherService.Lvl4.repairOtherPersonalHouseholdGoods = Another type of personal and household goods
+NACE.radio.95.21 = Consumer electronics
+NACE.radio.95.22 = Household appliances and home and garden equipment
+NACE.radio.95.23 = Footwear and leather goods
+NACE.radio.95.24 = Furniture and home furnishings
+NACE.radio.95.25 = Watches, clocks and jewellery
+NACE.radio.95.29 = Another type of personal and household goods
 
 NACE.radio.95.3 = Motor vehicles and motorcycles
 NACE.otherService.Lvl3.repairMotorVehiclesMotorcycles.title = What type of vehicles does your undertaking repair or maintain?
 NACE.otherService.Lvl3.repairMotorVehiclesMotorcycles.error = Select the type of vehicles your undertaking repairs or maintains
-NACE.otherService.Lvl4.repairMotorVehicles = Motor vehicles
-NACE.otherService.Lvl4.repairMotorcycles = Motorcycles
+NACE.radio.95.31 = Motor vehicles
+NACE.radio.95.32 = Motorcycles
 
 NACE.radio.95.4 =  My undertaking provides intermediation services for repair and maintenance of computers, personal and household goods, motor vehicles and motorcycles
 NACE.otherService.Lvl4.intermediationRepairMaintenance = My undertaking provides intermediation services for repair and maintenance of computers, personal and household goods, motor vehicles and motorcycles
@@ -2431,20 +2431,20 @@ NACE.otherService.Lvl4.textileFurCleaning = Washing and cleaning of textile and 
 NACE.radio.96.2 = Hairdressing, beauty treatment, day spa and similar activities
 NACE.otherService.Lvl3.hairdressingBeautySpa.title = What type of beauty treatments or similar services does your undertaking provide?
 NACE.otherService.Lvl3.hairdressingBeautySpa.error = Select the type of beauty treatments or similar services your undertaking provides
-NACE.otherService.Lvl4.hairdressingBarber = Hairdressing and barbering
-NACE.otherService.Lvl4.beautyCare = Beauty care and other beauty treatments
-NACE.otherService.Lvl4.daySpaSaunaBath = Day spa, sauna and steam bath activities
+NACE.radio.96.21 = Hairdressing and barbering
+NACE.radio.96.22 = Beauty care and other beauty treatments
+NACE.radio.96.23 = Day spa, sauna and steam bath activities
 
 NACE.radio.96 = Funeral and related activities
-NACE.otherService.Lvl3.funeralActivities = Funeral and related activities
+NACE.radio.96.3 = Funeral and related activities
 NACE.otherService.Lvl4.funeralActivities = Funeral and related activities
-NACE.otherService.Lvl3.intermediationPersonalServices = Intermediation services for personal services
+NACE.radio.96.4 = Intermediation services for personal services
 NACE.otherService.Lvl4.intermediationPersonalServices = Intermediation service activities for personal services
-NACE.otherService.Lvl3.otherPersonalServices = Other personal services
+NACE.radio.96.9 = Other personal services
 NACE.otherService.Lvl3.otherPersonalServices.title = What type of other personal services does your undertaking provide?
 NACE.otherService.Lvl3.otherPersonalServices.error = Select the type of other personal services your undertaking provides
-NACE.otherService.Lvl4.domesticPersonalServices = Domestic personal services
-NACE.otherService.Lvl4.otherPersonalServices = Any other personal service activities
+NACE.radio.96.91 = Domestic personal services
+NACE.radio.96.99 = Any other personal service activities
 
 #Households NACE Sector2,3,4
 NACE.households.Lvl1.title =What is your undertaking’s main business activity in households as employers or producers of goods or services?

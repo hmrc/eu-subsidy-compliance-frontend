@@ -50,12 +50,12 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-repairMotorVehicles", messages("NACE.otherService.Lvl4.repairMotorVehicles"))),
+content = HtmlContent(radioText("sector-label-repairMotorVehicles", messages("NACE.radio.95.31"))),
 value = Some(Sector.repairMotorVehicles.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairMotorVehicles.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-repairMotorcycles", messages("NACE.otherService.Lvl4.repairMotorcycles"))),
+content = HtmlContent(radioText("sector-label-repairMotorcycles", messages("NACE.radio.95.32"))),
 value = Some(Sector.repairMotorcycles.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairMotorcycles.toString)
 )

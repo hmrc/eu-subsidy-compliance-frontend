@@ -50,12 +50,12 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-domesticPersonalServices", messages("NACE.otherService.Lvl4.domesticPersonalServices"))),
+content = HtmlContent(radioText("sector-label-domesticPersonalServices", messages("NACE.radio.96.91"))),
 value = Some(Sector.domesticPersonalServices.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.domesticPersonalServices.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherPersonalServices", messages("NACE.otherService.Lvl4.otherPersonalServices"))),
+content = HtmlContent(radioText("sector-label-otherPersonalServices", messages("NACE.96.99"))),
 value = Some(Sector.otherPersonalServices4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPersonalServices4.toString)
 )
@@ -99,7 +99,7 @@ title = Text(messages("common.error.summary.title"))
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadOtherLvl2Page().toString>@messages("NACE.radio.96")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadPersonalServicesLvl3Page().toString>@messages("NACE.otherService.Lvl3.otherPersonalServices")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadPersonalServicesLvl3Page().toString>@messages("NACE.radio.96.9")</a>
   </li>
  </ol>
 </nav>

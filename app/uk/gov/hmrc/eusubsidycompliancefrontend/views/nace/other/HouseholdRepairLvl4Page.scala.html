@@ -50,32 +50,32 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-repairConsumerElectronics", messages("NACE.otherService.Lvl4.repairConsumerElectronics"))),
+content = HtmlContent(radioText("sector-label-repairConsumerElectronics", messages("NACE.radio.21"))),
 value = Some(Sector.repairConsumerElectronics.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairConsumerElectronics.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-repairFootwearLeather", messages("NACE.otherService.Lvl4.repairFootwearLeather"))),
+content = HtmlContent(radioText("sector-label-repairFootwearLeather", messages("NACE.radio.95.21"))),
 value = Some(Sector.repairFootwearLeather.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairFootwearLeather.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-repairFurnitureHome", messages("NACE.otherService.Lvl4.repairFurnitureHome"))),
+content = HtmlContent(radioText("sector-label-repairFurnitureHome", messages("NACE.radio.95.24"))),
 value = Some(Sector.repairFurnitureHome.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairFurnitureHome.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-repairHouseholdAppliances", messages("NACE.otherService.Lvl4.repairHouseholdAppliances"))),
+content = HtmlContent(radioText("sector-label-repairHouseholdAppliances", messages("NACE.radio.95.22"))),
 value = Some(Sector.repairHouseholdAppliances.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairHouseholdAppliances.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-WatchesAndJewellery", messages("NACE.otherService.Lvl4.repairWatchesClocksJewellery"))),
+content = HtmlContent(radioText("sector-label-WatchesAndJewellery", messages("NACE.radio.95.25"))),
 value = Some(Sector.watchesAndJewellery.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.watchesAndJewellery.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherHouseholdGoods", messages("NACE.otherService.Lvl4.repairOtherPersonalHouseholdGoods"))),
+content = HtmlContent(radioText("sector-label-otherHouseholdGoods", messages("NACE.radio.95.29"))),
 value = Some(Sector.otherHouseholdGoods.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherHouseholdGoods.toString)
 )
