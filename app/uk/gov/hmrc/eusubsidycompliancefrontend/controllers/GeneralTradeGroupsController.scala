@@ -72,10 +72,11 @@ class GeneralTradeGroupsController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val sector = journey.sector.value match {
-        case Some(value) => if (value.toString.length >= 2) value.toString.take(2) else value.toString
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      val previousLevel1Code = if (sector.length > 1) naceCheckDetailsController.deriveLevel1Code(sector) else sector
+      val previousLevel1Code = if (sector.equals("00") || sector.length < 2) sector else naceCheckDetailsController.deriveLevel1Code(sector)
+
       val form = if (sector == "") generalTradeUndertakingForm else generalTradeUndertakingForm.fill(FormValues(previousLevel1Code))
       Ok(generalTradeUndertakingPage(form, journey.mode)).toFuture
     }
