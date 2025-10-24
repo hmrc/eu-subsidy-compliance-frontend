@@ -175,13 +175,14 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       runStepIfEligible(journey) {
-        val form = journey.sector.value.fold(undertakingSectorForm) { sector =>
-          undertakingSectorForm.fill(FormValues(sector.id.toString))
+        val sector = journey.sector.value match {
+          case Some(value) => if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00" else value.toString.take(2)
+          case None => ""
         }
 
         Ok(
           undertakingSectorPage(
-            form,
+            undertakingSectorForm.fill(FormValues(sector)),
             journey.previous,
             journey.about.value.getOrElse(""),
             journey.mode
@@ -214,7 +215,7 @@ class UndertakingController @Inject() (
             ).toContext,
           form => {
             val previousAnswer = journey.sector.value match {
-              case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+              case Some(value) => if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00" else value.toString.take(2)
               case None => ""
             }
 
@@ -226,9 +227,10 @@ class UndertakingController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toContext
             else {
-              store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-              store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              Redirect(navigator.nextPage(form.value, journey.mode)).toContext
+              for {
+                updatedSector <- store.update[UndertakingJourney] (_.setUndertakingSector(Sector.withName(form.value).id)).toContext
+                updatedStoreFlag <- store.update[UndertakingJourney] (_.copy(isNaceCYA = false)).toContext
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         )
@@ -589,9 +591,6 @@ class UndertakingController @Inject() (
 
   private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] =
     store.update[UndertakingJourney](_.copy(isAmend = value))
-
-  private def setMode(value: String)(implicit e: EORI): Future[UndertakingJourney] =
-    store.update[UndertakingJourney](_.copy(mode = value))
 
   def postAmendUndertaking: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { _ =>

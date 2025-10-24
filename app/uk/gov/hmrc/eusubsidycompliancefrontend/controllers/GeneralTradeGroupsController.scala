@@ -94,8 +94,6 @@ class GeneralTradeGroupsController @Inject() (
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
 
-            var internalNaceCode = ""
-
             val previousAnswer = journey.sector.value match {
               case Some(value) => if (value.toString.length >= 2) value.toString.take(2) else value.toString
               case None => ""
@@ -128,9 +126,13 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
+
+      val previousLevel1Code =
+        if (sector.equals("00") || sector.length < 2) sector else naceCheckDetailsController.deriveLevel1Code(sector.take(2))
+
       val form =
         if (sector == "") generalTradeUndertakingOtherForm
-        else generalTradeUndertakingOtherForm.fill(FormValues(sector))
+        else generalTradeUndertakingOtherForm.fill(FormValues(previousLevel1Code))
       Ok(generalTradeUndertakingOtherPage(form, journey.mode)).toFuture
     }
   }
@@ -144,15 +146,16 @@ class GeneralTradeGroupsController @Inject() (
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
-              case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+              case Some(value) => if (value.toString.length >= 2) value.toString.take(2) else value.toString
               case None => ""
             }
+            val previousLevel1Code = naceCheckDetailsController.deriveLevel1Code(previousAnswer)
             val lvl4Answer = journey.sector.value match {
               case Some(lvl4Value) => lvl4Value.toString
               case None => ""
             }
 
-            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+            if (previousLevel1Code.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               for {
@@ -170,12 +173,7 @@ class GeneralTradeGroupsController @Inject() (
   def loadLvl2_1GroupsPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-      val sector = journey.sector.value match {
-        case Some(value) => value.toString
-        case None => ""
-      }
-      val form = if (sector == "") lvl2_1GroupsForm else lvl2_1GroupsForm.fill(FormValues(sector))
-      Ok(lvl2_1GroupsPage(form, journey.mode)).toFuture
+      Ok(lvl2_1GroupsPage(lvl2_1GroupsForm.fill(FormValues(journey.internalNaceCode)), journey.mode)).toFuture
     }
   }
 
@@ -210,10 +208,12 @@ class GeneralTradeGroupsController @Inject() (
   def loadClothesTextilesHomewarePage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+
       val sector = journey.sector.value match {
-        case Some(value) => value.toString
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
+
       val form = if (sector == "") clothesTextilesHomewareForm else clothesTextilesHomewareForm.fill(FormValues(sector))
       Ok(clothesTextilesHomewarePage(form, journey.mode)).toFuture
     }
@@ -239,9 +239,10 @@ class GeneralTradeGroupsController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val sector = journey.sector.value match {
-        case Some(value) => value.toString
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
+
       val form =
         if (sector == "") computersElectronicsMachineryForm
         else computersElectronicsMachineryForm.fill(FormValues(sector))
@@ -268,9 +269,10 @@ class GeneralTradeGroupsController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val sector = journey.sector.value match {
-        case Some(value) => value.toString
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
+
       val form = if (sector == "") foodBeveragesTobaccoForm else foodBeveragesTobaccoForm.fill(FormValues(sector))
       Ok(foodBeveragesTobaccoPage(form, journey.mode)).toFuture
     }
@@ -296,9 +298,10 @@ class GeneralTradeGroupsController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val sector = journey.sector.value match {
-        case Some(value) => value.toString
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
+
       val form =
         if (sector == "") metalsChemicalsMaterialsForm else metalsChemicalsMaterialsForm.fill(FormValues(sector))
       Ok(metalsChemicalsMaterialsPage(form, journey.mode)).toFuture
@@ -324,9 +327,10 @@ class GeneralTradeGroupsController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val sector = journey.sector.value match {
-        case Some(value) => value.toString
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
+
       val form = if (sector == "") paperPrintedProductsForm else paperPrintedProductsForm.fill(FormValues(sector))
       Ok(paperPrintedProductsPage(form, journey.mode)).toFuture
     }
@@ -351,9 +355,10 @@ class GeneralTradeGroupsController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val sector = journey.sector.value match {
-        case Some(value) => value.toString
+        case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
+
       val form = if (sector == "") vehiclesTransportForm else vehiclesTransportForm.fill(FormValues(sector))
       Ok(vehiclesTransportPage(form, journey.mode)).toFuture
     }
