@@ -867,7 +867,7 @@ NACE.radio.01.7 = Hunting, trapping and related service activities
 NACE.agriculture.Lvl4.huntingTrapping = Hunting, trapping and related service activities
 
 NACE.forestry.Lvl2.title = What is your undertaking’s main business activity in forestry?
-NACE.forestry.Lvl2.forestry = Forestry and logging
+NACE.radio.02 = Forestry and logging
 NACE.forestry.Lvl3.silviculture = Silviculture and other forestry activities
 NACE.radio.02.1 = Silviculture and other forestry activities
 NACE.forestry.Lvl3.logging = Logging

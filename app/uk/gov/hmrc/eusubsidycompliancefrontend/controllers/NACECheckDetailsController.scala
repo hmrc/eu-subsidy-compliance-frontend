@@ -137,17 +137,16 @@ class NACECheckDetailsController @Inject() (
       case _ => Sector.other
     }
 
-    val showLevel1 = naceLevel2Code match {
-      case "01" => false
-      case "03" => false
+    val showLevel1 = naceLevel1Code match {
+      case "A" => false
       case _ => true
     }
 
     val showLevel1_1 = naceLevel1Code == "C" && naceLevel2Code != "32" && naceLevel2Code != "33" && naceLevel2Code != "21"
 
     val showLevel2 = {
-      naceLevel1Code match {
-        case "D" | "A" | "Q" | "M" | "V" => false
+      naceLevel2Code match {
+        case "35" | "01" | "03" | "85" | "68" | "99" => false
         case _ => true
       }
     }
