@@ -176,7 +176,10 @@ class UndertakingController @Inject() (
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       runStepIfEligible(journey) {
         val sector = journey.sector.value match {
-          case Some(value) => if (value.toString.length < 2) value.toString else if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00" else value.toString.take(2)
+          case Some(value) =>
+            if (value.toString.length < 2) value.toString
+            else if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00"
+            else value.toString.take(2)
           case None => ""
         }
 
@@ -215,7 +218,9 @@ class UndertakingController @Inject() (
             ).toContext,
           form => {
             val previousAnswer = journey.sector.value match {
-              case Some(value) => if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00" else value.toString.take(2)
+              case Some(value) =>
+                if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00"
+                else value.toString.take(2)
               case None => ""
             }
 
@@ -228,8 +233,10 @@ class UndertakingController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toContext
             else {
               for {
-                updatedSector <- store.update[UndertakingJourney] (_.setUndertakingSector(Sector.withName(form.value).id)).toContext
-                updatedStoreFlag <- store.update[UndertakingJourney] (_.copy(isNaceCYA = false)).toContext
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .toContext
+                updatedStoreFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = false)).toContext
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }

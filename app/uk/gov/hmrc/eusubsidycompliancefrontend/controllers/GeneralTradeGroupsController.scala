@@ -93,7 +93,6 @@ class GeneralTradeGroupsController @Inject() (
         formWithErrors => BadRequest(generalTradeUndertakingPage(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-
             val previousAnswer = journey.sector.value match {
               case Some(value) => if (value.toString.length >= 2) value.toString.take(2) else value.toString
               case None => ""
@@ -128,7 +127,8 @@ class GeneralTradeGroupsController @Inject() (
       }
 
       val previousLevel1Code =
-        if (sector.equals("00") || sector.length < 2) sector else naceCheckDetailsController.deriveLevel1Code(sector.take(2))
+        if (sector.equals("00") || sector.length < 2) sector
+        else naceCheckDetailsController.deriveLevel1Code(sector.take(2))
 
       val form =
         if (sector == "") generalTradeUndertakingOtherForm
@@ -185,7 +185,6 @@ class GeneralTradeGroupsController @Inject() (
         formWithErrors => BadRequest(lvl2_1GroupsPage(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-
             if (form.value.equals(journey.internalNaceCode) && journey.isNaceCYA) {
               val lvl4Answer = journey.sector.value match {
                 case Some(lvl4Value) => lvl4Value.toString
@@ -194,10 +193,11 @@ class GeneralTradeGroupsController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             } else {
               for {
-                updatedSector <- store.update[UndertakingJourney] (_.setUndertakingSector(Sector.withName(form.value).id))
-                updatedStoreFlags <- store.update[UndertakingJourney] (_.copy(internalNaceCode = form.value, isNaceCYA = false))
-              }
-              yield Redirect(navigator.nextPage(form.value, journey.mode))
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store
+                  .update[UndertakingJourney](_.copy(internalNaceCode = form.value, isNaceCYA = false))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -208,7 +208,6 @@ class GeneralTradeGroupsController @Inject() (
   def loadClothesTextilesHomewarePage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-
       val sector = journey.sector.value match {
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
