@@ -34,24 +34,24 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class FoodBeveragesController @Inject() (
-                                          mcc: MessagesControllerComponents,
-                                          actionBuilders: ActionBuilders,
-                                          val store: Store,
-                                          navigator: Navigator,
-                                          foodLvl3Page: FoodLvl3Page,
-                                          animalFeedsLvl4Page: AnimalFeedsLvl4Page,
-                                          bakeryAndFarinaceousLvl4Page: BakeryAndFarinaceousLvl4Page,
-                                          dairyProductsLvl4Page: DairyProductsLvl4Page,
-                                          fruitAndVegLvl4Page: FruitAndVegLvl4Page,
-                                          grainAndStarchLvl4Page: GrainAndStarchLvl4Page,
-                                          meatLvl4Page: MeatLvl4Page,
-                                          oilsAndFatsLvl4Page: OilsAndFatsLvl4Page,
-                                          otherFoodProductsLvl4Page: OtherFoodProductsLvl4Page,
-                                          beveragesLvl4Page: BeveragesLvl4Page
-                                        )(implicit
-                                          val appConfig: AppConfig,
-                                          val executionContext: ExecutionContext
-                                        ) extends BaseController(mcc) {
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  foodLvl3Page: FoodLvl3Page,
+  animalFeedsLvl4Page: AnimalFeedsLvl4Page,
+  bakeryAndFarinaceousLvl4Page: BakeryAndFarinaceousLvl4Page,
+  dairyProductsLvl4Page: DairyProductsLvl4Page,
+  fruitAndVegLvl4Page: FruitAndVegLvl4Page,
+  grainAndStarchLvl4Page: GrainAndStarchLvl4Page,
+  meatLvl4Page: MeatLvl4Page,
+  oilsAndFatsLvl4Page: OilsAndFatsLvl4Page,
+  otherFoodProductsLvl4Page: OtherFoodProductsLvl4Page,
+  beveragesLvl4Page: BeveragesLvl4Page
+)(implicit
+  val appConfig: AppConfig,
+  val executionContext: ExecutionContext
+) extends BaseController(mcc) {
 
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
@@ -101,10 +101,10 @@ class FoodBeveragesController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               for {
-                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              }
-              yield Redirect(navigator.nextPage(form.value, journey.mode))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -132,7 +132,8 @@ class FoodBeveragesController @Inject() (
         formWithErrors => BadRequest(animalFeedsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -146,7 +147,8 @@ class FoodBeveragesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") bakeryAndFarinaceousLvl4Form else bakeryAndFarinaceousLvl4Form.fill(FormValues(sector))
+      val form =
+        if (sector == "") bakeryAndFarinaceousLvl4Form else bakeryAndFarinaceousLvl4Form.fill(FormValues(sector))
       Ok(bakeryAndFarinaceousLvl4Page(form, journey.mode)).toFuture
     }
   }
@@ -159,7 +161,8 @@ class FoodBeveragesController @Inject() (
         formWithErrors => BadRequest(bakeryAndFarinaceousLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -186,7 +189,8 @@ class FoodBeveragesController @Inject() (
         formWithErrors => BadRequest(dairyProductsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -213,7 +217,8 @@ class FoodBeveragesController @Inject() (
         formWithErrors => BadRequest(fruitAndVegLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -240,7 +245,8 @@ class FoodBeveragesController @Inject() (
         formWithErrors => BadRequest(grainAndStarchLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -267,7 +273,8 @@ class FoodBeveragesController @Inject() (
         formWithErrors => BadRequest(meatLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -294,7 +301,8 @@ class FoodBeveragesController @Inject() (
         formWithErrors => BadRequest(oilsAndFatsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -321,7 +329,8 @@ class FoodBeveragesController @Inject() (
         formWithErrors => BadRequest(otherFoodProductsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -348,7 +357,8 @@ class FoodBeveragesController @Inject() (
         formWithErrors => BadRequest(beveragesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )

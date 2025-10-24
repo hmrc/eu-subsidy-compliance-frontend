@@ -35,24 +35,24 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class GeneralTradeGroupsController @Inject() (
-                                               mcc: MessagesControllerComponents,
-                                               actionBuilders: ActionBuilders,
-                                               val store: Store,
-                                               navigator: Navigator,
-                                               generalTradeUndertakingPage: GeneralTradeUndertakingPage,
-                                               generalTradeUndertakingOtherPage: GeneralTradeUndertakingOtherPage,
-                                               lvl2_1GroupsPage: Lvl2_1GroupsPage,
-                                               clothesTextilesHomewarePage: ClothesTextilesHomewarePage,
-                                               computersElectronicsMachineryPage: ComputersElectronicsMachineryPage,
-                                               foodBeveragesTobaccoPage: FoodBeveragesTobaccoPage,
-                                               metalsChemicalsMaterialsPage: MetalsChemicalsMaterialsPage,
-                                               paperPrintedProductsPage: PaperPrintedProductsPage,
-                                               vehiclesTransportPage: VehiclesTransportPage,
-                                               naceCheckDetailsController: NACECheckDetailsController
-                                             )(implicit
-                                               val appConfig: AppConfig,
-                                               val executionContext: ExecutionContext
-                                             ) extends BaseController(mcc) {
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  generalTradeUndertakingPage: GeneralTradeUndertakingPage,
+  generalTradeUndertakingOtherPage: GeneralTradeUndertakingOtherPage,
+  lvl2_1GroupsPage: Lvl2_1GroupsPage,
+  clothesTextilesHomewarePage: ClothesTextilesHomewarePage,
+  computersElectronicsMachineryPage: ComputersElectronicsMachineryPage,
+  foodBeveragesTobaccoPage: FoodBeveragesTobaccoPage,
+  metalsChemicalsMaterialsPage: MetalsChemicalsMaterialsPage,
+  paperPrintedProductsPage: PaperPrintedProductsPage,
+  vehiclesTransportPage: VehiclesTransportPage,
+  naceCheckDetailsController: NACECheckDetailsController
+)(implicit
+  val appConfig: AppConfig,
+  val executionContext: ExecutionContext
+) extends BaseController(mcc) {
 
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
@@ -75,9 +75,12 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      val previousLevel1Code = if (sector.equals("00") || sector.length < 2) sector else naceCheckDetailsController.deriveLevel1Code(sector)
+      val previousLevel1Code =
+        if (sector.equals("00") || sector.length < 2) sector else naceCheckDetailsController.deriveLevel1Code(sector)
 
-      val form = if (sector == "") generalTradeUndertakingForm else generalTradeUndertakingForm.fill(FormValues(previousLevel1Code))
+      val form =
+        if (sector == "") generalTradeUndertakingForm
+        else generalTradeUndertakingForm.fill(FormValues(previousLevel1Code))
       Ok(generalTradeUndertakingPage(form, journey.mode)).toFuture
     }
   }
@@ -104,10 +107,10 @@ class GeneralTradeGroupsController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               for {
-                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              }
-              yield Redirect(navigator.nextPage(form.value, journey.mode))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -122,7 +125,9 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") generalTradeUndertakingOtherForm else generalTradeUndertakingOtherForm.fill(FormValues(sector))
+      val form =
+        if (sector == "") generalTradeUndertakingOtherForm
+        else generalTradeUndertakingOtherForm.fill(FormValues(sector))
       Ok(generalTradeUndertakingOtherPage(form, journey.mode)).toFuture
     }
   }
@@ -148,10 +153,10 @@ class GeneralTradeGroupsController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               for {
-                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              }
-              yield Redirect(navigator.nextPage(form.value, journey.mode))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -216,7 +221,8 @@ class GeneralTradeGroupsController @Inject() (
         formWithErrors => BadRequest(clothesTextilesHomewarePage(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -230,7 +236,9 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") computersElectronicsMachineryForm else computersElectronicsMachineryForm.fill(FormValues(sector))
+      val form =
+        if (sector == "") computersElectronicsMachineryForm
+        else computersElectronicsMachineryForm.fill(FormValues(sector))
       Ok(computersElectronicsMachineryPage(form, journey.mode)).toFuture
     }
   }
@@ -242,7 +250,8 @@ class GeneralTradeGroupsController @Inject() (
       .fold(
         formWithErrors => BadRequest(computersElectronicsMachineryPage(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -269,7 +278,8 @@ class GeneralTradeGroupsController @Inject() (
         formWithErrors => BadRequest(foodBeveragesTobaccoPage(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -283,7 +293,8 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") metalsChemicalsMaterialsForm else metalsChemicalsMaterialsForm.fill(FormValues(sector))
+      val form =
+        if (sector == "") metalsChemicalsMaterialsForm else metalsChemicalsMaterialsForm.fill(FormValues(sector))
       Ok(metalsChemicalsMaterialsPage(form, journey.mode)).toFuture
     }
   }
@@ -295,7 +306,8 @@ class GeneralTradeGroupsController @Inject() (
       .fold(
         formWithErrors => BadRequest(metalsChemicalsMaterialsPage(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -321,7 +333,8 @@ class GeneralTradeGroupsController @Inject() (
       .fold(
         formWithErrors => BadRequest(paperPrintedProductsPage(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -347,7 +360,8 @@ class GeneralTradeGroupsController @Inject() (
       .fold(
         formWithErrors => BadRequest(vehiclesTransportPage(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )

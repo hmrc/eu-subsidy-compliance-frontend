@@ -34,28 +34,28 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ComputersElectronicsController @Inject() (
-                                                 mcc: MessagesControllerComponents,
-                                                 actionBuilders: ActionBuilders,
-                                                 val store: Store,
-                                                 navigator: Navigator,
-                                                 ComponentsBoardsLvl4Page: ComponentsBoardsLvl4Page,
-                                                 ComputersElectronicsOpticalLvl3Page: ComputersElectronicsOpticalLvl3Page,
-                                                 DomesticAppliancesLvl4Page: DomesticAppliancesLvl4Page,
-                                                 ElectricalEquipmentLvl3Page: ElectricalEquipmentLvl3Page,
-                                                 GeneralPurposeLvl4Page: GeneralPurposeLvl4Page,
-                                                 MeasuringTestingInstrumentsLvl4Page: MeasuringTestingInstrumentsLvl4Page,
-                                                 MetalFormingLvl4Page: MetalFormingLvl4Page,
-                                                 MotorsGeneratorsLvl4Page: MotorsGeneratorsLvl4Page,
-                                                 OtherGeneralPurposeLvl4Page: OtherGeneralPurposeLvl4Page,
-                                                 OtherMachineryLvl3Page: OtherMachineryLvl3Page,
-                                                 OtherSpecialPurposeLvl4Page: OtherSpecialPurposeLvl4Page,
-                                                 RepairMaintenanceLvl4Page: RepairMaintenanceLvl4Page,
-                                                 RepairsMaintainInstallLvl3Page: RepairsMaintainInstallLvl3Page,
-                                                 WiringAndDevicesLvl4Page: WiringAndDevicesLvl4Page
-                                               )(implicit
-                                                 val appConfig: AppConfig,
-                                                 val executionContext: ExecutionContext
-                                               ) extends BaseController(mcc) {
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  ComponentsBoardsLvl4Page: ComponentsBoardsLvl4Page,
+  ComputersElectronicsOpticalLvl3Page: ComputersElectronicsOpticalLvl3Page,
+  DomesticAppliancesLvl4Page: DomesticAppliancesLvl4Page,
+  ElectricalEquipmentLvl3Page: ElectricalEquipmentLvl3Page,
+  GeneralPurposeLvl4Page: GeneralPurposeLvl4Page,
+  MeasuringTestingInstrumentsLvl4Page: MeasuringTestingInstrumentsLvl4Page,
+  MetalFormingLvl4Page: MetalFormingLvl4Page,
+  MotorsGeneratorsLvl4Page: MotorsGeneratorsLvl4Page,
+  OtherGeneralPurposeLvl4Page: OtherGeneralPurposeLvl4Page,
+  OtherMachineryLvl3Page: OtherMachineryLvl3Page,
+  OtherSpecialPurposeLvl4Page: OtherSpecialPurposeLvl4Page,
+  RepairMaintenanceLvl4Page: RepairMaintenanceLvl4Page,
+  RepairsMaintainInstallLvl3Page: RepairsMaintainInstallLvl3Page,
+  WiringAndDevicesLvl4Page: WiringAndDevicesLvl4Page
+)(implicit
+  val appConfig: AppConfig,
+  val executionContext: ExecutionContext
+) extends BaseController(mcc) {
 
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
@@ -98,7 +98,8 @@ class ComputersElectronicsController @Inject() (
         formWithErrors => BadRequest(ComponentsBoardsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -112,7 +113,9 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(ComputersElectronicsOpticalLvl3Page(ComputersElectronicsOpticalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        ComputersElectronicsOpticalLvl3Page(ComputersElectronicsOpticalLvl3Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -138,10 +141,10 @@ class ComputersElectronicsController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               for {
-                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              }
-              yield Redirect(navigator.nextPage(form.value, journey.mode))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -169,7 +172,8 @@ class ComputersElectronicsController @Inject() (
         formWithErrors => BadRequest(DomesticAppliancesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -209,10 +213,10 @@ class ComputersElectronicsController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               for {
-                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              }
-              yield Redirect(navigator.nextPage(form.value, journey.mode))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -240,7 +244,8 @@ class ComputersElectronicsController @Inject() (
         formWithErrors => BadRequest(GeneralPurposeLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -254,7 +259,9 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") MeasuringTestingInstrumentsLvl4Form else MeasuringTestingInstrumentsLvl4Form.fill(FormValues(sector))
+      val form =
+        if (sector == "") MeasuringTestingInstrumentsLvl4Form
+        else MeasuringTestingInstrumentsLvl4Form.fill(FormValues(sector))
       Ok(MeasuringTestingInstrumentsLvl4Page(form, journey.mode)).toFuture
     }
   }
@@ -267,7 +274,8 @@ class ComputersElectronicsController @Inject() (
         formWithErrors => BadRequest(MeasuringTestingInstrumentsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -294,7 +302,8 @@ class ComputersElectronicsController @Inject() (
         formWithErrors => BadRequest(MetalFormingLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -321,7 +330,8 @@ class ComputersElectronicsController @Inject() (
         formWithErrors => BadRequest(MotorsGeneratorsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -348,7 +358,8 @@ class ComputersElectronicsController @Inject() (
         formWithErrors => BadRequest(OtherGeneralPurposeLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -388,10 +399,10 @@ class ComputersElectronicsController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               for {
-                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              }
-              yield Redirect(navigator.nextPage(form.value, journey.mode))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -419,7 +430,8 @@ class ComputersElectronicsController @Inject() (
         formWithErrors => BadRequest(OtherSpecialPurposeLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -446,7 +458,8 @@ class ComputersElectronicsController @Inject() (
         formWithErrors => BadRequest(RepairMaintenanceLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -486,10 +499,10 @@ class ComputersElectronicsController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               for {
-                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              }
-              yield Redirect(navigator.nextPage(form.value, journey.mode))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -517,7 +530,8 @@ class ComputersElectronicsController @Inject() (
         formWithErrors => BadRequest(WiringAndDevicesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.withName(form.value)
-          store.update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+          store
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )

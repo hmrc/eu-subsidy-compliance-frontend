@@ -75,7 +75,7 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.readyMixedConcrete.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.23.69"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.23.66"))),
             value = Some(Sector.otherConcreteProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherConcreteProducts.toString)
         )

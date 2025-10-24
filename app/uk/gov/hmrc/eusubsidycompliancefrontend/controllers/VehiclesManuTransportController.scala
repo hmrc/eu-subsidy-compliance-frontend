@@ -116,10 +116,10 @@ class VehiclesManuTransportController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               for {
-                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              }
-              yield Redirect(navigator.nextPage(form.value, journey.mode))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
@@ -161,10 +161,10 @@ class VehiclesManuTransportController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else {
               for {
-                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-              }
-              yield Redirect(navigator.nextPage(form.value, journey.mode))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
         }
