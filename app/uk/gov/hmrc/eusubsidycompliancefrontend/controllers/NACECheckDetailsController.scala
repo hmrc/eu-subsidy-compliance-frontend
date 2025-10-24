@@ -137,8 +137,9 @@ class NACECheckDetailsController @Inject() (
       case _ => Sector.other
     }
 
-    val showLevel1 = naceLevel1Code match {
-      case "A" => false
+    val showLevel1 = naceLevel2Code match {
+      case "01" => false
+      case "03" => false
       case _ => true
     }
 
