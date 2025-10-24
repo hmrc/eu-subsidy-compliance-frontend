@@ -68,7 +68,7 @@
     ) ++
     (if (viewModel.showLevel1) Seq(
         SummaryListRow(
-            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 1")),
+            key = Key(content = Text("Question 1")),
             value = Value(content = Text(viewModel.naceLevel1Display)),
             actions = Some(Actions(
                 items = Seq(
@@ -83,7 +83,7 @@
     ) else Seq.empty) ++
     (if (viewModel.showLevel1_1) Seq(
         SummaryListRow(
-            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 1.1")),
+            key = Key(content = Text(messages("Question 1.1")),
             value = Value(content = Text(viewModel.naceLevel1_1Display)),
             actions = Some(Actions(
                 items = Seq(
@@ -98,7 +98,7 @@
     ) else Seq.empty) ++
     (if (viewModel.showLevel2) Seq(
         SummaryListRow(
-            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 2")),
+            key = Key(content = Text("Question 2")),
             value = Value(content = Text(viewModel.naceLevel2Display)),
             actions = Some(Actions(
                 items = Seq(
@@ -113,7 +113,7 @@
     ) else Seq.empty) ++
     (if (viewModel.showLevel3) Seq(
         SummaryListRow(
-            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 3")),
+            key = Key(content = Text("Question 3")),
             value = Value(content = Text(viewModel.naceLevel3Display)),
             actions = Some(Actions(
                 items = Seq(
@@ -128,7 +128,7 @@
     ) else Seq.empty) ++
     (if (viewModel.showLevel4) Seq(
         SummaryListRow(
-            key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 4")),
+            key = Key(content = Text("Question 4"))
             value = Value(content = Text(viewModel.naceLevel4Display)),
             actions = Some(Actions(
                 items = Seq(
