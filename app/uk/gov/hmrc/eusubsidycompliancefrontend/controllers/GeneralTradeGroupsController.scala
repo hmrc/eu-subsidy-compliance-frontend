@@ -93,7 +93,6 @@ class GeneralTradeGroupsController @Inject() (
         formWithErrors => BadRequest(generalTradeUndertakingPage(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-
             val previousAnswer = journey.sector.value match {
               case Some(value) => if (value.toString.length >= 2) value.toString.take(2) else value.toString
               case None => ""
@@ -128,7 +127,8 @@ class GeneralTradeGroupsController @Inject() (
       }
 
       val previousLevel1Code =
-        if (sector.equals("00") || sector.length < 2) sector else naceCheckDetailsController.deriveLevel1Code(sector.take(2))
+        if (sector.equals("00") || sector.length < 2) sector
+        else naceCheckDetailsController.deriveLevel1Code(sector.take(2))
 
       val form =
         if (sector == "") generalTradeUndertakingOtherForm
@@ -208,7 +208,6 @@ class GeneralTradeGroupsController @Inject() (
   def loadClothesTextilesHomewarePage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-
       val sector = journey.sector.value match {
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""

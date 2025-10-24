@@ -53,34 +53,15 @@ class ConfirmationPageSpec extends PlaySupport {
       }
 
       "have the correct second paragraph" in {
-        document.select("#confirmationSecondParaId").text() shouldBe
-          "You can now submit reports of non-customs subsidy payments, or no payments in your undertaking."
+        document.select("p.govuk-body.tight-paragraph").text() shouldBe
+          "You can now:"
       }
 
       "have the correct third paragraph" in {
-        document.select("#confirmation-p3").text() shouldBe "You can also add businesses to your undertaking " +
-          "using the Add and remove businesses link in the ‘Undertaking administration’ section of the undertaking."
-      }
-
-      "have an exit survey" which {
-
-        "has the correct heading" in {
-          document.select("#exit-survey > h2").text() shouldBe "Before you go"
-        }
-
-        "has the correct first paragraph" in {
-          document.select("#exit-survey > p:nth-of-type(1)").text() shouldBe
-            "Your feedback helps us make our service better."
-        }
-
-        "has the correct third paragraph" in {
-          document.select("#exit-survey > p:nth-of-type(3)").text() shouldBe
-            "Take a short survey to share your feedback on this service."
-        }
-
-        "has the correct link" in {
-          document.select("#exit-survey > p:nth-of-type(3) > a").attr("href") shouldBe appConfig.exitSurveyUrl
-        }
+        val bullets = document.select("ul.govuk-list.govuk-list--bullet.tight-bullet-list li").eachText()
+        bullets.size() shouldBe 2
+        bullets.get(0) shouldBe "submit reports"
+        bullets.get(1) shouldBe "add businesses to your undertaking"
       }
     }
 

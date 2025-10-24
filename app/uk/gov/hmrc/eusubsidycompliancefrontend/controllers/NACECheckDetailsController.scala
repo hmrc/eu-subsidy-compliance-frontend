@@ -292,7 +292,7 @@ class NACECheckDetailsController @Inject() (
             Redirect(routes.UndertakingController.getAddBusiness).toFuture
           } else {
             for {
-              updatedSector <- store.update[UndertakingJourney] (_.setUndertakingSector(Sector.other.id))
+              updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.other.id))
             } yield Redirect(routes.UndertakingController.getSector)
           }
         }

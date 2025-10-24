@@ -418,7 +418,7 @@ class UndertakingControllerSpec
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               inputValue match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value
-                case None        => selectedOptions.isEmpty shouldBe true
+                case None => selectedOptions.isEmpty shouldBe true
               }
 
               testRadioButtonOptions(doc, allRadioTexts)
