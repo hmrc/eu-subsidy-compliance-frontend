@@ -49,7 +49,6 @@ class NaceUndertakingCategoryIntroController @Inject() (
     store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
 
     Future.successful(
-      // Needs updating to take user to /undertaking-industry-sector
       Redirect(routes.UndertakingController.getSector)
     )
   }

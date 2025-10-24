@@ -142,7 +142,8 @@ class NACECheckDetailsController @Inject() (
       case _ => true
     }
 
-    val showLevel1_1 = naceLevel1Code == "C" && naceLevel2Code != "32" && naceLevel2Code != "33" && naceLevel2Code != "21"
+    val showLevel1_1 =
+      naceLevel1Code == "C" && naceLevel2Code != "32" && naceLevel2Code != "33" && naceLevel2Code != "21"
 
     val showLevel2 = {
       naceLevel2Code match {
@@ -213,7 +214,7 @@ class NACECheckDetailsController @Inject() (
 
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       for {
-        updatedNaceFlag <- store.update[UndertakingJourney] (_.copy(isNaceCYA = true))
+        updatedNaceFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = true))
       } yield OK
 
       val usersLastAnswer = journey.sector.value match {
@@ -284,7 +285,7 @@ class NACECheckDetailsController @Inject() (
         },
         form => {
           for {
-            updatedNaceFlag <- store.update[UndertakingJourney] (_.copy(isNaceCYA = false))
+            updatedNaceFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
           } yield OK
 
           if (form.value == "true") {

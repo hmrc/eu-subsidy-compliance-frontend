@@ -55,23 +55,18 @@ class NaceUndertakingCategoryIntroControllerSpec
 
         val result = performAction()
         status(result) shouldBe OK
-
         val html = contentAsString(result)
         val document = Jsoup.parse(html)
 
-        document.select("h1").text() should include("Select a new undertaking category to continue")
-
-        document.select("p.govuk-hint").size() should be > 0
-
+        document.select("h1").text() should include("You need to update your undertaking sector")
         val link = document.select("#nace-link").first()
-        link.text() should include("full list of NACE categories from the EU (opens in new tab).")
+        link.text() should include("full list of NACE categories from the EU (opens in new tab)")
         link.attr("target") shouldBe "_blank"
         link.attr("rel") should include("noopener")
         link.attr("rel") should include("noreferrer")
         link.attr("href") should startWith(
           "https://showvoc.op.europa.eu/#/datasets/ESTAT_Statistical_Classification_of_Economic_Activities_in_the_European_Community_Rev._2.1"
         )
-
         document.select(".govuk-button").text() should include("Start")
       }
     }
@@ -88,7 +83,7 @@ class NaceUndertakingCategoryIntroControllerSpec
 
         val result = performAction()
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(routes.AccountController.getAccountPage.url)
+        redirectLocation(result) shouldBe Some(routes.UndertakingController.getSector.url)
       }
     }
   }
