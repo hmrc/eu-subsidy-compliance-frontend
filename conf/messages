@@ -2219,7 +2219,7 @@ NACE.professional.Lvl3.veterinary = Veterinary activities
 NACE.professional.Lvl4.veterinary = Veterinary activities
 
 #PublicAdministration NACE Sector2,3,4
-NACE.publicAdministration.Lvl2.publicAdministrationDefence = Public administration and defence; compulsory social security
+NACE.radio.84 = Public administration and defence; compulsory social security
 NACE.publicAdministration.Lvl2.publicAdministrationDefence.title = What is your undertaking’s main business activity in public administration, defence and compulsory social security?
 NACE.publicAdministration.Lvl2.publicAdministrationDefence.error = Select your undertaking’s main business activity in public administration, defence and social security
 NACE.radio.84.1 = Administration of the State and the economic, social and environmental policies of the community
@@ -2236,7 +2236,7 @@ NACE.radio.84.22 = Defence
 NACE.radio.84.23 = Justice and judicial activities
 NACE.radio.84.24 = Public order and safety
 NACE.radio.84.25 = Fire service activities
-NACE.radio.84.30 = Compulsory social security activities
+NACE.radio.84.3 = Compulsory social security activities
 NACE.publicAdministration.Lvl4.compulsorySocialSecurity = Compulsory social security activities
 
 #Education NACE Sector2,3,4
@@ -2390,12 +2390,12 @@ NACE.otherService.Lvl1.error = Select the type of services your undertaking prov
 NACE.radio.94 = Activities of membership organisations
 NACE.otherService.Lvl2.membershipOrganisations.title = What type of membership organisation does your undertaking operate?
 NACE.otherService.Lvl2.membershipOrganisations.error = Select the type of membership organisation your undertaking operates
-NACE.otherService.Lvl3.businessEmployersProfessional = Business, employers and professional membership organisations
+NACE.radio.94.1 = Business, employers and professional membership organisations
 NACE.otherService.Lvl3.businessEmployersProfessional.title = What type of business membership organisation does your undertaking operate?
 NACE.otherService.Lvl3.businessEmployersProfessional.error = Select the type of business membership organisation your undertaking operates
 NACE.radio.94.11 = Business and employers membership organisations
-NACE.otherService.Lvl4.professionalMembership = Professional membership organisations
-NACE.otherService.Lvl3.tradeUnions = Trade unions
+NACE.radio.94.12 = Professional membership organisations
+NACE.radio.94.2 = Trade unions
 NACE.otherService.Lvl4.tradeUnions = Activities of trade unions
 NACE.otherService.Lvl3.otherMembership = Other membership organisations
 NACE.otherService.Lvl3.otherMembership.title = What type of other membership organisation does your undertaking operate?

@@ -146,7 +146,7 @@ class NACECheckDetailsController @Inject() (
 
     val showLevel2 = {
       naceLevel2Code match {
-        case "35" | "01" | "03" | "85" | "68" | "99" => false
+        case "35" | "01" | "03" | "84" | "85" | "68" | "99" => false
         case _ => true
       }
     }

@@ -129,7 +129,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(PropertyDevelopmentLvl4Page(PropertyDevelopmentLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(RealEstateLvl3Page(RealEstateLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
