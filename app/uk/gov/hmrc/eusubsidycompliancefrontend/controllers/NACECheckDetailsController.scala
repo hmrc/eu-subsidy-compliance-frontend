@@ -291,8 +291,9 @@ class NACECheckDetailsController @Inject() (
           if (form.value == "true") {
             Redirect(routes.UndertakingController.getAddBusiness).toFuture
           } else {
-            store.update[UndertakingJourney](_.setUndertakingSector(Sector.other.id))
-            Redirect(routes.UndertakingController.getSector).toFuture
+            for {
+              updatedSector <- store.update[UndertakingJourney] (_.setUndertakingSector(Sector.other.id))
+            } yield Redirect(routes.UndertakingController.getSector)
           }
         }
       )
