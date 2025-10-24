@@ -212,7 +212,9 @@ class NACECheckDetailsController @Inject() (
     val messages: Messages = mcc.messagesApi.preferred(request)
 
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-      store.update[UndertakingJourney](_.copy(isNaceCYA = true))
+      for {
+        updatedNaceFlag <- store.update[UndertakingJourney] (_.copy(isNaceCYA = true))
+      } yield OK
 
       val usersLastAnswer = journey.sector.value match {
         case Some(value) => value.toString
@@ -281,7 +283,10 @@ class NACECheckDetailsController @Inject() (
           }
         },
         form => {
-          store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+          for {
+            updatedNaceFlag <- store.update[UndertakingJourney] (_.copy(isNaceCYA = false))
+          } yield OK
+
           if (form.value == "true") {
             Redirect(routes.UndertakingController.getAddBusiness).toFuture
           } else {
