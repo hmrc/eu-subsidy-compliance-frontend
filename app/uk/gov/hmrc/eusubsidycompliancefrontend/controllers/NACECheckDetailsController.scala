@@ -64,15 +64,15 @@ class NACECheckDetailsController @Inject() (
   private def getLevel1_1ChangeUrl(level2Code: String): String = level2Code match {
     case "13" | "14" | "15" | "16" | "22" | "31" =>
       routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
-    case "26" | "27" | "28" | "33" =>
+    case "26" | "27" | "28" =>
       routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().url
     case "10" | "11" | "12" =>
       routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage().url
-    case "19" | "20" | "21" | "23" | "24" | "25" =>
+    case "19" | "20" | "23" | "24" | "25" =>
       routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().url
     case "17" | "18" =>
       routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage().url
-    case "29" | "30" | "32" =>
+    case "29" | "30" =>
       routes.GeneralTradeGroupsController.loadVehiclesTransportPage().url
     case _ =>
       routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
@@ -82,9 +82,9 @@ class NACECheckDetailsController @Inject() (
     case "13" | "14" | "15" | "16" | "22" | "31" => messages("NACE.radio.INT002")
     case "26" | "27" | "28" | "33" => messages("NACE.radio.INT003")
     case "10" | "11" | "12" => messages("NACE.radio.INT004")
-    case "19" | "20" | "21" | "23" | "24" | "25" => messages("NACE.radio.INT005")
+    case "19" | "20" | "23" | "24" | "25" => messages("NACE.radio.INT005")
     case "17" | "18" => messages("NACE.radio.INT006")
-    case "29" | "30" | "32" => messages("NACE.radio.INT007")
+    case "29" | "30" => messages("NACE.radio.INT007")
     case _ => ""
   }
 
@@ -142,7 +142,7 @@ class NACECheckDetailsController @Inject() (
       case _ => true
     }
 
-    val showLevel1_1 = naceLevel1Code == "C"
+    val showLevel1_1 = naceLevel1Code == "C" && naceLevel2Code != "32" && naceLevel2Code != "33" && naceLevel2Code != "21"
 
     val showLevel2 = {
       naceLevel1Code match {
