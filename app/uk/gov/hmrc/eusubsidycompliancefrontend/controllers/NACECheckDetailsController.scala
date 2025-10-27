@@ -172,6 +172,10 @@ class NACECheckDetailsController @Inject() (
         case "G" => navigator.nextPage(naceLevel1Code, "").url
         case "I" => navigator.nextPage(naceLevel1Code, "").url
         case "J" => navigator.nextPage(naceLevel1Code, "").url
+        case "O" => navigator.nextPage(naceLevel1Code, "").url
+        case "R" => navigator.nextPage(naceLevel1Code, "").url
+        case "U" => navigator.nextPage(naceLevel1Code, "").url
+        case "A" => getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code)
         case _ => navigator.nextPage(navigatorLevel2Code, "").url
       }
     } else {
