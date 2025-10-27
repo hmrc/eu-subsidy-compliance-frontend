@@ -1656,6 +1656,12 @@ NACE.electricityGasSteamAir.Lvl4.steamAirConditioning = Steam and air conditioni
 NACE.radio.35.4 = Activities of brokers and agents for electric power and natural gas
 NACE.electricityGasSteamAir.Lvl4.brokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
 
+NACE.radio.35.title = What is your undertaking's main business activity in electricity, gas, steam and air conditioning supply?
+NACE.radio.35.1.title = What is your undertaking's main business activity in electricity?
+NACE.radio.35.2.title = What is your undertaking's main business activity in manufacture and distribution of gas?
+NACE.radio.35.3.title = Steam and air conditioning supply
+NACE.radio.35.4.title = Activities of brokers and agents for electric power and natural gas
+
 #WaterSewerageWasteRemediation NACE Sector2,3,4
 NACE.radio.36 = Water collection, treatment and supply
 NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title = What is your undertaking’s main business activity in water supply, sewerage and waste management?
@@ -1689,6 +1695,16 @@ NACE.radio.38.33 = Other waste disposal
 NACE.radio.39 = Remediation activities and other waste management services
 NACE.WaterSewerageWasteRemediation.Lvl3.Remediation = Remediation activities and other waste management service activities
 NACE.WaterSewerageWasteRemediation.Lvl4.Remediation = Remediation activities and other waste management service activities
+
+# Water Radio titles
+NACE.radio.E.title = What is your undertaking's main business activity in water supply, sewerage and waste management?
+NACE.radio.36.title = Water collection, treatment and supply
+NACE.radio.37.title = Sewerage
+NACE.radio.38.title = What is your undertaking's main business activity in waste collection, recovery and disposal?
+NACE.radio.38.1.title = What type of waste does your undertaking collect?
+NACE.radio.38.2.title = What type of waste recovery does your undertaking do?
+NACE.radio.38.3.title = What type of waste disposal does your undertaking do?
+NACE.radio.39.title = Remediation activities and other waste management service activities
 
 #construction NACE Sector2,3,4
 NACE.construction.Lvl1.title = What is your undertaking’s main business activity in construction?
@@ -2203,6 +2219,19 @@ NACE.radio.75 = Veterinary activities
 NACE.professional.Lvl3.veterinary = Veterinary activities
 NACE.professional.Lvl4.veterinary = Veterinary activities
 
+NACE.radio.69.1.title = Legal activities
+NACE.radio.69.2.title = Accounting, bookkeeping and auditing activities; tax consultancy
+NACE.radio.70.1.title = Activities of head offices
+NACE.radio.70.2.title = Business and other management consultancy activities
+NACE.radio.71.2.title = Technical testing and analysis
+NACE.radio.72.1.title = Research and experimental development on natural sciences and engineering
+NACE.radio.72.2.title = Research and experimental development on social sciences and humanities
+NACE.radio.73.2.title = Market research and public opinion polling
+NACE.radio.73.3.title = Public relations and communication activities
+NACE.radio.74.2.title = Photographic activities
+NACE.radio.74.3.title = Translation and interpretation activities
+NACE.radio.75.title = Veterinary activities
+
 #PublicAdministration NACE Sector2,3,4
 NACE.radio.84 = Public administration and defence; compulsory social security
 NACE.publicAdministration.Lvl2.publicAdministrationDefence.title = What is your undertaking’s main business activity in public administration, defence and compulsory social security?
@@ -2223,6 +2252,12 @@ NACE.radio.84.24 = Public order and safety
 NACE.radio.84.25 = Fire service activities
 NACE.radio.84.3 = Compulsory social security activities
 NACE.publicAdministration.Lvl4.compulsorySocialSecurity = Compulsory social security activities
+
+NACE.radio.P.title = What is your undertaking's main business activity in public administration, defence and compulsory social security?
+NACE.radio.84.title = What is your undertaking's main business activity in public administration, defence and compulsory social security?
+NACE.radio.84.1.title = What is your undertaking's main business activity in public administration?
+NACE.radio.84.2.title = What is your undertaking's main business activity in provision of services to the community?
+NACE.radio.84.3.title = Compulsory social security activities
 
 #Education NACE Sector2,3,4
 NACE.education.Lvl2.education = Education
@@ -2252,6 +2287,16 @@ NACE.education.Lvl3.educationalSupport.title = What type of educational support 
 NACE.education.Lvl3.educationalSupport.error = Select the type of educational support your undertaking provides
 NACE.radio.85.61 = Intermediation service activities for courses and tutors
 NACE.radio.85.69 = Other educational support
+
+#Education Radio Titles
+NACE.radio.Q.title = What is your undertaking's main business activity in education?
+NACE.radio.85.title = What is your undertaking's main business activity in education?
+NACE.radio.85.1.title = Pre-primary education
+NACE.radio.85.2.title = Primary education
+NACE.radio.85.3.title = What type of secondary or post-secondary education does your undertaking provide?
+NACE.radio.85.4.title = Tertiary education
+NACE.radio.85.5.title = What type of other education does your undertaking provide?
+NACE.radio.85.6.title = What type of educational support does your undertaking provide?
 
 #HumanHealthSocialWork NACE Sector2,3,4
 NACE.humanHealth.Lvl1.title = What is your undertaking’s main business activity in human health and social work?
@@ -2310,6 +2355,7 @@ NACE.radio.88.99 = Any other social work activities without accommodation
 #ArtsSportsRecreation NACE Sector2,3,4
 
 NACE.artsSportsRecreation.Lvl1.title = What is your undertaking’s main business activity in arts, sports and recreation?
+NACE.radio.S.title = What is your undertaking’s main business activity in arts, sports and recreation?
 NACE.artsSportsRecreation.Lvl1.error = Select your undertaking’s main business activity in arts, sports and recreation
 NACE.radio.90 = Arts creation and performing arts
 NACE.artsSportsRecreation.Lvl2.artsCreationPerforming.title = What is your undertaking’s main business activity in arts creation and performing arts?
@@ -2330,9 +2376,12 @@ NACE.radio.90.39 = Other support activities to arts and performing arts
 
 NACE.radio.91 = Libraries, archives, museums and other cultural activities
 NACE.artsSportsRecreation.Lvl2.librariesArchivesMuseums.title = What type of cultural organisation does your undertaking operate?
+NACE.radio.91.title = What type of cultural organisation does your undertaking operate?
 NACE.artsSportsRecreation.Lvl2.librariesArchivesMuseums.error = Select the type of cultural organisation your undertaking operates
 NACE.radio.91.1 = Libraries and archives
 NACE.artsSportsRecreation.Lvl3.libraryArchives.title = What type of library or archive does your undertaking operate?
+NACE.radio.91.1.title = What type of library or archive does your undertaking operate?
+
 NACE.artsSportsRecreation.Lvl3.libraryArchives.error = Select the type of library or archive your undertaking operates
 NACE.radio.91.11 = Libraries
 NACE.radio.91.12 = Archives
@@ -2368,6 +2417,18 @@ NACE.artsSportsRecreation.Lvl3.amusementRecreation.title = What is your undertak
 NACE.artsSportsRecreation.Lvl3.amusementRecreation.error = Select your undertaking’s main business activity in amusement and recreation
 NACE.radio.93.21 = Amusement and theme parks
 NACE.radio.93.29 = Other amusement and recreation activities
+
+NACE.radio.90.title = What is your undertaking's main business activity in arts creation and performing arts?
+NACE.radio.90.1.title = What is your undertaking's main business activity in arts creation?
+NACE.radio.90.2.title = Activities of performing arts
+NACE.radio.90.3.title = What is your undertaking's main business activity in arts support activities?
+NACE.radio.91.2.title = What type of museum, collection or site does your undertaking operate?
+NACE.radio.91.3.title = Conservation, restoration and other support activities for cultural heritage
+NACE.radio.91.4.title = What type of garden or reserve does your undertaking operate?
+NACE.radio.92.title = Gambling and betting activities
+NACE.radio.93.title = What is your undertaking's main business activity in sports, amusement and recreation?
+NACE.radio.93.1.title = What type of sports activity does your undertaking do?
+NACE.radio.93.2.title = What is your undertaking's main business activity in amusement and recreation?
 
 #OtherService NACE Sector2,3,4
 NACE.otherService.Lvl1.title = What type of services does your undertaking provide?
