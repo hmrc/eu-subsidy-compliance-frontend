@@ -171,13 +171,18 @@ class NACECheckDetailsController @Inject() (
         case "F" => navigator.nextPage(naceLevel1Code, "").url
         case "G" => navigator.nextPage(naceLevel1Code, "").url
         case "I" => navigator.nextPage(naceLevel1Code, "").url
+        case "J" => navigator.nextPage(naceLevel1Code, "").url
         case _ => navigator.nextPage(navigatorLevel2Code, "").url
       }
     } else {
       navigator.nextPage(navigatorLevel2Code, "").url
     }
 
-    val changeLevel3Url = navigator.nextPage(navigatorLevel2Code, "").url
+    val changeLevel3Url = if (showLevel2) {
+      navigator.nextPage(navigatorLevel2Code, "").url
+    } else {
+      navigator.nextPage(naceLevel1Code, "").url
+    }
 
     val changeLevel4Url = if (showLevel3) {
       navigator.nextPage(naceLevel3Code, "").url
