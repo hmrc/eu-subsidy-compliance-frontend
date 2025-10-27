@@ -2056,7 +2056,6 @@ NACE.publishingBroadcasting.Lvl3.newsAgency.error = Select your undertaking’s 
 NACE.radio.60.31 = News agency activities
 NACE.radio.60.39 = Other content distribution activities
 
-
 #Publishing Radio titles
 NACE.radio.J.title = What is your undertaking's main business activity in publishing and broadcasting?
 NACE.radio.58.title = What is your undertaking's main business activity in publishing?
@@ -2071,10 +2070,10 @@ NACE.radio.60.2.title = Television programming, broadcasting and video distribut
 NACE.radio.60.3.title = What is your undertaking's main business activity in news agency and content distribution?
 
 #telecommunicationsComputing NACE Sector2,3,4
-NACE.telecommunicationsComputing.Lvl1.title = What is your undertaking’s main business activity in telecommunications and computing?
+NACE.radio.K.title = What is your undertaking’s main business activity in telecommunications and computing?
 NACE.telecommunicationsComputing.Lvl1.error = Select your undertaking’s main business activity in telecommunications and computing
 NACE.radio.61 = Telecommunication
-NACE.telecommunicationsComputing.Lvl2.telecommunication.title = What is your undertaking’s main business activity in telecommunications?
+NACE.radio.61.title = What is your undertaking’s main business activity in telecommunications?
 NACE.telecommunicationsComputing.Lvl2.telecommunication.error = Select your undertaking’s main business activity in telecommunications
 NACE.radio.61.1 = Wired, wireless and satellite telecommunication
 NACE.telecommunicationsComputing.Lvl4.wiredWirelessSatellite = Wired, wireless, and satellite telecommunication activities
@@ -2084,7 +2083,7 @@ NACE.radio.61.9 = Other telecommunication activities
 NACE.Telecommunications.Lvl4.otherTelecom = Other telecommunication activities
 
 NACE.radio.62 = Computer programming, consultancy and related activities
-NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.title = What is your undertaking’s main business activity in computer programming, consultancy and related activities?
+NACE.radio.62.title = What is your undertaking’s main business activity in computer programming, consultancy and related activities?
 NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.hint = Includes computer facilities management and other information technology and computer service activities.
 NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.error = Select your undertaking’s main business activity in computer programming, consultancy and related activities
 NACE.radio.62.1 = Computer programming
@@ -2095,13 +2094,13 @@ NACE.radio.62.9 = Other information technology and computer service activities
 NACE.telecommunicationsComputing.Lvl4.otherComputerServiceActivities = Other information technology and computer service activities
 
 NACE.radio.63 = Computing infrastructure, data processing, hosting and other information service activities
-NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities.title = What is your undertaking’s main business activity in information services?
+NACE.radio.63.title = What is your undertaking’s main business activity in information services?
 NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities.hint = Includes web search portal activities and other information services.
 NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities.error = Select your undertaking’s main business activity in formation services
 NACE.radio.63.1 = Computing infrastructure, data processing, hosting and related activities
 NACE.telecommunicationsComputing.Lvl4.infrastructureHosting = Computing infrastructure, data processing, hosting and related activities
 NACE.radio.63.9 = Web search portal activities and other information services
-NACE.telecommunicationsComputing.Lvl3.webSearchPortal.title = What is your undertaking’s main business activity in web search portal activities and other information services?
+NACE.radio.63.9.title = What is your undertaking’s main business activity in web search portal activities and other information services?
 NACE.telecommunicationsComputing.Lvl3.webSearchPortal.error = Select your undertaking’s main business activity in web search portal activities and other information services
 NACE.radio.63.91 = Web search portal activities
 NACE.radio.63.92 = Other information service activities
@@ -2145,15 +2144,19 @@ NACE.FinancialServicesInsurance.Lvl4.OtherAuxiliaryInsurancePensionFundingNEC = 
 NACE.FinancialServicesInsurance.Lvl4.FundManagement = Fund management activities
 
 #RealEstate NACE Sector2,3,4
-NACE.RealEstate.Lvl2.RealEstateActivities = Real estate activities
-#### NACE.RealEstate.Lvl3.RealEstateWithOwnPropertyDevelopment = Real estate activities with own property and development of building projects
-NACE.RealEstate.Lvl4.BuyingSellingOwnRealEstate = Buying and selling of own real estate
-NACE.RealEstate.Lvl4.DevelopmentBuildingProjects = Development of building projects
-#### NACE.RealEstate.Lvl3.RentalOperatingOwnLeased = Rental and operating of own or leased real estate
-NACE.RealEstate.Lvl4.RentalOperatingOwnLeased = Rental and operating of own or leased real estate
-#### NACE.RealEstate.Lvl3.RealEstateOnFeeContract = Real estate activities on a fee or contract basis
-NACE.RealEstate.Lvl4.IntermediationRealEstate = Intermediation service activities for real estate activities
-NACE.RealEstate.Lvl4.OtherRealEstateFeeContract = Other real estate activities on a fee or contract basis
+NACE.radio.68.title = What is your undertaking''s main business activity in real estate?
+NACE.realEstate.Lvl3.realEstate.error = Select your undertaking’s main business activity in real estate
+NACE.radio.68.1 = Real estate activities with own property and development of building projects
+NACE.radio.68.1.title = What is your undertaking''s main business activity in property and development?
+NACE.realEstate.Lvl4.propertyDevelopment.error = Select your undertaking’s main business activity in property and development
+NACE.radio.68.11 = Buying and selling of own real estate
+NACE.radio.68.12 = Development of building projects
+NACE.radio.68.2 = Rental and operating of own or leased real estate
+NACE.radio.68.3 = Real estate activities on a fee or contract basis
+NACE.radio.68.3.title = What type of real estate activities does your undertaking do on a fee or contract basis?
+NACE.realEstate.Lvl4.feeContract.error = Select the type of real estate activities your undertaking does on a fee or contract basis
+NACE.radio.68.31 = Intermediation service activities for real estate
+NACE.radio.68.32 = Other real estate activities on a fee or contract basis
 
 #ProfessionalScientificTechnicalServices NACE Sector2,3,4
 NACE.radio.N.title = What type of professional, scientific and technical services does your undertaking provide?
@@ -2772,24 +2775,6 @@ NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.hint = Select one option that
 NACE.radio.66.11 = Administration of financial markets
 NACE.radio.66.12 = Security and commodity contracts brokerage
 NACE.radio.66.19 = Other activities auxiliary to financial services (except insurance and pension funding)
-
-#RealEstate NACE Sector2,3,4
-
-NACE.realEstate.Lvl4.feeContract.title = What type of real estate activities does your undertaking do on a fee or contract basis?
-NACE.realEstate.Lvl4.feeContract.hint = Select the type of real estate activities your undertaking does on a fee or contract basis
-NACE.realEstate.Lvl4.feeContract.error = Select the type of real estate activities your undertaking does on a fee or contract basis
-NACE.radio.68.31 = Intermediation service activities for real estate
-NACE.radio.68.32 = Other real estate activities on a fee or contract basis
-NACE.realEstate.Lvl4.propertyDevelopment.title = What is your undertaking''s main business activity in property and development?
-NACE.realEstate.Lvl4.propertyDevelopment.error = Select your undertaking’s main business activity in property and development
-NACE.radio.68.11 = Buying and selling of own real estate
-NACE.radio.68.12 = Development of building projects
-NACE.realEstate.Lvl3.title = What is your undertaking''s main business activity in real estate?
-NACE.radio.68.1 = Real estate activities with own property and development of building projects
-NACE.radio.68.2 = Rental and operating of own or leased real estate
-NACE.radio.68.3 = Real estate activities on a fee or contract basis
-NACE.realEstate.Lvl3.realEstate.title = What is your undertaking''s main business activity in real estate?
-NACE.realEstate.Lvl3.realEstate.error = Select your undertaking’s main business activity in real estate
 
 #Admin
 
