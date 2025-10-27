@@ -219,7 +219,8 @@ class UndertakingController @Inject() (
           form => {
             val previousAnswer = journey.sector.value match {
               case Some(value) =>
-                if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00"
+                if (value.toString.length < 2) value.toString
+                else if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00"
                 else value.toString.take(2)
               case None => ""
             }
