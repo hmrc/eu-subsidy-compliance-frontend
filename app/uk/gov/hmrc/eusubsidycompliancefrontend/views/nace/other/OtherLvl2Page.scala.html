@@ -70,7 +70,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairMaintenanc
 
 
 @layout(
-pageTitle = Some(messages("NACE.otherService.Lvl1.title")),
+pageTitle = Some(messages("NACE.radio.T.title")),
 backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
@@ -111,7 +111,7 @@ content = Text(messages("NACE.otherService.Lvl1.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.otherService.Lvl1.title")),
+content = Text(messages("NACE.radio.T.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
