@@ -2056,6 +2056,20 @@ NACE.publishingBroadcasting.Lvl3.newsAgency.error = Select your undertaking’s 
 NACE.radio.60.31 = News agency activities
 NACE.radio.60.39 = Other content distribution activities
 
+
+#Publishing Radio titles
+NACE.radio.J.title = What is your undertaking's main business activity in publishing and broadcasting?
+NACE.radio.58.title = What is your undertaking's main business activity in publishing?
+NACE.radio.58.1.title = What type of material does your undertaking publish?
+NACE.radio.58.2.title = What type of software does your undertaking publish?
+NACE.radio.59.title = What is your undertaking's main business activity in film, TV and video production, sound recording and music publishing?
+NACE.radio.59.1.title = What type of film, TV and video service does your undertaking provide?
+NACE.radio.59.2.title = Sound recording and music publishing activities
+NACE.radio.60.title = What is your undertaking's main business activity in programming, broadcasting, news agency and content distribution?
+NACE.radio.60.1.title = Radio broadcasting and audio distribution activities
+NACE.radio.60.2.title = Television programming, broadcasting and video distribution activities
+NACE.radio.60.3.title = What is your undertaking's main business activity in news agency and content distribution?
+
 #telecommunicationsComputing NACE Sector2,3,4
 NACE.telecommunicationsComputing.Lvl1.title = What is your undertaking’s main business activity in telecommunications and computing?
 NACE.telecommunicationsComputing.Lvl1.error = Select your undertaking’s main business activity in telecommunications and computing
