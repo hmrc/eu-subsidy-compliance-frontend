@@ -272,35 +272,25 @@ lead-account-homepage.details.ul1-li1 = this date is 90 days after you registere
 lead-account-homepage.details.ul1-li2 = you must use this service to report all non-customs subsidy payments you have received since {0}
 lead-account-homepage.details.ul1-li3 = you must submit a report at least once every 90 days, even if you haven’t received any payments
 lead-account-homepage.details.ul1-li4 = if you don’t submit a report, your undertaking may no longer be able to claim Customs Duty waivers
-
-
 lead-account-homepage.p1.not-overdue = Your next report is due by <strong>{0}</strong>.
-
 lead-account-homepage.details.submitted.ul1-li1 = this date is 90 days after the last report you submitted, on {0}
-
 lead-account-homepage.preDeadline.p1 = This date is 90 days after you either:
 lead-account-homepage.postDeadline.p1 = This date was 90 days after you either:
-
 lead-account-homepage.p1.li1 = registered your undertaking
 lead-account-homepage.p1.li2 = submitted your last report of receiving a non-customs subsidy payment or no payments
 lead-account-homepage.preDeadline.p2 = You must either:
 lead-account-homepage.postDeadline.p2 = You must now either:
 lead-account-homepage.p2.li1 = report a non-customs subsidy payment
 lead-account-homepage.p2.li2 = report that you have not been awarded any non-customs subsidy payments
-
 lead-account-homepage.preDeadline.h2 = What you need to report, and when
 lead-account-homepage.preDeadline.h2.p1 = You must use this service to report all non-customs subsidy payments you have received.
 lead-account-homepage.preDeadline.h2.p2 = You must submit a report at least once every 90 days, even if you have not received any payments.
 lead-account-homepage.preDeadline.h2.p3 = If you do not submit a report, your undertaking may no longer be able to claim Customs Duty waivers.
-
-
 lead-account-homepage.postDeadline.warning = Your deadline to submit a report passed on {0}.
-
 lead-account-homepage.postDeadline.h2 = What you need to report now
 lead-account-homepage.postDeadline.h2.p1 = You must use this service to report all non-customs subsidy payments you have received to continue claiming de minimis state aid.
 lead-account-homepage.postDeadline.h2.p2 = These payments can include grants and loans, provided as de minimis state aid from government and public authorities. You must report these at least once every 90 days, even if you have not received any payments.
 lead-account-homepage.postDeadline.h2.p3 = If you have received none, you must submit a report that you have received no payments for that period.
-
 lead-account-homepage.details.title = If you have previously submitted, or have never submitted a report
 lead-account-homepage.details.hasSubmitted.h3 = If you have previously submitted a report
 lead-account-homepage.details.hasSubmitted.h3.p1 = If you have submitted a non-customs subsidy payment or no payments report before, these will be any payments received within your latest 90-day reporting period.
@@ -308,22 +298,18 @@ lead-account-homepage.details.hasSubmitted.h3.p1.agri = You must report any paym
 lead-account-homepage.details.neverSubmitted.h3 = If you have never submitted a report
 lead-account-homepage.details.neverSubmitted.h3.p1 = If you have not submitted a non-customs subsidy payment or no payments report before, these will be any payments received for the current tax year and the previous 2 tax years.
 lead-account-homepage.details.neverSubmitted.h3.p1.agri = You must report any payments received over a rolling 3-year period, counting back from your latest declaration.
-
 lead-account-homepage.h2-3 = Report history
 lead-account-homepage.ul2-li1 = View reported non-customs subsidy payments
-
 lead-account-homepage.h2-4 = Remaining allowance
 lead-account-homepage.h2.undertakingBalance = Undertaking balance
 lead-account-homepage.p3 = Your undertaking currently has a remaining balance of {0}, from your sector allowance of {1}.
 lead-account-homepage.p3.agri = Your balance may be incorrect. To work out your balance,
 lead-account-homepage.p3.link = review changes to your allowance
 lead-account-homepage.ul3-li1 = View summary of your allowance (customs and non-customs subsidies)
-
 lead-account-homepage.h2-5 = Undertaking administration
 lead-account-homepage.ul4-li1 = Add or remove businesses
 lead-account-homepage.ul4-li2 = Update your email address, or change the industry sector of your undertaking
 lead-account-homepage.ul4-li3 = Deregister your undertaking
-
 lead-account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.
 lead-account-homepage-overdue.inset=Your due date of {0} has passed. You have not submitted your return within the 90-day period.
 lead-account-homepage-never-submitted-overdue=You have created an undertaking, but not yet reported a claim. This means either you need to report a claim within the next 90 days, or that you are now overdue. You can report de minimis aid payments (less Customs Duty waivers), or let HMRC know that you have not received any, by following the links in the Reporting payments section below.
@@ -716,8 +702,6 @@ NACE.undertakingSuspended.ALTul1= answer some questions about your undertaking
 NACE.undertakingSuspended.ALTul2= submit a report
 NACE.undertakingSuspended.ALTp3= Once you have done this, you can use the service as normal.
 
-
-
 # Access denied for agents page
 accessDeniedForAgents.title=You cannot access this service
 accessDeniedForAgents.p1=You will not be able to use this service because you’re logged in with an agent services account Government Gateway user ID.
@@ -732,13 +716,11 @@ exitSurvey.p2 = to share your feedback on this service.
 exitSurveyBeforeYouGo.p2 = We’re making some changes to this service –
 exitSurveyBeforeYouGo.link = join our research and help improve it
 
-
 # User Research Banner - Industry Sector
 industrySectorResearchBanner.h2 = Changes are coming to this service
 industrySectorResearchBanner.link.text = Get involved – help us make it work for you (opens in new tab)
 industrySectorResearchBanner.hide.button = Hide message
 industrySectorResearchBanner.visually.hidden = Hide message. I do not want to take part in research
-
 
 ############################################## NACE #################################################################################################################
 
@@ -817,9 +799,9 @@ NACE.radio.V = Activities of extraterritorial organisations and bodies
 
 #AgricultureForestryFishing NACE Sector2,3,4
 NACE.agriculture.Lvl2.cropAnimalProduction = Crop and animal production, hunting and related service activities
-NACE.agriculture.Lvl2.title = What is your undertaking’s main business activity in agriculture?
+NACE.radio.01.title = What is your undertaking’s main business activity in agriculture?
 NACE.agriculture.Lvl2.error = Select your undertaking’s main business activity in agriculture
-NACE.agriculture.Lvl3.growingCrops.title = What type of crop does your undertaking grow?
+NACE.radio.01.1.title = What type of crop does your undertaking grow?
 NACE.agriculture.Lvl3.growingCrops.error = Select the type of crop your undertaking grows
 NACE.radio.01.1 = Growing non-perennial crops
 NACE.radio.01.11 = Cereals (except rice), leguminous crops and oil seeds
@@ -830,6 +812,7 @@ NACE.radio.01.15 = Tobacco
 NACE.radio.01.16 = Fibre crops
 NACE.radio.01.19 = Other non-perennial crops
 NACE.radio.01.2 = Growing perennial crops
+NACE.radio.01.2.title = What type of crop does your undertaking grow?
 NACE.radio.01.21 =  Grapes
 NACE.radio.01.22 =  Tropical and subtropical fruits
 NACE.agriculture.Lvl4.tropicalFruits.hint =  For example avocados, bananas or pineapples.
@@ -845,7 +828,7 @@ NACE.radio.01.29 =  Other perennial crops
 NACE.radio.01.3 = Plant propagation
 NACE.agriculture.Lvl4.plantPropagation = Plant propagation
 NACE.radio.01.4 = Animal production
-NACE.agriculture.Lvl3.animalProduction.title = What type of animal does your undertaking raise?
+NACE.radio.01.4.title = What type of animal does your undertaking raise?
 NACE.agriculture.Lvl3.animalProduction.error = Select the type of animal your undertaking raises
 NACE.radio.01.41 = Dairy cattle
 NACE.radio.01.42 = Other cattle and buffaloes
@@ -858,7 +841,7 @@ NACE.radio.01.48 = Other animals
 NACE.radio.01.5 = Mixed farming
 NACE.agriculture.Lvl4.mixedFarming = Mixed farming
 NACE.radio.01.6 = Support activities to agriculture and post-harvest crop activities
-NACE.agriculture.Lvl3.supportActivities.title = What type of support activity does your undertaking do?
+NACE.radio.01.6.title = What type of support activity does your undertaking do?
 NACE.agriculture.Lvl3.supportActivities.error = Select the type of support activity your undertaking does
 NACE.radio.01.61 = Support activities for crop production
 NACE.radio.01.62 = Support activities for animal production
@@ -866,8 +849,10 @@ NACE.radio.01.63 = Post-harvest crop activities and seed processing for propagat
 NACE.radio.01.7 = Hunting, trapping and related service activities
 NACE.agriculture.Lvl4.huntingTrapping = Hunting, trapping and related service activities
 
-NACE.forestry.Lvl2.title = What is your undertaking’s main business activity in forestry?
+NACE.radio.A.title = What is your undertaking’s main business activity?
+NACE.radio.02.title = What is your undertaking’s main business activity in forestry?
 NACE.radio.02 = Forestry and logging
+NACE.radio.02.title = What is your undertaking’s main business activity in forestry?
 NACE.forestry.Lvl3.silviculture = Silviculture and other forestry activities
 NACE.radio.02.1 = Silviculture and other forestry activities
 NACE.forestry.Lvl3.logging = Logging
@@ -878,15 +863,15 @@ NACE.forestry.Lvl3.forestrySupportServices = Support services to forestry
 NACE.radio.02.4 = Support services to forestry
 
 NACE.fishing.Lvl2.fishingAquaculture = Fishing and aquaculture
-NACE.fishing.Lvl2.title = What is your undertaking’s main business activity in fishery and aquaculture?
+NACE.radio.03.title = What is your undertaking’s main business activity in fishery and aquaculture?
 NACE.fishing.Lvl2.error = Select your undertaking’s main business activity in fishery and aquaculture
 NACE.radio.03.1 = Fishing
-NACE.fishing.Lvl3.fishing.title =  What type of fishing does your undertaking do?
+NACE.radio.03.1.title =  What type of fishing does your undertaking do?
 NACE.fishing.Lvl3.fishing.error = Select the type of fishing your undertaking does
 NACE.radio.03.11 = Marine
 NACE.radio.03.12 = Freshwater
 NACE.radio.03.2 = Aquaculture
-NACE.fishing.Lvl3.aquaculture.title = What is your undertaking’s main business activity in aquaculture?
+NACE.radio.03.2.title = What is your undertaking’s main business activity in aquaculture?
 NACE.fishing.Lvl3.aquaculture.error = Select your undertaking’s main business activity in aquaculture
 NACE.radio.03.21 = Marine aquaculture
 NACE.radio.03.22 = Freshwater aquaculture
@@ -894,43 +879,43 @@ NACE.radio.03.3 = Support activities for fishing and aquaculture
 NACE.fishing.Lvl4.aquacultureSupportActivities = Support activities for fishing and aquaculture
 
 #MiningQuarrying NACE Sector2,3,4
-NACE.mining.Lvl1.title = What is your undertaking's main business activity in mining and quarrying?
+NACE.radio.B.title = What is your undertaking's main business activity in mining and quarrying?
 NACE.mining.Lvl1.error = Select your undertaking's main business activity in mining and quarrying
 NACE.radio.05 = Mining of coal and lignite
-NACE.mining.Lvl2.coalAndLigniteMining.title = What type of coal does your undertaking mine?
+NACE.radio.05.title = What type of coal does your undertaking mine?
 NACE.mining.Lvl2.coalAndLigniteMining.error = Select the type of coal your undertaking mines
 NACE.radio.05.1 = Hard coal
 NACE.radio.05.10 = Mining of hard coal
 NACE.radio.05.2 = Lignite
 NACE.radio.05.20 = Mining of lignite
 NACE.radio.06 = Extraction of crude petroleum and natural gas
-NACE.mining.Lvl2.petroleumNaturalGasExtraction.title = What type of fuel does your undertaking extract?
+NACE.radio.06.title = What type of fuel does your undertaking extract?
 NACE.mining.Lvl2.petroleumNaturalGasExtraction.error = Select the type of fuel your undertaking extracts
 NACE.radio.06.1 = Crude petroleum
 NACE.radio.06.10 = Extraction of crude petroleum
 NACE.radio.06.2 = Natural gas
 NACE.radio.06.20 = Extraction of natural gas
 NACE.radio.07 = Mining of metal ores
-NACE.mining.Lvl2.metalOresMining.title = What type of metal ores does your undertaking mine?
+NACE.radio.07.title = What type of metal ores does your undertaking mine?
 NACE.mining.Lvl2.metalOresMining.error = metal ores your undertaking mines
 NACE.radio.07.1 = Iron ores
 NACE.radio.07.10 = Mining of iron ores
 NACE.radio.07.2 = Non-ferrous metal ores
-NACE.mining.Lvl3.nonFerrousOres.title = What type of non-ferrous metal ores does your undertaking mine?
+NACE.radio.07.2.title = What type of non-ferrous metal ores does your undertaking mine?
 NACE.mining.Lvl3.nonFerrousOres.error = Select the type of non-ferrous metal ores your undertaking mines
 NACE.radio.07.21 = Uranium and thorium ores
 NACE.radio.07.29 = Other non-ferrous metal ores
 NACE.radio.08 = Other mining and quarrying
-NACE.mining.Lvl2.otherMiningQuarrying.title = What type of mining or quarrying does your undertaking do?
+NACE.radio.08.title = What type of mining or quarrying does your undertaking do?
 NACE.mining.Lvl2.otherMiningQuarrying.error = Select the type of mining or quarrying your undertaking does
 NACE.mining.Lvl2.otherMiningQuarrying.hint = Includes extraction of peat and salt, mining of chemical and fertiliser minerals, and quarrying of stone, sand and clay.
 NACE.radio.08.1 = Quarrying of stone, sand and clay
-NACE.mining.Lvl3.stoneQuarrying.title = What type of sand, stone and clay quarrying does your undertaking do?
+NACE.radio.08.1.title = What type of sand, stone and clay quarrying does your undertaking do?
 NACE.mining.Lvl3.stoneQuarrying.error = Select the type of sand, stone and clay quarrying your undertaking does
 NACE.radio.08.11 = Quarrying of ornamental stone, limestone, gypsum, slate and other stone
 NACE.radio.08.12 = Operation of gravel and sand pits and mining of clay and kaolin
 NACE.radio.08.9 = Other mining and quarrying
-NACE.mining.Lvl3.miningAndQuarryingNEC.title = What type of mining or quarrying activity does your undertaking do?
+NACE.radio.08.9.title = What type of mining or quarrying activity does your undertaking do?
 NACE.mining.Lvl3.miningAndQuarryingNEC.error = Select the type of mining or quarrying your undertaking does
 NACE.mining.Lvl3.miningAndQuarryingNEC.hint = Includes extraction of peat and salt and mining of chemical and fertiliser minerals.
 NACE.radio.08.91 = Mining of chemical and fertiliser minerals
@@ -938,7 +923,7 @@ NACE.radio.08.92 = Extraction of peat
 NACE.radio.08.93 = Extraction of salt
 NACE.radio.08.99 = Other mining and quarrying
 NACE.radio.09 = Mining support services
-NACE.mining.Lvl2.miningSupportServices.title = What type of mining or quarrying does your undertaking support?
+NACE.radio.09.title = What type of mining or quarrying does your undertaking support?
 NACE.mining.Lvl2.miningSupportServices.error = mining or quarrying your undertaking does
 NACE.radio.09.1 = Extraction of petroleum and natural gas
 NACE.radio.09.10 = Support activities for petroleum and natural gas extraction
@@ -2045,7 +2030,7 @@ NACE.publishingBroadcasting.Lvl4.SoundRecordingActivities = Sound recording and 
 NACE.radio.60 = Programming, broadcasting, news agency and other content distribution activities
 NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities.title = What is your undertaking’s main business activity in programming, broadcasting, news agency and content distribution?
 NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities.error = Select your undertaking’s main business activity in programming, broadcasting, news agency and content distribution
-NACE.radio.60.10 = Radio broadcasting and audio distribution
+NACE.radio.60.1 = Radio broadcasting and audio distribution
 NACE.publishingBroadcasting.Lvl4.radioBroadcastingActivities = Radio broadcasting and audio distribution activities
 NACE.radio.60.2 = TV programming, broadcasting and video distribution
 NACE.publishingBroadcasting.Lvl4.televisionBroadcasting = Television programming, broadcasting and video distribution activities
@@ -2141,10 +2126,10 @@ NACE.RealEstate.Lvl4.IntermediationRealEstate = Intermediation service activitie
 NACE.RealEstate.Lvl4.OtherRealEstateFeeContract = Other real estate activities on a fee or contract basis
 
 #ProfessionalScientificTechnicalServices NACE Sector2,3,4
-NACE.professional.title = What type of professional, scientific and technical services does your undertaking provide?
+NACE.radio.N.title = What type of professional, scientific and technical services does your undertaking provide?
 NACE.professional.error = Select the type of professional, scientific and technical services your undertaking provides
 NACE.radio.69 = Legal and accounting
-NACE.professional.Lvl2.legalAccounting.title = What is your undertaking’s main business activity in legal and accounting services?
+NACE.radio.69.title = What is your undertaking’s main business activity in legal and accounting services?
 NACE.professional.Lvl2.legalAccounting.error = Select your undertaking’s main business activity in legal and accounting services
 NACE.radio.69.1 = Legal activities
 NACE.professional.Lvl4.legal = Legal activities
@@ -2152,7 +2137,7 @@ NACE.radio.69.2 = Accounting, bookkeeping, auditing and tax consultancy
 NACE.professional.Lvl4.accounting = Accounting, bookkeeping and auditing activities; tax consultancy
 
 NACE.radio.70 = Head offices and management consultancy
-NACE.professional.Lvl2.headOfficeManagement.title = What is your undertaking’s main business activity in head offices and management consultancy?
+NACE.radio.70.title = What is your undertaking’s main business activity in head offices and management consultancy?
 NACE.professional.Lvl2.headOfficeManagement.error = Select your undertaking’s main business activity in head offices and management consultancy
 NACE.radio.70.1 = Activities of head offices
 NACE.professional.Lvl4.headOffice = Activities of head offices
@@ -2160,10 +2145,10 @@ NACE.radio.70.2 = Business and other management consultancy activities
 NACE.professional.Lvl4.managementConsultancy = Business and other management consultancy activities
 
 NACE.radio.71 = Architectural and engineering, technical testing and analysis
-NACE.professional.Lvl2.architecturalEngineeringTesting.title = What is your undertaking’s main business activity in architecture and engineering, technical testing and analysis?
+NACE.radio.71.title = What is your undertaking’s main business activity in architecture and engineering, technical testing and analysis?
 NACE.professional.Lvl2.architecturalEngineeringTesting.error = Select your undertaking’s main business activity in architecture and engineering, technical testing and analysis
 NACE.radio.71.1 = Architectural and engineering activities and related technical consultancy
-NACE.professional.Lvl3.architecturalEngineering.title = What is your undertaking’s main business activity in architecture, engineering and technical consultancy?
+NACE.radio.71.1.title = What is your undertaking’s main business activity in architecture, engineering and technical consultancy?
 NACE.professional.Lvl3.architecturalEngineering.error = Select your undertaking’s main business activity in architecture, engineering and technical consultancy
 NACE.radio.71.11 = Architectural activities
 NACE.radio.71.12 = Engineering activities and related technical consultancy
@@ -2171,7 +2156,7 @@ NACE.radio.71.2 = Technical testing and analysis
 NACE.professional.Lvl4.technicalTesting = Technical testing and analysis
 
 NACE.radio.72 = Scientific research and development
-NACE.professional.Lvl2.scientificResearchDevelopment.title = What area does your undertaking conduct scientific research and development in?
+NACE.radio.72.title = What area does your undertaking conduct scientific research and development in?
 NACE.professional.Lvl2.scientificResearchDevelopment.error = Select the area your undertaking conducts scientific research and development in
 NACE.radio.72.1 = Natural sciences and engineering
 NACE.professional.Lvl4.naturalScienceEngineeringResearch = Research and experimental development on natural sciences and engineering
@@ -2179,10 +2164,10 @@ NACE.radio.72.2 = Social sciences and humanities
 NACE.professional.Lvl4.socialScienceHumanitiesResearch = Research and experimental development on social sciences and humanities
 
 NACE.radio.73 = Advertising, market research and public relations
-NACE.professional.Lvl2.advertisingMarketResearchPR.title = What is your undertaking’s main business activity in advertising, market research and public relations?
+NACE.radio.73.title = What is your undertaking’s main business activity in advertising, market research and public relations?
 NACE.professional.Lvl2.advertisingMarketResearchPR.error = Select your undertaking’s main business activity in advertising, market research and public relations
 NACE.radio.73.1 = Advertising
-NACE.professional.Lvl3.advertising.title = What is your undertaking’s main business activity in advertising?
+NACE.radio.73.1.title = What is your undertaking’s main business activity in advertising?
 NACE.professional.Lvl3.advertising.error = Select your undertaking’s main business activity in advertising
 NACE.radio.73.11 = Activities of advertising agencies
 NACE.radio.73.12 = Media representation
@@ -2193,10 +2178,10 @@ NACE.professional.Lvl4.publicRelations = Public relations and communication acti
 
 NACE.radio.74 = Other professional, scientific and technical activities
 NACE.professional.Lvl2.otherProfessionalScientificTechnical.hint = Includes patent brokering, photography, specialised design, translation and interpretation, and all other professional, scientific and technical activities.
-NACE.professional.Lvl2.otherProfessionalScientificTechnical.title = What type of professional, scientific and technical activities does your undertaking do?
+NACE.radio.74.title = What type of professional, scientific and technical activities does your undertaking do?
 NACE.professional.Lvl2.otherProfessionalScientificTechnical.error = Select the type of professional, scientific and technical activities your undertaking does
 NACE.radio.74.1 = Specialised design activities
-NACE.professional.Lvl3.specialisedDesign.title = What type of specialised design activities does your undertaking do?
+NACE.radio.74.1.title = What type of specialised design activities does your undertaking do?
 NACE.professional.Lvl3.specialisedDesign.error = Select the type of specialised design activities your undertaking does
 NACE.professional.Lvl3.specialisedDesign.hint =  Includes fashion, graphic, industrial product and interior design and visual communication.
 NACE.radio.74.11 = Industrial product and fashion design
@@ -2209,7 +2194,7 @@ NACE.radio.74.3 = Translation and interpretation
 NACE.professional.Lvl4.translationInterpretation = Translation and interpretation activities
 NACE.radio.74.9 = Other professional, scientific and technical activities
 NACE.professional.Lvl3.otherProfessionalActivities.hint =  Includes patent brokering and marketing and all other activities.
-NACE.professional.Lvl3.otherProfessionalActivities.title = What type of other professional, scientific and technical activities does your undertaking do?
+NACE.radio.74.9.title = What type of other professional, scientific and technical activities does your undertaking do?
 NACE.professional.Lvl3.otherProfessionalActivities.error = Select the type of other professional, scientific and technical activities your undertaking does
 NACE.radio.74.91 = Patent brokering and marketing service activities
 NACE.radio.74.99 = All other professional, scientific and technical activities

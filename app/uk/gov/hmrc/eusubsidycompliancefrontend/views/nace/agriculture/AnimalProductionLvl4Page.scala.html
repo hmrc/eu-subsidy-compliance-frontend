@@ -93,7 +93,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherAnimals.toS
 
 
 @layout(
-pageTitle = Some(messages("NACE.agriculture.Lvl3.animalProduction.title")),
+pageTitle = Some(messages("NACE.radio.01.4.title")),
 backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
@@ -131,7 +131,7 @@ content = Text(messages("NACE.agriculture.Lvl3.animalProduction.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.agriculture.Lvl3.animalProduction.title")),
+content = Text(messages("NACE.radio.01.4.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

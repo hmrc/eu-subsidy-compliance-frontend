@@ -64,7 +64,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningAndQuarryi
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl2.otherMiningQuarrying.title")),
+pageTitle = Some(messages("NACE.radio.08.title")),
 backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
@@ -108,7 +108,7 @@ content = Text(messages("NACE.mining.Lvl2.otherMiningQuarrying.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl2.otherMiningQuarrying.title")),
+content = Text(messages("NACE.radio.08.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

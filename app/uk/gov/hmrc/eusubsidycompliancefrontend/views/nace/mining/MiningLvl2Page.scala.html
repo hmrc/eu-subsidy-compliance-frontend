@@ -81,7 +81,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningSupportSer
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl1.title")),
+pageTitle = Some(messages("NACE.radio.B.title")),
 backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
@@ -122,7 +122,7 @@ content = Text(messages("undertakingSector.error.required.nace")+ " mining and q
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl1.title")),
+content = Text(messages("NACE.radio.B.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

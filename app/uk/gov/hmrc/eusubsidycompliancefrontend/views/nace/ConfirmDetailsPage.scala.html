@@ -68,7 +68,7 @@
     ) ++
     (if (viewModel.showLevel1) Seq(
         SummaryListRow(
-            key = Key(content = Text("Question 1")),
+            key = Key(content = Text(messages("NACE.Lvl1.title"))),
             value = Value(content = Text(viewModel.naceLevel1Display)),
             actions = Some(Actions(
                 items = Seq(
@@ -98,7 +98,7 @@
     ) else Seq.empty) ++
     (if (viewModel.showLevel2) Seq(
         SummaryListRow(
-            key = Key(content = Text("Question 2")),
+            key = Key(content = Text(messages("NACE.radio."+viewModel.naceLevel1Code+".title"))),
             value = Value(content = Text(viewModel.naceLevel2Display)),
             actions = Some(Actions(
                 items = Seq(
@@ -113,7 +113,7 @@
     ) else Seq.empty) ++
     (if (viewModel.showLevel3) Seq(
         SummaryListRow(
-            key = Key(content = Text("Question 3")),
+            key = Key(content = Text(messages("NACE.radio."+viewModel.naceLevel2Code+".title"))),
             value = Value(content = Text(viewModel.naceLevel3Display)),
             actions = Some(Actions(
                 items = Seq(
@@ -128,7 +128,7 @@
     ) else Seq.empty) ++
     (if (viewModel.showLevel4) Seq(
         SummaryListRow(
-            key = Key(content = Text("Question 4")),
+            key = Key(content = Text(messages("NACE.radio."+viewModel.naceLevel3Code+".title"))),
             value = Value(content = Text(viewModel.naceLevel4Display)),
             actions = Some(Actions(
                 items = Seq(

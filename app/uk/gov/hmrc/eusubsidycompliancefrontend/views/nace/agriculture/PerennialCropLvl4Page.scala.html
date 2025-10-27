@@ -106,7 +106,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPerennialCr
 
 
 @layout(
-pageTitle = Some(messages("NACE.agriculture.Lvl3.growingCrops.title")),
+pageTitle = Some(messages("NACE.radio.01.title")),
 backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
@@ -144,7 +144,7 @@ content = Text(messages("NACE.agriculture.Lvl3.growingCrops.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.agriculture.Lvl3.growingCrops.title")),
+content = Text(messages("NACE.radio.01.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
