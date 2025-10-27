@@ -1168,15 +1168,15 @@ NACE.radio.16.27 = My undertaking carries out finishing of wooden products
 NACE.radio.16.28 = Other products of wood, cork, straw and plaiting materials
 
 ### Paper products ###
-NACE.Manufacturing.PaperProducts.title = What type of paper products does your undertaking manufacture?
+NACE.radio.17.title = What type of paper products does your undertaking manufacture?
 NACE.Manufacturing.PaperProducts.error = Select the type of paper products your undertaking manufactures
 NACE.radio.17.1 = Pulp, paper and paperboard
-NACE.Manufacturing.PulpPaperPaperboard.title = What type of pulp, paper or paperboard does your undertaking manufacture?
+NACE.radio.17.1.title = What type of pulp, paper or paperboard does your undertaking manufacture?
 NACE.Manufacturing.PulpPaperPaperboard.error = Select the type of pulp, paper or paperboard your undertaking manufactures
 NACE.radio.17.11 = Pulp
 NACE.radio.17.12 = Paper and paperboard
 
-NACE.Manufacturing.ArticlesPaperPaperboard.title = What type of paper or paperboard products does your undertaking manufacture?
+NACE.radio.17.2.title = What type of paper or paperboard products does your undertaking manufacture?
 NACE.Manufacturing.ArticlesPaperPaperboard.error = Select the type of paper or paperboard products your undertaking manufactures
 NACE.radio.17.2 = Articles of paper and paperboard
 NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard.hint = Includes corrugated paper, household and sanitary goods, stationery and wallpaper.
@@ -1187,11 +1187,11 @@ NACE.radio.17.24 = Wallpaper
 NACE.radio.17.25 = Other articles of paper and paperboard
 
 ### Printed products ###
-NACE.Manufacturing.Printing.title = What is your undertaking’s main business activity in printing?
+NACE.radio.18.title = What is your undertaking’s main business activity in printing?
 NACE.Manufacturing.Printing.error = Select your undertaking’s main business activity in printing
 NACE.radio.18.1 = Printing and service activities related to printing
 NACE.Manufacturing.Lvl3.PrintingServices.hint = Includes binding, pre-press and pre-media services, other printing and related services.
-NACE.Manufacturing.PrintingServices.title = What type of printing or service activity does your undertaking do?
+NACE.radio.18.1.title = What type of printing or service activity does your undertaking do?
 NACE.Manufacturing.PrintingServices.error = Select the type of printing or service activity your undertaking does
 NACE.radio.18.11 = Printing of newspapers
 NACE.radio.18.12 = Other printing
@@ -1532,46 +1532,39 @@ NACE.radio.28.97 = Additive manufacturing machinery
 NACE.radio.28.99 = Other special-purpose machinery
 
 ### Motor vehicles, trailers and parts ###
-NACE.Manufacturing.MotorVehicles.title = What type of motor vehicles, trailers or parts does your undertaking manufacture?
+NACE.radio.29.title = What type of motor vehicles, trailers or parts does your undertaking manufacture?
 NACE.Manufacturing.MotorVehicles.error = Select the type of motor vehicles, trailers or parts your undertaking manufactures
 NACE.radio.29.1 = Motor vehicles
 NACE.Manufacturing.Lvl4.MotorVehicles = Manufacture of motor vehicles
-
 NACE.radio.29.2 = Bodies and coachwork for motor vehicles; trailers and semi-trailers
 NACE.Manufacturing.Lvl4.BodiesTrailers = Manufacture of bodies and coachwork for motor vehicles; manufacture of trailers and semi-trailers
-
 NACE.radio.29.3 = Motor vehicle parts and accessories
-NACE.Manufacturing.MotorVehiclePartsAccessories.title = What type of motor vehicle parts and accessories does your undertaking manufacture?
+NACE.radio.29.3.title = What type of motor vehicle parts and accessories does your undertaking manufacture?
 NACE.Manufacturing.MotorVehiclePartsAccessories.error = Select the type of motor vehicle parts and accessories your undertaking manufactures
 NACE.radio.29.31 = Electrical and electronic equipment for motor vehicles
 NACE.radio.29.32 = Other parts and accessories for motor vehicles
 
 ### Other transport equipment ###
-NACE.Manufacturing.OtherTransportEquipment.title = What type of transport equipment does your undertaking manufacture?
+NACE.radio.30.title = What type of transport equipment does your undertaking manufacture?
 NACE.Manufacturing.OtherTransportEquipment.error = Select the type of transport equipment your undertaking manufactures
-
 NACE.radio.30.1 = Ships and boats
-NACE.Manufacturing.ShipsBoats.title = What type of ships and boats does your undertaking build?
+NACE.radio.30.1.title = What type of ships and boats does your undertaking build?
 NACE.Manufacturing.ShipsBoats.error = Select the type of ships and boats your undertaking builds
 NACE.radio.30.11 = Civilian ships and floating structures
 NACE.radio.30.12 = Pleasure and sporting boats
 NACE.radio.30.13 = Military ships and vessels
-
 NACE.radio.30.2 = Railway locomotives and rolling stock
 NACE.Manufacturing.Lvl4.RailwayLocomotives = Manufacture of railway locomotives and rolling stock
-
 NACE.radio.30.3 = Aircraft, spacecraft and related machinery
-NACE.Manufacturing.AirSpacecraft.title = What type of aircraft, spacecraft and related machinery does your undertaking manufacture?
+NACE.radio.30.3.title = What type of aircraft, spacecraft and related machinery does your undertaking manufacture?
 NACE.Manufacturing.AirSpacecraft.error = Select the type of aircraft, spacecraft and related machinery your undertaking manufactures
 NACE.radio.30.31 = Civilian aircraft, spacecraft and related machinery
 NACE.radio.30.32 = Military aircraft, spacecraft and related machinery
-
 NACE.radio.30.4 = Military fighting vehicles
 NACE.Manufacturing.Lvl4.MilitaryVehicles = Manufacture of military fighting vehicles
-
 NACE.radio.30.9 = Other transport equipment
 NACE.Manufacturing.Lvl3.OtherTransportEquipment.hint = Includes bicycles, motorcycles and invalid carriages (like mobility scooters).
-NACE.Manufacturing.OtherTransportEquipment.2.title = What type of other transport equipment does your undertaking manufacture?
+NACE.radio.30.9.title = What type of other transport equipment does your undertaking manufacture?
 NACE.Manufacturing.OtherTransportEquipment.2.error = Select the type of other transport equipment your undertaking manufactures
 NACE.radio.30.91 = Motorcycles
 NACE.radio.30.92 = Bicycles and invalid carriages
@@ -2699,7 +2692,7 @@ NACE.radio.46.89 = Other specialised wholesale
 
 # Financial services
 
-NACE.Financial.title = What is your undertaking''s main business activity in financial services and insurance?
+NACE.radio.L.title = What is your undertaking''s main business activity in financial services and insurance?
 NACE.Financial.error =Select your undertaking''s main business activity in financial services and insurance
 NACE.radio.64 = Financial services (except insurance and pension funding)
 NACE.Financial.Lvl2.FinancialServices.hint = Includes financial leasing, holding companies and financial conduits, monetary intermediation, trusts and funds, and other financial service activities.
@@ -2708,7 +2701,7 @@ NACE.radio.66 = Activities auxiliary to financial services and insurance activit
 NACE.Financial.Lvl2.Auxiliary.hint = Includes administration of financial markets, fund management, risk and damage evaluation, security and commodity contracts brokerage, and other auxiliary activities.
 
 # Level 3: Financial Services categories
-NACE.financialServices.title = What is your undertaking''s main business activity in financial services?
+NACE.radio.64.title = What is your undertaking''s main business activity in financial services?
 NACE.financialServices.error = Select your undertaking’s main business activity in financial services
 NACE.financialServices.hint = Includes financial leasing, holding companies and financial conduits, monetary intermediation, trusts and funds, and other financial service activities.
 NACE.radio.64.1 = Monetary intermediation
@@ -2721,7 +2714,7 @@ NACE.financialServices.error.required = Select your undertaking''s main business
 
 
 # Level 4: Holding Companies and Financing Conduits
-NACE.financialServices.Lvl4.holdingCompanies.title = What is your undertaking’s main business activity in holding companies and financing conduits?
+NACE.radio.64.2.title = What is your undertaking’s main business activity in holding companies and financing conduits?
 NACE.financialServices.Lvl4.holdingCompanies.error =Select your undertaking’s main business activity in holding companies and financing conduits
 NACE.radio.64.22 = Financing conduits
 NACE.radio.64.21 = Holding companies
@@ -2729,7 +2722,7 @@ NACE.financialServices.Lvl4.holdingCompanies.hint = Select one option that best 
 NACE.financialServices.Lvl4.holdingCompanies.error.required = Select your undertaking’s main business activity in holding companies and financing conduits
 
 # Level 4: Monetary Intermediation
-NACE.financialServices.Lvl4.monetaryIntermediation.title = What type of monetary intermediation service does your undertaking provide?
+NACE.radio.64.1.title = What type of monetary intermediation service does your undertaking provide?
 NACE.financialServices.Lvl4.monetaryIntermediation.error =Select the type of monetary intermediation service your undertaking provides
 NACE.radio.64.11 = Central banking
 NACE.radio.64.19 = Other monetary intermediation
@@ -2737,7 +2730,7 @@ NACE.financialServices.Lvl4.monetaryIntermediation.hint = Select one option that
 NACE.financialServices.Lvl4.monetaryIntermediation.error.required = Select the type of monetary intermediation service your undertaking provides
 
 # Level 4: Other Financial Services
-NACE.financialServices.Lvl4.otherFinancial.title = What is your undertaking’s main business activity in other financial services?
+NACE.radio.64.9.title = What is your undertaking’s main business activity in other financial services?
 NACE.financialServices.Lvl4.otherFinancial.error =Select your undertaking’s main business activity in other financial services
 NACE.radio.64.91 = Financial leasing
 NACE.radio.64.92 = Other credit granting
@@ -2746,14 +2739,14 @@ NACE.financialServices.Lvl4.otherFinancial.hint = Select one option that best de
 NACE.financialServices.Lvl4.otherFinancial.error.required = Select your undertaking’s main business activity in other financial services
 
 # Level 4: Trusts, Funds, and Similar Financial Entities
-NACE.financialServices.Lvl4.trustsFunds.title = What is your undertaking’s main business activity in trusts, funds and similar financial entities?
+NACE.radio.64.3.title = What is your undertaking’s main business activity in trusts, funds and similar financial entities?
 NACE.financialServices.Lvl4.trustsFunds.error =Select your undertaking’s main business activity in trusts, funds and similar financial entities
 NACE.radio.64.31 = Money market and non-money market investment funds
 NACE.radio.64.32 = Trust, estate and agency accounts
 NACE.financialServices.Lvl4.trustsFunds.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.financialServices.Lvl4.trustsFunds.error.required = Select your undertaking’s main business activity in trusts, funds and similar financial entities
 
-NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.title = What is your undertaking’s main business activity in auxiliary financial activities?
+NACE.radio.66.title = What is your undertaking’s main business activity in auxiliary financial activities?
 NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.error =Select your undertaking’s main business activity in auxiliary financial activities
 NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.hint = Includes administration of financial markets, fund management, risk and damage evaluation, security and commodity contracts brokerage, and other auxiliary activities.
 NACE.radio.66.1 = Activities auxiliary to financial services (except insurance and pension funding)
@@ -2762,14 +2755,14 @@ NACE.radio.66.2 = Activities auxiliary to insurance and pension funding
 NACE.auxiliaryFinancial.Lvl2.auxiliaryInsurance.hint = Includes risk and damage evaluation and activities of insurance agents and brokers.
 NACE.radio.66.3 = Fund management
 
-NACE.auxiliaryFinancial.Lvl4.auxiliaryInsurance.title = What type of auxiliary insurance and pension funding activity does your undertaking do?
+NACE.radio.66.2.title = What type of auxiliary insurance and pension funding activity does your undertaking do?
 NACE.auxiliaryFinancial.Lvl4.auxiliaryInsurance.error =Select the type of auxiliary insurance and pension funding activity your undertaking does
 NACE.auxiliaryFinancial.Lvl4.auxiliaryInsurance.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.radio.66.22 = Activities of insurance agents and brokers
 NACE.radio.66.21 = Risk and damage evaluation
 NACE.radio.66.29 = Other activities auxiliary to insurance and pension funding
 
-NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.title = What type of auxiliary financial services activity does your undertaking do?
+NACE.radio.66.1.title = What type of auxiliary financial services activity does your undertaking do?
 NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.error =Select the type of auxiliary financial services activity your undertaking does
 NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.radio.66.11 = Administration of financial markets

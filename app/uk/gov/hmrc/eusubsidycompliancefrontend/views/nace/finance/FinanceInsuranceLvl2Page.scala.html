@@ -72,7 +72,7 @@
 }
 
 @layout(
-    pageTitle = Some(messages("NACE.Financial.title")),
+    pageTitle = Some(messages("NACE.radio.L.title")),
     backLinkEnabled = false,
     hasErrors = form.hasErrors
 ) {
@@ -113,7 +113,7 @@ content = Text(messages("NACE.Financial.error"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("NACE.Financial.title")),
+                    content = Text(messages("NACE.radio.L.title")),
                     classes = "govuk-fieldset__legend--l",
                     isPageHeading = true
                 ))
