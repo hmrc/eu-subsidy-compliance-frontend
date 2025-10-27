@@ -63,7 +63,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.professionalMemb
 
 
 @layout(
-pageTitle = Some(messages("NACE.otherService.Lvl3.businessEmployersProfessional.title")),
+pageTitle = Some(messages("NACE.radio.94.1.title")),
 backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
@@ -110,7 +110,7 @@ content = Text(messages("NACE.otherService.Lvl3.businessEmployersProfessional.er
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.otherService.Lvl3.businessEmployersProfessional.title")),
+content = Text(messages("NACE.radio.94.1.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

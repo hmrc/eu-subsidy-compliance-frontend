@@ -60,7 +60,7 @@ value = Some(Sector.tradeUnionsActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.tradeUnions.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherMembership", messages("NACE.otherService.Lvl3.otherMembership"))),
+content = HtmlContent(radioText("sector-label-otherMembership", messages("NACE.radio.94.9"))),
 value = Some(Sector.otherMembership.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMembership.toString)
 )
@@ -69,7 +69,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMembership.
 
 
 @layout(
-pageTitle = Some(messages("NACE.otherService.Lvl2.membershipOrganisations.title")),
+pageTitle = Some(messages("NACE.radio.94.title")),
 backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
@@ -113,7 +113,7 @@ content = Text(messages("NACE.otherService.Lvl2.membershipOrganisations.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.otherService.Lvl2.membershipOrganisations.title")),
+content = Text(messages("NACE.radio.94.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

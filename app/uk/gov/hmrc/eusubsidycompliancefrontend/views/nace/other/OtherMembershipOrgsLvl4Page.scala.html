@@ -50,17 +50,17 @@ govukRadios : GovukRadios
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-politicalOrganisations", messages("NACE.otherService.Lvl4.politicalOrganisations"))),
+content = HtmlContent(radioText("sector-label-politicalOrganisations", messages("NACE.radio.94.92"))),
 value = Some(Sector.politicalOrganisations.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.politicalOrganisations.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-religiousOrganisations", messages("NACE.otherService.Lvl4.religiousOrganisations"))),
+content = HtmlContent(radioText("sector-label-religiousOrganisations", messages("NACE.radio.94.91"))),
 value = Some(Sector.religiousOrganisations.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.religiousOrganisations.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherMembershipOrganisations", messages("NACE.otherService.Lvl4.otherMembershipOrganisations"))),
+content = HtmlContent(radioText("sector-label-otherMembershipOrganisations", messages("NACE.radio.94.99"))),
 value = Some(Sector.otherMembershipOrganisations.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMembershipOrganisations.toString)
 )
@@ -69,7 +69,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMembershipO
 
 
 @layout(
-pageTitle = Some(messages("NACE.otherService.Lvl3.otherMembership.title")),
+pageTitle = Some(messages("NACE.radio.94.9.title")),
 backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
@@ -80,7 +80,7 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(s"${messages("NACE.otherService.Lvl3.otherMembership.error")}")
+content = Text(s"${messages("NACE.radio.94.9.error")}")
 )
 ),
 title = Text(messages("common.error.summary.title"))
@@ -104,7 +104,7 @@ title = Text(messages("common.error.summary.title"))
    <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadOtherLvl2Page().toString>@messages("NACE.radio.94")</a>
   </li>
   <li class="govuk-breadcrumbs__list-item">
-   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadMembershipOrgActivitiesLvl3Page().toString>@messages("NACE.otherService.Lvl3.otherMembership")</a>
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.OtherServicesController.loadMembershipOrgActivitiesLvl3Page().toString>@messages("NACE.radio.94.9")</a>
   </li>
  </ol>
 </nav>
@@ -112,11 +112,11 @@ title = Text(messages("common.error.summary.title"))
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("NACE.otherService.Lvl3.otherMembership.error"))
+content = Text(messages("NACE.radio.94.9.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.otherService.Lvl3.otherMembership.title")),
+content = Text(messages("NACE.radio.94.9.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

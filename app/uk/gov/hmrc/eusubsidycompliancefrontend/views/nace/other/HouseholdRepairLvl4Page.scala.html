@@ -84,7 +84,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherHouseholdGo
 
 
 @layout(
-pageTitle = Some(messages("NACE.otherService.Lvl3.repairHouseholdGoods.title")),
+pageTitle = Some(messages("NACE.radio.95.2.title")),
 backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
@@ -131,7 +131,7 @@ content = Text(messages("NACE.otherService.Lvl3.repairHouseholdGoods.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.otherService.Lvl3.repairHouseholdGoods.title")),
+content = Text(messages("NACE.radio.95.2.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
