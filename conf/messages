@@ -724,6 +724,8 @@ industrySectorResearchBanner.visually.hidden = Hide message. I do not want to ta
 
 ############################################## NACE #################################################################################################################
 
+Other = Other
+
 NACE.interrupt.title = You need to update your undertaking sector
 NACE.interrupt.heading1 = You need to update your undertaking sector
 NACE.interrupt.heading2 = What you need to do
@@ -2498,7 +2500,6 @@ NACE.radio.96.21 = Hairdressing and barbering
 NACE.radio.96.22 = Beauty care and other beauty treatments
 NACE.radio.96.23 = Day spa, sauna and steam bath activities
 
-NACE.radio.96 = Funeral and related activities
 NACE.radio.96.3 = Funeral and related activities
 NACE.otherService.Lvl4.funeralActivities = Funeral and related activities
 NACE.radio.96.4 = Intermediation services for personal services
