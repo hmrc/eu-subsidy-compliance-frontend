@@ -157,9 +157,18 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       if (journey.mode.equals(appConfig.UpdateNaceMode)) {
+
+        val sector = journey.sector.value match {
+          case Some(value) =>
+            if (value.toString.length < 2 && value.toString.equals("0")) value.toString
+            else if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00"
+            else value.toString.take(2)
+          case None => ""
+        }
+
         Ok(
           undertakingSectorPage(
-            undertakingSectorForm.fill(FormValues(journey.sector.toString)),
+            undertakingSectorForm.fill(FormValues(sector)),
             journey.previous,
             journey.about.value.getOrElse(""),
             journey.mode
@@ -177,7 +186,7 @@ class UndertakingController @Inject() (
       runStepIfEligible(journey) {
         val sector = journey.sector.value match {
           case Some(value) =>
-            if (value.toString.length < 2) value.toString
+            if (value.toString.length < 2 && value.toString.equals("0")) value.toString
             else if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00"
             else value.toString.take(2)
           case None => ""
