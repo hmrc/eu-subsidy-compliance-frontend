@@ -56,8 +56,8 @@ POST       /nace-level-four/aquaculture                                         
 GET        /nace-level-four/fishing                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadFishingLvl4Page()
 POST       /nace-level-four/fishing                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitFishingLvl4Page()
 
-GET        /nace-level-four/fishing-aquaculture                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadFishingAndAquacultureLvl3Page()
-POST       /nace-level-four/fishing-aquaculture                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitFishingAndAquacultureLvl3Page()
+GET        /nace-level-three/fishing-aquaculture                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadFishingAndAquacultureLvl3Page()
+POST       /nace-level-three/fishing-aquaculture                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitFishingAndAquacultureLvl3Page()
 
 GET        /nace-level-two/mining                                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.loadMiningLvl2Page()
 POST       /nace-level-two/mining                                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.submitMiningLvl2Page()
@@ -890,6 +890,3 @@ GET        /access-denied-for-agents                                            
 
 GET         /confirm-undertaking-details                                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.getCheckDetails()
 POST       /confirm-undertaking-details                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.postCheckDetails
-
-GET        /cya                                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.TempCyaController.showCya
-POST       /cya                                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.TempCyaController.postCheckAnswers
