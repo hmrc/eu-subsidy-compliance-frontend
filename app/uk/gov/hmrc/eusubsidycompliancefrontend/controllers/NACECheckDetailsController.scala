@@ -53,9 +53,9 @@ class NACECheckDetailsController @Inject() (
     case "A" =>
       if (level2Code == "02") routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
       else routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
-    case "C" | "F" | "G" | "H" | "J" | "M" | "N" | "O" =>
+    case "C" | "F" | "G" | "H" | "J" | "M" | "N" | "O" | "K" =>
       routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
-    case "B" | "D" | "E" | "I" | "K" | "L" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" =>
+    case "B" | "D" | "E" | "I" | "L" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" =>
       routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().url
     case _ =>
       routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
@@ -179,6 +179,8 @@ class NACECheckDetailsController @Inject() (
         case "B" => navigator.nextPage(naceLevel1Code, "").url
         case "N" => navigator.nextPage(naceLevel1Code, "").url
         case "E" => navigator.nextPage(naceLevel1Code, "").url
+        case "K" => navigator.nextPage(naceLevel1Code, "").url
+        case "S" => navigator.nextPage(naceLevel1Code, "").url
         case "A" => getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code)
         case _ => navigator.nextPage(navigatorLevel2Code, "").url
       }
@@ -198,7 +200,10 @@ class NACECheckDetailsController @Inject() (
     val changeLevel4Url = if (showLevel3) {
       navigator.nextPage(naceLevel3Code, "").url
     } else {
-      navigator.nextPage(navigatorLevel2Code, "").url
+      naceLevel3Code match {
+        case "80.0" => navigator.nextPage(naceLevel3Code, "").url
+        case _ => navigator.nextPage(navigatorLevel2Code, "").url
+      }
     }
 
     NaceCheckDetailsViewModel(
