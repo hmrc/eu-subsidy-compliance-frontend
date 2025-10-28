@@ -119,7 +119,7 @@ class NACECheckDetailsController @Inject() (
     val naceLevel1Code = deriveLevel1Code(naceLevel2Code)
 
     val level1Display = {
-      val rawDisplay = messages(s"NACE.$naceLevel1Code")
+      val rawDisplay = messages(s"NACE.radio.$naceLevel1Code")
       if (rawDisplay.nonEmpty) {
         rawDisplay.charAt(0).toUpper.toString + rawDisplay.substring(1).toLowerCase
       } else {

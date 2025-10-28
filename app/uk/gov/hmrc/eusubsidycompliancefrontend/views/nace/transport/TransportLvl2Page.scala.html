@@ -81,7 +81,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.warehousingStora
 
 
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl1.title")),
+  pageTitle = Some(messages("NACE.radio.H.title")),
 backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -119,7 +119,7 @@ backLinkEnabled = false,
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl1.title")),
+          content = Text(messages("NACE.radio.H.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))

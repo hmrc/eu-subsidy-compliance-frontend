@@ -83,7 +83,7 @@
     ) else Seq.empty) ++
     (if (viewModel.showLevel1_1) Seq(
         SummaryListRow(
-            key = Key(content = Text("Question 1.1")),
+            key = Key(content = Text(messages("NACE.Manufacturing.title"))),
             value = Value(content = Text(viewModel.naceLevel1_1Display)),
             actions = Some(Actions(
                 items = Seq(
