@@ -934,7 +934,7 @@ NACE.radio.09.90 = Support activities for other mining and quarrying
 
 ### Manufacturing NACE Sector2,3,4 ###
 NACE.Manufacturing.title = What type of product does your undertaking manufacture?
-
+NACE.radio.C.title = What type of product does your undertaking manufacture?
 ### lvl2.1 screens ###
 NACE.Manufacturing.Lvl2.1.error = Select the type of product your undertaking manufactures
 NACE.radio.INT005 = Metals, chemicals and materials
@@ -2531,7 +2531,7 @@ NACE.ActivitiesExtraterritorial.Lvl4.OrganisationsBodies = Activities of extrate
 
 #Wholesale / Retail
 
-NACE.RetailWholesale.title = What is your undertaking''s main business activity in retail and wholesale?
+NACE.radio.G.title = What is your undertaking''s main business activity in retail and wholesale?
 NACE.RetailWholesale.error = Select your undertaking’s main business activity in retail and wholesale
 NACE.radio.46 = Wholesale
 NACE.radio.47 = Retail
@@ -2539,7 +2539,7 @@ NACE.radio.47 = Retail
 NACE.Retail.AutomotiveFuel.Lvl3.automotiveFuel = Retail sale of automotive fuel
 
 # Retail Level 3 Messages
-NACE.Retail.title = What type of products does your undertaking retail?
+NACE.radio.47.title = What type of products does your undertaking retail?
 NACE.Retail.error = Select the type of products your undertaking retails
 NACE.radio.47.1 = Non-specialised retail
 NACE.radio.47.2 = Food, beverages and tobacco
@@ -2554,7 +2554,7 @@ NACE.Retail.Lvl3.AnotherTypeGoods.hint = Includes clothing, cosmetics, flowers a
 NACE.radio.47.8 = Motor vehicles, motorcycles and related parts and accessories
 NACE.radio.47.9 = My undertaking provides intermediation services for retail sale
 
-NACE.Retail.Household.title = What type of other household equipment does your undertaking retail?
+NACE.radio.47.5.title = What type of other household equipment does your undertaking retail?
 NACE.Retail.Household.error = Select the type of other household equipment your undertaking retails
 NACE.radio.47.53 = Carpets, rugs, wall and floor coverings
 NACE.radio.47.54 = Electrical household appliances
@@ -2562,7 +2562,7 @@ NACE.radio.47.52 = Hardware, building materials, paints and glass
 NACE.radio.47.51 = Textiles
 NACE.radio.47.55 = Furniture, lighting equipment, tableware and other household goods
 
-NACE.Retail.Cultural.title = What type of cultural or recreational goods does your undertaking retail?
+NACE.radio.47.6.title = What type of cultural or recreational goods does your undertaking retail?
 NACE.Retail.Cultural.error = Select the type of cultural or recreational goods your undertaking retails
 NACE.radio.47.61 = Books
 NACE.radio.47.64 = Games and toys
@@ -2570,7 +2570,7 @@ NACE.radio.47.62 = Newspapers, other periodical publications and stationery
 NACE.radio.47.63 = Sporting equipment
 NACE.radio.47.69 = Other cultural and recreational goods
 
-NACE.Retail.OtherGoods.title = What type of goods does your undertaking retail?
+NACE.radio.47.7.title = What type of goods does your undertaking retail?
 NACE.Retail.OtherGoods.error = Select the type of goods your undertaking retails
 NACE.radio.47.71 = Clothing
 NACE.radio.47.75 = Cosmetic and toilet articles
@@ -2582,18 +2582,18 @@ NACE.radio.47.77 = Watches and jewellery
 NACE.radio.47.78 = Other new goods
 NACE.radio.47.79 = Second-hand goods
 
-NACE.Retail.MotorVehicles.title = What type of motor vehicles, motorcycles or parts and accessories does your undertaking retail?
+NACE.radio.47.8.title = What type of motor vehicles, motorcycles or parts and accessories does your undertaking retail?
 NACE.Retail.MotorVehicles.error = Select the type of motor vehicles, motorcycles or parts and accessories your undertaking retails
 NACE.radio.47.81 = Motor vehicles
 NACE.radio.47.82 = Motor vehicle parts and accessories
 NACE.radio.47.83 = Motorcycles, motorcycle parts and accessories
 
-NACE.Retail.Intermediation.title = What type of retail does your undertaking provide intermediation services for?
+NACE.radio.47.9.title = What type of retail does your undertaking provide intermediation services for?
 NACE.Retail.Intermediation.error = Select the type of retail your undertaking provides intermediation services for
 NACE.radio.47.91 = Non-specialised retail
 NACE.radio.47.92 = Specialised retail
 
-NACE.Wholesale.title = What type of wholesale does your undertaking do?
+NACE.radio.46.title = What type of wholesale does your undertaking do?
 NACE.Wholesale.error = Select the type of wholesale your undertaking does
 NACE.radio.46.1 = Wholesale on a fee or contract basis
 NACE.radio.46.2 = Wholesale of agricultural raw materials and live animals
@@ -2607,7 +2607,7 @@ NACE.Wholesale.Lvl3.OtherSpecialised.hint = Includes chemical products, fuels, h
 NACE.radio.46.9 = Non-specialised wholesale
 
 # Food Retail Level 4 Messages
-NACE.Retail.Food.title = What type of food, beverages or tobacco does your undertaking retail?
+NACE.radio.47.2.title = What type of food, beverages or tobacco does your undertaking retail?
 NACE.Retail.Food.error = Select the type of food, beverages or tobacco your undertaking retails
 NACE.radio.47.25 = Beverages
 NACE.radio.47.24 = Bread, cake and confectionery
@@ -2617,12 +2617,12 @@ NACE.radio.47.22 = Meat and meat products
 NACE.radio.47.26 = Tobacco products
 NACE.radio.47.27 = Other food
 
-NACE.Retail.NonSpecialised.title = What type of non-specialised retail does your undertaking do?
+NACE.radio.47.1.title = What type of non-specialised retail does your undertaking do?
 NACE.Retail.NonSpecialised.error = Select the type of non-specialised retail your undertaking does
 NACE.radio.47.11 = Non-specialised retail sale of predominately food, beverages or tobacco
 NACE.radio.47.12 = Other non-specialised retail sale
 
-NACE.Wholesale.ContractBasis.title = What type of products does your undertaking wholesale on a fee or contract basis?
+NACE.radio.46.1.title = What type of products does your undertaking wholesale on a fee or contract basis?
 NACE.Wholesale.ContractBasis.error = Select the type of products your undertaking wholesales on a fee or contract basis
 NACE.radio.46.11 = Agricultural raw materials, live animals, textile raw materials and semi-finished goods
 NACE.radio.46.17 = Food, beverages and tobacco
@@ -2634,14 +2634,14 @@ NACE.radio.46.13 = Timber and building materials
 NACE.radio.46.18 = Other particular products
 NACE.radio.46.19 = My undertaking carries out non-specialised wholesale
 
-NACE.Wholesale.Agricultural.title = What type of agricultural products does your undertaking wholesale?
+NACE.radio.46.2.title = What type of agricultural products does your undertaking wholesale?
 NACE.Wholesale.Agricultural.error = Select the type of agricultural products your undertaking wholesales
 NACE.radio.46.22 = Flowers and plants
 NACE.radio.46.21 = Grain, unmanufactured tobacco, seeds and animal feeds
 NACE.radio.46.24 = Hides, skins and leather
 NACE.radio.46.23 = Live animals
 
-NACE.wholesale.Lvl4.foodWholesale.title = What type of food, beverages or tobacco does your undertaking wholesale?
+NACE.radio.46.3.title = What type of food, beverages or tobacco does your undertaking wholesale?
 NACE.wholesale.Lvl4.foodWholesale.error = Select the type of food, beverages or tobacco your undertaking wholesales
 NACE.radio.46.34 = Beverages
 NACE.wholesale.Lvl4.BeveragesWholesale.hint = For example, wholesale of alcoholic and non-alcoholic beverages
@@ -2655,7 +2655,7 @@ NACE.radio.46.38 = Other food
 NACE.radio.46.39 = Non-specialised wholesale of food, beverages and tobacco
 NACE.wholesale.Lvl4.foodWholesale.error.required = Select the type of food, beverages or tobacco your undertaking wholesales
 
-NACE.Wholesale.Household.title = What type of household goods does your undertaking wholesale?
+NACE.radio.46.4.title = What type of household goods does your undertaking wholesale?
 NACE.Wholesale.Household.error = Select the type of household goods your undertaking wholesales
 NACE.radio.46.44 = China, glassware and cleaning materials
 NACE.radio.46.42 = Clothing and footwear
@@ -2667,20 +2667,20 @@ NACE.radio.46.41 = Textiles
 NACE.radio.46.48 = Watches and jewellery
 NACE.radio.46.49 = Other household goods
 
-NACE.Wholesale.Machinery.title = What type of machinery, equipment or supplies does your undertaking wholesale?
+NACE.radio.46.6.title = What type of machinery, equipment or supplies does your undertaking wholesale?
 NACE.Wholesale.Machinery.error = Select the type of machinery, equipment or supplies your undertaking wholesales
 NACE.radio.46.61 = Agricultural machinery, equipment and supplies
 NACE.radio.46.62 = Machine tools
 NACE.radio.46.63 = Mining, construction and civil engineering machinery
 NACE.radio.46.64 = Other machinery and equipment
 
-NACE.Wholesale.MotorVehicles.title = What type of motor vehicles, motorcycles or parts and accessories does your undertaking wholesale?
+NACE.radio.46.7.title = What type of motor vehicles, motorcycles or parts and accessories does your undertaking wholesale?
 NACE.Wholesale.MotorVehicles.error = Select the type of motor vehicles, motorcycles or parts and accessories your undertaking wholesales
 NACE.radio.46.71 = Motor vehicles
 NACE.radio.46.72 = Motor vehicle parts and accessories
 NACE.radio.46.73 = Motorcycles, motorcycle parts and accessories
 
-NACE.Wholesale.Specialised.title = What type of other products does your undertaking wholesale?
+NACE.radio.46.8.title = What type of other products does your undertaking wholesale?
 NACE.Wholesale.Specialised.error = Select the type of other products your undertaking wholesales
 NACE.radio.46.85 = Chemical products
 NACE.radio.46.84 = Hardware, plumbing and heating equipment and supplies
