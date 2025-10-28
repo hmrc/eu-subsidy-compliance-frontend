@@ -241,6 +241,8 @@ class UndertakingController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toContext
+            else if (previousAnswer.equals(form.value))
+                Redirect(navigator.nextPage(form.value, journey.mode)).toContext
             else {
               for {
                 updatedSector <- store

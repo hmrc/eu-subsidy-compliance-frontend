@@ -78,10 +78,7 @@ class GeneralTradeGroupsController @Inject() (
       val previousLevel1Code =
         if (sector.equals("00") || sector.length < 2) sector else naceCheckDetailsController.deriveLevel1Code(sector)
 
-      val form =
-        if (sector == "") generalTradeUndertakingForm
-        else generalTradeUndertakingForm.fill(FormValues(previousLevel1Code))
-      Ok(generalTradeUndertakingPage(form, journey.mode)).toFuture
+      Ok(generalTradeUndertakingPage(generalTradeUndertakingForm.fill(FormValues(previousLevel1Code)), journey.mode)).toFuture
     }
   }
 
@@ -105,6 +102,8 @@ class GeneralTradeGroupsController @Inject() (
 
             if (previousLevel1Code.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousLevel1Code.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -130,10 +129,7 @@ class GeneralTradeGroupsController @Inject() (
         if (sector.equals("00") || sector.length < 2) sector
         else naceCheckDetailsController.deriveLevel1Code(sector.take(2))
 
-      val form =
-        if (sector == "") generalTradeUndertakingOtherForm
-        else generalTradeUndertakingOtherForm.fill(FormValues(previousLevel1Code))
-      Ok(generalTradeUndertakingOtherPage(form, journey.mode)).toFuture
+      Ok(generalTradeUndertakingOtherPage(generalTradeUndertakingOtherForm.fill(FormValues(previousLevel1Code)), journey.mode)).toFuture
     }
   }
 
@@ -157,6 +153,8 @@ class GeneralTradeGroupsController @Inject() (
 
             if (previousLevel1Code.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousLevel1Code.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -193,8 +191,6 @@ class GeneralTradeGroupsController @Inject() (
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             } else {
               for {
-                updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
                 updatedStoreFlags <- store
                   .update[UndertakingJourney](_.copy(internalNaceCode = form.value, isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
@@ -213,8 +209,7 @@ class GeneralTradeGroupsController @Inject() (
         case None => ""
       }
 
-      val form = if (sector == "") clothesTextilesHomewareForm else clothesTextilesHomewareForm.fill(FormValues(sector))
-      Ok(clothesTextilesHomewarePage(form, journey.mode)).toFuture
+      Ok(clothesTextilesHomewarePage(clothesTextilesHomewareForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -225,10 +220,29 @@ class GeneralTradeGroupsController @Inject() (
       .fold(
         formWithErrors => BadRequest(clothesTextilesHomewarePage(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
-          store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
-            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+            else {
+              for {
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
+            }
+          }
         }
       )
   }
@@ -242,10 +256,7 @@ class GeneralTradeGroupsController @Inject() (
         case None => ""
       }
 
-      val form =
-        if (sector == "") computersElectronicsMachineryForm
-        else computersElectronicsMachineryForm.fill(FormValues(sector))
-      Ok(computersElectronicsMachineryPage(form, journey.mode)).toFuture
+      Ok(computersElectronicsMachineryPage(computersElectronicsMachineryForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -256,9 +267,29 @@ class GeneralTradeGroupsController @Inject() (
       .fold(
         formWithErrors => BadRequest(computersElectronicsMachineryPage(formWithErrors, "")).toFuture,
         form => {
-          store
-            .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+            else {
+              for {
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
+            }
+          }
         }
       )
   }
@@ -272,8 +303,7 @@ class GeneralTradeGroupsController @Inject() (
         case None => ""
       }
 
-      val form = if (sector == "") foodBeveragesTobaccoForm else foodBeveragesTobaccoForm.fill(FormValues(sector))
-      Ok(foodBeveragesTobaccoPage(form, journey.mode)).toFuture
+      Ok(foodBeveragesTobaccoPage(foodBeveragesTobaccoForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -284,10 +314,29 @@ class GeneralTradeGroupsController @Inject() (
       .fold(
         formWithErrors => BadRequest(foodBeveragesTobaccoPage(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
-          store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
-            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+            else {
+              for {
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
+            }
+          }
         }
       )
   }
@@ -301,9 +350,7 @@ class GeneralTradeGroupsController @Inject() (
         case None => ""
       }
 
-      val form =
-        if (sector == "") metalsChemicalsMaterialsForm else metalsChemicalsMaterialsForm.fill(FormValues(sector))
-      Ok(metalsChemicalsMaterialsPage(form, journey.mode)).toFuture
+      Ok(metalsChemicalsMaterialsPage(metalsChemicalsMaterialsForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -314,9 +361,29 @@ class GeneralTradeGroupsController @Inject() (
       .fold(
         formWithErrors => BadRequest(metalsChemicalsMaterialsPage(formWithErrors, "")).toFuture,
         form => {
-          store
-            .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+            else {
+              for {
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
+            }
+          }
         }
       )
   }
@@ -330,8 +397,7 @@ class GeneralTradeGroupsController @Inject() (
         case None => ""
       }
 
-      val form = if (sector == "") paperPrintedProductsForm else paperPrintedProductsForm.fill(FormValues(sector))
-      Ok(paperPrintedProductsPage(form, journey.mode)).toFuture
+      Ok(paperPrintedProductsPage(paperPrintedProductsForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -342,9 +408,29 @@ class GeneralTradeGroupsController @Inject() (
       .fold(
         formWithErrors => BadRequest(paperPrintedProductsPage(formWithErrors, "")).toFuture,
         form => {
-          store
-            .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+            else {
+              for {
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
+            }
+          }
         }
       )
   }
@@ -358,8 +444,7 @@ class GeneralTradeGroupsController @Inject() (
         case None => ""
       }
 
-      val form = if (sector == "") vehiclesTransportForm else vehiclesTransportForm.fill(FormValues(sector))
-      Ok(vehiclesTransportPage(form, journey.mode)).toFuture
+      Ok(vehiclesTransportPage(vehiclesTransportForm.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -370,9 +455,29 @@ class GeneralTradeGroupsController @Inject() (
       .fold(
         formWithErrors => BadRequest(vehiclesTransportPage(formWithErrors, "")).toFuture,
         form => {
-          store
-            .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-            .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            val previousAnswer = journey.sector.value match {
+              case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+            else {
+              for {
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
+            }
+          }
         }
       )
   }

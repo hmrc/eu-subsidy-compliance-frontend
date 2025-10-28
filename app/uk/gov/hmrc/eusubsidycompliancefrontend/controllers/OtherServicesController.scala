@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{Journey, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -96,6 +96,8 @@ class OtherServicesController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -142,6 +144,8 @@ class OtherServicesController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -186,6 +190,8 @@ class OtherServicesController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -230,6 +236,8 @@ class OtherServicesController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store

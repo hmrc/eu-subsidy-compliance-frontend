@@ -28,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ReviewAllowanceChangesController @Inject() (

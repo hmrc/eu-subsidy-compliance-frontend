@@ -30,7 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.administrative._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import javax.inject.Inject
 
 class AdminController @Inject() (
@@ -107,6 +107,8 @@ class AdminController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -151,6 +153,8 @@ class AdminController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -219,6 +223,8 @@ class AdminController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -263,6 +269,8 @@ class AdminController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -332,6 +340,8 @@ class AdminController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -476,6 +486,8 @@ class AdminController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store

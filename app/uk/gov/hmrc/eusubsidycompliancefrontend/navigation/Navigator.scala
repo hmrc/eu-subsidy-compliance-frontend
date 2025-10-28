@@ -18,10 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.navigation
 
 import play.api.mvc.Call
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.other
 
 import javax.inject.{Inject, Singleton}
-import scala.language.postfixOps
 
 @Singleton
 class Navigator @Inject() {

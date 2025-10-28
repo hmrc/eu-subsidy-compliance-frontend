@@ -110,6 +110,8 @@ class HouseHealthEducationController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -180,6 +182,8 @@ class HouseHealthEducationController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -223,6 +227,8 @@ class HouseHealthEducationController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -360,6 +366,8 @@ class HouseHealthEducationController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -449,6 +457,8 @@ class HouseHealthEducationController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -515,6 +525,8 @@ class HouseHealthEducationController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store

@@ -299,15 +299,15 @@ class NACECheckDetailsController @Inject() (
           }
         },
         form => {
-          for {
-            updatedNaceFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-          } yield OK
 
           if (form.value == "true") {
-            Redirect(routes.UndertakingController.getAddBusiness).toFuture
+            for {
+              updatedNaceFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+            } yield Redirect(routes.UndertakingController.getAddBusiness)
           } else {
             for {
               updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.other.id))
+              resetInternalNaceCode <- store.update[UndertakingJourney](_.copy(internalNaceCode = "", isNaceCYA = false))
             } yield Redirect(routes.UndertakingController.getSector)
           }
         }
