@@ -520,14 +520,15 @@ ManageYourUndertaking.button = Manage your undertaking
 
 #Amend Undertaking
 undertaking.amendUndertaking.title = Undertaking details
+undertaking.amendUndertaking.h2.your-answers = Industry sector and activities
 undertaking.amendUndertaking.h2.email = Email address
 undertaking.amendUndertaking.h2.industry = Industry sector and activities
 undertaking.amendUndertaking.h2.NACE = NACE sectors
 undertaking.amendUndertaking.summary-list.name.key = Name of undertaking
-undertaking.amendUndertaking.summary-list.sector.key = Industry sector
+undertaking.amendUndertaking.summary-list.sector.key = What is your undertaking’s industry sector?
 undertaking.amendUndertaking.summary-list.telephone.key = Telephone number
 undertaking.amendUndertaking.summary-list.change.undertaking-name = name of undertaking
-undertaking.amendUndertaking.summary-list.change.industry-sector = industry sector
+undertaking.amendUndertaking.summary-list.change.industry-sector = industry
 undertaking.amendUndertaking.summary-list.change.email = undertaking email
 undertaking.amendUndertaking.p = Based on the information you provided about your undertaking’s industry sector and activities, we have selected NACE sectors for your undertaking.
 undertaking.amendUndertaking.p2 = NACE is a classification system used in the European Union. You can browse the
