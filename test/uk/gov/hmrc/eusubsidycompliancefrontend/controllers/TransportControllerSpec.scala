@@ -68,6 +68,30 @@ class TransportControllerSpec
     val otherLandTransport = "49.39"
     val passengerHeavyRailTransport = "49.11"
     val otherPassengerRailTransport = "49.12"
+    val postalActivities4 = "53.10"
+    val otherPostalActivities4 = "53.20"
+    val postalIntermediationActivities4 = "53.30"
+    val airTransport = "77.35"
+    val landTransport = "49"
+    val postalAndCourierActivities = "53"
+    val warehousingStorageTransportSupportActivities = "52"
+    val waterTransport = "50"
+    val cargoHandling = "52.24"
+    val logisticsServiceActivities = "52.25"
+    val airTransportServiceActivities = "52.23"
+    val landTransportServiceActivities = "52.21"
+    val waterTransportServiceActivities = "52.22"
+    val otherTransportSupportActivities = "52.26"
+    val freightTransportIntermediationServiceActivities = "52.31"
+    val passengerTransportIntermediationServiceActivities = "52.32"
+    val inlandFreightWaterTransport4 = "50.40"
+    val inlandPassengerWaterTransport4 = "50.30"
+    val coastalFreightWaterTransport4 = "50.20"
+    val coastalPassengerWaterTransport4 = "50.10"
+    val transportIntermediationServiceActivities = "52.3"
+    val transportSupportActivities = "52.2"
+    val warehousingStorage4 = "52.10"
+
   }
 
   import SectorCodes._
@@ -426,5 +450,388 @@ class TransportControllerSpec
         summary.text() should include(expectedErrorMsg)
       }
     }
+    "loadPostalAndCourierLvl3Page" should {
+      "return OK and render expected radio options" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.loadPostalAndCourierLvl3Page()(
+            FakeRequest(GET, routes.TransportController.loadPostalAndCourierLvl3Page().url)
+          )
+        status(result) shouldBe OK
+        val html = contentAsString(result)
+        val document = Jsoup.parse(contentAsString(result))
+        html should include(routes.TransportController.loadPostalAndCourierLvl3Page().url)
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-postal-universal-service", "Postal activities under universal service obligation"),
+          ("sector-label-other-postal-courier", "Other postal and courier activities"),
+          (
+            "sector-label-intermediation-postal-courier",
+            "Intermediation service activities for postal and courier activities"
+          )
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitPostalAndCourierLvl3Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (postalActivities4, navigator.nextPage(postalActivities4, "").url),
+          (otherPostalActivities4, navigator.nextPage(otherPostalActivities4, "").url),
+          (postalIntermediationActivities4, navigator.nextPage(postalIntermediationActivities4, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence { mockAuthWithEnrolment() }
+          val result =
+            controller.submitPostalAndCourierLvl3Page()(
+              FakeRequest(POST, routes.TransportController.submitPostalAndCourierLvl3Page().url)
+                .withFormUrlEncodedBody("postal3" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.submitPostalAndCourierLvl3Page()(
+            FakeRequest(POST, routes.TransportController.submitPostalAndCourierLvl3Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select the type of postal or courier service does your undertaking provides"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadTransportLvl2Page" should {
+      "return OK and render expected radio options" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.loadTransportLvl2Page()(
+            FakeRequest(GET, routes.TransportController.loadTransportLvl2Page().url)
+          )
+        status(result) shouldBe OK
+        val html = contentAsString(result)
+        val document = Jsoup.parse(contentAsString(result))
+        html should include(routes.TransportController.loadTransportLvl2Page().url)
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-airTransport", "Air transport"),
+          ("sector-label-landTransport", "Land transport and transport via pipelines"),
+          ("sector-label-postalAndCourierActivities", "Postal and courier activities"),
+          (
+            "sector-label-warehousingStorageTransportSupportActivities",
+            "Warehousing, storage and support activities for transport"
+          ),
+          ("sector-label-waterTransport", "Water transport")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitTransportLvl2Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (airTransport, navigator.nextPage(airTransport, "").url),
+          (landTransport, navigator.nextPage(landTransport, "").url),
+          (postalAndCourierActivities, navigator.nextPage(postalAndCourierActivities, "").url),
+          (
+            warehousingStorageTransportSupportActivities,
+            navigator.nextPage(warehousingStorageTransportSupportActivities, "").url
+          ),
+          (waterTransport, navigator.nextPage(waterTransport, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence { mockAuthWithEnrolment() }
+          val result =
+            controller.submitTransportLvl2Page()(
+              FakeRequest(POST, routes.TransportController.submitTransportLvl2Page().url)
+                .withFormUrlEncodedBody("transport2" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.submitTransportLvl2Page()(
+            FakeRequest(POST, routes.TransportController.submitTransportLvl2Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select the type of transport and storage your undertaking provides"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadWarehousingSupportActivitiesTransportLvl4Page" should {
+      "return OK and render expected radio options" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.loadWarehousingSupportActivitiesTransportLvl4Page()(
+            FakeRequest(GET, routes.TransportController.loadWarehousingSupportActivitiesTransportLvl4Page().url)
+          )
+        status(result) shouldBe OK
+        val html = contentAsString(result)
+        val document = Jsoup.parse(contentAsString(result))
+        html should include(routes.TransportController.loadWarehousingSupportActivitiesTransportLvl4Page().url)
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-cargohandling", "Cargo handling"),
+          ("sector-label-logistics-services", "Logistics service activities"),
+          ("sector-label-air-transport-support", "Service activities incidental to air transport"),
+          ("sector-label-land-transport-support", "Service activities incidental to land transport"),
+          ("sector-label-water-transport-support", "Service activities incidental to water transport"),
+          ("sector-label-other-transport-support", "Other support activities for transport")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitWarehousingSupportActivitiesTransportLvl4Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (cargoHandling, navigator.nextPage(cargoHandling, "").url),
+          (logisticsServiceActivities, navigator.nextPage(logisticsServiceActivities, "").url),
+          (airTransportServiceActivities, navigator.nextPage(airTransportServiceActivities, "").url),
+          (landTransportServiceActivities, navigator.nextPage(landTransportServiceActivities, "").url),
+          (waterTransportServiceActivities, navigator.nextPage(waterTransportServiceActivities, "").url),
+          (otherTransportSupportActivities, navigator.nextPage(otherTransportSupportActivities, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence { mockAuthWithEnrolment() }
+          val result =
+            controller.submitWarehousingSupportActivitiesTransportLvl4Page()(
+              FakeRequest(POST, routes.TransportController.submitWarehousingSupportActivitiesTransportLvl4Page().url)
+                .withFormUrlEncodedBody("wHouseSupport4" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.submitWarehousingSupportActivitiesTransportLvl4Page()(
+            FakeRequest(POST, routes.TransportController.submitWarehousingSupportActivitiesTransportLvl4Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select the type of transport support activities your undertaking does"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadWarehousingIntermediationLvl4Page" should {
+      "return OK and render expected radio options" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.loadWarehousingIntermediationLvl4Page()(
+            FakeRequest(GET, routes.TransportController.loadWarehousingIntermediationLvl4Page().url)
+          )
+        status(result) shouldBe OK
+        val html = contentAsString(result)
+        val document = Jsoup.parse(contentAsString(result))
+        html should include(routes.TransportController.loadWarehousingIntermediationLvl4Page().url)
+        val radios = Table(
+          ("id", "text"),
+          (
+            "sector-label-freightTransportIntermediationServiceActivities",
+            "Intermediation service activities for freight transport"
+          ),
+          (
+            "sector-label-passengerTransportIntermediationServiceActivities",
+            "Intermediation service activities for passenger transport"
+          )
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitWarehousingIntermediationLvl4Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (
+            freightTransportIntermediationServiceActivities,
+            navigator.nextPage(freightTransportIntermediationServiceActivities, "").url
+          ),
+          (
+            passengerTransportIntermediationServiceActivities,
+            navigator.nextPage(passengerTransportIntermediationServiceActivities, "").url
+          )
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence { mockAuthWithEnrolment() }
+          val result =
+            controller.submitWarehousingIntermediationLvl4Page()(
+              FakeRequest(POST, routes.TransportController.submitWarehousingIntermediationLvl4Page().url)
+                .withFormUrlEncodedBody("wHouseInt4" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.submitWarehousingIntermediationLvl4Page()(
+            FakeRequest(POST, routes.TransportController.submitWarehousingIntermediationLvl4Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select the type of transport intermediation service your undertaking provides"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadWaterTransportLvl3Page" should {
+      "return OK and render expected radio options" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.loadWaterTransportLvl3Page()(
+            FakeRequest(GET, routes.TransportController.loadWaterTransportLvl3Page().url)
+          )
+        status(result) shouldBe OK
+        val html = contentAsString(result)
+        val document = Jsoup.parse(contentAsString(result))
+        html should include(routes.TransportController.loadWaterTransportLvl3Page().url)
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-inland-freight", "Inland freight water transport"),
+          ("sector-label-inland-passenger", "Inland passenger water transport"),
+          ("sector-label-sea-coastal-freight", "Sea and coastal freight water transport"),
+          ("sector-label-sea-coastal-passenger", "Sea and coastal passenger water transport")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitWaterTransportLvl3Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (inlandFreightWaterTransport4, navigator.nextPage(inlandFreightWaterTransport4, "").url),
+          (inlandPassengerWaterTransport4, navigator.nextPage(inlandPassengerWaterTransport4, "").url),
+          (coastalFreightWaterTransport4, navigator.nextPage(coastalFreightWaterTransport4, "").url),
+          (coastalPassengerWaterTransport4, navigator.nextPage(coastalPassengerWaterTransport4, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence { mockAuthWithEnrolment() }
+          val result =
+            controller.submitWaterTransportLvl3Page()(
+              FakeRequest(POST, routes.TransportController.submitWaterTransportLvl3Page().url)
+                .withFormUrlEncodedBody("waterTransp3" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.submitWaterTransportLvl3Page()(
+            FakeRequest(POST, routes.TransportController.submitWaterTransportLvl3Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select the type of water transport your undertaking provides"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadWarehousingSupportLvl3Page" should {
+      "return OK and render expected radio options" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.loadWarehousingSupportLvl3Page()(
+            FakeRequest(GET, routes.TransportController.loadWarehousingSupportLvl3Page().url)
+          )
+        status(result) shouldBe OK
+        val html = contentAsString(result)
+        val document = Jsoup.parse(contentAsString(result))
+        html should include(routes.TransportController.loadWarehousingSupportLvl3Page().url)
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-transportIntermediationServiceActivities", "Intermediation service activities for transport"),
+          ("sector-label-transportSupportActivities", "Support activities for transport"),
+          ("sector-label-warehousingStorage4", "Warehousing and storage")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitWarehousingSupportLvl3Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (
+            transportIntermediationServiceActivities,
+            navigator.nextPage(transportIntermediationServiceActivities, "").url
+          ),
+          (transportSupportActivities, navigator.nextPage(transportSupportActivities, "").url),
+          (warehousingStorage4, navigator.nextPage(warehousingStorage4, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence { mockAuthWithEnrolment() }
+          val result =
+            controller.submitWarehousingSupportLvl3Page()(
+              FakeRequest(POST, routes.TransportController.submitWarehousingSupportLvl3Page().url)
+                .withFormUrlEncodedBody("wHouse3" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence { mockAuthWithEnrolment() }
+        val result =
+          controller.submitWarehousingSupportLvl3Page()(
+            FakeRequest(POST, routes.TransportController.submitWarehousingSupportLvl3Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select the type of warehousing, storage or support activity your undertaking does"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+
   }
 }
