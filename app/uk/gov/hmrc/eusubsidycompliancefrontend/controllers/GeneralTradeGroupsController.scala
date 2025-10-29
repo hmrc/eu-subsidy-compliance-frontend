@@ -100,11 +100,9 @@ class GeneralTradeGroupsController @Inject() (
               case None => ""
             }
 
-            if (previousLevel1Code.equals(form.value) && journey.isNaceCYA && journey.mode != appConfig.AmendNaceMode)
+            if (previousLevel1Code.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
-            else if (previousLevel1Code.equals(form.value) && journey.isNaceCYA && journey.mode == appConfig.AmendNaceMode)
-              Redirect(navigator.nextPage(lvl4Answer, appConfig.AmendNaceMode)).toFuture
-            else if (previousLevel1Code.equals(form.value) && !journey.isNaceCYA)
+            else if (previousLevel1Code.equals(form.value))
               Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
