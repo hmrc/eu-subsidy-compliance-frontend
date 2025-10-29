@@ -69,6 +69,7 @@ class UndertakingController @Inject() (
   override val inputEmailPage: InputEmailPage,
   cyaPage: UndertakingCheckYourAnswersPage,
   confirmationPage: ConfirmationPage,
+  updateConfirmationPage: UpdateConfirmationPage,
   amendUndertakingPage: AmendUndertakingPage,
   disableUndertakingWarningPage: DisableUndertakingWarningPage,
   disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
@@ -738,7 +739,6 @@ class UndertakingController @Inject() (
         for {
           updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
           verifiedEmail <- emailService.retrieveVerifiedEmailAddressByEORI(eori)
-          updatedStoreFlags <- store.update[UndertakingJourney](_.copy(mode = appConfig.AmendNaceMode))
         } yield {
           val naceCode = updatedJourney.sector.value.toString.dropRight(1).drop(5)
 
@@ -797,7 +797,7 @@ class UndertakingController @Inject() (
                   updatedUndertaking.industrySector
                 )
               )
-            } yield Redirect(routes.AccountController.getAccountPage)
+            } yield Ok(updateConfirmationPage(undertakingRef, eori))
             result.getOrElse(handleMissingSessionData("Undertaking Journey"))
           }
         )

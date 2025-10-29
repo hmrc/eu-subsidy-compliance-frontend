@@ -308,16 +308,34 @@ class NACECheckDetailsController @Inject() (
           }
         },
         form => {
+          store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+            if (form.value == "true")
+            {
+              for
+              {
+                updatedNaceFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+              } yield Ok
 
-          if (form.value == "true") {
-            for {
-              updatedNaceFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
-            } yield Redirect(routes.UndertakingController.getAddBusiness)
-          } else {
-            for {
-              updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.other.id))
-              resetInternalNaceCode <- store.update[UndertakingJourney](_.copy(internalNaceCode = "", isNaceCYA = false))
-            } yield Redirect(routes.UndertakingController.getSector)
+              if (journey.isAmend) {
+                Redirect(routes.UndertakingController.postAmendUndertaking).toFuture
+              }
+              else if (journey.mode == appConfig.UpdateNaceMode)
+              {
+               //THIS NEEDS TO BE UPDATE CONFIRMATION PAGE
+                Redirect(routes.UndertakingController.postAmendUndertaking).toFuture
+              } else
+              {
+                Redirect(routes.UndertakingController.getAddBusiness).toFuture
+              }
+            }
+            else
+            {
+              for
+              {
+                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.other.id))
+                resetInternalNaceCode <- store.update[UndertakingJourney](_.copy(internalNaceCode = "", isNaceCYA = false))
+              } yield Redirect(routes.UndertakingController.getSector)
+            }
           }
         }
       )
