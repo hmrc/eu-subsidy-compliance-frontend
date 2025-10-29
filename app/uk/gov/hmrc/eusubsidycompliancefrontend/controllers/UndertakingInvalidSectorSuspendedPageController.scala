@@ -19,22 +19,29 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UndertakingInvalidSectorSuspendedPage
+
 import javax.inject.Inject
 
 class UndertakingInvalidSectorSuspendedPageController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  undertakingSuspendedPage: UndertakingInvalidSectorSuspendedPage
+  undertakingSuspendedPage: UndertakingInvalidSectorSuspendedPage,
+    timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc) {
 
   import actionBuilders._
 
+
+
   def showPage: Action[AnyContent] = enrolled { implicit request =>
+    val dueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today).toString
+
     request.session.get("suspensionCode") match {
       case Some(code) =>
-        Ok(undertakingSuspendedPage(code))
+        Ok(undertakingSuspendedPage(code, dueDate))
 
       case None =>
         Redirect(routes.AccountController.getAccountPage)

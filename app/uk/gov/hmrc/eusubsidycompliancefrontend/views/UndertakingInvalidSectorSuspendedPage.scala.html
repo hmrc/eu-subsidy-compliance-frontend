@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import java.time.LocalDateTime
 
 
 @this(
@@ -26,26 +27,23 @@
       button: components.Button
       )
 
-@(statusCode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(statusCode: String, dueDate: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("NACE.suspended.title"))) {
+@layout(pageTitle = Some(messages("NACE.suspended.h1.alt"))) {
 
-    @H1(messages("NACE.suspended.h1"), Some("govuk-heading-xl"))
+    @H1(messages("NACE.suspended.h1.alt"), Some("govuk-heading-xl"))
 
     @if(statusCode == UndertakingStatus.suspendedUndertaking.id.toString) {
-        @P(messages("NACE.suspended.invalidSector.p1"))
-        @P(messages("NACE.suspended.invalidSector.p2"))
-        @P(messages("NACE.suspended.invalidSector.p3"))
+        <p id="undertaking-NACE-suspended-p1" class="govuk-body">@Html(messages("NACE.undertakingSuspended.p1"))</p>
+        <p id="undertaking-NACE-suspended-p2" class="govuk-body">@Html(messages("NACE.undertakingSuspended.p2"))</p>
     }
-
     @if(statusCode == UndertakingStatus.suspendedAutomated.id.toString) {
-        @P(messages("NACE.suspended.auto.p1"))
-        @P(messages("NACE.suspended.auto.p2"))
+        @P(messages("NACE.suspended.auto.p2", dueDate))
         @P(messages("NACE.suspended.auto.p3"), classes = Some("govuk-body govuk-!-margin-bottom-0"))
 
     <ul class="govuk-list govuk-list--bullet">
-        <li id="twoYearBack"> @messages("NACE.suspended.auto.bullet1") </li>
-        <li id="previousYear"> @messages("NACE.suspended.auto.bullet2") </li>
+        <li id="govuk-list--bullet1"> @messages("NACE.suspended.auto.bullet1") </li>
+        <li id="govuk-list--bullet2"> @messages("NACE.suspended.auto.bullet2") </li>
     </ul>
 
     @P(messages("NACE.suspended.auto.p4"))
