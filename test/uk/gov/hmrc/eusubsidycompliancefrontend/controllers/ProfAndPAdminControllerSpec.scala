@@ -30,7 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import org.scalatest.prop.Tables.Table
 import org.scalatest.prop.TableDrivenPropertyChecks._
 
-class PublishingTelecomsControllerSpec
+class ProfAndPAdminControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
@@ -46,68 +46,77 @@ class PublishingTelecomsControllerSpec
     inject.bind[TimeProvider].toInstance(fakeTimeProvider)
   )
 
-  private val controller = instanceOf[PublishingTelecomsController]
+  private val controller = instanceOf[ProfAndPAdminController]
   private val navigator = instanceOf[Navigator]
 
   private object SectorCodes {
-    val computingInfrastructureActivities4 = "63.10"
-    val webSearchPortal = "63.9"
-    val computerFacilitiesConsultancy4 = "62.20"
-    val computerProgrammingActivities4 = "62.10"
-    val otherComputerServiceActivities4 = "62.90"
-    val computerProgrammingConsultancy = "62"
-    val computingInfrastructureActivities = "63"
-    val telecommunication = "61"
-    val resellingTelecommunication4 = "61.20"
-    val wiredTelecommunication4 = "61.10"
-    val otherTelecommunications4 = "61.90"
-    val webSearchPortalActivities = "63.91"
-    val otherInformationServices = "63.92"
-    val books = "58.11"
-    val journalsPeriodicals = "58.13"
-    val newspapers = "58.12"
-    val otherPublishing = "58.19"
-    val filmVideoActivities = "59.1"
-    val soundRecordingAndMusicPublishingActivities = "59.20"
-    val videoProductionDistribution = "59.13"
-    val videoPostProduction = "59.12"
-    val videoProduction = "59.11"
-    val projection = "59.14"
-    val newsAgencyActivities = "60.31"
-    val otherContentDistributionActivities = "60.39"
-    val radioBroadcasting4 = "60.10"
-    val programmingBroadcastingVideoDistribution4 = "60.20"
-    val newsAgency = "60.3"
-    val filmVideoSoundPublishing = "59"
-    val programmingBroadcastingNewsActivities = "60"
-    val publishing = "58"
-    val publishingBooksNewspapers = "58.1"
-    val softwarePublishing = "58.2"
-    val videoGames = "58.21"
-    val otherSoftware = "58.29"
+    val administrationGeneral = "84.1"
+    val compulsorySocialSecurity4 = "84.30"
+    val communityServices = "84.2"
+    val generalPublicAdmin = "84.11"
+    val healthEducationRegulation = "84.12"
+    val businessRegulation = "84.13"
+    val defence = "84.22"
+    val fireService = "84.25"
+    val foreignAffairs = "84.21"
+    val justiceJudicial = "84.23"
+    val publicOrderSafety = "84.24"
+    val advertising = "73.1"
+    val marketResearch4 = "73.20"
+    val publicRelations4 = "73.30"
+    val advertisingActivities = "73.11"
+    val mediaRepresentation = "73.12"
+    val architecturalAndTechnicalActivities = "71.1"
+    val technicalTesting4 = "71.20"
+    val architecturalEngineering = "71.11"
+    val engineeringConsultancy = "71.12"
+    val headOfficesActivities4 = "70.10"
+    val managementConsultancyActivities4 = "70.20"
+    val accountingTaxConsultancy = "69.20"
+    val legalActivities4 = "69.10"
+    val photographicActivities = "74.20"
+    val specialisedDesign = "74.1"
+    val translationActivities4 = "74.30"
+    val otherProfessionalScientificActivities = "74.9"
+    val patentBrokering = "74.91"
+    val otherProfessionalScientificActivities4 = "74.99"
+    val advertisingMarketResearch = "73"
+    val architecturalAndTechnical = "71"
+    val headOfficesAndManagementConsultancy = "70"
+    val legalAndAccounting = "69"
+    val scientificResearchAndDevelopment = "72"
+    val veterinaryActivities4 = "75.00"
+    val otherProfessionalScientific = "74"
+    val naturalScientificResearchAndDevelopment4 = "72.10"
+    val socialScientificResearchAndDevelopment4 = "72.20"
+    val graphicDesign = "74.12"
+    val industrialFashionDesign = "74.11"
+    val interiorDesign = "74.13"
+    val otherDesign = "74.14"
   }
 
   import SectorCodes._
 
-  "PublishingTelecomsController" should {
-    "loadComputerInfrastructureDataHostingLvl3Page" should {
+  "ProfAndPAdminController" should {
+    "loadPublicAdminDefenceLvl3Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadComputerInfrastructureDataHostingLvl3Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadComputerInfrastructureDataHostingLvl3Page().url)
+          controller.loadPublicAdminDefenceLvl3Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadPublicAdminDefenceLvl3Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
           (
-            "sector-label-computingInfrastructureActivities3",
-            "Computing infrastructure, data processing, hosting and related activities"
+            "sector-label-administrationGeneral",
+            "Administration of the State and the economic, social and environmental policies of the community"
           ),
-          ("sector-label-webSearchPortal", "Web search portal activities and other information services")
+          ("sector-label-compulsorySocialSecurity", "Compulsory social security activities"),
+          ("sector-label-communityServices", "Provision of services to the community as a whole")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -116,24 +125,25 @@ class PublishingTelecomsControllerSpec
         }
       }
     }
-    "submitComputerInfrastructureDataHostingLvl3Page" should {
+    "submitPublicAdminDefenceLvl3Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (computingInfrastructureActivities4, navigator.nextPage(computingInfrastructureActivities4, "").url),
-          (webSearchPortal, navigator.nextPage(webSearchPortal, "").url)
+          (administrationGeneral, navigator.nextPage(administrationGeneral, "").url),
+          (compulsorySocialSecurity4, navigator.nextPage(compulsorySocialSecurity4, "").url),
+          (communityServices, navigator.nextPage(communityServices, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitComputerInfrastructureDataHostingLvl3Page()(
+            controller.submitPublicAdminDefenceLvl3Page()(
               FakeRequest(
                 POST,
-                routes.PublishingTelecomsController.submitComputerInfrastructureDataHostingLvl3Page().url
+                routes.ProfAndPAdminController.submitPublicAdminDefenceLvl3Page().url
               )
-                .withFormUrlEncodedBody("infra3" -> value)
+                .withFormUrlEncodedBody("publicAdmin3" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -144,168 +154,40 @@ class PublishingTelecomsControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitComputerInfrastructureDataHostingLvl3Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitComputerInfrastructureDataHostingLvl3Page().url)
+          controller.submitPublicAdminDefenceLvl3Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitPublicAdminDefenceLvl3Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in formation services"
+        val expectedErrorMsg = "Select your undertaking’s main business activity in public administration"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadComputerProgrammingConsultancyLvl3Page" should {
+    "loadPublicAdminLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadComputerProgrammingConsultancyLvl3Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadComputerProgrammingConsultancyLvl3Page().url)
+          controller.loadPublicAdminLvl4Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadPublicAdminLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-computerFacilitiesConsultancy", "Computer facilities management and consultancy"),
-          ("sector-label-computerProgrammingActivities", "Computer programming"),
+          ("sector-label-generalPublicAdmin", "General public administration"),
           (
-            "sector-label-otherComputerServiceActivities",
-            "Other information technology and computer service activities"
-          )
-        )
-        forAll(radios) { (id, expected) =>
-          val element = document.getElementById(id)
-          element should not be null
-          element.text() shouldBe expected
-        }
-      }
-    }
-    "submitComputerProgrammingConsultancyLvl3Page" should {
-      "redirect to confirm details page on valid form submission" in {
-        val radioButtons = Table(
-          ("formValue", "expectedUrl"),
-          (computerFacilitiesConsultancy4, navigator.nextPage(computerFacilitiesConsultancy4, "").url),
-          (computerProgrammingActivities4, navigator.nextPage(computerProgrammingActivities4, "").url),
-          (otherComputerServiceActivities4, navigator.nextPage(otherComputerServiceActivities4, "").url)
-        )
-        forAll(radioButtons) { (value: String, expectedUrl: String) =>
-          inSequence {
-            mockAuthWithEnrolment()
-          }
-          val result =
-            controller.submitComputerProgrammingConsultancyLvl3Page()(
-              FakeRequest(POST, routes.PublishingTelecomsController.submitComputerProgrammingConsultancyLvl3Page().url)
-                .withFormUrlEncodedBody("programming3" -> value)
-            )
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(expectedUrl)
-        }
-      }
-      "return BAD_REQUEST and show an error when no option is selected" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.submitComputerProgrammingConsultancyLvl3Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitComputerProgrammingConsultancyLvl3Page().url)
-          )
-        status(result) shouldBe BAD_REQUEST
-        val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg =
-          "Select your undertaking’s main business activity in computer programming, consultancy and related activities"
-        val summary = document.selectFirst(".govuk-error-summary")
-        summary should not be null
-        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
-        summary.text() should include(expectedErrorMsg)
-      }
-    }
-    "loadTelecommunicationLvl2Page" should {
-      "return OK and render expected radio options" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.loadTelecommunicationLvl2Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadTelecommunicationLvl2Page().url)
-          )
-        status(result) shouldBe OK
-        val document = Jsoup.parse(contentAsString(result))
-        val radios = Table(
-          ("id", "text"),
-          ("sector-label-computerProgrammingConsultancy", "Computer programming, consultancy and related activities"),
-          (
-            "sector-label-computingInfrastructureActivities",
-            "Computing infrastructure, data processing, hosting and other information service activities"
+            "sector-label-healthEducationRegulation",
+            "Regulation of health care, education, cultural services and other social services"
           ),
-          ("sector-label-telecommunication", "Telecommunication")
-        )
-        forAll(radios) { (id, expected) =>
-          val element = document.getElementById(id)
-          element should not be null
-          element.text() shouldBe expected
-        }
-      }
-    }
-    "submitTelecommunicationLvl2Page" should {
-      "redirect to confirm details page on valid form submission" in {
-        val radioButtons = Table(
-          ("formValue", "expectedUrl"),
-          (computerProgrammingConsultancy, navigator.nextPage(computerProgrammingConsultancy, "").url),
-          (computingInfrastructureActivities, navigator.nextPage(computingInfrastructureActivities, "").url),
-          (telecommunication, navigator.nextPage(telecommunication, "").url)
-        )
-        forAll(radioButtons) { (value: String, expectedUrl: String) =>
-          inSequence {
-            mockAuthWithEnrolment()
-          }
-          val result =
-            controller.submitTelecommunicationLvl2Page()(
-              FakeRequest(POST, routes.PublishingTelecomsController.submitTelecommunicationLvl2Page().url)
-                .withFormUrlEncodedBody("telecommunication2" -> value)
-            )
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(expectedUrl)
-        }
-      }
-      "return BAD_REQUEST and show an error when no option is selected" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.submitTelecommunicationLvl2Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitTelecommunicationLvl2Page().url)
-          )
-        status(result) shouldBe BAD_REQUEST
-        val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in telecommunications and computing"
-        val summary = document.selectFirst(".govuk-error-summary")
-        summary should not be null
-        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
-        summary.text() should include(expectedErrorMsg)
-      }
-    }
-    "loadTelecommunicationLvl3Page" should {
-      "return OK and render expected radio options" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.loadTelecommunicationLvl3Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadTelecommunicationLvl3Page().url)
-          )
-        status(result) shouldBe OK
-        val document = Jsoup.parse(contentAsString(result))
-        val radios = Table(
-          ("id", "text"),
           (
-            "sector-label-resellingTelecommunication",
-            "Telecommunication reselling and intermediation services for telecommunication"
-          ),
-          ("sector-label-wiredTelecommunication", "Wired, wireless and satellite telecommunication"),
-          ("sector-label-otherTelecommunications", "Other telecommunication activities")
+            "sector-label-businessRegulation",
+            "Regulation of and contribution to more efficient operation of businesses"
+          )
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -314,344 +196,25 @@ class PublishingTelecomsControllerSpec
         }
       }
     }
-    "submitTelecommunicationLvl3Page" should {
+    "submitPublicAdminLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (resellingTelecommunication4, navigator.nextPage(resellingTelecommunication4, "").url),
-          (wiredTelecommunication4, navigator.nextPage(wiredTelecommunication4, "").url),
-          (otherTelecommunications4, navigator.nextPage(otherTelecommunications4, "").url)
+          (generalPublicAdmin, navigator.nextPage(generalPublicAdmin, "").url),
+          (healthEducationRegulation, navigator.nextPage(healthEducationRegulation, "").url),
+          (businessRegulation, navigator.nextPage(businessRegulation, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitTelecommunicationLvl3Page()(
-              FakeRequest(POST, routes.PublishingTelecomsController.submitTelecommunicationLvl3Page().url)
-                .withFormUrlEncodedBody("telecommunication3" -> value)
-            )
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(expectedUrl)
-        }
-      }
-      "return BAD_REQUEST and show an error when no option is selected" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.submitTelecommunicationLvl3Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitTelecommunicationLvl3Page().url)
-          )
-        status(result) shouldBe BAD_REQUEST
-        val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in telecommunications"
-        val summary = document.selectFirst(".govuk-error-summary")
-        summary should not be null
-        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
-        summary.text() should include(expectedErrorMsg)
-      }
-    }
-    "loadWebSearchPortalLvl4Page" should {
-      "return OK and render expected radio options" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.loadWebSearchPortalLvl4Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadWebSearchPortalLvl4Page().url)
-          )
-        status(result) shouldBe OK
-        val document = Jsoup.parse(contentAsString(result))
-        val radios = Table(
-          ("id", "text"),
-          ("sector-label-webSearchPortalActivities", "Web search portal activities"),
-          ("sector-label-telecommunicationsComputing", "Other information service activities")
-        )
-        forAll(radios) { (id, expected) =>
-          val element = document.getElementById(id)
-          element should not be null
-          element.text() shouldBe expected
-        }
-      }
-    }
-    "submitWebSearchPortalLvl4Page" should {
-      "redirect to confirm details page on valid form submission" in {
-        val radioButtons = Table(
-          ("formValue", "expectedUrl"),
-          (webSearchPortalActivities, navigator.nextPage(webSearchPortalActivities, "").url),
-          (otherInformationServices, navigator.nextPage(otherInformationServices, "").url)
-        )
-        forAll(radioButtons) { (value: String, expectedUrl: String) =>
-          inSequence {
-            mockAuthWithEnrolment()
-          }
-          val result =
-            controller.submitWebSearchPortalLvl4Page()(
-              FakeRequest(POST, routes.PublishingTelecomsController.submitWebSearchPortalLvl4Page().url)
-                .withFormUrlEncodedBody("webSearch4" -> value)
-            )
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(expectedUrl)
-        }
-      }
-      "return BAD_REQUEST and show an error when no option is selected" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.submitWebSearchPortalLvl4Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitWebSearchPortalLvl4Page().url)
-          )
-        status(result) shouldBe BAD_REQUEST
-        val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg =
-          "Select your undertaking’s main business activity in web search portal activities and other information services"
-        val summary = document.selectFirst(".govuk-error-summary")
-        summary should not be null
-        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
-        summary.text() should include(expectedErrorMsg)
-      }
-    }
-    "loadFilmMusicPublishingLvl3Page" should {
-      "return OK and render expected radio options" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.loadFilmMusicPublishingLvl3Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page().url)
-          )
-        status(result) shouldBe OK
-        val document = Jsoup.parse(contentAsString(result))
-        val radios = Table(
-          ("id", "text"),
-          ("sector-label-filmVideoActivities", "Film, TV and video activities"),
-          ("sector-label-soundRecordingAndMusicPublishing", "Sound recording and music publishing")
-        )
-        forAll(radios) { (id, expected) =>
-          val element = document.getElementById(id)
-          element should not be null
-          element.text() shouldBe expected
-        }
-      }
-    }
-    "submitFilmMusicPublishingLvl3Page" should {
-      "redirect to confirm details page on valid form submission" in {
-        val radioButtons = Table(
-          ("formValue", "expectedUrl"),
-          (filmVideoActivities, navigator.nextPage(filmVideoActivities, "").url),
-          (
-            soundRecordingAndMusicPublishingActivities,
-            navigator.nextPage(soundRecordingAndMusicPublishingActivities, "").url
-          )
-        )
-        forAll(radioButtons) { (value: String, expectedUrl: String) =>
-          inSequence {
-            mockAuthWithEnrolment()
-          }
-          val result =
-            controller.submitFilmMusicPublishingLvl3Page()(
-              FakeRequest(POST, routes.PublishingTelecomsController.submitFilmMusicPublishingLvl3Page().url)
-                .withFormUrlEncodedBody("filmPublishing3" -> value)
-            )
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(expectedUrl)
-        }
-      }
-      "return BAD_REQUEST and show an error when no option is selected" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.submitFilmMusicPublishingLvl3Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitFilmMusicPublishingLvl3Page().url)
-          )
-        status(result) shouldBe BAD_REQUEST
-        val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg =
-          "Select your undertaking’s main business activity in film, TV and video production, sound recording and music publishing"
-        val summary = document.selectFirst(".govuk-error-summary")
-        summary should not be null
-        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
-        summary.text() should include(expectedErrorMsg)
-      }
-    }
-    "loadFilmVideoActivitiesLvl4Page" should {
-      "return OK and render expected radio options" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.loadFilmVideoActivitiesLvl4Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadFilmVideoActivitiesLvl4Page().url)
-          )
-        status(result) shouldBe OK
-        val document = Jsoup.parse(contentAsString(result))
-        val radios = Table(
-          ("id", "text"),
-          ("sector-label-videoProductionDistribution", "Distribution"),
-          ("sector-label-videoPostProduction", "Post-production"),
-          ("sector-label-videoProduction", "Production"),
-          ("sector-label-projection", "Projection")
-        )
-        forAll(radios) { (id, expected) =>
-          val element = document.getElementById(id)
-          element should not be null
-          element.text() shouldBe expected
-        }
-      }
-    }
-    "submitFilmVideoActivitiesLvl4Page" should {
-      "redirect to confirm details page on valid form submission" in {
-        val radioButtons = Table(
-          ("formValue", "expectedUrl"),
-          (videoProductionDistribution, navigator.nextPage(videoProductionDistribution, "").url),
-          (videoPostProduction, navigator.nextPage(videoPostProduction, "").url),
-          (videoProduction, navigator.nextPage(videoProduction, "").url),
-          (projection, navigator.nextPage(projection, "").url)
-        )
-        forAll(radioButtons) { (value: String, expectedUrl: String) =>
-          inSequence {
-            mockAuthWithEnrolment()
-          }
-          val result =
-            controller.submitFilmVideoActivitiesLvl4Page()(
-              FakeRequest(POST, routes.PublishingTelecomsController.submitFilmVideoActivitiesLvl4Page().url)
-                .withFormUrlEncodedBody("film4" -> value)
-            )
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(expectedUrl)
-        }
-      }
-      "return BAD_REQUEST and show an error when no option is selected" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.submitFilmVideoActivitiesLvl4Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitFilmVideoActivitiesLvl4Page().url)
-          )
-        status(result) shouldBe BAD_REQUEST
-        val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg =
-          "Select the type of film, TV and video service your undertaking provides"
-        val summary = document.selectFirst(".govuk-error-summary")
-        summary should not be null
-        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
-        summary.text() should include(expectedErrorMsg)
-      }
-    }
-    "loadNewsOtherContentDistributionLvl4Page" should {
-      "return OK and render expected radio options" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.loadNewsOtherContentDistributionLvl4Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadNewsOtherContentDistributionLvl4Page().url)
-          )
-        status(result) shouldBe OK
-        val document = Jsoup.parse(contentAsString(result))
-        val radios = Table(
-          ("id", "text"),
-          ("sector-label-newsAgencyActivities", "News agency activities"),
-          ("sector-label-otherContentDistributionActivities", "Other content distribution activities")
-        )
-        forAll(radios) { (id, expected) =>
-          val element = document.getElementById(id)
-          element should not be null
-          element.text() shouldBe expected
-        }
-      }
-    }
-    "submitNewsOtherContentDistributionLvl4Page" should {
-      "redirect to confirm details page on valid form submission" in {
-        val radioButtons = Table(
-          ("formValue", "expectedUrl"),
-          (newsAgencyActivities, navigator.nextPage(newsAgencyActivities, "").url),
-          (otherContentDistributionActivities, navigator.nextPage(otherContentDistributionActivities, "").url)
-        )
-        forAll(radioButtons) { (value: String, expectedUrl: String) =>
-          inSequence {
-            mockAuthWithEnrolment()
-          }
-          val result =
-            controller.submitNewsOtherContentDistributionLvl4Page()(
-              FakeRequest(POST, routes.PublishingTelecomsController.submitNewsOtherContentDistributionLvl4Page().url)
-                .withFormUrlEncodedBody("news4" -> value)
-            )
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(expectedUrl)
-        }
-      }
-      "return BAD_REQUEST and show an error when no option is selected" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.submitNewsOtherContentDistributionLvl4Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitNewsOtherContentDistributionLvl4Page().url)
-          )
-        status(result) shouldBe BAD_REQUEST
-        val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg =
-          "Select your undertaking’s main business activity in news agency and content distribution"
-        val summary = document.selectFirst(".govuk-error-summary")
-        summary should not be null
-        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
-        summary.text() should include(expectedErrorMsg)
-      }
-    }
-    "loadProgrammingBroadcastingDistributionLvl3Page" should {
-      "return OK and render expected radio options" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.loadProgrammingBroadcastingDistributionLvl3Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadProgrammingBroadcastingDistributionLvl3Page().url)
-          )
-        status(result) shouldBe OK
-        val document = Jsoup.parse(contentAsString(result))
-        val radios = Table(
-          ("id", "text"),
-          ("sector-label-radioBroadcasting", "Radio broadcasting and audio distribution"),
-          (
-            "sector-label-programmingBroadcastingVideoDistribution",
-            "TV programming, broadcasting and video distribution"
-          ),
-          ("sector-label-newsAgency", "News agency and other content distribution activities")
-        )
-        forAll(radios) { (id, expected) =>
-          val element = document.getElementById(id)
-          element should not be null
-          element.text() shouldBe expected
-        }
-      }
-    }
-    "submitProgrammingBroadcastingDistributionLvl3Page" should {
-      "redirect to confirm details page on valid form submission" in {
-        val radioButtons = Table(
-          ("formValue", "expectedUrl"),
-          (radioBroadcasting4, navigator.nextPage(radioBroadcasting4, "").url),
-          (
-            programmingBroadcastingVideoDistribution4,
-            navigator.nextPage(programmingBroadcastingVideoDistribution4, "").url
-          ),
-          (newsAgency, navigator.nextPage(newsAgency, "").url)
-        )
-        forAll(radioButtons) { (value: String, expectedUrl: String) =>
-          inSequence {
-            mockAuthWithEnrolment()
-          }
-          val result =
-            controller.submitProgrammingBroadcastingDistributionLvl3Page()(
+            controller.submitPublicAdminLvl4Page()(
               FakeRequest(
                 POST,
-                routes.PublishingTelecomsController.submitProgrammingBroadcastingDistributionLvl3Page().url
+                routes.ProfAndPAdminController.submitPublicAdminLvl4Page().url
               )
-                .withFormUrlEncodedBody("broadcasting3" -> value)
+                .withFormUrlEncodedBody("publicAdmin4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -662,44 +225,495 @@ class PublishingTelecomsControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitProgrammingBroadcastingDistributionLvl3Page()(
-            FakeRequest(
-              POST,
-              routes.PublishingTelecomsController.submitProgrammingBroadcastingDistributionLvl3Page().url
-            )
+          controller.submitPublicAdminLvl4Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitPublicAdminLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg =
-          "Select your undertaking’s main business activity in programming, broadcasting, news agency and content distribution"
+        val expectedErrorMsg = "Select your undertaking’s main business activity in public administration"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadPublishingLvl2Page" should {
+    "loadServiceProvisionLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadPublishingLvl2Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadPublishingLvl2Page().url)
+          controller.loadServiceProvisionLvl4Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadServiceProvisionLvl4Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-defence", "Defence"),
+          ("sector-label-fireService", "Fire service activities"),
+          ("sector-label-foreignAffairs", "Foreign affairs"),
+          ("sector-label-justiceJudicial", "Justice and judicial activities"),
+          ("sector-label-publicOrderSafety", "Public order and safety")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitServiceProvisionLvl4Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (defence, navigator.nextPage(defence, "").url),
+          (fireService, navigator.nextPage(fireService, "").url),
+          (foreignAffairs, navigator.nextPage(foreignAffairs, "").url),
+          (justiceJudicial, navigator.nextPage(justiceJudicial, "").url),
+          (publicOrderSafety, navigator.nextPage(publicOrderSafety, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitServiceProvisionLvl4Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitServiceProvisionLvl4Page().url
+              )
+                .withFormUrlEncodedBody("serviceProvision4" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitServiceProvisionLvl4Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitServiceProvisionLvl4Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg =
+          "Select your undertaking’s main business activity in provision of services to the community"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadAdvertisingLvl3Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadAdvertisingLvl3Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadAdvertisingLvl3Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-advertising", "Advertising"),
+          ("sector-label-marketResearch", "Market research and public opinion polling"),
+          ("sector-label-publicRelations", "Public relations and communication")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitAdvertisingLvl3Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (advertising, navigator.nextPage(advertising, "").url),
+          (marketResearch4, navigator.nextPage(marketResearch4, "").url),
+          (publicRelations4, navigator.nextPage(publicRelations4, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitAdvertisingLvl3Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitAdvertisingLvl3Page().url
+              )
+                .withFormUrlEncodedBody("advertising3" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitAdvertisingLvl3Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitAdvertisingLvl3Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg =
+          "Select your undertaking’s main business activity in advertising, market research and public relations"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadAdvertisingLvl4Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadAdvertisingLvl4Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadAdvertisingLvl4Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-advertisingActivities", "Activities of advertising agencies"),
+          ("sector-label-mediaRepresentation", "Media representation")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitAdvertisingLvl4Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (advertisingActivities, navigator.nextPage(advertisingActivities, "").url),
+          (mediaRepresentation, navigator.nextPage(mediaRepresentation, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitAdvertisingLvl4Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitAdvertisingLvl4Page().url
+              )
+                .withFormUrlEncodedBody("advertising4" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitAdvertisingLvl4Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitAdvertisingLvl4Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select your undertaking’s main business activity in advertising"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadArchitecturalLvl3Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadArchitecturalLvl3Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadArchitecturalLvl3Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
           (
-            "sector-label-filmVideoSoundPublishing",
-            "Film, TV and video production, sound recording and music publishing"
+            "sector-label-architecturalAndTechnicalActivities",
+            "Architectural and engineering activities and related technical consultancy"
           ),
+          ("sector-label-technicalTesting", "Technical testing and analysis")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitArchitecturalLvl3Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (architecturalAndTechnicalActivities, navigator.nextPage(architecturalAndTechnicalActivities, "").url),
+          (technicalTesting4, navigator.nextPage(technicalTesting4, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitArchitecturalLvl3Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitArchitecturalLvl3Page().url
+              )
+                .withFormUrlEncodedBody("architecture3" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitArchitecturalLvl3Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitArchitecturalLvl3Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg =
+          "Select your undertaking’s main business activity in architecture and engineering, technical testing and analysis"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadArchitecturalLvl4Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadArchitecturalLvl4Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadArchitecturalLvl4Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-architecturalEngineering", "Architectural activities"),
+          ("sector-label-engineeringConsultancy", "Engineering activities and related technical consultancy")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitArchitecturalLvl4Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (architecturalEngineering, navigator.nextPage(architecturalEngineering, "").url),
+          (engineeringConsultancy, navigator.nextPage(engineeringConsultancy, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitArchitecturalLvl4Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitArchitecturalLvl4Page().url
+              )
+                .withFormUrlEncodedBody("architecture4" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitArchitecturalLvl4Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitArchitecturalLvl4Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg =
+          "Select your undertaking’s main business activity in architecture, engineering and technical consultancy"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadHeadOfficesLvl3Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadHeadOfficesLvl3Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadHeadOfficesLvl3Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-headOffice", "Activities of head offices"),
+          ("sector-label-managementConsultancy", "Business and other management consultancy activities")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitHeadOfficesLvl3Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (headOfficesActivities4, navigator.nextPage(headOfficesActivities4, "").url),
+          (managementConsultancyActivities4, navigator.nextPage(managementConsultancyActivities4, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitHeadOfficesLvl3Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitHeadOfficesLvl3Page().url
+              )
+                .withFormUrlEncodedBody("headOffice3" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitHeadOfficesLvl3Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitHeadOfficesLvl3Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg =
+          "Select your undertaking’s main business activity in head offices and management consultancy"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadLegalAndAccountingLvl3Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadLegalAndAccountingLvl3Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadLegalAndAccountingLvl3Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-accounting", "Accounting, bookkeeping, auditing and tax consultancy"),
+          ("sector-label-legal", "Legal activities")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitLegalAndAccountingLvl3Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (accountingTaxConsultancy, navigator.nextPage(accountingTaxConsultancy, "").url),
+          (legalActivities4, navigator.nextPage(legalActivities4, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitLegalAndAccountingLvl3Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitLegalAndAccountingLvl3Page().url
+              )
+                .withFormUrlEncodedBody("legal3" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitLegalAndAccountingLvl3Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitLegalAndAccountingLvl3Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select your undertaking’s main business activity in legal and accounting services"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadOtherProfessionalLvl3Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadOtherProfessionalLvl3Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadOtherProfessionalLvl3Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-photography", "Photography"),
+          ("sector-label-specialisedDesign", "Specialised design activities"),
+          ("sector-label-translationInterpretation", "Translation and interpretation"),
           (
-            "sector-label-programmingBroadcastingNewsActivities",
-            "Programming, broadcasting, news agency and other content distribution activities"
-          ),
-          ("sector-label-publishing", "Publishing")
+            "sector-label-otherProfessionalScientificActivities",
+            "Other professional, scientific and technical activities"
+          )
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -708,22 +722,26 @@ class PublishingTelecomsControllerSpec
         }
       }
     }
-    "submitPublishingLvl2Page" should {
+    "submitOtherProfessionalLvl3Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (filmVideoSoundPublishing, navigator.nextPage(filmVideoSoundPublishing, "").url),
-          (programmingBroadcastingNewsActivities, navigator.nextPage(programmingBroadcastingNewsActivities, "").url),
-          (publishing, navigator.nextPage(publishing, "").url)
+          (photographicActivities, navigator.nextPage(photographicActivities, "").url),
+          (specialisedDesign, navigator.nextPage(specialisedDesign, "").url),
+          (translationActivities4, navigator.nextPage(translationActivities4, "").url),
+          (otherProfessionalScientificActivities, navigator.nextPage(otherProfessionalScientificActivities, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitPublishingLvl2Page()(
-              FakeRequest(POST, routes.PublishingTelecomsController.submitPublishingLvl2Page().url)
-                .withFormUrlEncodedBody("publishing2" -> value)
+            controller.submitOtherProfessionalLvl3Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitOtherProfessionalLvl3Page().url
+              )
+                .withFormUrlEncodedBody("otherProf3" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -734,60 +752,204 @@ class PublishingTelecomsControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitPublishingLvl2Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitPublishingLvl2Page().url)
+          controller.submitOtherProfessionalLvl3Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitOtherProfessionalLvl3Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
         val expectedErrorMsg =
-          "Select your undertaking’s main business activity in publishing and broadcasting"
+          "Select the type of professional, scientific and technical activities your undertaking does"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadPublishingLvl3Page" should {
+    "loadOtherProfessionalLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadPublishingLvl3Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadPublishingLvl3Page().url)
+          controller.loadOtherProfessionalLvl4Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadOtherProfessionalLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
+          ("sector-label-patentBrokering", "Patent brokering and marketing service activities"),
           (
-            "sector-label-publishingBooksNewspapers",
-            "Publishing of books, newspapers and other publishing (except software publishing)"
+            "sector-label-otherProfessionalScientificActivities4",
+            "All other professional, scientific and technical activities"
+          )
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitOtherProfessionalLvl4Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (patentBrokering, navigator.nextPage(patentBrokering, "").url),
+          (otherProfessionalScientificActivities4, navigator.nextPage(otherProfessionalScientificActivities4, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitOtherProfessionalLvl4Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitOtherProfessionalLvl4Page().url
+              )
+                .withFormUrlEncodedBody("otherProf4" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitOtherProfessionalLvl4Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitOtherProfessionalLvl4Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg =
+          "Select the type of other professional, scientific and technical activities your undertaking does"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadProfessionalLvl2Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadProfessionalLvl2Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadProfessionalLvl2Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-advertisingMarketResearch", "Advertising, market research and public relations"),
+          ("sector-label-architecturalAndTechnical", "Architectural and engineering, technical testing and analysis"),
+          ("sector-label-headOfficesAndManagementConsultancy", "Head offices and management consultancy"),
+          ("sector-label-legalAndAccounting", "Legal and accounting"),
+          ("sector-label-ScientificResearchAndDevelopment", "Scientific research and development"),
+          ("sector-label-veterinary", "Veterinary activities"),
+          ("sector-label-otherProfessionalScientific", "Other professional, scientific and technical activities")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitProfessionalLvl2Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (advertisingMarketResearch, navigator.nextPage(advertisingMarketResearch, "").url),
+          (architecturalAndTechnical, navigator.nextPage(architecturalAndTechnical, "").url),
+          (headOfficesAndManagementConsultancy, navigator.nextPage(headOfficesAndManagementConsultancy, "").url),
+          (legalAndAccounting, navigator.nextPage(legalAndAccounting, "").url),
+          (scientificResearchAndDevelopment, navigator.nextPage(scientificResearchAndDevelopment, "").url),
+          (veterinaryActivities4, navigator.nextPage(veterinaryActivities4, "").url),
+          (otherProfessionalScientific, navigator.nextPage(otherProfessionalScientific, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitProfessionalLvl2Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitProfessionalLvl2Page().url
+              )
+                .withFormUrlEncodedBody("prof2" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitProfessionalLvl2Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitProfessionalLvl2Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg =
+          "Select the type of professional, scientific and technical services your undertaking provides"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadScientificRAndDLvl3Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadScientificRAndDLvl3Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadScientificRAndDLvl3Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-naturalScientificResearchAndDevelopment", "Natural sciences and engineering"),
+          ("sector-label-socialScientificResearchAndDevelopment", "Social sciences and humanities")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitScientificRAndDLvl3Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (
+            naturalScientificResearchAndDevelopment4,
+            navigator.nextPage(naturalScientificResearchAndDevelopment4, "").url
           ),
-          ("sector-label-softwarePublishing", "Software publishing")
-        )
-        forAll(radios) { (id, expected) =>
-          val element = document.getElementById(id)
-          element should not be null
-          element.text() shouldBe expected
-        }
-      }
-    }
-    "submitPublishingLvl3Page" should {
-      "redirect to confirm details page on valid form submission" in {
-        val radioButtons = Table(
-          ("formValue", "expectedUrl"),
-          (publishingBooksNewspapers, navigator.nextPage(publishingBooksNewspapers, "").url),
-          (softwarePublishing, navigator.nextPage(softwarePublishing, "").url)
+          (socialScientificResearchAndDevelopment4, navigator.nextPage(socialScientificResearchAndDevelopment4, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitPublishingLvl3Page()(
-              FakeRequest(POST, routes.PublishingTelecomsController.submitPublishingLvl3Page().url)
-                .withFormUrlEncodedBody("publishing3" -> value)
+            controller.submitScientificRAndDLvl3Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitScientificRAndDLvl3Page().url
+              )
+                .withFormUrlEncodedBody("rAndD3" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -798,34 +960,35 @@ class PublishingTelecomsControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitPublishingLvl3Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitPublishingLvl3Page().url)
+          controller.submitScientificRAndDLvl3Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitScientificRAndDLvl3Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg =
-          "Select your undertaking’s main business activity in publishing"
+        val expectedErrorMsg = "Select the area your undertaking conducts scientific research and development in"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadSoftwarePublishingLvl4Page" should {
+    "loadSpecialisedDesignLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadSoftwarePublishingLvl4Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadSoftwarePublishingLvl4Page().url)
+          controller.loadSpecialisedDesignLvl4Page()(
+            FakeRequest(GET, routes.ProfAndPAdminController.loadSpecialisedDesignLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-videoGames", "Video games"),
-          ("sector-label-otherSoftware", "Another type of software")
+          ("sector-label-graphicDesign", "Graphic design and visual communication"),
+          ("sector-label-industrialFashionDesign", "Industrial product and fashion design"),
+          ("sector-label-interiorDesign", "Interior design"),
+          ("sector-label-otherDesign", "Other specialised design activities")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -834,21 +997,26 @@ class PublishingTelecomsControllerSpec
         }
       }
     }
-    "submitSoftwarePublishingLvl4Page" should {
+    "submitSpecialisedDesignLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (videoGames, navigator.nextPage(videoGames, "").url),
-          (otherSoftware, navigator.nextPage(otherSoftware, "").url)
+          (graphicDesign, navigator.nextPage(graphicDesign, "").url),
+          (industrialFashionDesign, navigator.nextPage(industrialFashionDesign, "").url),
+          (interiorDesign, navigator.nextPage(interiorDesign, "").url),
+          (otherDesign, navigator.nextPage(otherDesign, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitSoftwarePublishingLvl4Page()(
-              FakeRequest(POST, routes.PublishingTelecomsController.submitSoftwarePublishingLvl4Page().url)
-                .withFormUrlEncodedBody("softwarePublishing4" -> value)
+            controller.submitSpecialisedDesignLvl4Page()(
+              FakeRequest(
+                POST,
+                routes.ProfAndPAdminController.submitSpecialisedDesignLvl4Page().url
+              )
+                .withFormUrlEncodedBody("specialDesign4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -859,83 +1027,18 @@ class PublishingTelecomsControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitSoftwarePublishingLvl4Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitSoftwarePublishingLvl4Page().url)
+          controller.submitSpecialisedDesignLvl4Page()(
+            FakeRequest(POST, routes.ProfAndPAdminController.submitSpecialisedDesignLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg =
-          "Select the type of software your undertaking publishes"
+        val expectedErrorMsg = "Select the type of specialised design activities your undertaking does"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadBookPublishingLvl4Page" should {
-      "return OK and render expected radio options" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.loadBookPublishingLvl4Page()(
-            FakeRequest(GET, routes.PublishingTelecomsController.loadBookPublishingLvl4Page().url)
-          )
-        status(result) shouldBe OK
-        val document = Jsoup.parse(contentAsString(result))
-        val radios = Table(
-          ("id", "text"),
-          ("sector-label-books", "Books"),
-          ("sector-label-journalsPeriodicals", "Journals and periodicals"),
-          ("sector-label-newspapers", "Newspapers"),
-          ("sector-label-otherPublishing", "Other publishing activities (except software publishing)")
-        )
-        forAll(radios) { (id, expected) =>
-          val element = document.getElementById(id)
-          element should not be null
-          element.text() shouldBe expected
-        }
-      }
-    }
-    "submitBookPublishingLvl4Page" should {
-      "redirect to confirm details page on valid form submission" in {
-        val radioButtons = Table(
-          ("formValue", "expectedUrl"),
-          (books, navigator.nextPage(books, "").url),
-          (journalsPeriodicals, navigator.nextPage(journalsPeriodicals, "").url),
-          (newspapers, navigator.nextPage(newspapers, "").url),
-          (otherPublishing, navigator.nextPage(otherPublishing, "").url)
-        )
-        forAll(radioButtons) { (value: String, expectedUrl: String) =>
-          inSequence {
-            mockAuthWithEnrolment()
-          }
-          val result =
-            controller.submitBookPublishingLvl4Page()(
-              FakeRequest(POST, routes.PublishingTelecomsController.submitBookPublishingLvl4Page().url)
-                .withFormUrlEncodedBody("book4" -> value)
-            )
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(expectedUrl)
-        }
-      }
-      "return BAD_REQUEST and show an error when no option is selected" in {
-        inSequence {
-          mockAuthWithEnrolment()
-        }
-        val result =
-          controller.submitBookPublishingLvl4Page()(
-            FakeRequest(POST, routes.PublishingTelecomsController.submitBookPublishingLvl4Page().url)
-          )
-        status(result) shouldBe BAD_REQUEST
-        val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg =
-          "Select the type of material your undertaking publishes"
-        val summary = document.selectFirst(".govuk-error-summary")
-        summary should not be null
-        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
-        summary.text() should include(expectedErrorMsg)
-      }
-    }
+
   }
 }
