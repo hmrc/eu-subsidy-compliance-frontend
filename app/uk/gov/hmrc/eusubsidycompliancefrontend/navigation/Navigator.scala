@@ -18,14 +18,16 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.navigation
 
 import play.api.mvc.Call
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Navigator @Inject() {
+class Navigator @Inject() (implicit appConfig: AppConfig){
 
   def nextPage(previousAnswer: String, mode: String): Call = mode match {
-    case "NewRegChangeMode" => routes.NACECheckDetailsController.getCheckDetails()
+    case appConfig.NewRegChangeMode => routes.NACECheckDetailsController.getCheckDetails()
+    case appConfig.AmendNaceMode => routes.UndertakingController.getAmendUndertakingDetails
     case _ => normalRoutes(previousAnswer)
 
   }

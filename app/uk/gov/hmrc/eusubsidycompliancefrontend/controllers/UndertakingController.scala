@@ -554,6 +554,7 @@ class UndertakingController @Inject() (
         for {
           updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
           verifiedEmail <- emailService.retrieveVerifiedEmailAddressByEORI(eori)
+          updatedStoreFlags <- store.update[UndertakingJourney](_.copy(mode = appConfig.AmendNaceMode))
         } yield {
           val naceLevel4Code = updatedJourney.sector.value.toString.dropRight(1).drop(5)
           val naceLevel3Code = updatedJourney.sector.value.toString.dropRight(2).drop(5)
