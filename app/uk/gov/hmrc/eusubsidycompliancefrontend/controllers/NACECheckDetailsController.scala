@@ -194,6 +194,7 @@ class NACECheckDetailsController @Inject() (
     } else {
       naceLevel1Code match {
         case "A" => navigator.nextPage(navigatorLevel2Code, "").url
+        case "Q" => navigator.nextPage(navigatorLevel2Code, "").url
         case _ => navigator.nextPage(naceLevel1Code, "").url
       }
     }

@@ -1938,6 +1938,7 @@ NACE.radio.51.22 = Space transport
 
 NACE.radio.52 = Warehousing, storage and support activities for transport
 NACE.radio.52.title = What type of warehousing, storage or support activity does your undertaking do?
+NACE.radio.51.2.title = What type of transport support activities does your undertaking do?
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint = Includes cargo handling, logistics and intermediation services for transport.
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport.error = Select the type of warehousing, storage or support activity your undertaking does
 NACE.radio.52.1 = Warehousing and storage
@@ -2885,6 +2886,7 @@ NACE.Administrative.Lvl2.OfficeSupport.hint = Includes call centres, collection 
 NACE.insurance.Lvl2.insurance.title = What is your undertaking''s main business activity in insurance, reinsurance and pension funding?
 NACE.insurance.Lvl2.insurance.error =Select your undertaking’s main business activity in insurance, reinsurance and pension funding
 NACE.radio.65.1 = Insurance
+NACE.radio.65.title = What is your undertaking's main business activity in insurance, reinsurance and pension funding?
 NACE.radio.65.2 = Reinsurance
 NACE.radio.65.3 = Pension funding
 NACE.insurance.Lvl4.insuranceType.title = What type of insurance does your undertaking provide?
