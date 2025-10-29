@@ -102,7 +102,10 @@ class ConstructionController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+              if(journey.isAmend)
+                Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
+              else
+                Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -148,7 +151,10 @@ class ConstructionController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+              if(journey.isAmend)
+                Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
+              else
+                Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
@@ -196,7 +202,10 @@ class ConstructionController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
+              if(journey.isAmend)
+                Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
+              else
+                Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
             else {
               for {
                 updatedSector <- store
