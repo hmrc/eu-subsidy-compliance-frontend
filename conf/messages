@@ -883,8 +883,8 @@ NACE.radio.03.3 = Support activities for fishing and aquaculture
 NACE.fishing.Lvl4.aquacultureSupportActivities = Support activities for fishing and aquaculture
 
 #MiningQuarrying NACE Sector2,3,4
-NACE.radio.B.title = What is your undertaking's main business activity in mining and quarrying?
-NACE.mining.Lvl1.error = Select your undertaking's main business activity in mining and quarrying
+NACE.radio.B.title = What is your undertaking’s main business activity in mining and quarrying?
+NACE.mining.Lvl1.error = Select your undertaking’s main business activity in mining and quarrying
 NACE.radio.05 = Mining of coal and lignite
 NACE.radio.05.title = What type of coal does your undertaking mine?
 NACE.mining.Lvl2.coalAndLigniteMining.error = Select the type of coal your undertaking mines
