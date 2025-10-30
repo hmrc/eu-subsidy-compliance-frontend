@@ -31,10 +31,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPag
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4Catalogue
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureToOptionTOps, OptionToOptionTOps}
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UpdateConfirmationPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -45,10 +41,7 @@ class NACECheckDetailsController @Inject() (
   store: Store,
   actionBuilders: ActionBuilders,
   naceCYAView: ConfirmDetailsPage,
-  navigator: Navigator,
-  updateConfirmationPage: UpdateConfirmationPage,
-  undertakingController: UndertakingController,
-  escService: EscService
+  navigator: Navigator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends BaseController(mcc) {
 
@@ -317,10 +310,8 @@ class NACECheckDetailsController @Inject() (
         },
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-            if (form.value == "true")
-            {
-              for
-              {
+            if (form.value == "true") {
+              for {
                 updatedNaceFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = false, isAmend = false))
               } yield Ok
 
@@ -330,13 +321,11 @@ class NACECheckDetailsController @Inject() (
               {
                 Redirect(routes.UndertakingController.getAddBusiness).toFuture
               }
-            }
-            else
-            {
-              for
-              {
+            } else {
+              for {
                 updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.other.id))
-                resetInternalNaceCode <- store.update[UndertakingJourney](_.copy(internalNaceCode = "", isNaceCYA = false))
+                resetInternalNaceCode <- store
+                  .update[UndertakingJourney](_.copy(internalNaceCode = "", isNaceCYA = false))
               } yield Redirect(routes.UndertakingController.getSector)
             }
           }

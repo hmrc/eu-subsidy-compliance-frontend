@@ -78,7 +78,9 @@ class GeneralTradeGroupsController @Inject() (
       val previousLevel1Code =
         if (sector.equals("00") || sector.length < 2) sector else naceCheckDetailsController.deriveLevel1Code(sector)
 
-      Ok(generalTradeUndertakingPage(generalTradeUndertakingForm.fill(FormValues(previousLevel1Code)), journey.mode)).toFuture
+      Ok(
+        generalTradeUndertakingPage(generalTradeUndertakingForm.fill(FormValues(previousLevel1Code)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -103,12 +105,11 @@ class GeneralTradeGroupsController @Inject() (
             if (previousLevel1Code.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousLevel1Code.equals(form.value)) {
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
-            }
-            else {
+            } else {
               for {
                 updatedSector <- store
                   .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
@@ -133,7 +134,12 @@ class GeneralTradeGroupsController @Inject() (
         if (sector.equals("00") || sector.length < 2) sector
         else naceCheckDetailsController.deriveLevel1Code(sector.take(2))
 
-      Ok(generalTradeUndertakingOtherPage(generalTradeUndertakingOtherForm.fill(FormValues(previousLevel1Code)), journey.mode)).toFuture
+      Ok(
+        generalTradeUndertakingOtherPage(
+          generalTradeUndertakingOtherForm.fill(FormValues(previousLevel1Code)),
+          journey.mode
+        )
+      ).toFuture
     }
   }
 
@@ -158,12 +164,11 @@ class GeneralTradeGroupsController @Inject() (
             if (previousLevel1Code.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousLevel1Code.equals(form.value)) {
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
-            }
-            else {
+            } else {
               for {
                 updatedSector <- store
                   .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
@@ -191,21 +196,18 @@ class GeneralTradeGroupsController @Inject() (
         formWithErrors => BadRequest(lvl2_1GroupsPage(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-
             if (form.value.equals(journey.internalNaceCode) && journey.isNaceCYA) {
               val lvl4Answer = journey.sector.value match {
                 case Some(lvl4Value) => lvl4Value.toString
                 case None => ""
               }
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
-            }
-            else if (form.value.equals(journey.internalNaceCode)) {
-              if(journey.isAmend)
+            } else if (form.value.equals(journey.internalNaceCode)) {
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
-            }
-            else{
+            } else {
               for {
                 updatedStoreFlags <- store
                   .update[UndertakingJourney](_.copy(internalNaceCode = form.value, isNaceCYA = false))
@@ -250,7 +252,7 @@ class GeneralTradeGroupsController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
@@ -275,7 +277,9 @@ class GeneralTradeGroupsController @Inject() (
         case None => ""
       }
 
-      Ok(computersElectronicsMachineryPage(computersElectronicsMachineryForm.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        computersElectronicsMachineryPage(computersElectronicsMachineryForm.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -300,7 +304,7 @@ class GeneralTradeGroupsController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
@@ -350,7 +354,7 @@ class GeneralTradeGroupsController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
@@ -400,7 +404,7 @@ class GeneralTradeGroupsController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
@@ -450,7 +454,7 @@ class GeneralTradeGroupsController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
@@ -500,7 +504,7 @@ class GeneralTradeGroupsController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture

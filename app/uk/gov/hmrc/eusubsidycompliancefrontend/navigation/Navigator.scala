@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Navigator @Inject() (implicit appConfig: AppConfig){
+class Navigator @Inject() (implicit appConfig: AppConfig) {
 
   def nextPage(previousAnswer: String, mode: String): Call = mode match {
     case appConfig.NewRegChangeMode => routes.NACECheckDetailsController.getCheckDetails()

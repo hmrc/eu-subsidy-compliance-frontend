@@ -741,14 +741,15 @@ NACE.interrupt.link.html = You can browse the {0}full list of NACE categories fr
 NACE.interrupt.p7 = This will not affect your subsidy allowance.
 
 NACE.suspended.title = Your undertaking has been suspended
+NACE.suspended.h1.alt = You cannot use this service until you update your undertaking information
 NACE.suspended.h1 = Your undertaking has been suspended
 NACE.suspended.invalidSector.p1 = You cannot access your undertaking as it has been suspended on this service.
 NACE.suspended.invalidSector.p2 = You can still trade and claim state aid, but you cannot use state aid to waive customs duty.
 NACE.suspended.invalidSector.p3 = To start using this service again, you need to answer some questions about your undertaking. Once you have done this, your suspension will be removed and you can use the service as normal
 NACE.suspended.auto.p1 = You cannot access your undertaking as it has been suspended on this service.
-NACE.suspended.auto.p2 = Your deadline to submit a report passed on 1 January 2026
+NACE.suspended.auto.p2 = Your deadline to submit a report passed on {0}.
 NACE.suspended.auto.p3 = To start using this service again, you need to:
-NACE.suspended.auto.p4 = Once you have done this, your suspension will be removed and you can use the service as normal
+NACE.suspended.auto.p4 = Once you have done this, you can use the service as normal.
 NACE.suspended.auto.bullet1 = answer some questions about your undertaking
 NACE.suspended.auto.bullet2 = submit a report
 
@@ -882,8 +883,8 @@ NACE.radio.03.3 = Support activities for fishing and aquaculture
 NACE.fishing.Lvl4.aquacultureSupportActivities = Support activities for fishing and aquaculture
 
 #MiningQuarrying NACE Sector2,3,4
-NACE.radio.B.title = What is your undertaking's main business activity in mining and quarrying?
-NACE.mining.Lvl1.error = Select your undertaking's main business activity in mining and quarrying
+NACE.radio.B.title = What is your undertaking’s main business activity in mining and quarrying?
+NACE.mining.Lvl1.error = Select your undertaking’s main business activity in mining and quarrying
 NACE.radio.05 = Mining of coal and lignite
 NACE.radio.05.title = What type of coal does your undertaking mine?
 NACE.mining.Lvl2.coalAndLigniteMining.error = Select the type of coal your undertaking mines
