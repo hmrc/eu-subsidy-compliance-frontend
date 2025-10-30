@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -31,6 +31,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPag
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4Catalogue
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureToOptionTOps, OptionToOptionTOps}
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UpdateConfirmationPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -41,7 +45,10 @@ class NACECheckDetailsController @Inject() (
   store: Store,
   actionBuilders: ActionBuilders,
   naceCYAView: ConfirmDetailsPage,
-  navigator: Navigator
+  navigator: Navigator,
+  updateConfirmationPage: UpdateConfirmationPage,
+  undertakingController: UndertakingController,
+  escService: EscService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends BaseController(mcc) {
 
@@ -314,17 +321,12 @@ class NACECheckDetailsController @Inject() (
             {
               for
               {
-                updatedNaceFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+                updatedNaceFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = false, isAmend = false))
               } yield Ok
 
-              if (journey.isAmend) {
+              if (journey.isAmend || journey.mode == appConfig.UpdateNaceMode)
                 Redirect(routes.UndertakingController.postAmendUndertaking).toFuture
-              }
-              else if (journey.mode == appConfig.UpdateNaceMode)
-              {
-               //THIS NEEDS TO BE UPDATE CONFIRMATION PAGE
-                Redirect(routes.UndertakingController.postAmendUndertaking).toFuture
-              } else
+              else
               {
                 Redirect(routes.UndertakingController.getAddBusiness).toFuture
               }

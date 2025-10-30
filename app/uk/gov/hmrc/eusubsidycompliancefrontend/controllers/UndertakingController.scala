@@ -767,41 +767,34 @@ class UndertakingController @Inject() (
     }
   }
 
-  private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] =
-    store.update[UndertakingJourney](_.copy(isAmend = value))
+  private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] = {
+     store.update[UndertakingJourney] (_.copy(isAmend = value))
+  }
 
   def postAmendUndertaking: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
-
-      amendUndertakingForm
-        .bindFromRequest()
-        .fold(
-          _ => throw new IllegalStateException("Unexpected form submission"),
-          _ => {
-            val result = for {
-              updatedJourney <- updateIsAmendState(value = false).toContext
-              undertakingName <- updatedJourney.about.value.toContext
-              undertakingSector <- updatedJourney.sector.value.toContext
-              retrievedUndertaking <- escService.retrieveUndertaking(eori).toContext
-              undertakingRef <- retrievedUndertaking.reference.toContext
-              updatedUndertaking = retrievedUndertaking
-                .copy(name = UndertakingName(undertakingName), industrySector = undertakingSector)
-              _ <- escService.updateUndertaking(updatedUndertaking).toContext
-              _ = auditService.sendEvent(
-                UndertakingUpdated(
-                  request.authorityId,
-                  eori,
-                  undertakingRef,
-                  updatedUndertaking.name,
-                  updatedUndertaking.industrySector
-                )
+        val result = for {
+            updatedJourney <- updateIsAmendState(value = false).toContext
+            undertakingName <- updatedJourney.about.value.toContext
+            undertakingSector <- updatedJourney.sector.value.toContext
+            retrievedUndertaking <- escService.retrieveUndertaking(eori).toContext
+            undertakingRef <- retrievedUndertaking.reference.toContext
+            updatedUndertaking = retrievedUndertaking
+              .copy(name = UndertakingName(undertakingName), industrySector = undertakingSector)
+            _ <- escService.updateUndertaking(updatedUndertaking).toContext
+            _ = auditService.sendEvent(
+              UndertakingUpdated(
+                request.authorityId,
+                eori,
+                undertakingRef,
+                updatedUndertaking.name,
+                updatedUndertaking.industrySector
               )
-            } yield Ok(updateConfirmationPage(undertakingRef, eori))
-            result.getOrElse(handleMissingSessionData("Undertaking Journey"))
-          }
-        )
-    }
+            )
+          } yield Ok(updateConfirmationPage(undertakingRef, eori))
+          result.getOrElse(handleMissingSessionData("Undertaking Journey"))
+        }
   }
 
   def getDisableUndertakingWarning: Action[AnyContent] = verifiedEori.async { implicit request =>

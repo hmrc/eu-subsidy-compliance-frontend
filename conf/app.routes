@@ -786,7 +786,7 @@ GET        /first-login-journey-registered-undertaking/:undertakingRef/name     
 POST       /first-login-journey-registered-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation
 
 GET        /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAmendUndertakingDetails
-POST       /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAmendUndertaking
+GET        /undertaking-confirmation                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAmendUndertaking
 
 GET        /lead-undertaking-disable-warning                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getDisableUndertakingWarning
 
