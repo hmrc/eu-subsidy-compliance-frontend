@@ -7876,6 +7876,14 @@ NACE.87.20.b3 = residential group homes for the emotionally disturbed
 NACE.87.20.b4 = mental health halfway houses
 NACE.87.20.b5 = assisted living facilities for persons having a diagnosis of intellectual disability
 
+NACE.87.30.heading = 87.30 Residential care activities for older persons or persons with physical disabilities
+NACE.87.30.desc = This class includes the provision of residential and personal care services for older persons or persons with physical disabilities who are unable to fully care for themselves and/or who choose not to live independently. The care typically includes room, board, supervision and assistance in daily living (for example, housekeeping activities). Nursing care is sometimes provided for residents in separate on-site facilities.
+NACE.87.30.intro = This class includes activities of:
+NACE.87.30.b1 = assisted living facilities
+NACE.87.30.b2 = continuing care retirement communities
+NACE.87.30.b3 = homes for older persons with minimal nursing care
+NACE.87.30.b4 = rest homes without nursing care
+
 NACE.87.91.heading = 87.91 Intermediation service activities for residential care activities
 NACE.87.91.intro = This class includes the intermediation of residential care activities, by bringing clients and service providers together for a fee or commission, without the intermediary providing the residential care services that are intermediated. These intermediation activities can be carried out on digital platforms or through non-digital channels (including door-to-door, face-to-face, telephone, mail, and so on). The fee or commission can be received from either the client or the provider of the residential care service. Revenue for the intermediation activities can include other sources of income (for example, revenues from the sale of advertising space).
 
