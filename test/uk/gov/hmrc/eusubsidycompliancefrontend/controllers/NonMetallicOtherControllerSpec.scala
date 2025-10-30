@@ -77,7 +77,6 @@ class NonMetallicOtherControllerSpec
     val readyMixedConcrete = "23.63"
     val otherConcreteProducts = "23.66"
 
-
   }
 
   import SectorCodes._
@@ -285,7 +284,8 @@ class NonMetallicOtherControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of abrasive or non-metallic mineral products your undertaking manufactures"
+        val expectedErrorMsg =
+          "Select the type of abrasive or non-metallic mineral products your undertaking manufactures"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -489,8 +489,6 @@ class NonMetallicOtherControllerSpec
         summary.text() should include(expectedErrorMsg)
       }
     }
-
-
 
   }
 }

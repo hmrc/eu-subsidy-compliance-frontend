@@ -35,13 +35,10 @@ class UndertakingInvalidSectorSuspendedPageController @Inject() (
   undertakingSuspendedPage: UndertakingInvalidSectorSuspendedPage,
   timeProvider: TimeProvider,
   val store: Store
-
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc) {
 
   import actionBuilders._
-
-
 
   def showPage: Action[AnyContent] = enrolled { implicit request =>
     val dueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today).toString

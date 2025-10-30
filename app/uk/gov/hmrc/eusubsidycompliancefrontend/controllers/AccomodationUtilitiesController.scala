@@ -108,7 +108,7 @@ class AccomodationUtilitiesController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
@@ -157,7 +157,7 @@ class AccomodationUtilitiesController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
@@ -234,7 +234,7 @@ class AccomodationUtilitiesController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
@@ -309,7 +309,7 @@ class AccomodationUtilitiesController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
@@ -434,7 +434,7 @@ class AccomodationUtilitiesController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture
@@ -533,7 +533,7 @@ class AccomodationUtilitiesController @Inject() (
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toFuture
             else if (previousAnswer.equals(form.value))
-              if(journey.isAmend)
+              if (journey.isAmend)
                 Redirect(navigator.nextPage(form.value, appConfig.AmendNaceMode)).toFuture
               else
                 Redirect(navigator.nextPage(form.value, journey.mode)).toFuture

@@ -177,7 +177,7 @@ class AccountController @Inject() (
         else n.toFuture
       }
       var agriOtherFlag: Boolean = true
-      if (undertaking.industrySector.toString.take(2).equals(Sector.fishingAndAquaculture.toString) ) {
+      if (undertaking.industrySector.toString.take(2).equals(Sector.fishingAndAquaculture.toString)) {
         agriOtherFlag = false
       }
       if (undertaking.isLeadEORI(eori)) {
