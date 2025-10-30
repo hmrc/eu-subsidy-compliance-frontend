@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
 @this(
     layout: Layout,
@@ -29,7 +30,7 @@
     govukHint: GovukHint
 )
 
-@(eori: uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("NACE.interrupt.title")),
@@ -58,6 +59,6 @@
     </p>
 
     @formHelper(action = controllers.routes.NaceUndertakingCategoryIntroController.continue) {
-        @button("common.start")
+        @button("common.start", id = Some("start-button"))
     }
 }

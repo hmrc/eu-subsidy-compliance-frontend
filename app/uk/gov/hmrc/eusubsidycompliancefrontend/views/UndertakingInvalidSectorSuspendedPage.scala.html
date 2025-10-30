@@ -49,8 +49,8 @@
     @P(messages("NACE.suspended.auto.p4"))
     }
 
-    @formHelper(action = controllers.routes.NaceUndertakingCategoryIntroController.showPage) {
-        @button("common.continue.only")
+    @formHelper(action = controllers.routes.UndertakingInvalidSectorSuspendedPageController.continue) {
+        @button("common.continue.only", id = Some("submit-button"))
     }
 
 }

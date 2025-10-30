@@ -19,16 +19,23 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
+
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UndertakingInvalidSectorSuspendedPage
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
 class UndertakingInvalidSectorSuspendedPageController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
   undertakingSuspendedPage: UndertakingInvalidSectorSuspendedPage,
-    timeProvider: TimeProvider
+  timeProvider: TimeProvider,
+  val store: Store
+
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc) {
 
@@ -46,6 +53,16 @@ class UndertakingInvalidSectorSuspendedPageController @Inject() (
       case None =>
         Redirect(routes.AccountController.getAccountPage)
     }
+  }
+
+  def continue: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.put[UndertakingJourney](UndertakingJourney())
+    store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
+
+    Future.successful(
+      Redirect(routes.NaceUndertakingCategoryIntroController.showPage)
+    )
   }
 
 }

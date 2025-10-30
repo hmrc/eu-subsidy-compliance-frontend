@@ -880,7 +880,8 @@ GET        /unverified-email                                                    
 
 GET        /undertaking-suspended                                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingSuspendedPageController.showPage(isLead: Boolean ?= false)
 
-GET        /cannot-use-service-until-update                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingInvalidSectorSuspendedPageController.showPage
+GET        /cannot-use-service-until-update                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingInvalidSectorSuspendedPageController.showPage
+POST       /cannot-use-service-until-update                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingInvalidSectorSuspendedPageController.continue
 
 GET        /payment-already-submitted                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaymentSubmittedController.paymentAlreadySubmitted
 
