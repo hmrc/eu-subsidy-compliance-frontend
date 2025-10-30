@@ -176,9 +176,9 @@ class AccountController @Inject() (
         if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
         else n.toFuture
       }
-      var agriOtherFlag: Boolean = false
-      if (undertaking.industrySector.equals(Sector.agriculture) || undertaking.industrySector.equals(Sector.other)) {
-        agriOtherFlag = true
+      var agriOtherFlag: Boolean = true
+      if (undertaking.industrySector.toString.take(2).equals(Sector.fishingAndAquaculture.toString) ) {
+        agriOtherFlag = false
       }
       if (undertaking.isLeadEORI(eori)) {
         logger.info("showing account page for lead")
