@@ -103,7 +103,7 @@ title = Text(messages("common.error.summary.title", undertakingName))
         <li class="govuk-breadcrumbs__list-item">
             <a class="govuk-breadcrumbs__link"
                href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString
-                        else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
+                        else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
         </li>
     </ol>
 </nav>
