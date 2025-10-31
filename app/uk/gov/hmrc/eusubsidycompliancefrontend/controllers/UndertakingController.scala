@@ -736,7 +736,7 @@ class UndertakingController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       val messages: Messages = mcc.messagesApi.preferred(request)
 
-      withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
+      store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
         for {
           updateToAmendMode <- store.update[UndertakingJourney](_.copy(mode = appConfig.AmendNaceMode))
           updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
