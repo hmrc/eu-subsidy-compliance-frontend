@@ -767,7 +767,10 @@ class UndertakingController @Inject() (
   }
 
   private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] = {
-     store.update[UndertakingJourney] (_.copy(isAmend = value))
+    for {
+      updateName <- store.update[UndertakingJourney] (_.setUndertakingName(e))
+      updateIsAmend <- store.update[UndertakingJourney] (_.copy(isAmend = value))
+    } yield updateIsAmend
   }
 
   def postAmendUndertaking: Action[AnyContent] = verifiedEori.async { implicit request =>
