@@ -209,7 +209,7 @@ class UndertakingController @Inject() (
     getSectorPage()
   }
 
-  def postSector: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
+  def postSector: Action[AnyContent] = enrolled.async { implicit request =>
     updateSector()
   }
   def updateIndustrySector: Action[AnyContent] = enrolled.async { implicit request =>
@@ -242,6 +242,8 @@ class UndertakingController @Inject() (
 
             if (previousAnswer.equals(form.value) && journey.isNaceCYA)
               Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toContext
+            else if (previousAnswer.equals(form.value) && journey.mode == appConfig.AmendNaceMode)
+              Redirect(routes.UndertakingController.getAmendUndertakingDetails).toContext
             else if (previousAnswer.equals(form.value))
               Redirect(navigator.nextPage(form.value, journey.mode)).toContext
             else {
@@ -729,13 +731,14 @@ class UndertakingController @Inject() (
     )
   }
 
-  def getAmendUndertakingDetails: Action[AnyContent] = verifiedEori.async { implicit request =>
+  def getAmendUndertakingDetails: Action[AnyContent] = enrolled.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       val messages: Messages = mcc.messagesApi.preferred(request)
 
       withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
         for {
+          updateToAmendMode <- store.update[UndertakingJourney](_.copy(mode = appConfig.AmendNaceMode))
           updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
           verifiedEmail <- emailService.retrieveVerifiedEmailAddressByEORI(eori)
         } yield {
@@ -759,7 +762,7 @@ class UndertakingController @Inject() (
             )
           } else {
             logger.warn(s"Invalid NACE code: $naceCode")
-            Redirect(routes.AccountController.getAccountPage)
+            Redirect(routes.UndertakingController.getSector)
           }
         }
       }

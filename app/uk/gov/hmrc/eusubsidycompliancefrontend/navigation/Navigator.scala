@@ -27,7 +27,6 @@ class Navigator @Inject() (implicit appConfig: AppConfig) {
 
   def nextPage(previousAnswer: String, mode: String): Call = mode match {
     case appConfig.NewRegChangeMode => routes.NACECheckDetailsController.getCheckDetails()
-    case appConfig.AmendNaceMode => routes.UndertakingController.getAmendUndertakingDetails
     case _ => normalRoutes(previousAnswer)
 
   }
