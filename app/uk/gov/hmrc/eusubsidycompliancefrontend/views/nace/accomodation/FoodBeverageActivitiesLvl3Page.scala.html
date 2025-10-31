@@ -54,7 +54,7 @@
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.beverageServing.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.radio.56.2"))),
+                content = HtmlContent(radioText("sector-label-eventAndContractCatering", messages("NACE.radio.56.2"))),
                 value = Some(Sector.eventAndContractCatering.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.eventAndContractCatering.toString)
         ),
@@ -64,7 +64,7 @@
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.foodBeverageServiceIntermediationActivities.toString)
         ),
        RadioItem(
-            content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.radio.56.1"))),
+            content = HtmlContent(radioText("sector-label-restaurantsMobile", messages("NACE.radio.56.1"))),
             value = Some(Sector.restaurantsMobile.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.restaurantsMobile.toString)
         )
