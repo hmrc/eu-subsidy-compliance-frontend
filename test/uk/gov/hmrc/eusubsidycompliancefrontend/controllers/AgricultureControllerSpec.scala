@@ -254,7 +254,7 @@ class AgricultureControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in agriculture"
+        val expectedErrorMsg = "Select the type of crop your undertaking grows"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -498,8 +498,8 @@ class AgricultureControllerSpec
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-aquaculture3", "Fishing"),
-          ("sector-label-fishing", "Aquaculture"),
+          ("sector-label-aquaculture3", "Aquaculture"),
+          ("sector-label-fishing", "Fishing"),
           ("sector-label-aquacultureSupportActivities", "Support activities for fishing and aquaculture")
         )
         forAll(radios) { (id, expected) =>

@@ -32,7 +32,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 
 class MiningControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
@@ -196,10 +196,6 @@ class MiningControllerSpec
         summary.text() should include(expectedErrorMsg)
       }
     }
-
-
-
-
 
   }
 }

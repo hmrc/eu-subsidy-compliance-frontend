@@ -54,7 +54,7 @@
     checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityDistribution.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-electricity-nonrenewable", messages("NACE.radio.35.11"))),
+      content = HtmlContent(radioText("sector-label-electricity-nonrenewable", messages("NACE.radio.35.11"))),
       value = Some(Sector.nonRenewableElectricityProduction.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonRenewableElectricityProduction.toString)
     ),

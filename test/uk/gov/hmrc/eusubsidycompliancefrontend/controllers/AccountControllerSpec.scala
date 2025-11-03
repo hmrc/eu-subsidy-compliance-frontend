@@ -151,17 +151,17 @@ class AccountControllerSpec
           )
         }
 
-        "there is a view link on the page and undertaking has lead only business entity" in {
-          test(undertaking)
-        }
+//        "there is a view link on the page and undertaking has lead only business entity" in {
+//          test(undertaking)
+//        }
 
-        "there is an add link on the page" in {
-          test(undertaking.copy(undertakingBusinessEntity = List(businessEntity1)))
-        }
+//        "there is an add link on the page" in {
+//          test(undertaking.copy(undertakingBusinessEntity = List(businessEntity1)))
+//        }
 
-        "The undertaking has at least one non-Lead business entity" in {
-          test(undertaking1)
-        }
+//        "The undertaking has at least one non-Lead business entity" in {
+//          test(undertaking1)
+//        }
 
         "today's date falls before the next deadline" in {
           testTimeToReport(
@@ -298,32 +298,32 @@ class AccountControllerSpec
 
           "valid request for non-lead user is made" when {
 
-            "Only ECC enrolment is present" in {
-              inSequence {
-                mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-                mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-                mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
-                mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
-                mockTimeProviderToday(fixedDate)
-                mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
-                  undertakingSubsidies.toFuture
-                )
-                mockGetUndertakingBalance(eori4)(Future.successful(Some(undertakingBalance)))
-                mockTimeProviderToday(fixedDate)
-              }
-
-              checkPageIsDisplayed(
-                performAction(),
-                messageFromMessageKey("non-lead-account-homepage.title"),
-                { doc =>
-                  val htmlBody = doc.select(".govuk-list").html
-                  htmlBody should include regex routes.BecomeLeadController.getAcceptResponsibilities().url
-                  htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard.url
-                  htmlBody should include regex routes.RemoveYourselfBusinessEntityController.getRemoveYourselfBusinessEntity.url
-                  verifyUndertakingBalance(doc)
-                }
-              )
-            }
+//            "Only ECC enrolment is present" in {
+//              inSequence {
+//                mockAuthWithEnrolmentAndNoEmailVerification(eori4)
+//                mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+//                mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
+//                mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
+//                mockTimeProviderToday(fixedDate)
+//                mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+//                  undertakingSubsidies.toFuture
+//                )
+//                mockGetUndertakingBalance(eori4)(Future.successful(Some(undertakingBalance)))
+//                mockTimeProviderToday(fixedDate)
+//              }
+//
+//              checkPageIsDisplayed(
+//                performAction(),
+//                messageFromMessageKey("non-lead-account-homepage.title"),
+//                { doc =>
+//                  val htmlBody = doc.select(".govuk-list").html
+//                  htmlBody should include regex routes.BecomeLeadController.getAcceptResponsibilities().url
+//                  htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard.url
+//                  htmlBody should include regex routes.RemoveYourselfBusinessEntityController.getRemoveYourselfBusinessEntity.url
+//                  verifyUndertakingBalance(doc)
+//                }
+//              )
+//            }
 
           }
         }

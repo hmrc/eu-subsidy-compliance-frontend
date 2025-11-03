@@ -532,7 +532,7 @@ class AccomodationUtilitiesControllerSpec
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
         val expectedErrorMsg =
-          "What is your undertaking’s main business activity in electricity, gas, steam and air conditioning supply?"
+          "Select your undertaking’s main business activity in electricity, gas, steam and air conditioning supply"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"

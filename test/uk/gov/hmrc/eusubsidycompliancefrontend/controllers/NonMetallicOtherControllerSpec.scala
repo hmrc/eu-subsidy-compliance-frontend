@@ -770,8 +770,5 @@ class NonMetallicOtherControllerSpec
       }
     }
 
-
-
-
   }
 }
