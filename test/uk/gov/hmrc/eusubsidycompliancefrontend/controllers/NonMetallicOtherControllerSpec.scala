@@ -76,7 +76,21 @@ class NonMetallicOtherControllerSpec
     val plasterProducts = "23.62"
     val readyMixedConcrete = "23.63"
     val otherConcreteProducts = "23.66"
-
+    val flatGlass = "23.11"
+    val glassFibres = "23.14"
+    val hollowGlass = "23.13"
+    val otherGlassProducts = "23.15"
+    val shapingFlatGlass = "23.12"
+    val jewelleryManufacture = "32.12"
+    val imitationJewelleryManufacture = "32.13"
+    val coinStriking = "32.11"
+    val ceramicHousehold = "23.41"
+    val ceramicInsulating = "23.43"
+    val ceramicSanitary = "23.42"
+    val otherTechnicalCeramicProducts = "23.44"
+    val otherCeramicProducts4 = "23.45"
+    val broomsAndBrushes = "32.91"
+    val otherProductManufacture = "32.99"
   }
 
   import SectorCodes._
@@ -489,6 +503,275 @@ class NonMetallicOtherControllerSpec
         summary.text() should include(expectedErrorMsg)
       }
     }
+    "loadGlassProductsLvl4Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadGlassProductsLvl4Page()(
+            FakeRequest(GET, routes.NonMetallicOtherController.loadGlassProductsLvl4Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-flatglass", "Flat glass"),
+          ("sector-label-glassfibres", "Glass fibres"),
+          ("sector-label-hollow", "Hollow glass"),
+          ("sector-label-other", "Another type of glass product"),
+          ("sector-label-shaping", "My undertaking carries out shaping and processing of flat glass")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitGlassProductsLvl4Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (flatGlass, navigator.nextPage(flatGlass, "").url),
+          (glassFibres, navigator.nextPage(glassFibres, "").url),
+          (hollowGlass, navigator.nextPage(hollowGlass, "").url),
+          (otherGlassProducts, navigator.nextPage(otherGlassProducts, "").url),
+          (shapingFlatGlass, navigator.nextPage(shapingFlatGlass, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitGlassProductsLvl4Page()(
+              FakeRequest(
+                POST,
+                routes.NonMetallicOtherController.submitGlassProductsLvl4Page().url
+              )
+                .withFormUrlEncodedBody("glass4" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitGlassProductsLvl4Page()(
+            FakeRequest(POST, routes.NonMetallicOtherController.submitGlassProductsLvl4Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select the type of glass or glass products your undertaking manufactures"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadJewelleryCoinsLvl4Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadJewelleryCoinsLvl4Page()(
+            FakeRequest(GET, routes.NonMetallicOtherController.loadJewelleryCoinsLvl4Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-jewellery-articles", "Manufacture of jewellery and related articles"),
+          ("sector-label-imitation-jewellery", "Manufacture of imitation jewellery and related articles"),
+          ("sector-label-coins", "Striking of coins")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitJewelleryCoinsLvl4Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (jewelleryManufacture, navigator.nextPage(jewelleryManufacture, "").url),
+          (imitationJewelleryManufacture, navigator.nextPage(imitationJewelleryManufacture, "").url),
+          (coinStriking, navigator.nextPage(coinStriking, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitJewelleryCoinsLvl4Page()(
+              FakeRequest(
+                POST,
+                routes.NonMetallicOtherController.submitJewelleryCoinsLvl4Page().url
+              )
+                .withFormUrlEncodedBody("jewellery4" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitJewelleryCoinsLvl4Page()(
+            FakeRequest(POST, routes.NonMetallicOtherController.submitJewelleryCoinsLvl4Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select the type of jewellery or related manufacturing your undertaking does"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadOtherPorcelainAndCeramicsLvl4Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadOtherPorcelainAndCeramicsLvl4Page()(
+            FakeRequest(GET, routes.NonMetallicOtherController.loadOtherPorcelainAndCeramicsLvl4Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-household", "Ceramic household and ornamental articles"),
+          ("sector-label-insulators", "Ceramic insulators and insulating fittings"),
+          ("sector-label-sanitary", "Ceramic sanitary fixtures"),
+          ("sector-label-technical", "Other technical ceramic products"),
+          ("sector-label-ceramic-tiles", "Another type of ceramic product")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitOtherPorcelainAndCeramicsLvl4Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (ceramicHousehold, navigator.nextPage(ceramicHousehold, "").url),
+          (ceramicInsulating, navigator.nextPage(ceramicInsulating, "").url),
+          (ceramicSanitary, navigator.nextPage(ceramicSanitary, "").url),
+          (otherTechnicalCeramicProducts, navigator.nextPage(otherTechnicalCeramicProducts, "").url),
+          (otherCeramicProducts4, navigator.nextPage(otherCeramicProducts4, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitOtherPorcelainAndCeramicsLvl4Page()(
+              FakeRequest(
+                POST,
+                routes.NonMetallicOtherController.submitOtherPorcelainAndCeramicsLvl4Page().url
+              )
+                .withFormUrlEncodedBody("porcelain4" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitOtherPorcelainAndCeramicsLvl4Page()(
+            FakeRequest(POST, routes.NonMetallicOtherController.submitOtherPorcelainAndCeramicsLvl4Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select the type of porcelain or ceramic products your undertaking manufactures"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadOtherProductsLvl4Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadOtherProductsLvl4Page()(
+            FakeRequest(GET, routes.NonMetallicOtherController.loadOtherProductsLvl4Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-brooms", "Brooms and brushes"),
+          ("sector-label-other", "Another type of product")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitOtherProductsLvl4Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (broomsAndBrushes, navigator.nextPage(broomsAndBrushes, "").url),
+          (otherProductManufacture, navigator.nextPage(otherProductManufacture, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitOtherProductsLvl4Page()(
+              FakeRequest(
+                POST,
+                routes.NonMetallicOtherController.submitOtherProductsLvl4Page().url
+              )
+                .withFormUrlEncodedBody("otherProducts4" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitOtherProductsLvl4Page()(
+            FakeRequest(POST, routes.NonMetallicOtherController.submitOtherProductsLvl4Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select the type of other products your undertaking manufactures"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+
+
+
 
   }
 }
