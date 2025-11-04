@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailAddress
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 @this(
   layout: Layout,
@@ -63,7 +64,7 @@
 @layout(
     pageTitle = Some(pageTitle),
     backLinkEnabled = true,
-    backLink = Some(previous),
+    backLink = Some(controllers.routes.NACECheckDetailsController.getCheckDetails().toString),
     hasErrors = form.hasErrors
 ) {
 

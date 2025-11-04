@@ -35,5 +35,4 @@ class BaseController(mcc: MessagesControllerComponents) extends FrontendControll
   protected def runStepIfEligible(journey: Journey)(f: => Future[Result])(implicit r: Request[_]): Future[Result] =
     if (journey.isEligibleForStep) f
     else Redirect(journey.previous).toFuture
-
 }

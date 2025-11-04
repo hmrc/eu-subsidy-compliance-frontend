@@ -33,7 +33,7 @@
     govukSummaryList : GovukSummaryList
 )
 
-@(eori: EORI, sector: Sector, verifiedEmail: String, addBusiness: String, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eori: EORI, sector: Sector, verifiedEmail: String, addBusiness: String, naceLevel1Code: String, naceLevel2Code: String, naceLevel3Code: String, industrySectorKey: String, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"undertaking.cya"}
 @businessCyaVal = @{if(addBusiness == "true") messages("undertaking.cya.summary-list.other-businessYes") else messages("undertaking.cya.summary-list.other-businessNo")}
 
@@ -53,47 +53,41 @@
             @govukSummaryList(SummaryList(
                 rows = Seq(
                     SummaryListRow(
-                        key = Key(
-                            content = Text(messages(s"$key.summary-list.eori.key"))
-                        ),
-                        value = Value(
-                            content = Text(eori)
-                        ),
-                        actions = None
+                        key = Key(content = Text(messages(s"$key.summary-list.eori.key"))),
+                        value = Value(content = Text(eori))
                     ),
                     SummaryListRow(
-                        key = Key(
-                            content = Text(messages(s"$key.summary-list.sector.key"))
-                        ),
-                        value = Value(
-                            content = Text(messages(s"sector.label.$sector"))
-                        ),
+                        key = Key(content = Text(messages(s"$key.summary-list.sector.key"))),
+                        value = Value(content = Text(messages(s"sector.label.$industrySectorKey")))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 1")),
+                        value = Value(content = Text(naceLevel1Code + " "+ messages(s"NACE.$naceLevel1Code")))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 2")),
+                        value = Value(content = Text(naceLevel2Code + " "+ messages(s"NACE.$naceLevel2Code")))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 3")),
+                        value = Value(content = Text(naceLevel3Code + " "+ messages(s"NACE.$naceLevel3Code")))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 4")),
+                        value = Value(content = Text(messages(s"NACE.${sector.toString}.heading")))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages(s"$key.summary-list.verified-email"))),
+                        value = Value(content = Text(verifiedEmail)),
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = routes.UndertakingController.getSector.toString,
+                                    href = routes.UndertakingController.getAddEmailForVerification(EmailStatus.CYA).url,
                                     content = Text(messages("common.cya.change")),
-                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.industry-sector"))
+                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.verified-email"))
                                 )
                             )
                         ))
-                    ),
-                    SummaryListRow(
-                    key = Key(
-                        content = Text(messages(s"$key.summary-list.verified-email"))
-                    ),
-                    value = Value(
-                        content = Text(verifiedEmail)
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = routes.UndertakingController.getAddEmailForVerification(EmailStatus.CYA).url,
-                                content = Text(messages("common.cya.change")),
-                                visuallyHiddenText = Some(messages(s"$key.change.hidden.verified-email"))
-                            )
-                        )
-                    ))
                     ),
                     SummaryListRow(
                     key = Key(

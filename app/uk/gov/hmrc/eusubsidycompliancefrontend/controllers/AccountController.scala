@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.DoYouClaimFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies, types}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -176,9 +176,9 @@ class AccountController @Inject() (
         if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
         else n.toFuture
       }
-      var agriOtherFlag: Boolean = false
-      if (undertaking.industrySector.equals(Sector.agriculture) || undertaking.industrySector.equals(Sector.other)) {
-        agriOtherFlag = true
+      var agriOtherFlag: Boolean = true
+      if (undertaking.industrySector.toString.take(2).equals(Sector.fishingAndAquaculture.toString)) {
+        agriOtherFlag = false
       }
       if (undertaking.isLeadEORI(eori)) {
         logger.info("showing account page for lead")

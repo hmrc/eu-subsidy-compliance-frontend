@@ -59,10 +59,16 @@ class FinancialDashboardController @Inject() (
       subsidies <- escService.retrieveSubsidiesForDateRange(undertaking.reference, today.toSearchRange)
       balanceOpt: Option[UndertakingBalance] <- escService.getUndertakingBalance(eori)
       summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, balanceOpt, today)
+      sector = summary.overall.sector.toString.take(2)
+      industrySectorKey: String = sector match {
+        case "01" => "agriculture"
+        case "03" => "fisheryAndAquaculture"
+        case _ => "generalTrade"
+      }
     } yield
       if (undertaking.isManuallySuspended)
         Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url)
-      else Ok(financialDashboardPage(summary))
+      else Ok(financialDashboardPage(summary, industrySectorKey))
 
   }
 

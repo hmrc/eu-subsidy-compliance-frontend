@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
@@ -32,15 +33,13 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"news4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
-    else
-        controllers.routes.UndertakingController.postSector
+
+        controllers.routes.PublishingTelecomsController.submitNewsOtherContentDistributionLvl4Page()
 }
 
 
@@ -51,22 +50,21 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.newsAgency"))),
-            value = Some(Sector.NewsAgencyActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NewsAgencyActivities.toString)
+            content = HtmlContent(radioText("sector-label-newsAgencyActivities", messages("NACE.radio.60.31"))),
+            value = Some(Sector.newsAgencyActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.newsAgencyActivities.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.otherContentDistributionActivities"))),
-            value = Some(Sector.OtherContentDistributionActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherContentDistributionActivities.toString)
+            content = HtmlContent(radioText("sector-label-otherContentDistributionActivities", messages("NACE.radio.60.39"))),
+            value = Some(Sector.otherContentDistributionActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherContentDistributionActivities.toString)
         )
     )
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.publishingBroadcasting.Lvl3.publishingBooksNewspapers.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  pageTitle = Some(messages("NACE.publishingBroadcasting.Lvl3.newsAgency.title")),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -76,17 +74,37 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.publishingBroadcasting.Lvl3.newsAgency.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
+
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.radio.J")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.radio.60")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadProgrammingBroadcastingDistributionLvl3Page().toString>@messages("NACE.radio.60.3")</a>
+        </li>
+    </ol>
+</nav>
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {
         Some(ErrorMessage(
-          content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("NACE.publishingBroadcasting.Lvl3.newsAgency.error"))
         ))
       } else None,
       fieldset = Some(Fieldset(
@@ -95,9 +113,6 @@
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
-      )),
-      hint = Some(Hint(
-        content = Text(messages("NACE.publishingBroadcasting.Lvl3.newsAgency.title"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

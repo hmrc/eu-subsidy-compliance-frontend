@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
@@ -31,13 +32,12 @@ govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"resiCare3"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+ controllers.routes.HouseHealthEducationController.submitResidentialCareLvl3Page()
 }
 
 
@@ -48,33 +48,33 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-ResidentialNursing", messages("NACE.humanHealth.Lvl3.residentialNursing"))),
-value = Some(Sector.ResidentialNursing.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialNursing.toString)
+content = HtmlContent(radioText("sector-label-disabledResidentialCareActivitiesMentalIllness", messages("NACE.radio.87.3"))),
+value = Some(Sector.disabledResidentialCareActivitiesMentalIllness4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.disabledResidentialCareActivitiesMentalIllness.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-ResidentialCareActivitiesMentalIllness", messages("NACE.humanHealth.Lvl3.mentalIllnessSubstanceAbuseCare"))),
-value = Some(Sector.ResidentialCareActivitiesMentalIllness.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialCareActivitiesMentalIllness.toString)
+content = HtmlContent(radioText("sector-label-residentialCareActivitiesMentalIllness", messages("NACE.radio.87.2"))),
+value = Some(Sector.residentialCareActivitiesMentalIllness4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialCareActivitiesMentalIllness.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-DisabledResidentialCareActivitiesMentalIllness", messages("NACE.humanHealth.Lvl3.olderPersonsDisabilitiesCare"))),
-value = Some(Sector.DisabledResidentialCareActivitiesMentalIllness.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.DisabledResidentialCareActivitiesMentalIllness.toString)
+content = HtmlContent(radioText("sector-label-residentialNursing", messages("NACE.radio.87.1"))),
+value = Some(Sector.residentialNursing4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialNursing.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-OtherResidentialCare", messages("NACE.humanHealth.Lvl4.otherResidentialCareNEC"))),
-value = Some(Sector.OtherResidentialCare.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherResidentialCare.toString)
+content = HtmlContent(radioText("sector-label-otherResidentialCare", messages("NACE.radio.87.9"))),
+value = Some(Sector.otherResidentialCare.toString),
+hint = Some(Hint(content = Text(messages("NACE.humanHealth.Lvl3.otherResidentialCare.hint")))),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherResidentialCare.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.humanHealth.Lvl2.residentialCare.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
+pageTitle = Some(messages("NACE.radio.87.title")),
+backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
 
@@ -84,25 +84,46 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(s"${messages(err.key++"." ++err.message)}")
+content = Text(messages("NACE.humanHealth.Lvl2.residentialCare.error"))
 )
 ),
-title = Text(messages("common.error.summary.title", undertakingName))
+title = Text(messages("common.error.summary.title"))
 ))
 }
-
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+ <ol class="govuk-breadcrumbs__list">
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.radio.R")</a>
+  </li>
+  <li class="govuk-breadcrumbs__list-item">
+   <a class="govuk-breadcrumbs__link" href=@controllers.routes.HouseHealthEducationController.loadHumanHealthLvl2Page().toString>@messages("NACE.radio.87")</a>
+  </li>
+ </ol>
+</nav>
 
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("NACE.humanHealth.Lvl2.residentialCare.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.humanHealth.Lvl2.residentialCare.title")),
+content = Text(messages("NACE.radio.87.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

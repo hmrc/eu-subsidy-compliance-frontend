@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.VerifiedStatus.{Veri
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.VerifiedEoriCache
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}

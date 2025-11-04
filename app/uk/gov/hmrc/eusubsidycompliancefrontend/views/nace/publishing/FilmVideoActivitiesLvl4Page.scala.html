@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
@@ -32,15 +33,13 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"film4"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
-    else
-        controllers.routes.UndertakingController.postSector
+
+        controllers.routes.PublishingTelecomsController.submitFilmVideoActivitiesLvl4Page()
 }
 
 
@@ -51,32 +50,31 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.videoProductionDistribution"))),
-            value = Some(Sector.VideoProductionDistribution.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.VideoProductionDistribution.toString)
+            content = HtmlContent(radioText("sector-label-videoProductionDistribution", messages("NACE.radio.59.13"))),
+            value = Some(Sector.videoProductionDistribution.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.videoProductionDistribution.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.videoPostProduction"))),
-            value = Some(Sector.VideoPostProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.VideoPostProduction.toString)
+            content = HtmlContent(radioText("sector-label-videoPostProduction", messages("NACE.radio.59.12"))),
+            value = Some(Sector.videoPostProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.videoPostProduction.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.videoProduction"))),
-            value = Some(Sector.VideoProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.VideoProduction.toString)
+            content = HtmlContent(radioText("sector-label-videoProduction", messages("NACE.radio.59.11"))),
+            value = Some(Sector.videoProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.videoProduction.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.projection"))),
-            value = Some(Sector.Projection.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Projection.toString)
+            content = HtmlContent(radioText("sector-label-projection", messages("NACE.radio.59.14"))),
+            value = Some(Sector.projection.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.projection.toString)
         )
     )
 }
 
 @layout(
   pageTitle = Some(messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -86,17 +84,37 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
+
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("NACE.radio.J")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadPublishingLvl2Page().toString>@messages("NACE.radio.59")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page().toString>@messages("NACE.radio.59.1")</a>
+        </li>
+    </ol>
+</nav>
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {
         Some(ErrorMessage(
-          content = Text(messages("undertakingSector.error.required"))
+            content = Text(messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities.error"))
         ))
       } else None,
       fieldset = Some(Fieldset(
@@ -107,7 +125,7 @@
         ))
       )),
       hint = Some(Hint(
-        content = Text(messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities.hint"))
+        content = Text(messages("NACE.general.hint"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

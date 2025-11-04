@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
@@ -33,15 +34,13 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"manu-g5"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
-    else
-        controllers.routes.UndertakingController.postSector
+
+        controllers.routes.GeneralTradeGroupsController.submitMetalsChemicalsMaterialsPage()
 }
 
 
@@ -52,48 +51,48 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-fabricated", messages("NACE.Manufacturing.Lvl2.2.Metals.FabricatedMetal"))),
-            value = Some(Sector.FabricatedMetalProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FabricatedMetalProducts.toString)
+            content = HtmlContent(radioText("sector-label-fabricated", messages("NACE.radio.25"))),
+            value = Some(Sector.fabricatedMetalProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fabricatedMetalProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-wood", messages("NACE.Manufacturing.Lvl2.2.Metals.Wood"))),
-            value = Some(Sector.WoodProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WoodProducts.toString)
+            content = HtmlContent(radioText("sector-label-wood", messages("NACE.radio.16"))),
+            value = Some(Sector.woodProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-rubber", messages("NACE.Manufacturing.Lvl2.2.Metals.Rubber"))),
-            value = Some(Sector.RubberPlasticProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.RubberPlasticProducts.toString)
+            content = HtmlContent(radioText("sector-label-rubber", messages("NACE.radio.22"))),
+            value = Some(Sector.rubberPlasticProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.rubberPlasticProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-chemicals", messages("NACE.Manufacturing.Lvl2.2.Metals.Chemicals"))),
+            content = HtmlContent(radioText("sector-label-chemicals", messages("NACE.radio.20"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-chemicals", messages("NACE.Manufacturing.Lvl2.2.Metals.Chemicals.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-chemicals", messages("NACE.Manufacturing.Lvl2.2.Metals.Chemicals.hint")))
             )),
-            value = Some(Sector.ChemicalProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ChemicalProducts.toString)
+            value = Some(Sector.chemicalProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.chemicalProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-basic", messages("NNACE.Manufacturing.Lvl2.2.Metals.BasicMetal"))),
+            content = HtmlContent(radioText("sector-label-basic", messages("NACE.radio.24"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-basic", messages("NACE.Manufacturing.Lvl2.2.Metals.BasicMetal.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-basic", messages("NACE.Manufacturing.Lvl2.2.Metals.BasicMetal.hint")))
             )),
-            value = Some(Sector.BasicMetals.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BasicMetals.toString)
+            value = Some(Sector.basicMetals.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.basicMetals.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-coke", messages("NACE.Manufacturing.Lvl2.2.Metals.Coke"))),
-            value = Some(Sector.CokeProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CokeProducts.toString)
+            content = HtmlContent(radioText("sector-label-coke", messages("NACE.radio.19"))),
+            value = Some(Sector.cokeProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.cokeProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-nonmetallic", messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic"))),
+            content = HtmlContent(radioText("sector-label-nonmetallic", messages("NACE.radio.23"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-nonmetallic", messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-nonmetallic", messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic.hint")))
             )),
-            value = Some(Sector.OtherNonMetallicProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherNonMetallicProducts.toString)
+            value = Some(Sector.otherNonMetallicProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNonMetallicProducts.toString)
         )
     )
 }
@@ -101,8 +100,7 @@
 
 @layout(
   pageTitle = Some(messages("NACE.Manufacturing.Lvl2.2.Metals.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -112,16 +110,33 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.Lvl2.2.Metals.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 
+    <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.radio.C")</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.radio.INT005")</a>
+            </li>
+        </ol>
+    </nav>
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.Lvl2.2.Metals.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

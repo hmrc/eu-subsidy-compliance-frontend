@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.Amend
-
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.{NaceLevel4, NaceCheckDetailsViewModel}
 
 @this(
         layout: Layout,
@@ -32,40 +32,27 @@
 )
 
 
-@(sector: Sector, email: String, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(sector: Sector, email: String, viewModel: NaceCheckDetailsViewModel, naceLevel4Notes: NaceLevel4, previous: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@key = @{"undertaking.amendUndertaking"}
 
 @layout(
-    pageTitle = Some(messages("undertaking.amendUndertaking.title")),
+    pageTitle = Some(messages(s"$key.title")),
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
         @formHelper(action = controllers.routes.UndertakingController.postAmendUndertaking) {
             <input type=hidden name=amendUndertaking value=true>
 
-            @H1(messages("undertaking.amendUndertaking.title"))
+            @H1(messages(s"$key.title"))
+
+            <h2 class="govuk-heading-m">@messages(s"$key.h2.email")</h2>
 
             @govukSummaryList(SummaryList(
                 rows = Seq(
                     SummaryListRow(
                         key = Key(
-                            content = Text(messages("undertaking.amendUndertaking.summary-list.sector.key"))
-                        ),
-                        value = Value(
-                            content = Text(messages(s"sector.label.$sector"))
-                        ),
-                        actions = Some(Actions(
-                            items = Seq(
-                                ActionItem(
-                                    href = controllers.routes.UndertakingController.getSectorForUpdate.toString,
-                                    content = Text(messages("common.change")),
-                                    visuallyHiddenText = Some(messages("undertaking.amendUndertaking.summary-list.change.industry-sector"))
-                                )
-                            )
-                        ))
-                    ),
-                    SummaryListRow(
-                        key = Key(
-                            content = Text(messages("undertaking.amendUndertaking.summary-list.undertaking-admin-email.key"))
+                            content = Text(messages(s"$key.summary-list.undertaking-admin-email.key"))
                         ),
                         value = Value(
                             content = Text(email)
@@ -75,7 +62,7 @@
                                 ActionItem(
                                     href = controllers.routes.UndertakingController.getAddEmailForVerification(Amend).toString,
                                     content = Text(messages("common.change")),
-                                    visuallyHiddenText = Some(messages("undertaking.amendUndertaking.summary-list.change.email"))
+                                    visuallyHiddenText = Some(messages(s"$key.summary-list.change.email"))
                                 )
                             )
                         ))
@@ -83,10 +70,145 @@
                 )
             ))
 
-            @P(messages("undertaking.amendUndertaking.p"))
+            <h2 class="govuk-heading-m">@messages(s"$key.h2.your-answers")</h2>
 
-            @button("common.continue")
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(content = Text(messages(s"$key.summary-list.sector.key"))),
+                        value = Value(content = Text(messages(s"sector.label.${viewModel.sector}"))),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = viewModel.changeSectorUrl,
+                                    content = Text(messages("common.cya.change")),
+                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.sector"))
+                                )
+                            )
+                        ))
+                    )
+                ) ++
+                (if (viewModel.showLevel1) Seq(
+                    SummaryListRow(
+                        key = Key(content = Text(messages("NACE.Lvl1.title"))),
+                        value = Value(content = Text(viewModel.naceLevel1Display)),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = viewModel.changeLevel1Url,
+                                    content = Text(messages("common.cya.change")),
+                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl1"))
+                                )
+                            )
+                        ))
+                    )
+                ) else Seq.empty) ++
+                (if (viewModel.showLevel1_1) Seq(
+                    SummaryListRow(
+                        key = Key(content = Text(messages("NACE.Manufacturing.title"))),
+                        value = Value(content = Text(viewModel.naceLevel1_1Display)),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = viewModel.changeLevel1_1Url,
+                                    content = Text(messages("common.cya.change")),
+                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl1.1"))
+                                )
+                            )
+                        ))
+                    )
+                ) else Seq.empty) ++
+                (if (viewModel.showLevel2) Seq(
+                    SummaryListRow(
+                        key = Key(content = Text(messages("NACE.radio."+viewModel.naceLevel1Code+".title"))),
+                        value = Value(content = Text(viewModel.naceLevel2Display)),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = viewModel.changeLevel2Url,
+                                    content = Text(messages("common.cya.change")),
+                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl2"))
+                                )
+                            )
+                        ))
+                    )
+                ) else Seq.empty) ++
+                (if (viewModel.showLevel3) Seq(
+                    SummaryListRow(
+                        key = Key(content = Text(messages("NACE.radio."+viewModel.naceLevel2Code+".title"))),
+                        value = Value(content = Text(viewModel.naceLevel3Display)),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = viewModel.changeLevel3Url,
+                                    content = Text(messages("common.cya.change")),
+                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl3"))
+                                )
+                            )
+                        ))
+                    )
+                ) else Seq.empty) ++
+                (if (viewModel.showLevel4) Seq(
+                    SummaryListRow(
+                        key = Key(content = Text(messages("NACE.radio."+viewModel.naceLevel3Code+".title"))),
+                        value = Value(content = Text(viewModel.naceLevel4Display)),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = viewModel.changeLevel4Url,
+                                    content = Text(messages("common.cya.change")),
+                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl4"))
+                                )
+                            )
+                        ))
+                    )
+                ) else Seq.empty)
+            ))
+
+            <h2 class="govuk-heading-m">@messages(s"$key.h2.NACE")</h2>
+            @P(messages(s"$key.p"))
+
+            <p class="govuk-body">
+                @messages(s"$key.p2")
+                <a href="@messages(s"$key.p2.link-url")" class="govuk-link" target="_blank" rel="noopener noreferrer">@messages(s"$key.p2.link-text")</a>.
+            </p>
+            @P(messages(s"$key.p3"))
+            <br>
+
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(content = Text(messages("NACE.check-details.NACE-level-1"))),
+                        value = Value(content = Text(viewModel.naceLevel1Code + " " + messages(s"NACE.${viewModel.naceLevel1Code}")))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages("NACE.check-details.NACE-level-2"))),
+                        value = Value(content = Text(viewModel.naceLevel2Code + " " + messages(s"NACE.${viewModel.naceLevel2Code}")))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages("NACE.check-details.NACE-level-3"))),
+                        value = Value(content = Text(viewModel.naceLevel3Code + " " + messages(s"NACE.${viewModel.naceLevel3Code}")))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages("NACE.check-details.NACE-level-4"))),
+                        value = Value(content = HtmlContent {
+                            val headingHtml = s"<p class='govuk-body'>${naceLevel4Notes.heading}</p>"
+                            val desc   = naceLevel4Notes.notes.desc .map(d => s"<p class='govuk-body'>$d</p>").getOrElse("")
+                            val intro  = naceLevel4Notes.notes.intro.map(i => s"<p class='govuk-body'>$i</p>").getOrElse("")
+                            val bullets =
+                                if (naceLevel4Notes.notes.bullets.nonEmpty)
+                                    "<ul class='govuk-list govuk-list--bullet'>" +
+                                        naceLevel4Notes.notes.bullets.map(b => s"<li>$b</li>").mkString +
+                                    "</ul>"
+                                else ""
+                            val outro  = naceLevel4Notes.notes.outro.map(o => s"<p class='govuk-body'>$o</p>").getOrElse("")
+
+                            headingHtml + desc + intro + bullets + outro
+                        })
+                    )
+                )
+            ))
+            <a id="homepage-link" class="govuk-link govuk-body" href="@controllers.routes.AccountController.getAccountPage.url">@messages(s"$key.home.url")</a>
         }
 
 }
-

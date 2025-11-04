@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
@@ -29,13 +30,12 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: Journey.Uri, undertakingName: String, mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
-    if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-    else controllers.routes.UndertakingController.postSector
+    controllers.routes.UndertakingController.postSector
 }
 
 
@@ -98,7 +98,7 @@
             content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

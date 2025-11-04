@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
@@ -32,13 +33,12 @@ govukRadios : GovukRadios
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"miningSupport3"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+ controllers.routes.MiningController.submitMiningSupportLvl3Page()
 }
 
 
@@ -49,13 +49,13 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-miningSupportPetroleumExtraction", messages("NACE.mining.Lvl3.miningSupportPetroleumExtraction"))),
-value = Some(Sector.miningSupportPetroleumExtraction.toString),
+content = HtmlContent(radioText("sector-label-miningSupportPetroleumExtraction", messages("NACE.radio.09.1"))),
+value = Some(Sector.miningSupportPetroleumExtraction4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningSupportPetroleumExtraction.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherMiningSupport", messages("NACE.mining.Lvl3.otherMiningSupport"))),
-value = Some(Sector.otherMiningSupport.toString),
+content = HtmlContent(radioText("sector-label-otherMiningSupport", messages("NACE.radio.09.9"))),
+value = Some(Sector.otherMiningSupport4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMiningSupport.toString)
 )
 )
@@ -63,9 +63,8 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMiningSuppo
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl2.metalOresMining.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
+pageTitle = Some(messages("NACE.radio.09.title")),
+backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
 
@@ -75,25 +74,46 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(s"${messages(err.key++"." ++err.message)}")
+content = Text(messages("NACE.mining.Lvl2.miningSupportServices.error"))
 )
 ),
-title = Text(messages("common.error.summary.title", undertakingName))
+title = Text(messages("common.error.summary.title"))
 ))
 }
 
-
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.UndertakingController.getSector.toString">@messages("sector.label.0")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("Other")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString">@messages("NACE.radio.B")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.MiningController.loadMiningLvl2Page().toString">@messages("NACE.radio.09")</a>
+        </li>
+    </ol>
+</nav>
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("NACE.mining.Lvl2.miningSupportServices.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl2.metalOresMining.title")),
+content = Text(messages("NACE.radio.09.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

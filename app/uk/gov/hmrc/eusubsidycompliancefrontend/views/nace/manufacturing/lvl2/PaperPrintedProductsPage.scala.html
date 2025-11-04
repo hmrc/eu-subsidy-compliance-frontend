@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
@@ -33,15 +34,13 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"manu-g6"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
-    else
-        controllers.routes.UndertakingController.postSector
+
+        controllers.routes.GeneralTradeGroupsController.submitPaperPrintedProductsPage()
 }
 
 
@@ -52,20 +51,20 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-paper", messages("NACE.Manufacturing.Lvl2.2.Paper"))),
+            content = HtmlContent(radioText("sector-label-paper", messages("NACE.radio.17"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-paper", messages("NACE.Manufacturing.Lvl2.2.Paper.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-paper", messages("NACE.Manufacturing.Lvl2.2.Paper.hint")))
             )),
-            value = Some(Sector.PaperRelated.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PaperRelated.toString)
+            value = Some(Sector.paperRelated.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.paperRelated.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-printed", messages("NACE.Manufacturing.Lvl2.2.Printed"))),
+            content = HtmlContent(radioText("sector-label-printed", messages("NACE.radio.18"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-printed", messages("NACE.Manufacturing.Lvl2.2.Printed.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-printed", messages("NACE.Manufacturing.Lvl2.2.Printed.hint")))
             )),
-            value = Some(Sector.PrintedProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PrintedProducts.toString)
+            value = Some(Sector.printedProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.printedProducts.toString)
         )
     )
 }
@@ -73,8 +72,7 @@
 
 @layout(
   pageTitle = Some(messages("NACE.Manufacturing.Lvl2.2.Paper.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -84,16 +82,33 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.Lvl2.2.Paper.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 
+    <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.radio.C")</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.radio.INT006")</a>
+            </li>
+        </ol>
+    </nav>
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.Lvl2.2.Paper.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

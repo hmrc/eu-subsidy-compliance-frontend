@@ -48,7 +48,9 @@ object NACESector01 extends {
 
   case object MiningQuarrying extends WithName("miningQuarrying") with NACESector01
 
-  case object ProfessionalScientificTechnicalServices extends WithName("professionalScientificTechnicalServices") with NACESector01
+  case object ProfessionalScientificTechnicalServices
+      extends WithName("professionalScientificTechnicalServices")
+      with NACESector01
 
   case object PublishingBroadcasting extends WithName("publishingBroadcasting") with NACESector01
 
@@ -69,7 +71,6 @@ object NACESector01 extends {
   case object Households extends WithName("households") with NACESector01
 
   final object ActivitiesExtraterritorial extends WithName("activitiesExtraterritorial") with NACESector01
-
 
   val enumerableValues: List[NACESector01] = List(
     Agriculture,

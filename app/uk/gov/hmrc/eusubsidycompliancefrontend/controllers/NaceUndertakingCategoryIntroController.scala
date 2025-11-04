@@ -19,6 +19,9 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.NaceUndertakingCategoryIntroPage
 
 import javax.inject.Inject
@@ -27,7 +30,8 @@ import scala.concurrent.Future
 class NaceUndertakingCategoryIntroController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  NaceUndertakingCategoryIntroPage: NaceUndertakingCategoryIntroPage
+  NaceUndertakingCategoryIntroPage: NaceUndertakingCategoryIntroPage,
+  val store: Store
 )(implicit
   val appConfig: AppConfig
 ) extends BaseController(mcc) {
@@ -40,10 +44,12 @@ class NaceUndertakingCategoryIntroController @Inject() (
   }
 
   def continue: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.put[UndertakingJourney](UndertakingJourney())
+    store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
+
     Future.successful(
-      // Needs updating to take user to /undertaking-industry-sector
-      Redirect(routes.AccountController.getAccountPage)
+      Redirect(routes.UndertakingController.getSector)
     )
   }
-
 }

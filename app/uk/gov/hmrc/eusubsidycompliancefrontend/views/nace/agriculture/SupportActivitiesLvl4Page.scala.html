@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
@@ -32,13 +33,12 @@ govukRadios : GovukRadios
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_],  mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"agriSupport4"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+controllers.routes.AgricultureController.submitSupportActivitiesLvl4Page()
 }
 
 
@@ -49,17 +49,17 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-postHarvestActivities", messages("NACE.agriculture.Lvl4.postHarvestActivities"))),
+content = HtmlContent(radioText("sector-label-postHarvestActivities", messages("NACE.radio.01.63"))),
 value = Some(Sector.postHarvestActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.postHarvestActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-supportActivitiesAnimal", messages("NACE.agriculture.Lvl4.supportActivitiesAnimal"))),
+content = HtmlContent(radioText("sector-label-supportActivitiesAnimal", messages("NACE.radio.01.62"))),
 value = Some(Sector.supportActivitiesAnimal.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivitiesAnimal.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-supportActivitiesCrop", messages("NACE.agriculture.Lvl4.supportActivitiesCrop"))),
+content = HtmlContent(radioText("sector-label-supportActivitiesCrop", messages("NACE.radio.01.61"))),
 value = Some(Sector.supportActivitiesCrop.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivitiesCrop.toString)
 )
@@ -68,9 +68,8 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivitie
 
 
 @layout(
-pageTitle = Some(messages("NACE.agriculture.Lvl3.supportActivities.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
+pageTitle = Some(messages("NACE.radio.01.6.title")),
+backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
 
@@ -80,22 +79,34 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(s"${messages(err.key++"." ++err.message)}")
+content = Text(messages("NACE.agriculture.Lvl3.supportActivities.error"))
 )
 ),
-title = Text(messages("common.error.summary.title", undertakingName))
+title = Text(messages("common.error.summary.title"))
 ))
 }
 
-
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.2")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.AgricultureController.loadAgricultureLvl3Page().toString>@messages("NACE.radio.01.6")</a>
+        </li>
+    </ol>
+</nav>
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("NACE.agriculture.Lvl3.supportActivities.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.agriculture.Lvl3.supportActivities.title")),
+content = Text(messages("NACE.radio.01.6.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

@@ -45,24 +45,12 @@
         ))
 
         @P(messages("undertaking.confirmation.p1"), id = Some("confirmationFirstParaId"))
-        @P(messages("undertaking.confirmation.p2"), id = Some("confirmationSecondParaId"))
 
-        @if(intentToAddBusiness) {
-            <p class="govuk-body" id="confirmation-p3">@Html(messages("undertaking.confirmation.p3", controllers.routes.AddBusinessEntityController.startJourney().url))</p>
-        }
-
-        @button("common.go-undertaking-home")
+            <p class="govuk-body tight-paragraph">@messages("undertaking.confirmation.p2")</p>
+            <ul class="govuk-list govuk-list--bullet tight-bullet-list">
+                <li>@messages("undertaking.confirmation.ul1")</li>
+                <li> @messages("undertaking.confirmation.ul2")</li>
+            </ul>
+        @button("ManageYourUndertaking.button")
     }
-
-    <div id="exit-survey" class="govuk-!-margin-bottom-8">
-        <h2 class="govuk-heading-m">@messages("exitSurvey.heading")</h2>
-        <p class="govuk-body">@messages("exitSurvey.p1")</p>
-        <p class="govuk-body">
-            @messages("exitSurveyBeforeYouGo.p2")
-            <a class="govuk-link" href="@appConfig.userResearchUrl">@messages("exitSurveyBeforeYouGo.link")</a>.
-        <p class="govuk-body">
-            <a class="govuk-link" href="@appConfig.exitSurveyUrl">@messages("exitSurvey.link")</a>
-            @messages("exitSurvey.p2")
-        </p>
-    </div>
 }

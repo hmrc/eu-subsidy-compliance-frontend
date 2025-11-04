@@ -1,0 +1,131 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios
+)
+
+@(form: Form[_],  mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@fieldName = @{"auxNonInsurance4"}
+
+@actionUrl = @{
+
+        controllers.routes.FinanceRealEstateController.submitAuxiliaryNonInsuranceLvl4Page()
+}
+
+@radioText(id: String, content: String) = {
+<span id="@id">@content</span>
+}
+
+@radioOptions = @{
+    Seq(
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-financial-markets", messages("NACE.radio.66.11"))),
+            value = Some(Sector.FinancialMarkets.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FinancialMarkets.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-security-brokerage", messages("NACE.radio.66.12"))),
+            value = Some(Sector.SecurityBrokerage.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.SecurityBrokerage.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-other-auxiliary-financial", messages("NACE.radio.66.19"))),
+            value = Some(Sector.OtherAuxiliaryFinancial.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherAuxiliaryFinancial.toString)
+        )
+    )
+}
+
+@layout(
+  pageTitle = Some(messages("NACE.radio.66.1.title")),
+  backLinkEnabled = false,
+  hasErrors = form.hasErrors
+) {
+
+  @formHelper(action = actionUrl) {
+    @form.errors.map { err =>
+      @govukErrorSummary(ErrorSummary(
+        errorList = Seq(
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+content = Text(messages("NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.error"))
+          )
+        ),
+        title = Text(messages("common.error.summary.title"))
+      ))
+    }
+
+    <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString>@messages("Other")</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().toString>@messages("NACE.radio.L")</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page().toString>@messages("NACE.radio.66")</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href=@controllers.routes.FinanceRealEstateController.loadAuxiliaryFinancialLvl3Page().toString>@messages("NACE.radio.66.1")</a>
+            </li>
+        </ol>
+    </nav>
+
+    @govukRadios(Radios(
+      errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+        content = Text(messages("NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.error"))
+      ))} else None,
+      fieldset = Some(Fieldset(
+        legend = Some(Legend(
+        content = Text(messages("NACE.radio.66.1.title")),
+        classes = "govuk-fieldset__legend--xl",
+        isPageHeading = true
+        ))
+    )),
+        hint = Some(Hint(
+        content = Text(messages("NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.hint"))
+      )),
+      idPrefix = Some(fieldName),
+      name = fieldName,
+      items = radioOptions
+    ))
+
+    @button("continue.button")
+  }
+}
