@@ -18,111 +18,115 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
-  layout: Layout,
-  formHelper: FormWithCSRF,
-  button: components.Button,
-  govukErrorSummary: GovukErrorSummary,
-  govukRadios : GovukRadios
+layout: Layout,
+formHelper: FormWithCSRF,
+button: Button,
+govukErrorSummary: GovukErrorSummary,
+govukRadios : GovukRadios
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@(form: Form[_], previous: Journey.Uri, undertakingName: String, mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
-    if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-    else controllers.routes.UndertakingController.postSector
+controllers.routes.UndertakingController.postSector
 }
 
 
 @radioText(id: String, content: String) = {
-    <span id="@id">@content</span>
+<span id="@id">@content</span>
 }
 
 @radioOptions = @{
-    Seq(
-        RadioItem(
-          content = HtmlContent(radioText("sector-label-agriculture", messages("sector.label.2"))),
-          hint = Some(Hint(
-            content = HtmlContent(radioText("sector-hint-agriculture", messages("sector.hint.2", appConfig.sectorCap("agriculture"))))
-          )),
-          value = Some(Sector.agriculture.toString),
-          checked = form.data.get(fieldName).fold(false)(x => x == Sector.agriculture.toString)
-        ),
-        RadioItem(
-          content = HtmlContent(radioText("sector-label-aquaculture", messages("sector.label.3"))),
-          hint = Some(Hint(
-            content = HtmlContent(radioText("sector-hint-aquaculture", messages("sector.hint.3", appConfig.sectorCap("aquaculture"))))
-          )),
-          value = Some(Sector.aquaculture.toString),
-          checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquaculture.toString)
-        ),
-        RadioItem(
-          content = HtmlContent(radioText("sector-label-transport", messages("sector.label.1"))),
-          hint = Some(Hint(
-            content = HtmlContent(radioText("sector-hint-transport", messages("sector.hint.1", appConfig.sectorCap("transport"))))
-          )),
-          value = Some(Sector.transport.toString),
-          checked = form.data.get(fieldName).fold(false)(x => x == Sector.transport.toString)
-        ),
-        RadioItem(
-          content = HtmlContent(radioText("sector-label-other", messages("sector.label.0"))),
-          hint = Some(Hint(
-            id = Some("sector-hint-other"),
-            content = HtmlContent(radioText("sector-hint-other", messages("sector.hint.0", appConfig.sectorCap("other"))))
-          )),
-          value = Some(Sector.other.toString),
-          checked = form.data.get(fieldName).fold(false)(x => x == Sector.other.toString)
-        )
-    )
+Seq(
+RadioItem(
+content = HtmlContent(radioText("sector-label-agriculture", messages("sector.label.2"))),
+hint = Some(Hint(
+content = HtmlContent(radioText("sector-hint-agriculture", messages("sector.hint.2", appConfig.sectorCap("agriculture")) +" " + messages("sector.hint.Cont")))
+)),
+value = Some(Sector.cropAnimalProduction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.cropAnimalProduction.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-fishingAndAquaculture", messages("sector.label.3"))),
+hint = Some(Hint(
+content = HtmlContent(radioText("sector-hint-fishingAndAquaculture", messages("sector.hint.3", appConfig.sectorCap("aquaculture")) +" " + messages("sector.hint.3Cont")))
+)),
+value = Some(Sector.fishingAndAquaculture.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.fishingAndAquaculture.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-generalTrade", messages("sector.label.00"))),
+hint = Some(Hint(id = Some("sector-hint-other"),
+content = HtmlContent(radioText("sector-hint-generalTrade", messages("sector.hint.0", appConfig.sectorCap("other")+" " +  messages("sector.hint.Cont"))))
+)),
+value = Some(Sector.generalTrade.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.generalTrade.toString)
+)
+)
 }
 
 
+
+
 @layout(
-  pageTitle = Some(messages("undertakingSector.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
-  hasErrors = form.hasErrors
+pageTitle = Some(messages("undertakingSector.title")),
+backLinkEnabled = false,
+hasErrors = form.hasErrors
 ) {
 
-  @formHelper(action = actionUrl) {
-    @form.errors.map { err =>
-      @govukErrorSummary(ErrorSummary(
-        errorList = Seq(
-          ErrorLink(
-            href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
-          )
-        ),
-        title = Text(messages("common.error.summary.title", undertakingName))
-      ))
-    }
+@formHelper(action = actionUrl) {
+@form.errors.map { err =>
+@govukErrorSummary(ErrorSummary(
+errorList = Seq(
+ErrorLink(
+href = Some(s"#${err.key}"),
+content = Text(s"${messages(err.key++"." ++err.message)}")
+)
+),
+title = Text(messages("common.error.summary.title", undertakingName))
+))
+}
 
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link"
+               href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString
+                        else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
+        </li>
+    </ol>
+</nav>
 
+@govukRadios(Radios(
+errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+content = Text(messages("undertakingSector.error.required"))
+))} else None,
+fieldset = Some(Fieldset(
+legend = Some(Legend(
+content = Text(messages("undertakingSector.title")),
+classes = "govuk-fieldset__legend--xl",
+isPageHeading = true
+))
+)),
+hint = Some(Hint(
+content = Text(messages("undertakingSector.p1"))
+)),
+idPrefix = Some(fieldName),
+name = fieldName,
+items = radioOptions
+))
 
-    @govukRadios(Radios(
-      errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
-      ))} else None,
-      fieldset = Some(Fieldset(
-        legend = Some(Legend(
-        content = Text(messages("undertakingSector.title")),
-        classes = "govuk-fieldset__legend--xl",
-        isPageHeading = true
-        ))
-    )),
-        hint = Some(Hint(
-        content = Text(messages("undertakingSector.p1"))
-      )),
-      idPrefix = Some(fieldName),
-      name = fieldName,
-      items = radioOptions
-    ))
-
-    @button("continue.button")
-  }
+@button("continue.button")
+}
 }

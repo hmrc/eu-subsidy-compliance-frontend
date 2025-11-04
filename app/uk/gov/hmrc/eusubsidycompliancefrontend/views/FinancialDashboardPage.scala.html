@@ -32,17 +32,17 @@
   govukNotificationBanner : GovukNotificationBanner
 )
 
-@(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summary: FinancialDashboardSummary,
+industrySectorKey: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"dashboard"}
 
 
 
-@result = @{ if((messages(s"$key.sector.name." + summary.overall.sector)) == "Agriculture" || (messages(s"$key.sector.name." + summary.overall.sector)) == "Other" ){
-    messages(s"dashboardAlt.undertaking.balance.heading") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString) +" "+ messages(s"dashboardAlt.undertaking.balance.headingCont") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.plusYears(1)).getYear.toString)
-}else{
+@result = @{ if(industrySectorKey == "fisheryAndAquaculture" ){
     messages(s"$key.undertaking.balance.heading")
-}}
-
+    } else {
+    messages(s"dashboardAlt.undertaking.balance.heading") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString) +" "+ messages(s"dashboardAlt.undertaking.balance.headingCont") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.plusYears(1)).getYear.toString)
+    }}
 
 @title = @{messages(s"$key.title")}
 
@@ -61,10 +61,10 @@
 }
 
 @insetText = {
-    @if((messages(s"$key.sector.name." + summary.overall.sector)) == "Agriculture" || (messages(s"$key.sector.name." + summary.overall.sector)) == "Other" ){
-    @govukInsetText(InsetText(content = Text(messages("dashboardAlt.insetText")), id = Some("dashboard-inset-text")))
+    @if(industrySectorKey == "fisheryAndAquaculture"){
+@govukInsetText(InsetText(  content = Text(messages("dashboard.insetText")), id = Some("dashboard-inset-text")))
     } else {
-    @govukInsetText(InsetText(  content = Text(messages("dashboard.insetText")), id = Some("dashboard-inset-text")))
+@govukInsetText(InsetText(content = Text(messages("dashboardAlt.insetText")), id = Some("dashboard-inset-text")))
 }
 }
 
@@ -105,7 +105,7 @@
             ),
             SummaryListRow(
                 key = Key(
-                    content = HtmlContent(s"""<span id="SectorCapId">${messages(s"$key.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector))}</span>""")
+                    content = HtmlContent(s"""<span id="SectorCapId">${messages(s"$key.sector.cap.heading", messages(s"sector.label.$industrySectorKey"))}</span>""")
                 ),
                 value = Value(
                     content = Text(summary.overall.sectorCap.toEuros)
@@ -133,7 +133,7 @@
     printDialog = Some(printDialog)
 ) {
 
-@if((messages(s"$key.sector.name." + summary.overall.sector)) == "Agriculture" || (messages(s"$key.sector.name." + summary.overall.sector)) == "Other" ){
+@if(industrySectorKey != "fisheryAndAquaculture"){
 <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
     <div class="govuk-notification-banner__header"><h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Important</h2></div>
     <div class="govuk-notification-banner__content">
@@ -144,13 +144,13 @@
 
     @H1(title)
 
- @if((messages(s"$key.sector.name." + summary.overall.sector)) == "Agriculture" || (messages(s"$key.sector.name." + summary.overall.sector)) == "Other" ){
+ @if(industrySectorKey != "fisheryAndAquaculture"){
     @P(messages("dashboardAlt.p1"))
 } else {
     @P(messages(s"$key.p1"))
 }
 
-@if((messages(s"$key.sector.name." + summary.overall.sector)) == "Agriculture" || (messages(s"$key.sector.name." + summary.overall.sector)) == "Other" ){
+@if(industrySectorKey != "fisheryAndAquaculture"){
     @P(messages("dashboardAlt.p2"))
     @P(messages("dashboardAlt.p3"))
 } else {

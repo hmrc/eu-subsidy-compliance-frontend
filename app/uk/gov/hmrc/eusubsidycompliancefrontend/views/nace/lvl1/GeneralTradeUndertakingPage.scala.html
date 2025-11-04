@@ -1,0 +1,173 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+
+@this(
+layout: Layout,
+formHelper: FormWithCSRF,
+button: Button,
+govukErrorSummary: GovukErrorSummary,
+govukRadios : GovukRadios
+)
+
+
+
+@(form: Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@fieldName = @{"gt"}
+
+@actionUrl = @{
+        controllers.routes.GeneralTradeGroupsController.submitGeneralTradeUndertakingPage()
+}
+
+
+@radioText(id: String, content: String) = {
+<span id="@id">@content</span>
+}
+
+@radioOptions = @{
+Seq(
+RadioItem(
+content = HtmlContent(radioText("sector-label-wholesaleRetail", messages("NACE.radio.G"))),
+value = Some(Sector.wholesaleAndRetailTrade.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.wholesaleAndRetailTrade.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-manufacturing", messages("NACE.radio.C"))),
+hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.manufacturing.hint")))),
+value = Some(Sector.manufacturing.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.manufacturing.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-professionalScientificTechnicalActivities", messages("NACE.radio.N"))),
+hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.professionalScientificTechnicalActivities.hint")))),
+value = Some(Sector.professionalScientificAndTechnicalActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.professionalScientificAndTechnicalActivities.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.F"))),
+value = Some(Sector.construction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.construction.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-telecommunications", messages("NACE.radio.K"))),
+hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.telecommunications.hint")))),
+value = Some(Sector.telecommunications.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.telecommunications.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.radio.J"))),
+hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.publishingBroadcasting.hint")))),
+value = Some(Sector.publishingBroadcasting.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.publishingBroadcasting.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-administration", messages("NACE.radio.O"))),
+hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.administration.hint")))),
+value = Some(Sector.administration.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.administration.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-transportStorage", messages("NACE.radio.H"))),
+hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.transportStorage.hint")))),
+value = Some(Sector.transportStorage.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.transportStorage.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-forestry", messages("NACE.radio.A"))),
+hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.forestry.hint")))),
+value = Some(Sector.forestry.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.forestry.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-realEstate", messages("NACE.radio.M"))),
+hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.realEstate.hint")))),
+value = Some(Sector.realEstate.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.realEstate.toString)
+),
+RadioItem(
+divider = Some("or")
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-other", messages("Other"))),
+hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.other.hint")))),
+value = Some(Sector.otherGeneralTrade.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherGeneralTrade.toString)
+)
+)
+}
+
+
+@layout(
+pageTitle = Some(messages("undertakingSector.title")),
+backLinkEnabled = false,
+hasErrors = form.hasErrors
+) {
+
+@formHelper(action = actionUrl) {
+@form.errors.map { err =>
+@govukErrorSummary(ErrorSummary(
+errorList = Seq(
+ErrorLink(
+href = Some(s"#${err.key}"),
+content = Text(messages("NACE.Lvl1.error"))
+)
+),
+title = Text(messages("common.error.summary.title"))
+))
+}
+
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link"
+               href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString
+                        else controllers.routes.UndertakingController.getAboutUndertaking.toString}">@messages("common.home")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+        </li>
+    </ol>
+</nav>
+
+@govukRadios(Radios(
+errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+content = Text(messages("NACE.Lvl1.error"))
+))} else None,
+fieldset = Some(Fieldset(
+legend = Some(Legend(
+content = Text(messages("NACE.Lvl1.title")),
+classes = "govuk-fieldset__legend--xl",
+isPageHeading = true
+))
+)),
+idPrefix = Some(fieldName),
+name = fieldName,
+items = radioOptions
+))
+
+@button("common.continue.only")
+}
+}

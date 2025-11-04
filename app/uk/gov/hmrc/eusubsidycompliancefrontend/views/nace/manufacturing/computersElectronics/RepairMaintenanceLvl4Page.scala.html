@@ -1,0 +1,161 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios
+)
+
+
+@(form: Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@fieldName = @{"repair4"}
+
+@actionUrl = @{
+
+        controllers.routes.ComputersElectronicsController.submitRepairMaintenanceLvl4Page()
+}
+
+
+@radioText(id: String, content: String) = {
+<span id="@id">@content</span>
+}
+
+@radioOptions = @{
+    Seq(
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-civ-aircraft", messages("NACE.radio.33.16"))),
+            value = Some(Sector.civilianAirRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.civilianAirRepair.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-civ-ships", messages("NACE.radio.33.15"))),
+            value = Some(Sector.civilianShipsRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.civilianShipsRepair.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-civ-other-transport", messages("NACE.radio.33.17"))),
+            value = Some(Sector.otherCivilianTransportEquipmentRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherCivilianTransportEquipmentRepair.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-electrical", messages("NACE.radio.33.14"))),
+            value = Some(Sector.electricalEquipmentRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricalEquipmentRepair.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-electronic", messages("NACE.radio.33.13"))),
+            value = Some(Sector.electronicEquipmentRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.electronicEquipmentRepair.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-fab-metals", messages("NACE.radio.33.11"))),
+            value = Some(Sector.fabricatedMetalProducts4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fabricatedMetalProducts4.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-repair-machinery", messages("NACE.radio.33.12"))),
+            value = Some(Sector.machineryRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.machineryRepair.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-military-vehicles", messages("NACE.radio.33.18"))),
+            value = Some(Sector.militaryVehiclesRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.militaryVehiclesRepair.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-repair-other", messages("NACE.radio.33.19"))),
+            value = Some(Sector.otherEquipmentRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherEquipmentRepair.toString)
+        )
+    )
+}
+
+
+@layout(
+  pageTitle = Some(messages("NACE.radio.33.1.title")),
+  backLinkEnabled = false,
+  hasErrors = form.hasErrors
+) {
+
+  @formHelper(action = actionUrl) {
+    @form.errors.map { err =>
+      @govukErrorSummary(ErrorSummary(
+        errorList = Seq(
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+            content = Text(messages("NACE.Manufacturing.RepairMaintenanceFabricatedMetal.error"))
+          )
+        ),
+        title = Text(messages("common.error.summary.title"))
+      ))
+    }
+
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.radio.C")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString>@messages("NACE.radio.33")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ComputersElectronicsController.loadRepairsMaintainInstallLvl3Page().toString>@messages("NACE.radio.33.1")</a>
+        </li>
+    </ol>
+</nav>
+
+    @govukRadios(Radios(
+      errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+        content = Text(messages("NACE.Manufacturing.RepairMaintenanceFabricatedMetal.error"))
+      ))} else None,
+      fieldset = Some(Fieldset(
+        legend = Some(Legend(
+        content = Text(messages("NACE.radio.33.1.title")),
+        classes = "govuk-fieldset__legend--xl",
+        isPageHeading = true
+        ))
+    )),
+        hint = Some(Hint(
+        content = Text(messages("NACE.general.hint"))
+      )),
+      idPrefix = Some(fieldName),
+      name = fieldName,
+      items = radioOptions
+    ))
+
+    @button("continue.button")
+  }
+}

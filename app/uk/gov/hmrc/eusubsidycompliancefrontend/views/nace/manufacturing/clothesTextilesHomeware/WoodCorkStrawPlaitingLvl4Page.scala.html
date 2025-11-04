@@ -1,0 +1,162 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios
+)
+
+
+@(form:  Form[_], mode: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@fieldName = @{"strawPlaiting4"}
+
+@actionUrl = @{
+
+        controllers.routes.ClothesTextilesHomewareController.submitWoodCorkStrawPlaitingLvl4Page()
+}
+
+
+@radioText(id: String, content: String) = {
+<span id="@id">@content</span>
+}
+
+@radioOptions = @{
+    Seq(
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-parquet", messages("NACE.radio.16.22"))),
+            value = Some(Sector.assembledParquetFloors.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.assembledParquetFloors.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-solid-fuels", messages("NACE.radio.16.26"))),
+            value = Some(Sector.solidFuelsVegetableBiomass.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.solidFuelsVegetableBiomass.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-veneer-sheets", messages("NACE.radio.16.21"))),
+            value = Some(Sector.veneerSheetsPanels.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.veneerSheetsPanels.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-wooden-containers", messages("NACE.radio.16.24"))),
+            value = Some(Sector.woodenContainers.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodenContainers.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-doors-windows", messages("NACE.radio.16.25"))),
+            value = Some(Sector.woodenWindowsDoors.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodenWindowsDoors.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-builders", messages("NACE.radio.16.23"))),
+            value = Some(Sector.otherBuildersCarpentryJoinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherBuildersCarpentryJoinery.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-other-wood", messages("NACE.radio.16.28"))),
+            value = Some(Sector.otherWoodProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherWoodProducts.toString)
+        ),
+        RadioItem(
+            divider = Some(messages("common.radioItem.or"))
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-finishing", messages("NACE.radio.16.27"))),
+            value = Some(Sector.woodenProductsFinishing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodenProductsFinishing.toString)
+        )
+    )
+}
+
+
+@layout(
+  pageTitle = Some(messages("NACE.radio.16.2.title")),
+  backLinkEnabled = false,
+  hasErrors = form.hasErrors
+) {
+
+  @formHelper(action = actionUrl) {
+    @form.errors.map { err =>
+      @govukErrorSummary(ErrorSummary(
+        errorList = Seq(
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+            content = Text(messages("NACE.Manufacturing.WoodCorkStrawPlaiting.Lvl4.error"))
+          )
+        ),
+        title = Text(messages("common.error.summary.title"))
+      ))
+    }
+
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@{if(mode == appConfig.UpdateNaceMode) controllers.routes.NaceUndertakingCategoryIntroController.showPage.toString else if (mode == appConfig.NewRegMode) controllers.routes.UndertakingController.getAboutUndertaking.toString else controllers.routes.UndertakingController.getAmendUndertakingDetails.toString}">@messages("common.home")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.UndertakingController.getSector.toString">@messages("sector.label.0")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().toString">@messages("NACE.radio.C")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().toString">@messages("NACE.radio.INT005")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().toString">@messages("NACE.radio.16")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href="@controllers.routes.ClothesTextilesHomewareController.loadWoodCorkStrawLvl3Page().toString">@messages("NACE.radio.16.2")</a>
+        </li>
+    </ol>
+</nav>
+
+    @govukRadios(Radios(
+      errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+        content = Text(messages("NACE.Manufacturing.WoodCorkStrawPlaiting.Lvl4.error"))
+      ))} else None,
+      fieldset = Some(Fieldset(
+        legend = Some(Legend(
+        content = Text(messages("NACE.radio.16.2.title")),
+        classes = "govuk-fieldset__legend--xl",
+        isPageHeading = true
+        ))
+    )),
+        hint = Some(Hint(
+        content = Text(messages("NACE.general.hint"))
+      )),
+      idPrefix = Some(fieldName),
+      name = fieldName,
+      items = radioOptions
+    ))
+
+    @button("continue.button")
+  }
+}

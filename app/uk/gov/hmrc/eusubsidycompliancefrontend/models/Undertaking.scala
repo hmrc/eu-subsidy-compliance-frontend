@@ -49,6 +49,13 @@ case class Undertaking(
       case None => false
     }
   }
+  def isUndertakingSuspended: Boolean = {
+    undertakingStatus match {
+      case Some(UndertakingStatus.suspendedUndertaking) => true
+      case Some(_) => false
+      case None => false
+    }
+  }
 
   def hasEORI(eori: EORI): Boolean =
     undertakingBusinessEntity

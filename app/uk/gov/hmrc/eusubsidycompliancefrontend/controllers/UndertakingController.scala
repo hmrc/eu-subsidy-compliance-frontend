@@ -20,7 +20,7 @@ import cats.data.OptionT
 import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
@@ -33,7 +33,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUn
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EmailStatus, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EmailStatus, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{Store, UndertakingCache}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -44,10 +44,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpVerbs, NotFoundException}
 import play.api.mvc.Call
+import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms.UndertakingCyaFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.{NaceCheckDetailsViewModel, NaceLevel4Catalogue}
 
 @Singleton
 class UndertakingController @Inject() (
@@ -67,11 +69,13 @@ class UndertakingController @Inject() (
   override val inputEmailPage: InputEmailPage,
   cyaPage: UndertakingCheckYourAnswersPage,
   confirmationPage: ConfirmationPage,
+  updateConfirmationPage: UpdateConfirmationPage,
   amendUndertakingPage: AmendUndertakingPage,
   disableUndertakingWarningPage: DisableUndertakingWarningPage,
   disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
   undertakingDisabledPage: UndertakingDisabledPage,
-  undertakingCache: UndertakingCache
+  undertakingCache: UndertakingCache,
+  navigator: Navigator
 )(implicit
   val appConfig: AppConfig,
   override val executionContext: ExecutionContext
@@ -125,6 +129,7 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val form = journey.about.value.fold(aboutUndertakingForm)(name => aboutUndertakingForm.fill(FormValues(name)))
+      store.update[UndertakingJourney](_.copy(mode = appConfig.NewRegMode))
       Ok(aboutUndertakingPage(form, journey.previous)).toFuture
     }
   }
@@ -149,24 +154,51 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getSector: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
-    getSectorPage()
-  }
-
-  private def getSectorPage(isUpdate: Boolean = false)(implicit request: AuthenticatedEnrolledRequest[_]) = {
+  def getSector: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
-      runStepIfEligible(journey) {
-        val form = journey.sector.value.fold(undertakingSectorForm) { sector =>
-          undertakingSectorForm.fill(FormValues(sector.id.toString))
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      if (journey.mode.equals(appConfig.UpdateNaceMode)) {
+
+        val sector = journey.sector.value match {
+          case Some(value) =>
+            if (value.toString.length < 2 && value.toString.equals("0")) value.toString
+            else if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00"
+            else value.toString.take(2)
+          case None => ""
         }
 
         Ok(
           undertakingSectorPage(
-            form,
+            undertakingSectorForm.fill(FormValues(sector)),
             journey.previous,
             journey.about.value.getOrElse(""),
-            isUpdate
+            journey.mode
+          )
+        ).toFuture
+      } else {
+        getSectorPage()
+      }
+    }
+  }
+
+  private def getSectorPage()(implicit request: AuthenticatedEnrolledRequest[_]) = {
+    implicit val eori: EORI = request.eoriNumber
+    withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
+      runStepIfEligible(journey) {
+        val sector = journey.sector.value match {
+          case Some(value) =>
+            if (value.toString.length < 2 && value.toString.equals("0")) value.toString
+            else if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00"
+            else value.toString.take(2)
+          case None => ""
+        }
+
+        Ok(
+          undertakingSectorPage(
+            undertakingSectorForm.fill(FormValues(sector)),
+            journey.previous,
+            journey.about.value.getOrElse(""),
+            journey.mode
           )
         ).toFuture
       }
@@ -174,29 +206,55 @@ class UndertakingController @Inject() (
   }
 
   def getSectorForUpdate: Action[AnyContent] = enrolled.async { implicit request =>
-    getSectorPage(isUpdate = true)
+    getSectorPage()
   }
 
-  def postSector: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
+  def postSector: Action[AnyContent] = enrolled.async { implicit request =>
     updateSector()
   }
   def updateIndustrySector: Action[AnyContent] = enrolled.async { implicit request =>
-    updateSector(isUpdate = true)
+    updateSector()
   }
 
-  private def updateSector(isUpdate: Boolean = false)(implicit request: AuthenticatedEnrolledRequest[_]) = {
+  private def updateSector()(implicit request: AuthenticatedEnrolledRequest[_]) = {
     implicit val eori: EORI = request.eoriNumber
     processFormSubmission[UndertakingJourney] { journey =>
       undertakingSectorForm
         .bindFromRequest()
         .fold(
           errors =>
-            BadRequest(undertakingSectorPage(errors, journey.previous, journey.about.value.get, isUpdate)).toContext,
-          form =>
-            store
-              .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-              .flatMap(_.next)
-              .toContext
+            BadRequest(
+              undertakingSectorPage(errors, journey.previous, journey.about.value.get, journey.mode)
+            ).toContext,
+          form => {
+            val previousAnswer = journey.sector.value match {
+              case Some(value) =>
+                if (value.toString.length < 2) value.toString
+                else if (!value.toString.take(2).equals("01") && !value.toString.take(2).equals("03")) "00"
+                else value.toString.take(2)
+              case None => ""
+            }
+
+            val lvl4Answer = journey.sector.value match {
+              case Some(lvl4Value) => lvl4Value.toString
+              case None => ""
+            }
+
+            if (previousAnswer.equals(form.value) && journey.isNaceCYA)
+              Redirect(navigator.nextPage(lvl4Answer, appConfig.NewRegChangeMode)).toContext
+            else if (previousAnswer.equals(form.value) && journey.mode == appConfig.AmendNaceMode)
+              Redirect(routes.UndertakingController.getAmendUndertakingDetails).toContext
+            else if (previousAnswer.equals(form.value))
+              Redirect(navigator.nextPage(form.value, journey.mode)).toContext
+            else {
+              for {
+                updatedSector <- store
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .toContext
+                updatedStoreFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = false)).toContext
+              } yield Redirect(navigator.nextPage(form.value, journey.mode))
+            }
+          }
         )
     }
   }
@@ -358,15 +416,52 @@ class UndertakingController @Inject() (
           undertakingVerifiedEmail <- emailService.retrieveVerifiedEmailAddressByEORI(eori).toContext
           undertakingAddBusiness <- journey.addBusiness.value.toContext
           _ <- store.update[UndertakingJourney](j => j.copy(cya = UndertakingCyaFormPage(Some(true)))).toContext
-        } yield Ok(
-          cyaPage(
-            eori = eori,
-            sector = undertakingSector,
-            verifiedEmail = undertakingVerifiedEmail,
-            addBusiness = undertakingAddBusiness.toString,
-            previous = routes.UndertakingController.backFromCheckYourAnswers.url
+        } yield {
+          val naceLevel3Code = undertakingSector.toString.dropRight(1)
+          val naceLevel2Code = undertakingSector.toString.take(2)
+          val naceLevel1Code: String = naceLevel2Code match {
+            case "01" | "02" | "03" => "A"
+            case "05" | "06" | "07" | "08" | "09" => "B"
+            case "35" => "D"
+            case "36" | "37" | "38" | "39" => "E"
+            case "41" | "42" | "43" => "F"
+            case "46" | "47" => "G"
+            case "49" | "50" | "51" | "52" | "53" => "H"
+            case "55" | "56" => "I"
+            case "58" | "59" | "60" => "J"
+            case "61" | "62" | "63" => "K"
+            case "64" | "65" | "66" => "L"
+            case "68" => "M"
+            case "69" | "70" | "71" | "72" | "73" | "74" | "75" => "N"
+            case "77" | "78" | "79" | "80" | "81" | "82" => "O"
+            case "84" => "P"
+            case "85" => "Q"
+            case "86" | "87" | "88" => "R"
+            case "90" | "91" | "92" | "93" => "S"
+            case "94" | "95" | "96" => "T"
+            case "97" | "98" => "U"
+            case "99" => "V"
+            case _ => "C"
+          }
+          val industrySectorKey: String = naceLevel2Code match {
+            case "01" => "agriculture"
+            case "03" => "fisheryAndAquaculture"
+            case _ => "generalTrade"
+          }
+          Ok(
+            cyaPage(
+              eori = eori,
+              sector = undertakingSector,
+              verifiedEmail = undertakingVerifiedEmail,
+              addBusiness = undertakingAddBusiness.toString,
+              naceLevel1Code = naceLevel1Code,
+              naceLevel2Code = naceLevel2Code,
+              naceLevel3Code = naceLevel3Code,
+              industrySectorKey = industrySectorKey,
+              previous = routes.UndertakingController.backFromCheckYourAnswers.url
+            )
           )
-        )
+        }
 
         result.getOrElse(Redirect(journey.previous))
       }
@@ -454,59 +549,256 @@ class UndertakingController @Inject() (
       )
   }
 
-  def getAmendUndertakingDetails: Action[AnyContent] = verifiedEori.async { implicit request =>
+  private def getLevel1ChangeUrl(level1Code: String, level2Code: String): String = level1Code match {
+    case "A" =>
+      if (level2Code == "02") routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
+      else routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
+    case "C" | "F" | "G" | "H" | "J" | "M" | "N" | "O" | "K" =>
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
+    case "B" | "D" | "E" | "I" | "L" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" =>
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage().url
+    case _ =>
+      routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
+  }
+
+  private def getLevel1_1ChangeUrl(level2Code: String): String = level2Code match {
+    case "13" | "14" | "15" | "16" | "22" | "31" =>
+      routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
+    case "26" | "27" | "28" =>
+      routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().url
+    case "10" | "11" | "12" =>
+      routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage().url
+    case "19" | "20" | "23" | "24" | "25" =>
+      routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().url
+    case "17" | "18" =>
+      routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage().url
+    case "29" | "30" =>
+      routes.GeneralTradeGroupsController.loadVehiclesTransportPage().url
+    case _ =>
+      routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
+  }
+
+  private def getLevel1_1Display(level2Code: String)(implicit messages: Messages): String = level2Code match {
+    case "13" | "14" | "15" | "16" | "22" | "31" => messages("NACE.radio.INT002")
+    case "26" | "27" | "28" | "33" => messages("NACE.radio.INT003")
+    case "10" | "11" | "12" => messages("NACE.radio.INT004")
+    case "19" | "20" | "23" | "24" | "25" => messages("NACE.radio.INT005")
+    case "17" | "18" => messages("NACE.radio.INT006")
+    case "29" | "30" => messages("NACE.radio.INT007")
+    case _ => ""
+  }
+
+  def deriveLevel1Code(level2Code: String): String = level2Code match {
+    case "01" | "02" | "03" => "A"
+    case "05" | "06" | "07" | "08" | "09" => "B"
+    case "35" => "D"
+    case "36" | "37" | "38" | "39" => "E"
+    case "41" | "42" | "43" => "F"
+    case "46" | "47" => "G"
+    case "49" | "50" | "51" | "52" | "53" => "H"
+    case "55" | "56" => "I"
+    case "58" | "59" | "60" => "J"
+    case "61" | "62" | "63" => "K"
+    case "64" | "65" | "66" => "L"
+    case "68" => "M"
+    case "69" | "70" | "71" | "72" | "73" | "74" | "75" => "N"
+    case "77" | "78" | "79" | "80" | "81" | "82" => "O"
+    case "84" => "P"
+    case "85" => "Q"
+    case "86" | "87" | "88" => "R"
+    case "90" | "91" | "92" | "93" => "S"
+    case "94" | "95" | "96" => "T"
+    case "97" | "98" => "U"
+    case "99" => "V"
+    case _ => "C"
+  }
+
+  private def buildViewModel(naceLevel4Code: String)(implicit messages: Messages): NaceCheckDetailsViewModel = {
+    val naceLevel3Code = if (naceLevel4Code.length >= 4) naceLevel4Code.take(4) else naceLevel4Code
+    val naceLevel2Code = if (naceLevel4Code.length >= 2) naceLevel4Code.take(2) else naceLevel4Code
+    val naceLevel1Code = deriveLevel1Code(naceLevel2Code)
+
+    val level1Display = {
+      val rawDisplay = messages(s"NACE.radio.$naceLevel1Code")
+      if (rawDisplay.nonEmpty) {
+        rawDisplay.charAt(0).toUpper.toString + rawDisplay.substring(1).toLowerCase
+      } else {
+        rawDisplay
+      }
+    }
+    val level1_1Display = getLevel1_1Display(naceLevel2Code)
+    val level2Display = messages(s"NACE.radio.$naceLevel2Code")
+    val level3Display = messages(s"NACE.radio.$naceLevel3Code")
+    val level4Display = messages(s"NACE.radio.$naceLevel4Code")
+
+    val sector = naceLevel2Code match {
+      case "01" => Sector.agriculture
+      case "03" => Sector.aquaculture
+      case _ => Sector.other
+    }
+
+    val showLevel1 = naceLevel1Code match {
+      case "A" => false
+      case _ => true
+    }
+
+    val showLevel1_1 =
+      naceLevel1Code == "C" && naceLevel2Code != "32" && naceLevel2Code != "33" && naceLevel2Code != "21"
+
+    val showLevel2 = {
+      naceLevel2Code match {
+        case "35" | "01" | "03" | "84" | "85" | "68" | "99" => false
+        case _ => true
+      }
+    }
+
+    val showLevel3 = !naceLevel3Code.endsWith(".0")
+
+    val showLevel4 = {
+      val level4Last2Digits = naceLevel4Code.takeRight(2)
+      val level3LastDigit = naceLevel3Code.takeRight(1)
+      !(level4Last2Digits.endsWith("0") && level4Last2Digits.charAt(0).toString == level3LastDigit)
+    }
+
+    val changeSectorUrl = routes.UndertakingController.getSector.url
+    val changeLevel1Url = getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code)
+    val changeLevel1_1Url = routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
+    val navigatorLevel2Code = naceLevel2Code
+
+    val changeLevel2Url = if (showLevel2) {
+      naceLevel1Code match {
+        case "C" => getLevel1_1ChangeUrl(naceLevel2Code)
+        case "F" => navigator.nextPage(naceLevel1Code, "").url
+        case "G" => navigator.nextPage(naceLevel1Code, "").url
+        case "I" => navigator.nextPage(naceLevel1Code, "").url
+        case "J" => navigator.nextPage(naceLevel1Code, "").url
+        case "O" => navigator.nextPage(naceLevel1Code, "").url
+        case "R" => navigator.nextPage(naceLevel1Code, "").url
+        case "U" => navigator.nextPage(naceLevel1Code, "").url
+        case "H" => navigator.nextPage(naceLevel1Code, "").url
+        case "B" => navigator.nextPage(naceLevel1Code, "").url
+        case "N" => navigator.nextPage(naceLevel1Code, "").url
+        case "E" => navigator.nextPage(naceLevel1Code, "").url
+        case "K" => navigator.nextPage(naceLevel1Code, "").url
+        case "S" => navigator.nextPage(naceLevel1Code, "").url
+        case "A" => getLevel1ChangeUrl(naceLevel1Code, naceLevel2Code)
+        case _ => navigator.nextPage(navigatorLevel2Code, "").url
+      }
+    } else {
+      navigator.nextPage(navigatorLevel2Code, "").url
+    }
+
+    val changeLevel3Url = if (showLevel2) {
+      navigator.nextPage(navigatorLevel2Code, "").url
+    } else {
+      naceLevel1Code match {
+        case "A" => navigator.nextPage(navigatorLevel2Code, "").url
+        case _ => navigator.nextPage(naceLevel1Code, "").url
+      }
+    }
+
+    val changeLevel4Url = if (showLevel3) {
+      navigator.nextPage(naceLevel3Code, "").url
+    } else {
+      naceLevel3Code match {
+        case "80.0" => navigator.nextPage(naceLevel3Code, "").url
+        case _ => navigator.nextPage(navigatorLevel2Code, "").url
+      }
+    }
+
+    NaceCheckDetailsViewModel(
+      naceLevel1Display = level1Display,
+      naceLevel1_1Display = level1_1Display,
+      naceLevel2Display = level2Display,
+      naceLevel3Display = level3Display,
+      naceLevel4Display = level4Display,
+      naceLevel1Code = naceLevel1Code,
+      naceLevel2Code = naceLevel2Code,
+      naceLevel3Code = naceLevel3Code,
+      naceLevel4Code = naceLevel4Code,
+      sector = sector,
+      changeSectorUrl = changeSectorUrl,
+      changeLevel1Url = changeLevel1Url,
+      changeLevel1_1Url = changeLevel1_1Url,
+      changeLevel2Url = changeLevel2Url,
+      changeLevel3Url = changeLevel3Url,
+      changeLevel4Url = changeLevel4Url,
+      showLevel1 = showLevel1,
+      showLevel1_1 = showLevel1_1,
+      showLevel2 = showLevel2,
+      showLevel3 = showLevel3,
+      showLevel4 = showLevel4
+    )
+  }
+
+  def getAmendUndertakingDetails: Action[AnyContent] = enrolled.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
+      val messages: Messages = mcc.messagesApi.preferred(request)
 
-      withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
+      store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
         for {
+          updateToAmendMode <- store.update[UndertakingJourney](_.copy(mode = appConfig.AmendNaceMode))
           updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
           verifiedEmail <- emailService.retrieveVerifiedEmailAddressByEORI(eori)
-        } yield Ok(
-          amendUndertakingPage(
-            updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
-            verifiedEmail,
-            routes.AccountController.getAccountPage.url
-          )
-        )
+        } yield {
+          val naceCode = updatedJourney.sector.value.toString.dropRight(1).drop(5)
+
+          if (naceCode.nonEmpty && naceCode.length == 5) {
+            val viewModel = buildViewModel(naceCode)(messages)
+
+            val naceLevel4Notes = NaceLevel4Catalogue
+              .fromMessages(naceCode)(messages)
+              .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $naceCode"))
+
+            Ok(
+              amendUndertakingPage(
+                updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
+                verifiedEmail,
+                viewModel,
+                naceLevel4Notes,
+                previous = routes.AccountController.getAccountPage.url
+              )
+            )
+          } else {
+            logger.warn(s"Invalid NACE code: $naceCode")
+            Redirect(routes.UndertakingController.getSector)
+          }
+        }
       }
     }
   }
 
-  private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] =
-    store.update[UndertakingJourney](_.copy(isAmend = value))
+  private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] = {
+    for {
+      updateName <- store.update[UndertakingJourney](_.setUndertakingName(e))
+      updateIsAmend <- store.update[UndertakingJourney](_.copy(isAmend = value))
+    } yield updateIsAmend
+  }
 
   def postAmendUndertaking: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
-
-      amendUndertakingForm
-        .bindFromRequest()
-        .fold(
-          _ => throw new IllegalStateException("Unexpected form submission"),
-          _ => {
-            val result = for {
-              updatedJourney <- updateIsAmendState(value = false).toContext
-              undertakingName <- updatedJourney.about.value.toContext
-              undertakingSector <- updatedJourney.sector.value.toContext
-              retrievedUndertaking <- escService.retrieveUndertaking(eori).toContext
-              undertakingRef <- retrievedUndertaking.reference.toContext
-              updatedUndertaking = retrievedUndertaking
-                .copy(name = UndertakingName(undertakingName), industrySector = undertakingSector)
-              _ <- escService.updateUndertaking(updatedUndertaking).toContext
-              _ = auditService.sendEvent(
-                UndertakingUpdated(
-                  request.authorityId,
-                  eori,
-                  undertakingRef,
-                  updatedUndertaking.name,
-                  updatedUndertaking.industrySector
-                )
-              )
-            } yield Redirect(routes.AccountController.getAccountPage)
-            result.getOrElse(handleMissingSessionData("Undertaking Journey"))
-          }
+      val result = for {
+        updatedJourney <- updateIsAmendState(value = false).toContext
+        undertakingName <- updatedJourney.about.value.toContext
+        undertakingSector <- updatedJourney.sector.value.toContext
+        retrievedUndertaking <- escService.retrieveUndertaking(eori).toContext
+        undertakingRef <- retrievedUndertaking.reference.toContext
+        updatedUndertaking = retrievedUndertaking
+          .copy(name = UndertakingName(undertakingName), industrySector = undertakingSector)
+        _ <- escService.updateUndertaking(updatedUndertaking).toContext
+        _ = auditService.sendEvent(
+          UndertakingUpdated(
+            request.authorityId,
+            eori,
+            undertakingRef,
+            updatedUndertaking.name,
+            updatedUndertaking.industrySector
+          )
         )
+      } yield Ok(updateConfirmationPage(undertakingRef, eori))
+      result.getOrElse(handleMissingSessionData("Undertaking Journey"))
     }
   }
 

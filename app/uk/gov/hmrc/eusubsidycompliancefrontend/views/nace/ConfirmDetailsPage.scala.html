@@ -1,0 +1,224 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
+@import views.html.helper.CSPNonce
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: Button,
+    govukRadios: GovukRadios,
+    govukSummaryList: GovukSummaryList
+)
+
+@(
+    form: Form[_],
+    viewModel: NaceCheckDetailsViewModel,
+    naceLevel4Notes: NaceLevel4
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@key = @{"NACE.check-details"}
+
+@layout(
+    pageTitle = Some(messages(s"$key.title")),
+    backLinkEnabled = false
+) {
+
+    @H1(messages(s"$key.title"))
+
+    <h2 class="govuk-heading-m">@messages(s"$key.your-answers")</h2>
+
+@govukSummaryList(SummaryList(
+    rows = Seq(
+        SummaryListRow(
+            key = Key(content = Text(messages(s"$key.summary-list.sector.key"))),
+            value = Value(content = Text(messages(s"sector.label.${viewModel.sector}"))),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = viewModel.changeSectorUrl,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.sector"))
+                    )
+                )
+            ))
+        )
+    ) ++
+    (if (viewModel.showLevel1) Seq(
+        SummaryListRow(
+            key = Key(content = Text(messages("NACE.Lvl1.title"))),
+            value = Value(content = Text(viewModel.naceLevel1Display)),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = viewModel.changeLevel1Url,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl1"))
+                    )
+                )
+            ))
+        )
+    ) else Seq.empty) ++
+    (if (viewModel.showLevel1_1) Seq(
+        SummaryListRow(
+            key = Key(content = Text(messages("NACE.Manufacturing.title"))),
+            value = Value(content = Text(viewModel.naceLevel1_1Display)),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = viewModel.changeLevel1_1Url,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl1.1"))
+                    )
+                )
+            ))
+        )
+    ) else Seq.empty) ++
+    (if (viewModel.showLevel2) Seq(
+        SummaryListRow(
+            key = Key(content = Text(messages("NACE.radio."+viewModel.naceLevel1Code+".title"))),
+            value = Value(content = Text(viewModel.naceLevel2Display)),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = viewModel.changeLevel2Url,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl2"))
+                    )
+                )
+            ))
+        )
+    ) else Seq.empty) ++
+    (if (viewModel.showLevel3) Seq(
+        SummaryListRow(
+            key = Key(content = Text(messages("NACE.radio."+viewModel.naceLevel2Code+".title"))),
+            value = Value(content = Text(viewModel.naceLevel3Display)),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = viewModel.changeLevel3Url,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl3"))
+                    )
+                )
+            ))
+        )
+    ) else Seq.empty) ++
+    (if (viewModel.showLevel4) Seq(
+        SummaryListRow(
+            key = Key(content = Text(messages("NACE.radio."+viewModel.naceLevel3Code+".title"))),
+            value = Value(content = Text(viewModel.naceLevel4Display)),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = viewModel.changeLevel4Url,
+                        content = Text(messages("common.cya.change")),
+                        visuallyHiddenText = Some(messages(s"$key.change.hidden.lvl4"))
+                    )
+                )
+            ))
+        )
+    ) else Seq.empty)
+))
+
+    <h2 class="govuk-heading-m">@messages(s"$key.NACE-categories")</h2>
+
+    <p class="govuk-body">@messages(s"$key.NACE-p1")</p>
+
+    <p class="govuk-body">@messages(s"$key.NACE-p2")</p>
+
+    <p class="govuk-body">
+        @messages(s"$key.NACE-p3-prefix")
+        <a href="@messages(s"$key.NACE-link-url")" class="govuk-link" target="_blank" rel="noopener noreferrer">@messages(s"$key.NACE-link-text")</a>.
+    </p>
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.NACE-level-1"))),
+                value = Value(content = Text(viewModel.naceLevel1Code + " "+ messages(s"NACE.${viewModel.naceLevel1Code}")))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.NACE-level-2"))),
+                value = Value(content = Text(viewModel.naceLevel2Code + " "+ messages(s"NACE.${viewModel.naceLevel2Code}")))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.NACE-level-3"))),
+                value = Value(content = Text(viewModel.naceLevel3Code + " "+ messages(s"NACE.${viewModel.naceLevel3Code}")))
+            ),
+            SummaryListRow(
+              key = Key(content = Text(messages(s"$key.NACE-level-4"))),
+              value = Value(content = HtmlContent {
+                val headingHtml = s"<p class='govuk-body'>${naceLevel4Notes.heading}</p>"
+                val desc   = naceLevel4Notes.notes.desc .map(d => s"<p class='govuk-body'>$d</p>").getOrElse("")
+                val intro  = naceLevel4Notes.notes.intro.map(i => s"<p class='govuk-body'>$i</p>").getOrElse("")
+                val bullets =
+                  if (naceLevel4Notes.notes.bullets.nonEmpty)
+                    "<ul class='govuk-list govuk-list--bullet'>" +
+                      naceLevel4Notes.notes.bullets.map(b => s"<li>$b</li>").mkString +
+                    "</ul>"
+                  else ""
+                val outro  = naceLevel4Notes.notes.outro.map(o => s"<p class='govuk-body'>$o</p>").getOrElse("")
+
+                headingHtml + desc + intro + bullets + outro
+              }))
+            ),
+        classes = "govuk-!-margin-bottom-9"
+    ))
+
+    @formHelper(action = routes.NACECheckDetailsController.postCheckDetails) {
+        <input type="hidden" name="naceCode" value="@viewModel.naceLevel4Code" />
+
+        @govukRadios(Radios(
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages(s"$key.radio-legend")),
+                    classes = "govuk-fieldset__legend--s"
+                ))
+            )),
+            errorMessage = form.error("confirmDetails").map(err => ErrorMessage(content = Text(messages(s"$key.error")))),
+            items = Seq(
+                RadioItem(
+                    content = Text(messages(s"$key.radio-yes")),
+                    value = Some("true"),
+                    id = Some("confirmDetails")
+                ),
+                RadioItem(
+                    content = Text(messages(s"$key.radio-no")),
+                    value = Some("false"),
+                    id = Some("confirmDetails-no"),
+                    hint = Some(Hint(
+                        content = Text(messages(s"$key.radio-no-hint"))
+                    ))
+                )
+            ),
+            name = "confirmDetails"
+        ))
+
+        @button("common.continue", id = Some("submit-button"))
+        <script @CSPNonce.attr type="text/javascript" src="@controllers.routes.Assets.versioned("javascript/disableFormButtonOnClick.js")"></script>
+        <script @CSPNonce.attr>disableButtonOnClick("submit-button")</script>
+    }
+}

@@ -38,7 +38,10 @@ case class UndertakingJourney(
   cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
   confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
   submitted: Option[Boolean] = None,
-  isAmend: Boolean = false
+  isAmend: Boolean = false,
+  mode: String = "",
+  internalNaceCode: String = "",
+  isNaceCYA: Boolean = false
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] = Array(
@@ -111,7 +114,6 @@ object UndertakingJourney {
     case class UndertakingSectorFormPage(value: Form[Sector] = None) extends FormPage[Sector] {
       def uri = controller.getSector.url
     }
-
     case class UndertakingConfirmEmailFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getConfirmEmail.url
     }
@@ -134,7 +136,6 @@ object UndertakingJourney {
     object UndertakingConfirmEmailFormPage {
       implicit val confirmEmailFormPageFormat: OFormat[UndertakingConfirmEmailFormPage] = Json.format
     }
-
     object UndertakingAddBusinessFormPage {
       implicit val confirmEmailFormPageFormat: OFormat[UndertakingAddBusinessFormPage] = Json.format
     }
