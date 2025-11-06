@@ -2351,7 +2351,7 @@ NACE.humanHealth.Lvl4.olderPersonsDisabilitiesCare = Residential care activities
 NACE.radio.87.9 = Other residential care activities
 NACE.radio.87.9.title = What type of other residential care activities does your undertaking do?
 NACE.humanHealth.Lvl3.otherResidentialCare.hint =  Includes intermediation services for residential care.
-NACE.humanHealth.Lvl3.otherResidentialCare.error =  Select the type of residential care your undertaking provides
+NACE.humanHealth.Lvl3.otherResidentialCare.error = Select the type of residential care your undertaking provides
 NACE.humanHealth.Lvl4.otherResidentialCare = Other residential care activities
 NACE.radio.87.91 = Intermediation services for residential care activities
 NACE.radio.87.99 = Any other residential care activities
@@ -2363,7 +2363,7 @@ NACE.humanHealth.Lvl4.socialWorkDisabilities = Social work activities without ac
 NACE.radio.88.9 = Other social work activities without accommodation
 NACE.radio.88.9.title = What type of other social work activities does your undertaking do?
 NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation.hint = Includes child daycare.
-NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation.error = Select the type of other social work activities your undertaking does.
+NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation.error = Select the type of other social work activities your undertaking does
 NACE.radio.88.91 = Child daycare
 NACE.radio.88.99 = Any other social work activities without accommodation
 
