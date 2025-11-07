@@ -97,7 +97,7 @@ class AccountController @Inject() (
 
     undertaking.undertakingStatus match {
       case Some(status)
-          if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.suspendedUndertaking =>
+          if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.naceSuspendedUndertaking =>
         Future.successful(
           Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
             .addingToSession("suspensionCode" -> status.id.toString)
@@ -154,9 +154,14 @@ class AccountController @Inject() (
   ) = {
     implicit val eori: EORI = r.eoriNumber
 
-    if (undertaking.isManuallySuspended)
+    if (undertaking.isManuallySuspended) {
+      // if its 5 take them to the manual suspend page
       Future.successful(Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url))
-    else {
+    } else if (undertaking.industrySector.toString.length <= 4){
+        // take them through updating to nace format
+          Future.successful(Redirect(routes.NaceUndertakingCategoryIntroController.showPage))
+    } else {
+        // take them through to the homepage
       val today = timeProvider.today
 
       val lastSubmitted = undertaking.lastSubsidyUsageUpdt.orElse(undertakingSubsidies.lastSubmitted)

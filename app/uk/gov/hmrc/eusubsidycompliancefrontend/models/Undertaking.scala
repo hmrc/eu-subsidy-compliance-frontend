@@ -51,7 +51,7 @@ case class Undertaking(
   }
   def isUndertakingSuspended: Boolean = {
     undertakingStatus match {
-      case Some(UndertakingStatus.suspendedUndertaking) => true
+      case Some(UndertakingStatus.naceSuspendedUndertaking) => true
       case Some(_) => false
       case None => false
     }

@@ -33,7 +33,7 @@
 
     @H1(messages("NACE.suspended.h1.alt"), Some("govuk-heading-xl"))
 
-    @if(statusCode == UndertakingStatus.suspendedUndertaking.id.toString) {
+    @if(statusCode == UndertakingStatus.naceSuspendedUndertaking.id.toString) {
         <p id="undertaking-NACE-suspended-p1" class="govuk-body">@Html(messages("NACE.undertakingSuspended.p1"))</p>
         <p id="undertaking-NACE-suspended-p2" class="govuk-body">@Html(messages("NACE.undertakingSuspended.p2"))</p>
     }

@@ -62,6 +62,7 @@ class AgricultureController @Inject() (
   private val NonPerennialCropLvl4Form: Form[FormValues] = formWithSingleMandatoryField("nonPCrops4")
   private val AnimalProductionLvl4Form: Form[FormValues] = formWithSingleMandatoryField("animal4")
   private val AgricultureLvl3Form: Form[FormValues] = formWithSingleMandatoryField("agriculture3")
+
   private val ForestryLvl3Form: Form[FormValues] = formWithSingleMandatoryField("forestry3")
   private val FishingAndAquacultureLvl3Form: Form[FormValues] = formWithSingleMandatoryField("fishing3")
   private val AquacultureLvl4Form: Form[FormValues] = formWithSingleMandatoryField("aquaculture4")

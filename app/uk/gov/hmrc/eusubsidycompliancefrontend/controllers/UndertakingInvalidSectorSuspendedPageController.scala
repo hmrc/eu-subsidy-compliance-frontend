@@ -20,10 +20,10 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
-
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UndertakingInvalidSectorSuspendedPage
 
 import javax.inject.Inject
@@ -58,7 +58,11 @@ class UndertakingInvalidSectorSuspendedPageController @Inject() (
     store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
 
     Future.successful(
-      Redirect(routes.NaceUndertakingCategoryIntroController.showPage)
+      if (sector.value.toString.length <= 4){
+      Redirect(routes.NaceUndertakingCategoryIntroController.showPage)}
+        else {
+        Redirect(routes.AccountController.getAccountPage)
+        }
     )
   }
 
