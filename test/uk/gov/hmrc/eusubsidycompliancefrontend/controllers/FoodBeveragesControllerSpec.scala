@@ -31,7 +31,7 @@ import org.scalatest.prop.Tables.Table
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 
-class MiningControllerSpec
+class FoodBeveragesControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
@@ -47,56 +47,74 @@ class MiningControllerSpec
     inject.bind[TimeProvider].toInstance(fakeTimeProvider)
   )
 
-  private val controller = instanceOf[MiningController]
+  private val controller = instanceOf[FoodBeveragesController]
   private val navigator = instanceOf[Navigator]
 
   private object SectorCodes {
-    val petroleumNaturalGasExtraction = "06"
-    val coalAndLigniteMining = "05"
-    val metalOresMining = "07"
-    val otherMiningQuarrying = "08"
-    val miningSupportServices = "09"
-    val miningSupportPetroleumExtraction4 = "09.10"
-    val otherMiningSupport4 = "09.90"
-    val uraniumThoriumOres = "07.21"
-    val otherNonFerrousOres = "07.29"
-    val stoneQuarrying = "08.1"
-    val miningAndQuarryingNEC = "08.9"
-    val peatExtraction = "08.92"
-    val saltExtraction = "08.93"
-    val chemicalMineralsMining = "08.91"
-    val otherNEC = "08.99"
-    val gravelPitsOperation = "08.12"
-    val ornamentalQuarrying = "08.11"
-    val hardcoalMining = "05.10"
-    val ligniteMining = "05.20"
-    val crudePetroleumExtraction = "06.10"
-    val naturalGasExtraction = "06.20"
-    val ironOresMining = "07.10"
-    val nonFerrousOres = "07.2"
+    val bakeryProducts = "10.7"
+    val dairyProducts = "10.5"
+    val fishProcessing = "10.20"
+    val fruitAndVegetables = "10.3"
+    val grainAndStarchProducts = "10.6"
+    val meat = "10.1"
+    val oils = "10.4"
+    val preparedAnimalFeeds = "10.9"
+    val otherFoodProducts = "10.8"
+    val farmAnimalsFood = "10.91"
+    val petFood = "10.92"
+    val dairyProducts4 = "10.51"
+    val iceCream = "10.52"
+    val fruitAndVegetableJuiceManufacture = "10.32"
+    val fruitAndVegetableProcessing = "10.31"
+    val otherFruitAndVegetableProcessing = "10.39"
+    val grainProducts4 = "10.61"
+    val starchProducts = "10.62"
+    val meatProcessing = "10.11"
+    val poultryProcessing = "10.12"
+    val meatProductsProduction = "10.13"
+    val margarine = "10.42"
+    val otherOils = "10.41"
+    val confectionery = "10.82"
+    val condiments = "10.84"
+    val homogenisedFoodPreparations = "10.86"
+    val preparedMeals = "10.85"
+    val sugar = "10.81"
+    val teaAndCoffee = "10.83"
+    val otherFoodProduct = "10.89"
+    val beer = "11.05"
+    val ciders = "11.03"
+    val malt = "11.06"
+    val softDrinks = "11.07"
+    val spirits = "11.01"
+    val wine = "11.02"
+    val otherFermentedBeverages = "11.04"
   }
 
   import SectorCodes._
 
-  "MiningController" should {
-    "loadMiningLvl2Page" should {
+  "FoodBeveragesController" should {
+    "loadFoodLvl3Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadMiningLvl2Page()(
-            FakeRequest(GET, routes.MiningController.loadMiningLvl2Page().url)
+          controller.loadFoodLvl3Page()(
+            FakeRequest(GET, routes.FoodBeveragesController.loadFoodLvl3Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-petroleumNaturalGasExtraction", "Extraction of crude petroleum and natural gas"),
-          ("sector-label-coalAndLigniteMining", "Mining of coal and lignite"),
-          ("sector-label-metalOresMining", "Mining of metal ores"),
-          ("sector-label-otherMiningQuarrying", "Other mining and quarrying"),
-          ("sector-label-miningSupportServices", "Mining support services")
+          ("sector-label-bakery", "Bakery and farinaceous products"),
+          ("sector-label-dairy", "Dairy products and ice"),
+          ("sector-label-fish", "Fish, crustaceans and molluscs"),
+          ("sector-label-fruit-veg", "Fruit and vegetables"),
+          ("sector-label-grain", "Grain mill products and starch"),
+          ("sector-label-meat", "Meat"),
+          ("sector-label-oils", "Oils and fats"),
+          ("sector-label-animalfeeds", "Prepared animal feeds"),
+          ("sector-label-other", "Other food products")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -105,27 +123,31 @@ class MiningControllerSpec
         }
       }
     }
-    "submitMiningLvl2Page" should {
+    "submitFoodLvl3Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (petroleumNaturalGasExtraction, navigator.nextPage(petroleumNaturalGasExtraction, "").url),
-          (coalAndLigniteMining, navigator.nextPage(coalAndLigniteMining, "").url),
-          (metalOresMining, navigator.nextPage(metalOresMining, "").url),
-          (otherMiningQuarrying, navigator.nextPage(otherMiningQuarrying, "").url),
-          (miningSupportServices, navigator.nextPage(miningSupportServices, "").url)
+          (bakeryProducts, navigator.nextPage(bakeryProducts, "").url),
+          (dairyProducts, navigator.nextPage(dairyProducts, "").url),
+          (fishProcessing, navigator.nextPage(fishProcessing, "").url),
+          (fruitAndVegetables, navigator.nextPage(fruitAndVegetables, "").url),
+          (grainAndStarchProducts, navigator.nextPage(grainAndStarchProducts, "").url),
+          (meat, navigator.nextPage(meat, "").url),
+          (oils, navigator.nextPage(oils, "").url),
+          (preparedAnimalFeeds, navigator.nextPage(preparedAnimalFeeds, "").url),
+          (otherFoodProducts, navigator.nextPage(otherFoodProducts, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitMiningLvl2Page()(
+            controller.submitFoodLvl3Page()(
               FakeRequest(
                 POST,
-                routes.MiningController.submitMiningLvl2Page().url
+                routes.FoodBeveragesController.submitFoodLvl3Page().url
               )
-                .withFormUrlEncodedBody("mining2" -> value)
+                .withFormUrlEncodedBody("food3" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -136,33 +158,33 @@ class MiningControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitMiningLvl2Page()(
-            FakeRequest(POST, routes.MiningController.submitMiningLvl2Page().url)
+          controller.submitFoodLvl3Page()(
+            FakeRequest(POST, routes.FoodBeveragesController.submitFoodLvl3Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in mining and quarrying"
+        val expectedErrorMsg = "Select the type of food your undertaking manufactures"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadMiningSupportLvl3Page" should {
+    "loadAnimalFeedsLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadMiningSupportLvl3Page()(
-            FakeRequest(GET, routes.MiningController.loadMiningSupportLvl3Page().url)
+          controller.loadAnimalFeedsLvl4Page()(
+            FakeRequest(GET, routes.FoodBeveragesController.loadAnimalFeedsLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-miningSupportPetroleumExtraction", "Extraction of petroleum and natural gas"),
-          ("sector-label-otherMiningSupport", "Other mining and quarrying")
+          ("sector-label-farm-feed", "Food for farm animals"),
+          ("sector-label-pet-feed", "Pet food")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -171,24 +193,24 @@ class MiningControllerSpec
         }
       }
     }
-    "submitMiningSupportLvl3Page" should {
+    "submitAnimalFeedsLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (miningSupportPetroleumExtraction4, navigator.nextPage(miningSupportPetroleumExtraction4, "").url),
-          (otherMiningSupport4, navigator.nextPage(otherMiningSupport4, "").url)
+          (farmAnimalsFood, navigator.nextPage(farmAnimalsFood, "").url),
+          (petFood, navigator.nextPage(petFood, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitMiningSupportLvl3Page()(
+            controller.submitAnimalFeedsLvl4Page()(
               FakeRequest(
                 POST,
-                routes.MiningController.submitMiningSupportLvl3Page().url
+                routes.FoodBeveragesController.submitAnimalFeedsLvl4Page().url
               )
-                .withFormUrlEncodedBody("miningSupport3" -> value)
+                .withFormUrlEncodedBody("animalFood4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -199,33 +221,34 @@ class MiningControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitMiningSupportLvl3Page()(
-            FakeRequest(POST, routes.MiningController.submitMiningSupportLvl3Page().url)
+          controller.submitAnimalFeedsLvl4Page()(
+            FakeRequest(POST, routes.FoodBeveragesController.submitAnimalFeedsLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "mining or quarrying your undertaking does"
+        val expectedErrorMsg = "Select the type of prepared animal feeds your undertaking manufactures"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadNonFeMetalMiningLvl4Page" should {
+    "loadBakeryAndFarinaceousLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadNonFeMetalMiningLvl4Page()(
-            FakeRequest(GET, routes.MiningController.loadNonFeMetalMiningLvl4Page().url)
+          controller.loadBakeryAndFarinaceousLvl4Page()(
+            FakeRequest(GET, routes.FoodBeveragesController.loadBakeryAndFarinaceousLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-uraniumThoriumOres", "Uranium and thorium ores"),
-          ("sector-label-otherNonFerrousOres", "Other non-ferrous metal ores")
+          ("sector-label-rusks", "Biscuits, rusks and preserved pastries and cakes"),
+          ("sector-label-bread-pastry", "Bread, cakes and fresh pastry goods"),
+          ("sector-label-farinaceous", "Farinaceous products")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -234,24 +257,25 @@ class MiningControllerSpec
         }
       }
     }
-    "submitNonFeMetalMiningLvl4Page" should {
+    "submitBakeryAndFarinaceousLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (uraniumThoriumOres, navigator.nextPage(uraniumThoriumOres, "").url),
-          (otherNonFerrousOres, navigator.nextPage(otherNonFerrousOres, "").url)
+          (farmAnimalsFood, navigator.nextPage(farmAnimalsFood, "").url),
+          (farmAnimalsFood, navigator.nextPage(farmAnimalsFood, "").url),
+          (petFood, navigator.nextPage(petFood, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitNonFeMetalMiningLvl4Page()(
+            controller.submitBakeryAndFarinaceousLvl4Page()(
               FakeRequest(
                 POST,
-                routes.MiningController.submitNonFeMetalMiningLvl4Page().url
+                routes.FoodBeveragesController.submitBakeryAndFarinaceousLvl4Page().url
               )
-                .withFormUrlEncodedBody("nonIron4" -> value)
+                .withFormUrlEncodedBody("bakery4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -262,33 +286,33 @@ class MiningControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitNonFeMetalMiningLvl4Page()(
-            FakeRequest(POST, routes.MiningController.submitNonFeMetalMiningLvl4Page().url)
+          controller.submitBakeryAndFarinaceousLvl4Page()(
+            FakeRequest(POST, routes.FoodBeveragesController.submitBakeryAndFarinaceousLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of non-ferrous metal ores your undertaking mines"
+        val expectedErrorMsg = "Select the type of bakery and farinaceous products your undertaking manufactures"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadOtherMiningLvl3Page" should {
+    "loadDairyProductsLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadOtherMiningLvl3Page()(
-            FakeRequest(GET, routes.MiningController.loadOtherMiningLvl3Page().url)
+          controller.loadDairyProductsLvl4Page()(
+            FakeRequest(GET, routes.FoodBeveragesController.loadDairyProductsLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-stoneQuarrying", "Quarrying of stone, sand and clay"),
-          ("sector-label-miningAndQuarryingNEC", "Other mining and quarrying")
+          ("sector-label-dairy", "Dairy products"),
+          ("sector-label-icecream", "Ice cream and other edible ice")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -297,24 +321,24 @@ class MiningControllerSpec
         }
       }
     }
-    "submitOtherMiningLvl3Page" should {
+    "submitDairyProductsLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (stoneQuarrying, navigator.nextPage(stoneQuarrying, "").url),
-          (miningAndQuarryingNEC, navigator.nextPage(miningAndQuarryingNEC, "").url)
+          (dairyProducts4, navigator.nextPage(dairyProducts4, "").url),
+          (iceCream, navigator.nextPage(iceCream, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitOtherMiningLvl3Page()(
+            controller.submitDairyProductsLvl4Page()(
               FakeRequest(
                 POST,
-                routes.MiningController.submitOtherMiningLvl3Page().url
+                routes.FoodBeveragesController.submitDairyProductsLvl4Page().url
               )
-                .withFormUrlEncodedBody("otherMining3" -> value)
+                .withFormUrlEncodedBody("dairyFood4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -325,35 +349,34 @@ class MiningControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitOtherMiningLvl3Page()(
-            FakeRequest(POST, routes.MiningController.submitOtherMiningLvl3Page().url)
+          controller.submitDairyProductsLvl4Page()(
+            FakeRequest(POST, routes.FoodBeveragesController.submitDairyProductsLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of mining or quarrying your undertaking does"
+        val expectedErrorMsg = "Select the type of dairy products or ice your undertaking manufactures"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadOtherMiningLvl4Page" should {
+    "loadFruitAndVegLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadOtherMiningLvl4Page()(
-            FakeRequest(GET, routes.MiningController.loadOtherMiningLvl4Page().url)
+          controller.loadFruitAndVegLvl4Page()(
+            FakeRequest(GET, routes.FoodBeveragesController.loadFruitAndVegLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-peatExtraction", "Extraction of peat"),
-          ("sector-label-saltExtraction", "Extraction of salt"),
-          ("sector-label-chemicalMineralsMining", "Mining of chemical and fertiliser minerals"),
-          ("sector-label-otherNEC", "Other mining and quarrying")
+          ("sector-label-fruitveg-juice", "Manufacture of fruit and vegetable juice"),
+          ("sector-label-fruitveg-potatoes", "Processing and preserving of potatoes"),
+          ("sector-label-fruitveg-other", "Other processing and preserving of fruit and vegetables")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -362,26 +385,25 @@ class MiningControllerSpec
         }
       }
     }
-    "submitOtherMiningLvl4Page" should {
+    "submitFruitAndVegLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (peatExtraction, navigator.nextPage(peatExtraction, "").url),
-          (saltExtraction, navigator.nextPage(saltExtraction, "").url),
-          (chemicalMineralsMining, navigator.nextPage(chemicalMineralsMining, "").url),
-          (otherNEC, navigator.nextPage(otherNEC, "").url)
+          (fruitAndVegetableJuiceManufacture, navigator.nextPage(fruitAndVegetableJuiceManufacture, "").url),
+          (fruitAndVegetableProcessing, navigator.nextPage(fruitAndVegetableProcessing, "").url),
+          (otherFruitAndVegetableProcessing, navigator.nextPage(otherFruitAndVegetableProcessing, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitOtherMiningLvl4Page()(
+            controller.submitFruitAndVegLvl4Page()(
               FakeRequest(
                 POST,
-                routes.MiningController.submitOtherMiningLvl4Page().url
+                routes.FoodBeveragesController.submitFruitAndVegLvl4Page().url
               )
-                .withFormUrlEncodedBody("otherMining4" -> value)
+                .withFormUrlEncodedBody("fruit4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -392,36 +414,33 @@ class MiningControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitOtherMiningLvl4Page()(
-            FakeRequest(POST, routes.MiningController.submitOtherMiningLvl4Page().url)
+          controller.submitFruitAndVegLvl4Page()(
+            FakeRequest(POST, routes.FoodBeveragesController.submitFruitAndVegLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of mining or quarrying your undertaking does"
+        val expectedErrorMsg = "Select the type of fruit and vegetable production or processing your undertaking does"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadQuarryingLvl4Page" should {
+    "loadGrainAndStarchLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadQuarryingLvl4Page()(
-            FakeRequest(GET, routes.MiningController.loadQuarryingLvl4Page().url)
+          controller.loadGrainAndStarchLvl4Page()(
+            FakeRequest(GET, routes.FoodBeveragesController.loadGrainAndStarchLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-gravelPitsOperation", "Operation of gravel and sand pits and mining of clay and kaolin"),
-          (
-            "sector-label-ornamentalQuarrying",
-            "Quarrying of ornamental stone, limestone, gypsum, slate and other stone"
-          )
+          ("sector-label-grain", "Grain mill products"),
+          ("sector-label-starch", "Starches and starch products")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -430,24 +449,24 @@ class MiningControllerSpec
         }
       }
     }
-    "submitQuarryingLvl4Page" should {
+    "submitGrainAndStarchLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (gravelPitsOperation, navigator.nextPage(gravelPitsOperation, "").url),
-          (ornamentalQuarrying, navigator.nextPage(ornamentalQuarrying, "").url)
+          (grainProducts4, navigator.nextPage(grainProducts4, "").url),
+          (starchProducts, navigator.nextPage(starchProducts, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitQuarryingLvl4Page()(
+            controller.submitGrainAndStarchLvl4Page()(
               FakeRequest(
                 POST,
-                routes.MiningController.submitQuarryingLvl4Page().url
+                routes.FoodBeveragesController.submitGrainAndStarchLvl4Page().url
               )
-                .withFormUrlEncodedBody("quarrying4" -> value)
+                .withFormUrlEncodedBody("grain4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -458,33 +477,34 @@ class MiningControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitQuarryingLvl4Page()(
-            FakeRequest(POST, routes.MiningController.submitQuarryingLvl4Page().url)
+          controller.submitGrainAndStarchLvl4Page()(
+            FakeRequest(POST, routes.FoodBeveragesController.submitGrainAndStarchLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of sand, stone and clay quarrying your undertaking does"
+        val expectedErrorMsg = "Select the type of grain mill products or starch your undertaking manufactures"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadCoalMiningLvl3Page" should {
+    "loadMeatLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadCoalMiningLvl3Page()(
-            FakeRequest(GET, routes.MiningController.loadCoalMiningLvl3Page().url)
+          controller.loadMeatLvl4Page()(
+            FakeRequest(GET, routes.FoodBeveragesController.loadMeatLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-hardcoalMining", "Hard coal"),
-          ("sector-label-ligniteMining", "Lignite")
+          ("sector-label-meat-processing", "Processing and preserving of meat (except poultry)"),
+          ("sector-label-poultry-processing", "Processing and preserving of poultry meat"),
+          ("sector-label-meat-products", "Production of meat and poultry meat products")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -493,24 +513,25 @@ class MiningControllerSpec
         }
       }
     }
-    "submitCoalMiningLvl3Page" should {
+    "submitMeatLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (hardcoalMining, navigator.nextPage(hardcoalMining, "").url),
-          (ligniteMining, navigator.nextPage(ligniteMining, "").url)
+          (meatProcessing, navigator.nextPage(meatProcessing, "").url),
+          (poultryProcessing, navigator.nextPage(poultryProcessing, "").url),
+          (meatProductsProduction, navigator.nextPage(meatProductsProduction, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitCoalMiningLvl3Page()(
+            controller.submitMeatLvl4Page()(
               FakeRequest(
                 POST,
-                routes.MiningController.submitCoalMiningLvl3Page().url
+                routes.FoodBeveragesController.submitMeatLvl4Page().url
               )
-                .withFormUrlEncodedBody("coal3" -> value)
+                .withFormUrlEncodedBody("meat4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -521,33 +542,33 @@ class MiningControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitCoalMiningLvl3Page()(
-            FakeRequest(POST, routes.MiningController.submitCoalMiningLvl3Page().url)
+          controller.submitMeatLvl4Page()(
+            FakeRequest(POST, routes.FoodBeveragesController.submitMeatLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of coal your undertaking mines"
+        val expectedErrorMsg = "Select the type of meat production or processing your undertaking does"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadGasMiningLvl3Page" should {
+    "loadOilsAndFatsLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadGasMiningLvl3Page()(
-            FakeRequest(GET, routes.MiningController.loadGasMiningLvl3Page().url)
+          controller.loadOilsAndFatsLvl4Page()(
+            FakeRequest(GET, routes.FoodBeveragesController.loadOilsAndFatsLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-crudePetroleumExtraction", "Crude petroleum"),
-          ("sector-label-naturalGasExtraction", "Natural gas")
+          ("sector-label-oilsfats-marg", "Margarine and similar edible fats"),
+          ("sector-label-oilsfats-other", "Other oils and fats")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -556,24 +577,24 @@ class MiningControllerSpec
         }
       }
     }
-    "submitGasMiningLvl3Page" should {
+    "submitOilsAndFatsLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (crudePetroleumExtraction, navigator.nextPage(crudePetroleumExtraction, "").url),
-          (naturalGasExtraction, navigator.nextPage(naturalGasExtraction, "").url)
+          (margarine, navigator.nextPage(margarine, "").url),
+          (otherOils, navigator.nextPage(otherOils, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitGasMiningLvl3Page()(
+            controller.submitOilsAndFatsLvl4Page()(
               FakeRequest(
                 POST,
-                routes.MiningController.submitGasMiningLvl3Page().url
+                routes.FoodBeveragesController.submitOilsAndFatsLvl4Page().url
               )
-                .withFormUrlEncodedBody("gas3" -> value)
+                .withFormUrlEncodedBody("oils4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -584,33 +605,38 @@ class MiningControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitGasMiningLvl3Page()(
-            FakeRequest(POST, routes.MiningController.submitGasMiningLvl3Page().url)
+          controller.submitOilsAndFatsLvl4Page()(
+            FakeRequest(POST, routes.FoodBeveragesController.submitOilsAndFatsLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of fuel your undertaking extracts"
+        val expectedErrorMsg = "Select the type of oils and fats your undertaking manufactures"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
         summary.text() should include(expectedErrorMsg)
       }
     }
-    "loadMetalMiningLvl3Page" should {
+    "loadOtherFoodProductsLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadMetalMiningLvl3Page()(
-            FakeRequest(GET, routes.MiningController.loadMetalMiningLvl3Page().url)
+          controller.loadOtherFoodProductsLvl4Page()(
+            FakeRequest(GET, routes.FoodBeveragesController.loadOtherFoodProductsLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-ironOre", "Iron ores"),
-          ("sector-label-nonFerrousOres", "Non-ferrous metal ores")
+          ("sector-label-confectionary", "Cocoa, chocolate and confectionery"),
+          ("sector-label-condiments", "Condiments and seasonings"),
+          ("sector-label-homogenised", "Homogenised food preparations and dietetic food"),
+          ("sector-label-prepared-meals", "Prepared meals"),
+          ("sector-label-sugar", "Sugar"),
+          ("sector-label-tea-coffee", "Tea and coffee"),
+          ("sector-label-other", "Another type of food product")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -619,24 +645,29 @@ class MiningControllerSpec
         }
       }
     }
-    "submitMetalMiningLvl3Page" should {
+    "submitOtherFoodProductsLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (ironOresMining, navigator.nextPage(ironOresMining, "").url),
-          (nonFerrousOres, navigator.nextPage(nonFerrousOres, "").url)
+          (confectionery, navigator.nextPage(confectionery, "").url),
+          (condiments, navigator.nextPage(condiments, "").url),
+          (homogenisedFoodPreparations, navigator.nextPage(homogenisedFoodPreparations, "").url),
+          (preparedMeals, navigator.nextPage(preparedMeals, "").url),
+          (sugar, navigator.nextPage(sugar, "").url),
+          (teaAndCoffee, navigator.nextPage(teaAndCoffee, "").url),
+          (otherFoodProduct, navigator.nextPage(otherFoodProduct, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitMetalMiningLvl3Page()(
+            controller.submitOtherFoodProductsLvl4Page()(
               FakeRequest(
                 POST,
-                routes.MiningController.submitMetalMiningLvl3Page().url
+                routes.FoodBeveragesController.submitOtherFoodProductsLvl4Page().url
               )
-                .withFormUrlEncodedBody("metal3" -> value)
+                .withFormUrlEncodedBody("otherFood4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -647,12 +678,85 @@ class MiningControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitMetalMiningLvl3Page()(
-            FakeRequest(POST, routes.MiningController.submitMetalMiningLvl3Page().url)
+          controller.submitOtherFoodProductsLvl4Page()(
+            FakeRequest(POST, routes.FoodBeveragesController.submitOtherFoodProductsLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of metal ores your undertaking mines"
+        val expectedErrorMsg = "Select the type of other food products your undertaking manufactures"
+        val summary = document.selectFirst(".govuk-error-summary")
+        summary should not be null
+        summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
+        summary.text() should include(expectedErrorMsg)
+      }
+    }
+    "loadBeveragesLvl4Page" should {
+      "return OK and render expected radio options" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.loadBeveragesLvl4Page()(
+            FakeRequest(GET, routes.FoodBeveragesController.loadBeveragesLvl4Page().url)
+          )
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val radios = Table(
+          ("id", "text"),
+          ("sector-label-beer", "Beer"),
+          ("sector-label-cider", "Cider and other fruit fermented beverages"),
+          ("sector-label-malt", "Malt"),
+          ("sector-label-softdrinks", "Soft drinks and bottled waters"),
+          ("sector-label-spirits", "Spirits (distilled, rectified or blended)"),
+          ("sector-label-wine", "Wine from grapes"),
+          ("sector-label-other-fermented", "Other non-distilled fermented beverages")
+        )
+        forAll(radios) { (id, expected) =>
+          val element = document.getElementById(id)
+          element should not be null
+          element.text() shouldBe expected
+        }
+      }
+    }
+    "submitBeveragesLvl4Page" should {
+      "redirect to confirm details page on valid form submission" in {
+        val radioButtons = Table(
+          ("formValue", "expectedUrl"),
+          (beer, navigator.nextPage(beer, "").url),
+          (ciders, navigator.nextPage(ciders, "").url),
+          (malt, navigator.nextPage(malt, "").url),
+          (softDrinks, navigator.nextPage(softDrinks, "").url),
+          (spirits, navigator.nextPage(spirits, "").url),
+          (wine, navigator.nextPage(wine, "").url),
+          (otherFermentedBeverages, navigator.nextPage(otherFermentedBeverages, "").url)
+        )
+        forAll(radioButtons) { (value: String, expectedUrl: String) =>
+          inSequence {
+            mockAuthWithEnrolment()
+          }
+          val result =
+            controller.submitBeveragesLvl4Page()(
+              FakeRequest(
+                POST,
+                routes.FoodBeveragesController.submitBeveragesLvl4Page().url
+              )
+                .withFormUrlEncodedBody("beverages4" -> value)
+            )
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(expectedUrl)
+        }
+      }
+      "return BAD_REQUEST and show an error when no option is selected" in {
+        inSequence {
+          mockAuthWithEnrolment()
+        }
+        val result =
+          controller.submitBeveragesLvl4Page()(
+            FakeRequest(POST, routes.FoodBeveragesController.submitBeveragesLvl4Page().url)
+          )
+        status(result) shouldBe BAD_REQUEST
+        val document = Jsoup.parse(contentAsString(result))
+        val expectedErrorMsg = "Select the type of beverages your undertaking manufactures"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
