@@ -88,7 +88,6 @@ class FinancialDashboardControllerSpec
         val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
         val result = route(app, request).get
         val page = instanceOf[FinancialDashboardPage]
-        val industrySectorKey = "General trade"
 
         val summaryData = FinancialDashboardSummary
           .fromUndertakingSubsidies(
