@@ -95,14 +95,19 @@ class AccountController @Inject() (
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     logger.info("handleExistingUndertaking")
 
+    val isNaceUpdated = undertaking.industrySector.toString.length == 5
+
     undertaking.undertakingStatus match {
       case Some(status)
-          if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.naceSuspendedUndertaking =>
-        Future.successful(
-          Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
-            .addingToSession("suspensionCode" -> status.id.toString)
-        )
-
+          if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.suspendedUndertaking =>
+        if (isNaceUpdated) {
+          proceedToAccountPage(undertaking)
+        } else {
+          Future.successful(
+            Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
+              .addingToSession("suspensionCode" -> status.id.toString)
+          )
+        }
       case _ =>
         if (undertaking.industrySector == Sector.agriculture || undertaking.industrySector == Sector.other) {
           Future.successful(Redirect(routes.NaceUndertakingCategoryIntroController.showPage))
