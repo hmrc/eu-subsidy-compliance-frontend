@@ -32,7 +32,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 
 class MetalsChemicalsControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
@@ -499,7 +499,8 @@ class MetalsChemicalsControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of washing, cleaning and polishing preparations your undertaking manufactures"
+        val expectedErrorMsg =
+          "Select the type of washing, cleaning and polishing preparations your undertaking manufactures"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -572,7 +573,8 @@ class MetalsChemicalsControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of basic chemicals or polymer-based materials your undertaking manufactures"
+        val expectedErrorMsg =
+          "Select the type of basic chemicals or polymer-based materials your undertaking manufactures"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -728,7 +730,10 @@ class MetalsChemicalsControllerSpec
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-basic", "Basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms"),
+          (
+            "sector-label-basic",
+            "Basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms"
+          ),
           ("sector-label-manmade-fibre", "Manmade fibres"),
           ("sector-label-paints", "Paints, varnishes and similar coatings, printing ink and mastics"),
           ("sector-label-pesticides", "Pesticides, disinfectants and other agrochemical products"),
@@ -951,7 +956,10 @@ class MetalsChemicalsControllerSpec
           (fabricatedStructuralMetalProducts, navigator.nextPage(fabricatedStructuralMetalProducts, "").url),
           (metalTanksManufacture, navigator.nextPage(metalTanksManufacture, "").url),
           (weaponsManufacture4, navigator.nextPage(weaponsManufacture4, "").url),
-          (otherFabricatedMetalProductsManufacture, navigator.nextPage(otherFabricatedMetalProductsManufacture, "").url),
+          (
+            otherFabricatedMetalProductsManufacture,
+            navigator.nextPage(otherFabricatedMetalProductsManufacture, "").url
+          ),
           (metalTreatmentCoating, navigator.nextPage(metalTreatmentCoating, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>

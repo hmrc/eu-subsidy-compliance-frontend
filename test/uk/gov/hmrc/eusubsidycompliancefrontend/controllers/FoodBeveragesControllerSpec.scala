@@ -32,7 +32,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 
 class FoodBeveragesControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour

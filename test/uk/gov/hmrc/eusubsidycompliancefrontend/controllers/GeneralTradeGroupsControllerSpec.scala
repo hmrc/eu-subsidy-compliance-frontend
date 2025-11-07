@@ -32,7 +32,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 
 class GeneralTradeGroupsControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
@@ -146,7 +146,10 @@ class GeneralTradeGroupsControllerSpec
           ("formValue", "expectedUrl"),
           (wholesaleAndRetailTrade, navigator.nextPage(wholesaleAndRetailTrade, "").url),
           (manufacturing, navigator.nextPage(manufacturing, "").url),
-          (professionalScientificAndTechnicalActivities, navigator.nextPage(professionalScientificAndTechnicalActivities, "").url),
+          (
+            professionalScientificAndTechnicalActivities,
+            navigator.nextPage(professionalScientificAndTechnicalActivities, "").url
+          ),
           (construction, navigator.nextPage(construction, "").url),
           (telecommunications, navigator.nextPage(telecommunications, "").url),
           (publishingBroadcasting, navigator.nextPage(publishingBroadcasting, "").url),
@@ -237,7 +240,10 @@ class GeneralTradeGroupsControllerSpec
           (publicAdministrationSocialSecurity, navigator.nextPage(publicAdministrationSocialSecurity, "").url),
           (otherService, navigator.nextPage(otherService, "").url),
           (households, navigator.nextPage(households, "").url),
-          (extraterritorialOrganisationsActivities4, navigator.nextPage(extraterritorialOrganisationsActivities4, "").url)
+          (
+            extraterritorialOrganisationsActivities4,
+            navigator.nextPage(extraterritorialOrganisationsActivities4, "").url
+          )
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {

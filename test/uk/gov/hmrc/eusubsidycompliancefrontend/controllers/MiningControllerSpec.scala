@@ -418,7 +418,10 @@ class MiningControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-gravelPitsOperation", "Operation of gravel and sand pits and mining of clay and kaolin"),
-          ("sector-label-ornamentalQuarrying", "Quarrying of ornamental stone, limestone, gypsum, slate and other stone")
+          (
+            "sector-label-ornamentalQuarrying",
+            "Quarrying of ornamental stone, limestone, gypsum, slate and other stone"
+          )
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)

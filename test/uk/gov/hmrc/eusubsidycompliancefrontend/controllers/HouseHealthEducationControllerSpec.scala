@@ -32,7 +32,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 
 class HouseHealthEducationControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
@@ -98,9 +98,6 @@ class HouseHealthEducationControllerSpec
     val socialWorkDisabilities4 = "88.10"
     val otherSocialWorkWithoutAccommodation = "88.9"
 
-
-
-
   }
 
   import SectorCodes._
@@ -120,7 +117,10 @@ class HouseHealthEducationControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-domesticPersonnel", "Activities of households as employers of domestic personnel"),
-          ("sector-label-undifferentiatedProduction", "Undifferentiated goods and service-producing activities of private households for own use")
+          (
+            "sector-label-undifferentiatedProduction",
+            "Undifferentiated goods and service-producing activities of private households for own use"
+          )
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -134,7 +134,10 @@ class HouseHealthEducationControllerSpec
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
           (domesticPersonnel, navigator.nextPage(domesticPersonnel, "").url),
-          (undifferentiatedGoodsAndServiceActivities, navigator.nextPage(undifferentiatedGoodsAndServiceActivities, "").url)
+          (
+            undifferentiatedGoodsAndServiceActivities,
+            navigator.nextPage(undifferentiatedGoodsAndServiceActivities, "").url
+          )
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
@@ -162,7 +165,8 @@ class HouseHealthEducationControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in households as employers or as producers of goods or services"
+        val expectedErrorMsg =
+          "Select your undertaking’s main business activity in households as employers or as producers of goods or services"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -176,14 +180,23 @@ class HouseHealthEducationControllerSpec
         }
         val result =
           controller.loadUndifferentiatedProducingActivitiesLvl4Page()(
-            FakeRequest(GET, routes.HouseHealthEducationController.loadUndifferentiatedProducingActivitiesLvl4Page().url)
+            FakeRequest(
+              GET,
+              routes.HouseHealthEducationController.loadUndifferentiatedProducingActivitiesLvl4Page().url
+            )
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-undifferentiatedGoods4", "Undifferentiated goods-producing activities of private households for own use"),
-          ("sector-label-undifferentiatedServices4", "Undifferentiated service-producing activities of private households for own use")
+          (
+            "sector-label-undifferentiatedGoods4",
+            "Undifferentiated goods-producing activities of private households for own use"
+          ),
+          (
+            "sector-label-undifferentiatedServices4",
+            "Undifferentiated service-producing activities of private households for own use"
+          )
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -221,7 +234,10 @@ class HouseHealthEducationControllerSpec
         }
         val result =
           controller.submitUndifferentiatedProducingActivitiesLvl4Page()(
-            FakeRequest(POST, routes.HouseHealthEducationController.submitUndifferentiatedProducingActivitiesLvl4Page().url)
+            FakeRequest(
+              POST,
+              routes.HouseHealthEducationController.submitUndifferentiatedProducingActivitiesLvl4Page().url
+            )
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -420,7 +436,8 @@ class HouseHealthEducationControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in medical and dental practice and related activities"
+        val expectedErrorMsg =
+          "Select your undertaking’s main business activity in medical and dental practice and related activities"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -446,7 +463,10 @@ class HouseHealthEducationControllerSpec
           ("sector-label-ambulance", "Patient transportation by ambulance"),
           ("sector-label-physiotherapy", "Physiotherapy"),
           ("sector-label-traditionalMedicine", "Traditional, complementary and alternative medicine"),
-          ("sector-label-humanHealthActivitiesIntermediationServices", "Intermediation services for medical, dental and other human health services"),
+          (
+            "sector-label-humanHealthActivitiesIntermediationServices",
+            "Intermediation services for medical, dental and other human health services"
+          ),
           ("sector-label-OtherHumanHealthActivities4", "Any other human health activities")
         )
         forAll(radios) { (id, expected) =>
@@ -466,7 +486,10 @@ class HouseHealthEducationControllerSpec
           (ambulance, navigator.nextPage(ambulance, "").url),
           (physiotherapy, navigator.nextPage(physiotherapy, "").url),
           (traditionalMedicine, navigator.nextPage(traditionalMedicine, "").url),
-          (humanHealthActivitiesIntermediationServices, navigator.nextPage(humanHealthActivitiesIntermediationServices, "").url),
+          (
+            humanHealthActivitiesIntermediationServices,
+            navigator.nextPage(humanHealthActivitiesIntermediationServices, "").url
+          ),
           (otherHumanHealthActivities4, navigator.nextPage(otherHumanHealthActivities4, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
@@ -515,7 +538,10 @@ class HouseHealthEducationControllerSpec
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-otherResidentialCareIntermediation", "Intermediation services for residential care activities"),
+          (
+            "sector-label-otherResidentialCareIntermediation",
+            "Intermediation services for residential care activities"
+          ),
           ("sector-label-OtherResidentialCare", "Any other residential care activities")
         )
         forAll(radios) { (id, expected) =>
@@ -641,8 +667,14 @@ class HouseHealthEducationControllerSpec
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-disabledResidentialCareActivitiesMentalIllness", "Residential care activities for older persons or persons with physical disabilities"),
-          ("sector-label-residentialCareActivitiesMentalIllness", "Residential care activities for persons living with or having a diagnosis of a mental illness or substance abuse"),
+          (
+            "sector-label-disabledResidentialCareActivitiesMentalIllness",
+            "Residential care activities for older persons or persons with physical disabilities"
+          ),
+          (
+            "sector-label-residentialCareActivitiesMentalIllness",
+            "Residential care activities for persons living with or having a diagnosis of a mental illness or substance abuse"
+          ),
           ("sector-label-residentialNursing", "Residential nursing care"),
           ("sector-label-otherResidentialCare", "Other residential care activities")
         )
@@ -657,8 +689,14 @@ class HouseHealthEducationControllerSpec
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (disabledResidentialCareActivitiesMentalIllness4, navigator.nextPage(disabledResidentialCareActivitiesMentalIllness4, "").url),
-          (residentialCareActivitiesMentalIllness4, navigator.nextPage(residentialCareActivitiesMentalIllness4, "").url),
+          (
+            disabledResidentialCareActivitiesMentalIllness4,
+            navigator.nextPage(disabledResidentialCareActivitiesMentalIllness4, "").url
+          ),
+          (
+            residentialCareActivitiesMentalIllness4,
+            navigator.nextPage(residentialCareActivitiesMentalIllness4, "").url
+          ),
           (residentialNursing4, navigator.nextPage(residentialNursing4, "").url),
           (otherResidentialCare, navigator.nextPage(otherResidentialCare, "").url)
         )
@@ -974,7 +1012,10 @@ class HouseHealthEducationControllerSpec
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-socialWorkDisabilities", "Social work activities without accommodation for older persons or persons with disabilities"),
+          (
+            "sector-label-socialWorkDisabilities",
+            "Social work activities without accommodation for older persons or persons with disabilities"
+          ),
           ("sector-label-otherSocialWorkWithoutAccommodation", "Other social work activities without accommodation")
         )
         forAll(radios) { (id, expected) =>
