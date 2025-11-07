@@ -248,7 +248,7 @@ class FoodBeveragesControllerSpec
           ("id", "text"),
           ("sector-label-rusks", "Biscuits, rusks and preserved pastries and cakes"),
           ("sector-label-bread-pastry", "Bread, cakes and fresh pastry goods"),
-          ("sector-label-pet-feed", "Pet food")
+          ("sector-label-farinaceous", "Farinaceous products")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -291,7 +291,7 @@ class FoodBeveragesControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of prepared animal feeds your undertaking manufactures"
+        val expectedErrorMsg = "Select the type of bakery and farinaceous products your undertaking manufactures"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"

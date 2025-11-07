@@ -99,15 +99,15 @@ class AccountController @Inject() (
 
     undertaking.undertakingStatus match {
       case Some(status)
-        if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.suspendedUndertaking =>
-          if (isNaceUpdated) {
-            proceedToAccountPage(undertaking)
-          } else {
-            Future.successful(
-              Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
-                .addingToSession("suspensionCode" -> status.id.toString)
-            )
-          }
+          if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.suspendedUndertaking =>
+        if (isNaceUpdated) {
+          proceedToAccountPage(undertaking)
+        } else {
+          Future.successful(
+            Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
+              .addingToSession("suspensionCode" -> status.id.toString)
+          )
+        }
       case _ =>
         if (undertaking.industrySector == Sector.agriculture || undertaking.industrySector == Sector.other) {
           Future.successful(Redirect(routes.NaceUndertakingCategoryIntroController.showPage))
