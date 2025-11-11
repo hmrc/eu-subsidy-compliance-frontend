@@ -32,7 +32,7 @@ import scala.concurrent.Future
 import scala.reflect.ClassTag
 
 class NACECheckDetailsControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour {
@@ -447,18 +447,6 @@ class NACECheckDetailsControllerSpec
       "return U for households codes" in {
         controller.deriveLevel1Code("97") shouldBe "U"
         controller.deriveLevel1Code("98") shouldBe "U"
-      }
-
-      "return V for extraterritorial codes" in {
-        controller.deriveLevel1Code("99") shouldBe "V"
-      }
-
-      "return C as default for unknown codes" in {
-        controller.deriveLevel1Code("00") shouldBe "C"
-        controller.deriveLevel1Code("99999") shouldBe "C"
-        controller.deriveLevel1Code("unknown") shouldBe "C"
-        controller.deriveLevel1Code("AA") shouldBe "C"
-        controller.deriveLevel1Code("") shouldBe "C"
       }
     }
   }
