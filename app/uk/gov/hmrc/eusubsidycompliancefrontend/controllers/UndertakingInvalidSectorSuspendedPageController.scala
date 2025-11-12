@@ -58,11 +58,7 @@ class UndertakingInvalidSectorSuspendedPageController @Inject() (
     store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
 
     Future.successful(
-      if (sector.value.toString.length <= 4){
-      Redirect(routes.NaceUndertakingCategoryIntroController.showPage)}
-        else {
-        Redirect(routes.AccountController.getAccountPage)
-        }
+      Redirect(routes.NaceUndertakingCategoryIntroController.showPage)
     )
   }
 

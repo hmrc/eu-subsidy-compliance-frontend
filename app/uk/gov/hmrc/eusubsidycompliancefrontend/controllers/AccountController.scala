@@ -99,7 +99,7 @@ class AccountController @Inject() (
 
     undertaking.undertakingStatus match {
       case Some(status)
-          if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.suspendedUndertaking =>
+          if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.naceSuspendedUndertaking =>
         if (isNaceUpdated) {
           proceedToAccountPage(undertaking)
         } else {

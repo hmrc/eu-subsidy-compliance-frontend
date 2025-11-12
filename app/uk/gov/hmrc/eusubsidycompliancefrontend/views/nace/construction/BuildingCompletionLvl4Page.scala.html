@@ -50,27 +50,27 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43.33"))),
+                content = HtmlContent(radioText("sector-label-floorAndWallCovering", messages("NACE.radio.43.33"))),
                 value = Some(Sector.floorAndWallCovering.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.floorAndWallCovering.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43.32"))),
+                content = HtmlContent(radioText("sector-label-joineryInstallation", messages("NACE.radio.43.32"))),
                 value = Some(Sector.joineryInstallation.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.joineryInstallation.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43.34"))),
+                content = HtmlContent(radioText("sector-label-paintingAndGlazing", messages("NACE.radio.43.34"))),
                 value = Some(Sector.paintingAndGlazing.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.paintingAndGlazing.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43.31"))),
+                content = HtmlContent(radioText("sector-label-plastering", messages("NACE.radio.43.31"))),
                 value = Some(Sector.plastering.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.plastering.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43.35"))),
+                content = HtmlContent(radioText("sector-label-otherBuildingFinishing", messages("NACE.radio.43.35"))),
                 value = Some(Sector.otherBuildingFinishing.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherBuildingFinishing.toString)
         )
