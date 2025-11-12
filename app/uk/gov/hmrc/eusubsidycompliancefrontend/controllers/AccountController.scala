@@ -162,7 +162,7 @@ class AccountController @Inject() (
     if (undertaking.isManuallySuspended)
       // if its 5 take them to the manual suspend page
       Future.successful(Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url))
-     else {
+    else {
       val today = timeProvider.today
 
       val lastSubmitted = undertaking.lastSubsidyUsageUpdt.orElse(undertakingSubsidies.lastSubmitted)
