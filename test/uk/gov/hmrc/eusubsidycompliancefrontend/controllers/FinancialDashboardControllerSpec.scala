@@ -171,7 +171,7 @@ class FinancialDashboardControllerSpec
       verifyAgricultureInsetText(document)
     }
 
-    "display sector cap as General trade on financial Dashboard Page" in {
+    "display sector cap as General trade on financial Dashboard Page for undertaking4" in {
       inSequence {
         mockAuthWithEnrolmentAndNoEmailVerification(eori1)
         mockRetrieveUndertaking(eori1)(undertaking3.some.toFuture)
