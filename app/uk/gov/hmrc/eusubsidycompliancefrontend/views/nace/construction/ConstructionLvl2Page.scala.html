@@ -50,18 +50,18 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.42"))),
+                content = HtmlContent(radioText("sector-label-civilEngineering", messages("NACE.radio.42"))),
                 value = Some(Sector.civilEngineering.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.civilEngineering.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl2.civilEngineering.hint"))))
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.41"))),
+                content = HtmlContent(radioText("sector-label-residentialNonResidentialConstruction", messages("NACE.radio.41"))),
                 value = Some(Sector.residentialNonResidentialConstruction4.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialNonResidentialConstruction.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.radio.43"))),
+                content = HtmlContent(radioText("sector-label-specialisedConstructionActivities", messages("NACE.radio.43"))),
                 value = Some(Sector.specialisedConstructionActivities.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedConstructionActivities.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl2.specialisedConstructionActivities.hint"))))

@@ -107,6 +107,7 @@ class FinancialDashboardControllerSpec
         document
           .getElementById("undertaking-balance-heading")
           .text shouldBe "Undertaking balance for 6 April 2023 to 5 April 2026"
+
         document.getElementById("undertaking-balance-value").text shouldBe "€123.45"
 
         verifyInsetText(document)
@@ -130,6 +131,7 @@ class FinancialDashboardControllerSpec
         document
           .getElementById("undertaking-balance-heading")
           .text shouldBe "Undertaking balance for 6 April 2023 to 5 April 2026"
+
         document
           .getElementById("undertaking-balance-value")
           .text shouldBe "€0.00"
@@ -140,6 +142,36 @@ class FinancialDashboardControllerSpec
     }
 
     "display sector cap as General trade on financial Dashboard Page" in {
+      inSequence {
+        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+        mockRetrieveUndertaking(eori1)(undertaking3.some.toFuture)
+        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
+          undertakingSubsidies.toFuture
+        )
+        mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
+      }
+
+      val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
+      val result = route(app, request).get
+      val page = instanceOf[FinancialDashboardPage]
+      val industrySectorKey = "generalTrade"
+
+      val summaryData = FinancialDashboardSummary
+        .fromUndertakingSubsidies(
+          undertaking = undertaking4,
+          subsidies = undertakingSubsidies,
+          balance = undertakingBalance.some,
+          today = fakeTimeProvider.today
+        )
+
+      status(result) shouldBe Status.OK
+      val data = contentAsString(result)
+      data shouldBe page(summaryData, industrySectorKey)(request, messages, instanceOf[AppConfig]).toString()
+      val document = Jsoup.parse(data)
+      verifyAgricultureInsetText(document)
+    }
+
+    "display sector cap as General trade on financial Dashboard Page for undertaking4" in {
       inSequence {
         mockAuthWithEnrolmentAndNoEmailVerification(eori1)
         mockRetrieveUndertaking(eori1)(undertaking3.some.toFuture)

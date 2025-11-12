@@ -99,7 +99,7 @@ class AccountController @Inject() (
 
     undertaking.undertakingStatus match {
       case Some(status)
-          if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.suspendedUndertaking =>
+          if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.naceSuspendedUndertaking =>
         if (isNaceUpdated) {
           proceedToAccountPage(undertaking)
         } else {
@@ -160,6 +160,7 @@ class AccountController @Inject() (
     implicit val eori: EORI = r.eoriNumber
 
     if (undertaking.isManuallySuspended)
+      // if its 5 take them to the manual suspend page
       Future.successful(Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url))
     else {
       val today = timeProvider.today

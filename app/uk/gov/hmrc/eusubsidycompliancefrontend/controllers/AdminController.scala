@@ -62,7 +62,7 @@ class AdminController @Inject() (
 
   private val AdministrativeLvl2Form: Form[FormValues] = formWithSingleMandatoryField("admin2")
   private val BuildingsLvl3Form: Form[FormValues] = formWithSingleMandatoryField("building3")
-  private val CleaningLvl4Form: Form[FormValues] = formWithSingleMandatoryField("cleaning3")
+  private val CleaningLvl4Form: Form[FormValues] = formWithSingleMandatoryField("cleaning4")
   private val EmploymentLvl3Form: Form[FormValues] = formWithSingleMandatoryField("employment3")
   private val IntermediationServicesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("intermediation4")
   private val InvestigationLvl4Form: Form[FormValues] = formWithSingleMandatoryField("investigation4")
