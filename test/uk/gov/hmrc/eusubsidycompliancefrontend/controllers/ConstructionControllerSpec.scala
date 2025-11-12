@@ -289,25 +289,25 @@ class ConstructionControllerSpec
       }
     }
 
-    "loadConstructionLvl2Page" should {
+    "loadConstructionRoadsRailwaysLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadConstructionLvl2Page()(
-            FakeRequest(GET, routes.ConstructionController.loadConstructionLvl2Page().url)
+          controller.loadConstructionRoadsRailwaysLvl4Page()(
+            FakeRequest(GET, routes.ConstructionController.loadConstructionRoadsRailwaysLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-civilEngineering", "Civil engineering"),
+          ("sector-label-roadsMotorways", "Roads and motorways"),
           (
-            "sector-label-residentialNonResidentialConstruction",
-            "Construction of residential and non-residential buildings"
+            "sector-label-railwaysUnderground",
+            "Railways and underground railways"
           ),
-          ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
+          ("sector-label-bridgesTunnels", "Bridges and tunnels")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -316,22 +316,22 @@ class ConstructionControllerSpec
         }
       }
     }
-    "submitConstructionLvl2Page" should {
+    "submitConstructionRoadsRailwaysLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (civilEngineering, navigator.nextPage(civilEngineering, "").url),
-          (residentialNonResidentialConstruction4, navigator.nextPage(residentialNonResidentialConstruction4, "").url),
-          (specialisedConstructionActivities, navigator.nextPage(specialisedConstructionActivities, "").url)
+          (roadsMotorways, navigator.nextPage(roadsMotorways, "").url),
+          (railwaysUnderground, navigator.nextPage(railwaysUnderground, "").url),
+          (bridgesTunnels, navigator.nextPage(bridgesTunnels, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitConstructionLvl2Page()(
-              FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
-                .withFormUrlEncodedBody("construction2" -> value)
+            controller.submitConstructionRoadsRailwaysLvl4Page()(
+              FakeRequest(POST, routes.ConstructionController.submitConstructionRoadsRailwaysLvl4Page().url)
+                .withFormUrlEncodedBody("roads4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -342,12 +342,12 @@ class ConstructionControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitConstructionLvl2Page()(
-            FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
+          controller.submitConstructionRoadsRailwaysLvl4Page()(
+            FakeRequest(POST, routes.ConstructionController.submitConstructionRoadsRailwaysLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in construction"
+        val expectedErrorMsg = "Select the type of roads or railways your undertaking works on"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -355,25 +355,21 @@ class ConstructionControllerSpec
       }
     }
 
-    "loadConstructionLvl2Page" should {
+    "loadConstructionUtilityProjectsLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadConstructionLvl2Page()(
-            FakeRequest(GET, routes.ConstructionController.loadConstructionLvl2Page().url)
+          controller.loadConstructionUtilityProjectsLvl4Page()(
+            FakeRequest(GET, routes.ConstructionController.loadConstructionUtilityProjectsLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-civilEngineering", "Civil engineering"),
-          (
-            "sector-label-residentialNonResidentialConstruction",
-            "Construction of residential and non-residential buildings"
-          ),
-          ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
+          ("sector-label-electricityUtilityConstruction", "Utility projects for electricity and telecommunications"),
+          ("sector-label-fluidsUtilityConstruction", "Utility projects for fluids")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -382,22 +378,21 @@ class ConstructionControllerSpec
         }
       }
     }
-    "submitConstructionLvl2Page" should {
+    "submitConstructionUtilityProjectsLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (civilEngineering, navigator.nextPage(civilEngineering, "").url),
-          (residentialNonResidentialConstruction4, navigator.nextPage(residentialNonResidentialConstruction4, "").url),
-          (specialisedConstructionActivities, navigator.nextPage(specialisedConstructionActivities, "").url)
+          (electricityUtilityConstruction, navigator.nextPage(electricityUtilityConstruction, "").url),
+          (fluidsUtilityConstruction, navigator.nextPage(fluidsUtilityConstruction, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitConstructionLvl2Page()(
-              FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
-                .withFormUrlEncodedBody("construction2" -> value)
+            controller.submitConstructionUtilityProjectsLvl4Page()(
+              FakeRequest(POST, routes.ConstructionController.submitConstructionUtilityProjectsLvl4Page().url)
+                .withFormUrlEncodedBody("utility4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -408,12 +403,12 @@ class ConstructionControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitConstructionLvl2Page()(
-            FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
+          controller.submitConstructionUtilityProjectsLvl4Page()(
+            FakeRequest(POST, routes.ConstructionController.submitConstructionUtilityProjectsLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in construction"
+        val expectedErrorMsg = "Select the type of utility projects your undertaking works on"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -421,25 +416,25 @@ class ConstructionControllerSpec
       }
     }
 
-    "loadConstructionLvl2Page" should {
+    "loadDemolitionSitePreparationLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadConstructionLvl2Page()(
-            FakeRequest(GET, routes.ConstructionController.loadConstructionLvl2Page().url)
+          controller.loadDemolitionSitePreparationLvl4Page()(
+            FakeRequest(GET, routes.ConstructionController.loadDemolitionSitePreparationLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-civilEngineering", "Civil engineering"),
+          ("sector-label-demolition", "Demolition"),
           (
-            "sector-label-residentialNonResidentialConstruction",
-            "Construction of residential and non-residential buildings"
+            "sector-label-sitePreparation",
+            "Site preparation"
           ),
-          ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
+          ("sector-label-testDrillingBoring", "Test drilling and boring")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -448,22 +443,22 @@ class ConstructionControllerSpec
         }
       }
     }
-    "submitConstructionLvl2Page" should {
+    "submitDemolitionSitePreparationLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (civilEngineering, navigator.nextPage(civilEngineering, "").url),
-          (residentialNonResidentialConstruction4, navigator.nextPage(residentialNonResidentialConstruction4, "").url),
-          (specialisedConstructionActivities, navigator.nextPage(specialisedConstructionActivities, "").url)
+          (demolition, navigator.nextPage(demolition, "").url),
+          (sitePreparation, navigator.nextPage(sitePreparation, "").url),
+          (testDrillingBoring, navigator.nextPage(testDrillingBoring, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitConstructionLvl2Page()(
-              FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
-                .withFormUrlEncodedBody("construction2" -> value)
+            controller.submitDemolitionSitePreparationLvl4Page()(
+              FakeRequest(POST, routes.ConstructionController.submitDemolitionSitePreparationLvl4Page().url)
+                .withFormUrlEncodedBody("demo4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -474,12 +469,12 @@ class ConstructionControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitConstructionLvl2Page()(
-            FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
+          controller.submitDemolitionSitePreparationLvl4Page()(
+            FakeRequest(POST, routes.ConstructionController.submitDemolitionSitePreparationLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in construction"
+        val expectedErrorMsg = "Select the type of demolition or site preparation your undertaking does"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -487,25 +482,26 @@ class ConstructionControllerSpec
       }
     }
 
-    "loadConstructionLvl2Page" should {
+    "loadElectricalPlumbingConstructionLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadConstructionLvl2Page()(
-            FakeRequest(GET, routes.ConstructionController.loadConstructionLvl2Page().url)
+          controller.loadElectricalPlumbingConstructionLvl4Page()(
+            FakeRequest(GET, routes.ConstructionController.loadElectricalPlumbingConstructionLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-civilEngineering", "Civil engineering"),
+          ("sector-label-electricalInstallation", "Electrical installation"),
+          ("sector-label-plumbingHeatingAC", "Plumbing, heat and air conditioning installation"),
           (
-            "sector-label-residentialNonResidentialConstruction",
-            "Construction of residential and non-residential buildings"
+            "sector-label-insulationInstallation",
+            "Installation of insulation"
           ),
-          ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
+          ("sector-label-otherConstructionInstallation", "Other construction installation")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -514,22 +510,23 @@ class ConstructionControllerSpec
         }
       }
     }
-    "submitConstructionLvl2Page" should {
+    "submitElectricalPlumbingConstructionLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (civilEngineering, navigator.nextPage(civilEngineering, "").url),
-          (residentialNonResidentialConstruction4, navigator.nextPage(residentialNonResidentialConstruction4, "").url),
-          (specialisedConstructionActivities, navigator.nextPage(specialisedConstructionActivities, "").url)
+          (electricalInstallation, navigator.nextPage(electricalInstallation, "").url),
+          (insulationInstallation, navigator.nextPage(insulationInstallation, "").url),
+          (plumbingHeatingAC, navigator.nextPage(plumbingHeatingAC, "").url),
+          (otherConstructionInstallation, navigator.nextPage(otherConstructionInstallation, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitConstructionLvl2Page()(
-              FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
-                .withFormUrlEncodedBody("construction2" -> value)
+            controller.submitElectricalPlumbingConstructionLvl4Page()(
+              FakeRequest(POST, routes.ConstructionController.submitElectricalPlumbingConstructionLvl4Page().url)
+                .withFormUrlEncodedBody("plumbing4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -540,12 +537,12 @@ class ConstructionControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitConstructionLvl2Page()(
-            FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
+          controller.submitElectricalPlumbingConstructionLvl4Page()(
+            FakeRequest(POST, routes.ConstructionController.submitElectricalPlumbingConstructionLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in construction"
+        val expectedErrorMsg = "Select the type of construction installation your undertaking does"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -553,25 +550,21 @@ class ConstructionControllerSpec
       }
     }
 
-    "loadConstructionLvl2Page" should {
+    "loadOtherCivilEngineeringProjectsLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadConstructionLvl2Page()(
-            FakeRequest(GET, routes.ConstructionController.loadConstructionLvl2Page().url)
+          controller.loadOtherCivilEngineeringProjectsLvl4Page()(
+            FakeRequest(GET, routes.ConstructionController.loadOtherCivilEngineeringProjectsLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-civilEngineering", "Civil engineering"),
-          (
-            "sector-label-residentialNonResidentialConstruction",
-            "Construction of residential and non-residential buildings"
-          ),
-          ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
+          ("sector-label-waterProjects", "Water projects"),
+          ("sector-label-otherCivilEngineering", "Other civil engineering projects")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -580,22 +573,21 @@ class ConstructionControllerSpec
         }
       }
     }
-    "submitConstructionLvl2Page" should {
+    "submitOtherCivilEngineeringProjectsLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (civilEngineering, navigator.nextPage(civilEngineering, "").url),
-          (residentialNonResidentialConstruction4, navigator.nextPage(residentialNonResidentialConstruction4, "").url),
-          (specialisedConstructionActivities, navigator.nextPage(specialisedConstructionActivities, "").url)
+          (waterProjects, navigator.nextPage(waterProjects, "").url),
+          (otherCivilEngineering, navigator.nextPage(otherCivilEngineering, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitConstructionLvl2Page()(
-              FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
-                .withFormUrlEncodedBody("construction2" -> value)
+            controller.submitOtherCivilEngineeringProjectsLvl4Page()(
+              FakeRequest(POST, routes.ConstructionController.submitOtherCivilEngineeringProjectsLvl4Page().url)
+                .withFormUrlEncodedBody("otherCivil4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -606,12 +598,12 @@ class ConstructionControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitConstructionLvl2Page()(
-            FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
+          controller.submitOtherCivilEngineeringProjectsLvl4Page()(
+            FakeRequest(POST, routes.ConstructionController.submitOtherCivilEngineeringProjectsLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in construction"
+        val expectedErrorMsg = "Select the type of civil engineering projects your undertaking works on"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -619,25 +611,21 @@ class ConstructionControllerSpec
       }
     }
 
-    "loadConstructionLvl2Page" should {
+    "loadOtherSpecialisedConstructionLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadConstructionLvl2Page()(
-            FakeRequest(GET, routes.ConstructionController.loadConstructionLvl2Page().url)
+          controller.loadOtherSpecialisedConstructionLvl4Page()(
+            FakeRequest(GET, routes.ConstructionController.loadOtherSpecialisedConstructionLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-civilEngineering", "Civil engineering"),
-          (
-            "sector-label-residentialNonResidentialConstruction",
-            "Construction of residential and non-residential buildings"
-          ),
-          ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
+          ("sector-label-masonryAndBricklaying", "Masonry and bricklaying"),
+          ("sector-label-otherSpecialisedConstructionActivities", "Other specialised construction activities")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -646,22 +634,21 @@ class ConstructionControllerSpec
         }
       }
     }
-    "submitConstructionLvl2Page" should {
+    "submitOtherSpecialisedConstructionLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (civilEngineering, navigator.nextPage(civilEngineering, "").url),
-          (residentialNonResidentialConstruction4, navigator.nextPage(residentialNonResidentialConstruction4, "").url),
-          (specialisedConstructionActivities, navigator.nextPage(specialisedConstructionActivities, "").url)
+          (masonryAndBricklaying, navigator.nextPage(masonryAndBricklaying, "").url),
+          (otherSpecialisedConstructionActivities, navigator.nextPage(otherSpecialisedConstructionActivities, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitConstructionLvl2Page()(
-              FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
-                .withFormUrlEncodedBody("construction2" -> value)
+            controller.submitOtherSpecialisedConstructionLvl4Page()(
+              FakeRequest(POST, routes.ConstructionController.submitOtherSpecialisedConstructionLvl4Page().url)
+                .withFormUrlEncodedBody("otherSpecial4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -672,12 +659,12 @@ class ConstructionControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitConstructionLvl2Page()(
-            FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
+          controller.submitOtherSpecialisedConstructionLvl4Page()(
+            FakeRequest(POST, routes.ConstructionController.submitOtherSpecialisedConstructionLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in construction"
+        val expectedErrorMsg = "Select the type of other specialised construction activities your undertaking does"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -685,25 +672,35 @@ class ConstructionControllerSpec
       }
     }
 
-    "loadConstructionLvl2Page" should {
+    "loadSpecialisedConstructionLvl3Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadConstructionLvl2Page()(
-            FakeRequest(GET, routes.ConstructionController.loadConstructionLvl2Page().url)
+          controller.loadSpecialisedConstructionLvl3Page()(
+            FakeRequest(GET, routes.ConstructionController.loadSpecialisedConstructionLvl3Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-civilEngineering", "Civil engineering"),
+          ("sector-label-buildingFinishing", "Building completion and finishing"),
+          ("sector-label-demolitionAndPreparation", "Demolition and site preparation"),
           (
-            "sector-label-residentialNonResidentialConstruction",
-            "Construction of residential and non-residential buildings"
+            "sector-label-electricalAndPlumbingInstallation",
+            "Electrical, plumbing and other construction installation"
           ),
-          ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
+          (
+            "sector-label-specialisedConstructionIntermediationServices",
+            "Intermediation service activities for specialised construction services"
+          ),
+          ("sector-label-specialisedCivilEngineering", "Specialised construction activities in civil engineering"),
+          (
+            "sector-label-specialisedBuildingActivities",
+            "Specialised construction activities in construction of buildings"
+          ),
+          ("sector-label-otherSpecialisedConstruction", "Other specialised construction activities")
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -712,22 +709,29 @@ class ConstructionControllerSpec
         }
       }
     }
-    "submitConstructionLvl2Page" should {
+    "submitSpecialisedConstructionLvl3Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (civilEngineering, navigator.nextPage(civilEngineering, "").url),
-          (residentialNonResidentialConstruction4, navigator.nextPage(residentialNonResidentialConstruction4, "").url),
-          (specialisedConstructionActivities, navigator.nextPage(specialisedConstructionActivities, "").url)
+          (buildingFinishing, navigator.nextPage(buildingFinishing, "").url),
+          (demolitionAndPreparation, navigator.nextPage(demolitionAndPreparation, "").url),
+          (electricalAndPlumbingInstallation, navigator.nextPage(electricalAndPlumbingInstallation, "").url),
+          (
+            specialisedConstructionIntermediationServices4,
+            navigator.nextPage(specialisedConstructionIntermediationServices4, "").url
+          ),
+          (specialisedCivilEngineering4, navigator.nextPage(specialisedCivilEngineering4, "").url),
+          (specialisedBuildingActivities, navigator.nextPage(specialisedBuildingActivities, "").url),
+          (otherSpecialisedConstruction, navigator.nextPage(otherSpecialisedConstruction, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitConstructionLvl2Page()(
-              FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
-                .withFormUrlEncodedBody("construction2" -> value)
+            controller.submitSpecialisedConstructionLvl3Page()(
+              FakeRequest(POST, routes.ConstructionController.submitSpecialisedConstructionLvl3Page().url)
+                .withFormUrlEncodedBody("special3" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -738,12 +742,12 @@ class ConstructionControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitConstructionLvl2Page()(
-            FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
+          controller.submitSpecialisedConstructionLvl3Page()(
+            FakeRequest(POST, routes.ConstructionController.submitSpecialisedConstructionLvl3Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in construction"
+        val expectedErrorMsg = "Select the type of specialised construction activities your undertaking does"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -751,25 +755,24 @@ class ConstructionControllerSpec
       }
     }
 
-    "loadConstructionLvl2Page" should {
+    "loadSpecialisedConstructionActivitiesLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadConstructionLvl2Page()(
-            FakeRequest(GET, routes.ConstructionController.loadConstructionLvl2Page().url)
+          controller.loadSpecialisedConstructionActivitiesLvl4Page()(
+            FakeRequest(GET, routes.ConstructionController.loadSpecialisedConstructionActivitiesLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-civilEngineering", "Civil engineering"),
+          ("sector-label-roofingActivities", "Roofing activities"),
           (
-            "sector-label-residentialNonResidentialConstruction",
-            "Construction of residential and non-residential buildings"
-          ),
-          ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
+            "sector-label-otherSpecialisedBuildingActivities",
+            "Other specialised construction activities in construction of buildings"
+          )
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -778,22 +781,21 @@ class ConstructionControllerSpec
         }
       }
     }
-    "submitConstructionLvl2Page" should {
+    "submitSpecialisedConstructionActivitiesLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (civilEngineering, navigator.nextPage(civilEngineering, "").url),
-          (residentialNonResidentialConstruction4, navigator.nextPage(residentialNonResidentialConstruction4, "").url),
-          (specialisedConstructionActivities, navigator.nextPage(specialisedConstructionActivities, "").url)
+          (roofingActivities, navigator.nextPage(roofingActivities, "").url),
+          (otherSpecialisedBuildingActivities, navigator.nextPage(otherSpecialisedBuildingActivities, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitConstructionLvl2Page()(
-              FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
-                .withFormUrlEncodedBody("construction2" -> value)
+            controller.submitSpecialisedConstructionActivitiesLvl4Page()(
+              FakeRequest(POST, routes.ConstructionController.submitSpecialisedConstructionActivitiesLvl4Page().url)
+                .withFormUrlEncodedBody("special4" -> value)
             )
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(expectedUrl)
@@ -804,12 +806,12 @@ class ConstructionControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitConstructionLvl2Page()(
-            FakeRequest(POST, routes.ConstructionController.submitConstructionLvl2Page().url)
+          controller.submitSpecialisedConstructionActivitiesLvl4Page()(
+            FakeRequest(POST, routes.ConstructionController.submitSpecialisedConstructionActivitiesLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in construction"
+        val expectedErrorMsg = "Select the type of building construction activities your undertaking does"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"

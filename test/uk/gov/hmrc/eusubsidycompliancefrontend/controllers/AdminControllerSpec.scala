@@ -342,7 +342,7 @@ class AdminControllerSpec
           (MotorVehiclesRental, navigator.nextPage(MotorVehiclesRental, "").url),
           (PersonalRental, navigator.nextPage(PersonalRental, "").url),
           (OtherMachineryRental, navigator.nextPage(OtherMachineryRental, "").url),
-          (LeasingIntellectualProperty, navigator.nextPage(InvestigationAndSecurityActivities, "").url),
+          (LeasingIntellectualProperty, navigator.nextPage(LeasingIntellectualProperty, "").url),
           (TangibleGoodsRentalIntermediation, navigator.nextPage(TangibleGoodsRentalIntermediation, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
