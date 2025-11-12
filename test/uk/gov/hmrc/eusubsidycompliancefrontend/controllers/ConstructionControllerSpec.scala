@@ -107,7 +107,10 @@ class ConstructionControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-civilEngineering", "Civil engineering"),
-          ("sector-label-residentialNonResidentialConstruction", "Construction of residential and non-residential buildings"),
+          (
+            "sector-label-residentialNonResidentialConstruction",
+            "Construction of residential and non-residential buildings"
+          ),
           ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
         )
         forAll(radios) { (id, expected) =>
@@ -300,7 +303,10 @@ class ConstructionControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-civilEngineering", "Civil engineering"),
-          ("sector-label-residentialNonResidentialConstruction", "Construction of residential and non-residential buildings"),
+          (
+            "sector-label-residentialNonResidentialConstruction",
+            "Construction of residential and non-residential buildings"
+          ),
           ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
         )
         forAll(radios) { (id, expected) =>
@@ -363,7 +369,10 @@ class ConstructionControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-civilEngineering", "Civil engineering"),
-          ("sector-label-residentialNonResidentialConstruction", "Construction of residential and non-residential buildings"),
+          (
+            "sector-label-residentialNonResidentialConstruction",
+            "Construction of residential and non-residential buildings"
+          ),
           ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
         )
         forAll(radios) { (id, expected) =>
@@ -426,7 +435,10 @@ class ConstructionControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-civilEngineering", "Civil engineering"),
-          ("sector-label-residentialNonResidentialConstruction", "Construction of residential and non-residential buildings"),
+          (
+            "sector-label-residentialNonResidentialConstruction",
+            "Construction of residential and non-residential buildings"
+          ),
           ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
         )
         forAll(radios) { (id, expected) =>
@@ -489,7 +501,10 @@ class ConstructionControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-civilEngineering", "Civil engineering"),
-          ("sector-label-residentialNonResidentialConstruction", "Construction of residential and non-residential buildings"),
+          (
+            "sector-label-residentialNonResidentialConstruction",
+            "Construction of residential and non-residential buildings"
+          ),
           ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
         )
         forAll(radios) { (id, expected) =>
@@ -552,7 +567,10 @@ class ConstructionControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-civilEngineering", "Civil engineering"),
-          ("sector-label-residentialNonResidentialConstruction", "Construction of residential and non-residential buildings"),
+          (
+            "sector-label-residentialNonResidentialConstruction",
+            "Construction of residential and non-residential buildings"
+          ),
           ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
         )
         forAll(radios) { (id, expected) =>
@@ -615,7 +633,10 @@ class ConstructionControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-civilEngineering", "Civil engineering"),
-          ("sector-label-residentialNonResidentialConstruction", "Construction of residential and non-residential buildings"),
+          (
+            "sector-label-residentialNonResidentialConstruction",
+            "Construction of residential and non-residential buildings"
+          ),
           ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
         )
         forAll(radios) { (id, expected) =>
@@ -678,7 +699,10 @@ class ConstructionControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-civilEngineering", "Civil engineering"),
-          ("sector-label-residentialNonResidentialConstruction", "Construction of residential and non-residential buildings"),
+          (
+            "sector-label-residentialNonResidentialConstruction",
+            "Construction of residential and non-residential buildings"
+          ),
           ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
         )
         forAll(radios) { (id, expected) =>
@@ -741,7 +765,10 @@ class ConstructionControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-civilEngineering", "Civil engineering"),
-          ("sector-label-residentialNonResidentialConstruction", "Construction of residential and non-residential buildings"),
+          (
+            "sector-label-residentialNonResidentialConstruction",
+            "Construction of residential and non-residential buildings"
+          ),
           ("sector-label-specialisedConstructionActivities", "Specialised construction activities")
         )
         forAll(radios) { (id, expected) =>
@@ -789,7 +816,6 @@ class ConstructionControllerSpec
         summary.text() should include(expectedErrorMsg)
       }
     }
-
 
   }
 }

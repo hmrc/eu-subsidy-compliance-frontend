@@ -139,7 +139,7 @@ class FinancialDashboardControllerSpec
         verifyScp08Warning(document)
       }
 
-  }
+    }
 
     "display sector cap as General trade on financial Dashboard Page" in {
       inSequence {
@@ -171,7 +171,6 @@ class FinancialDashboardControllerSpec
       verifyAgricultureInsetText(document)
     }
 
-
     "display sector cap as General trade on financial Dashboard Page" in {
       inSequence {
         mockAuthWithEnrolmentAndNoEmailVerification(eori1)
@@ -203,7 +202,6 @@ class FinancialDashboardControllerSpec
     }
 
   }
-
 
   def verifyInsetText(document: Document): Unit = {
     document
@@ -223,6 +221,5 @@ class FinancialDashboardControllerSpec
       .getElementById("scp08-warning")
       .text() shouldBe "! Warning Your 'Undertaking balance', 'Total claimed' and 'Customs subsidies (Customs Duty waivers)' amounts in the first section may show temporary differences to your own records. They may take up to 24 hours to be amended here, so keeping a record of any payments you have received is advised."
   }
-
 
 }

@@ -162,11 +162,11 @@ class AccountController @Inject() (
     if (undertaking.isManuallySuspended) {
       // if its 5 take them to the manual suspend page
       Future.successful(Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url))
-    } else if (undertaking.industrySector.toString.length <= 4){
-        // take them through updating to nace format
-          Future.successful(Redirect(routes.NaceUndertakingCategoryIntroController.showPage))
+    } else if (undertaking.industrySector.toString.length <= 4) {
+      // take them through updating to nace format
+      Future.successful(Redirect(routes.NaceUndertakingCategoryIntroController.showPage))
     } else {
-        // take them through to the homepage
+      // take them through to the homepage
       val today = timeProvider.today
 
       val lastSubmitted = undertaking.lastSubsidyUsageUpdt.orElse(undertakingSubsidies.lastSubmitted)

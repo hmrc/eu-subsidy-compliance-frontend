@@ -50,51 +50,51 @@ class AdminControllerSpec
   private val navigator = instanceOf[Navigator]
 
   private object SectorCodes {
-    val RentalAndLeasing ="77"
-    val MotorVehiclesRental ="77.1"
-    val CarsLightVehicles ="77.11"
-    val Trucks ="77.12"
-    val PersonalRental ="77.2"
-    val RecreationalSportsGoods ="77.21"
-    val OtherPersonalHouseholdGoods ="77.22"
-    val OtherMachineryRental ="77.3"
-    val AgriculturalMachineryRental ="77.31"
-    val AirTransportRental ="77.35"
-    val ConstructionMachineryRental ="77.32"
-    val OfficeMachineryRental ="77.33"
-    val WaterTransportRental ="77.34"
-    val OtherMachineryRental4 ="77.39"
-    val LeasingIntellectualProperty ="77.40"
-    val TangibleGoodsRentalIntermediation ="77.5"
-    val CarsMotorhomesTrailers ="77.51"
-    val otherTangibleGoodsRental ="77.52"
-    val Employment ="78"
-    val employmentPlacementActivities4 ="78.10"
-    val tempEmploymentPlacementActivities4 ="78.20"
-    val TravelAgencyAndReservation ="79"
-    val TravelAgency ="79.1"
-    val TourOperator ="79.12"
-    val TravelAgencyActivities ="79.11"
-    val OtherReservationServices4 ="79.90"
-    val InvestigationAndSecurityActivities ="80.0"
-    val PrivateInvestigationAndSecurityActivities ="80.01"
-    val OtherInvestigationAndSecurityActivities ="80.09"
-    val BuildingsAndLandscapingServices ="81"
-    val combinedFacilitiesSupport4 ="81.10"
-    val Cleaning ="81.2"
-    val GeneralCleaning ="81.21"
-    val IndustrialCleaning ="81.22"
-    val OtherCleaning ="81.23"
-    val landscapeServiceActivities ="81.30"
-    val OfficeAdministrativeSupport ="82"
-    val officeAdministrativeActivities4 ="82.10"
-    val callCentresActivities ="82.20"
-    val conventionsOrganisation4 ="82.30"
-    val businessSupportIntermediation4 ="82.40"
-    val otherBusinessSupportIntermediationService ="82.9"
-    val CollectionAgencies ="82.91"
-    val PackagingActivities ="82.92"
-    val OtherBusinessSupport ="82.99"
+    val RentalAndLeasing = "77"
+    val MotorVehiclesRental = "77.1"
+    val CarsLightVehicles = "77.11"
+    val Trucks = "77.12"
+    val PersonalRental = "77.2"
+    val RecreationalSportsGoods = "77.21"
+    val OtherPersonalHouseholdGoods = "77.22"
+    val OtherMachineryRental = "77.3"
+    val AgriculturalMachineryRental = "77.31"
+    val AirTransportRental = "77.35"
+    val ConstructionMachineryRental = "77.32"
+    val OfficeMachineryRental = "77.33"
+    val WaterTransportRental = "77.34"
+    val OtherMachineryRental4 = "77.39"
+    val LeasingIntellectualProperty = "77.40"
+    val TangibleGoodsRentalIntermediation = "77.5"
+    val CarsMotorhomesTrailers = "77.51"
+    val otherTangibleGoodsRental = "77.52"
+    val Employment = "78"
+    val employmentPlacementActivities4 = "78.10"
+    val tempEmploymentPlacementActivities4 = "78.20"
+    val TravelAgencyAndReservation = "79"
+    val TravelAgency = "79.1"
+    val TourOperator = "79.12"
+    val TravelAgencyActivities = "79.11"
+    val OtherReservationServices4 = "79.90"
+    val InvestigationAndSecurityActivities = "80.0"
+    val PrivateInvestigationAndSecurityActivities = "80.01"
+    val OtherInvestigationAndSecurityActivities = "80.09"
+    val BuildingsAndLandscapingServices = "81"
+    val combinedFacilitiesSupport4 = "81.10"
+    val Cleaning = "81.2"
+    val GeneralCleaning = "81.21"
+    val IndustrialCleaning = "81.22"
+    val OtherCleaning = "81.23"
+    val landscapeServiceActivities = "81.30"
+    val OfficeAdministrativeSupport = "82"
+    val officeAdministrativeActivities4 = "82.10"
+    val callCentresActivities = "82.20"
+    val conventionsOrganisation4 = "82.30"
+    val businessSupportIntermediation4 = "82.40"
+    val otherBusinessSupportIntermediationService = "82.9"
+    val CollectionAgencies = "82.91"
+    val PackagingActivities = "82.92"
+    val OtherBusinessSupport = "82.99"
   }
 
   import SectorCodes._
@@ -202,7 +202,7 @@ class AdminControllerSpec
           ("formValue", "expectedUrl"),
           (TravelAgency, navigator.nextPage(TravelAgency, "").url),
           (OtherReservationServices4, navigator.nextPage(OtherReservationServices4, "").url)
-  )
+        )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
@@ -229,7 +229,8 @@ class AdminControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in travel and other reservation services"
+        val expectedErrorMsg =
+          "Select your undertaking’s main business activity in travel and other reservation services"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -293,7 +294,8 @@ class AdminControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in travel agency and tour operator activities"
+        val expectedErrorMsg =
+          "Select your undertaking’s main business activity in travel agency and tour operator activities"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -317,8 +319,14 @@ class AdminControllerSpec
           ("sector-label-motor-vehicles", "Motor vehicles"),
           ("sector-label-personal-household", "Personal and household goods"),
           ("sector-label-machinery-equipment", "Other machinery, equipment and tangible goods"),
-          ("sector-label-intellectual-property", "Intellectual property and similar products (except copyrighted works)"),
-          ("sector-label-intermediation", "My undertaking provides intermediation services for rental and leasing of tangible goods and non-financial intangible assets")
+          (
+            "sector-label-intellectual-property",
+            "Intellectual property and similar products (except copyrighted works)"
+          ),
+          (
+            "sector-label-intermediation",
+            "My undertaking provides intermediation services for rental and leasing of tangible goods and non-financial intangible assets"
+          )
         )
         forAll(radios) { (id, expected) =>
           val element = document.getElementById(id)
@@ -335,7 +343,8 @@ class AdminControllerSpec
           (PersonalRental, navigator.nextPage(PersonalRental, "").url),
           (OtherMachineryRental, navigator.nextPage(OtherMachineryRental, "").url),
           (LeasingIntellectualProperty, navigator.nextPage(InvestigationAndSecurityActivities, "").url),
-          (TangibleGoodsRentalIntermediation, navigator.nextPage(TangibleGoodsRentalIntermediation, "").url))
+          (TangibleGoodsRentalIntermediation, navigator.nextPage(TangibleGoodsRentalIntermediation, "").url)
+        )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
@@ -534,7 +543,11 @@ class AdminControllerSpec
           (businessSupportIntermediation4, navigator.nextPage(businessSupportIntermediation4, "").url),
           (officeAdministrativeActivities4, navigator.nextPage(officeAdministrativeActivities4, "").url),
           (conventionsOrganisation4, navigator.nextPage(conventionsOrganisation4, "").url),
-          (otherBusinessSupportIntermediationService, navigator.nextPage(otherBusinessSupportIntermediationService, "").url))
+          (
+            otherBusinessSupportIntermediationService,
+            navigator.nextPage(otherBusinessSupportIntermediationService, "").url
+          )
+        )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
             mockAuthWithEnrolment()
@@ -697,7 +710,8 @@ class AdminControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of other machinery, equipment and tangible goods your undertaking rents or leases"
+        val expectedErrorMsg =
+          "Select the type of other machinery, equipment and tangible goods your undertaking rents or leases"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -732,7 +746,10 @@ class AdminControllerSpec
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Table(
           ("formValue", "expectedUrl"),
-          (PrivateInvestigationAndSecurityActivities, navigator.nextPage(PrivateInvestigationAndSecurityActivities, "").url),
+          (
+            PrivateInvestigationAndSecurityActivities,
+            navigator.nextPage(PrivateInvestigationAndSecurityActivities, "").url
+          ),
           (OtherInvestigationAndSecurityActivities, navigator.nextPage(OtherInvestigationAndSecurityActivities, "").url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
@@ -825,7 +842,8 @@ class AdminControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select the type of goods for which your undertaking provides intermediation services for rental and leasing"
+        val expectedErrorMsg =
+          "Select the type of goods for which your undertaking provides intermediation services for rental and leasing"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
@@ -846,7 +864,10 @@ class AdminControllerSpec
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-temporary-employment", "Temporary employment agency activities and other human resource provisions"),
+          (
+            "sector-label-temporary-employment",
+            "Temporary employment agency activities and other human resource provisions"
+          ),
           ("sector-label-employment-placement", "Activities of employment placement agencies")
         )
         forAll(radios) { (id, expected) =>
