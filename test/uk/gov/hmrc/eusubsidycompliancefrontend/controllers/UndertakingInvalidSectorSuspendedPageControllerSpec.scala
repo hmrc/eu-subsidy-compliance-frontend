@@ -58,7 +58,7 @@ class UndertakingInvalidSectorSuspendedPageControllerSpec
         val result =
           controller.showPage(
             FakeRequest(GET, routes.UndertakingInvalidSectorSuspendedPageController.showPage.url)
-              .withSession("suspensionCode" -> "SUSP-42")
+              .withSession("suspensionCode" -> "SUSP-01")
           )
 
         status(result) shouldBe OK
