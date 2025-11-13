@@ -95,7 +95,7 @@ class AccountController @Inject() (
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     logger.info("handleExistingUndertaking")
 
-    val isNaceUpdated = undertaking.industrySector.toString.length == 5
+    val isNaceUpdated = undertaking.industrySector.toString.length == 20
 
     undertaking.undertakingStatus match {
       case Some(status)
@@ -106,6 +106,7 @@ class AccountController @Inject() (
           Future.successful(
             Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
               .addingToSession("suspensionCode" -> status.id.toString)
+              .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
           )
         }
       case _ =>
