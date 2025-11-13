@@ -48,10 +48,10 @@ class UndertakingInvalidSectorSuspendedPageController @Inject() (
         val month = output.drop(5).dropRight(3)
         def dueDate: String = constructDateString(output, month)
 
-         def constructDateString(output: String, month:String)(implicit messages: Messages): String = Seq(
-           output.takeRight(2),
-           messages("date." + month),
-           output.take(4)
+        def constructDateString(output: String, month: String)(implicit messages: Messages): String = Seq(
+          output.takeRight(2),
+          messages("date." + month),
+          output.take(4)
         ).mkString(" ")
 
         Ok(undertakingSuspendedPage(code, dueDate))
