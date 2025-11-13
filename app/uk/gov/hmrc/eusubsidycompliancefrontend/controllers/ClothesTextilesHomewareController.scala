@@ -324,9 +324,7 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") manufactureOfTextilesLvl4Form else manufactureOfTextilesLvl4Form.fill(FormValues(sector))
-      Ok(manufactureOfTextilesLvl4Page(form, journey.mode)).toFuture
+      Ok(manufactureOfTextilesLvl4Page(manufactureOfTextilesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -353,8 +351,7 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") otherClothingLvl4Form else otherClothingLvl4Form.fill(FormValues(sector))
-      Ok(otherClothingLvl4Page(form, journey.mode)).toFuture
+      Ok(otherClothingLvl4Page(otherClothingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -381,8 +378,7 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") plasticLvl4Form else plasticLvl4Form.fill(FormValues(sector))
-      Ok(plasticLvl4Page(form, journey.mode)).toFuture
+      Ok(plasticLvl4Page(plasticLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -409,8 +405,7 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") rubberLvl4Form else rubberLvl4Form.fill(FormValues(sector))
-      Ok(rubberLvl4Page(form, journey.mode)).toFuture
+      Ok(rubberLvl4Page(rubberLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -437,8 +432,7 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") sawmillingWoodworkLvl4Form else sawmillingWoodworkLvl4Form.fill(FormValues(sector))
-      Ok(sawmillingWoodworkLvl4Page(form, journey.mode)).toFuture
+      Ok(sawmillingWoodworkLvl4Page(sawmillingWoodworkLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -465,9 +459,7 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") tanningDressingDyeingLvl4Form else tanningDressingDyeingLvl4Form.fill(FormValues(sector))
-      Ok(tanningDressingDyeingLvl4Page(form, journey.mode)).toFuture
+      Ok(tanningDressingDyeingLvl4Page(tanningDressingDyeingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -494,9 +486,7 @@ class ClothesTextilesHomewareController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") woodCorkStrawPlaitingLvl4Form else woodCorkStrawPlaitingLvl4Form.fill(FormValues(sector))
-      Ok(woodCorkStrawPlaitingLvl4Page(form, journey.mode)).toFuture
+      Ok(woodCorkStrawPlaitingLvl4Page(woodCorkStrawPlaitingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 

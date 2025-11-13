@@ -102,8 +102,9 @@ class ArtsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") ArtsCreationLvl4Form else ArtsCreationLvl4Form.fill(FormValues(sector))
-      Ok(ArtsCreationLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        ArtsCreationLvl4Page(ArtsCreationLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -127,9 +128,9 @@ class ArtsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") ArtsCreationPerformingLvl3Form else ArtsCreationPerformingLvl3Form.fill(FormValues(sector))
-      Ok(ArtsCreationPerformingLvl3Page(form, journey.mode)).toFuture
+      Ok(
+        ArtsCreationPerformingLvl3Page(ArtsCreationPerformingLvl3Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -177,10 +178,12 @@ class ArtsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") ArtsPerformingSupportActivitiesLvl4Form
-        else ArtsPerformingSupportActivitiesLvl4Form.fill(FormValues(sector))
-      Ok(ArtsPerformingSupportActivitiesLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        ArtsPerformingSupportActivitiesLvl4Page(
+          ArtsPerformingSupportActivitiesLvl4Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
     }
   }
 
@@ -204,7 +207,9 @@ class ArtsController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      Ok(ArtsSportsRecreationLvl2Page(ArtsSportsRecreationLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(
+        ArtsSportsRecreationLvl2Page(ArtsSportsRecreationLvl2Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -252,10 +257,9 @@ class ArtsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") BotanicalZoologicalReservesLvl4Form
-        else BotanicalZoologicalReservesLvl4Form.fill(FormValues(sector))
-      Ok(BotanicalZoologicalReservesLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        BotanicalZoologicalReservesLvl4Page(BotanicalZoologicalReservesLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -279,10 +283,9 @@ class ArtsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") LibrariesArchivesCulturalLvl3Form
-        else LibrariesArchivesCulturalLvl3Form.fill(FormValues(sector))
-      Ok(LibrariesArchivesCulturalLvl3Page(form, journey.mode)).toFuture
+      Ok(
+        LibrariesArchivesCulturalLvl3Page(LibrariesArchivesCulturalLvl3Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -327,11 +330,12 @@ class ArtsController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val sector = journey.sector.value match {
-        case Some(value) => value.toString
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form = if (sector == "") LibrariesArchivesLvl4Form else LibrariesArchivesLvl4Form.fill(FormValues(sector))
-      Ok(LibrariesArchivesLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        LibrariesArchivesLvl4Page(LibrariesArchivesLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -352,13 +356,12 @@ class ArtsController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val sector = journey.sector.value match {
-        case Some(value) => value.toString
+        case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") MuseumsCollectionsMomumentsLvl4Form
-        else MuseumsCollectionsMomumentsLvl4Form.fill(FormValues(sector))
-      Ok(MuseumsCollectionsMomumentsLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        MuseumsCollectionsMomumentsLvl4Page(MuseumsCollectionsMomumentsLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -382,10 +385,9 @@ class ArtsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") SportsAmusementRecreationLvl3Form
-        else SportsAmusementRecreationLvl3Form.fill(FormValues(sector))
-      Ok(SportsAmusementRecreationLvl3Page(form, journey.mode)).toFuture
+      Ok(
+        SportsAmusementRecreationLvl3Page(SportsAmusementRecreationLvl3Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -433,8 +435,9 @@ class ArtsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") SportsLvl4Form else SportsLvl4Form.fill(FormValues(sector))
-      Ok(SportsLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        SportsLvl4Page(SportsLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 

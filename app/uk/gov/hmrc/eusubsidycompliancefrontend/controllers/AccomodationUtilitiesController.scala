@@ -131,8 +131,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form = if (sector == "") AccommodationLvl3Form else AccommodationLvl3Form.fill(FormValues(sector))
-      Ok(AccommodationLvl3Page(form, journey.mode)).toFuture
+      Ok(AccommodationLvl3Page(AccommodationLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -180,10 +179,12 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") EventCateringOtherFoodActivitiesLvl4Form
-        else EventCateringOtherFoodActivitiesLvl4Form.fill(FormValues(sector))
-      Ok(EventCateringOtherFoodActivitiesLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        EventCateringOtherFoodActivitiesLvl4Page(
+          EventCateringOtherFoodActivitiesLvl4Form.fill(FormValues(sector)),
+          journey.mode
+        )
+      ).toFuture
     }
   }
 
@@ -207,9 +208,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") FoodBeverageActivitiesLvl3Form else FoodBeverageActivitiesLvl3Form.fill(FormValues(sector))
-      Ok(FoodBeverageActivitiesLvl3Page(form, journey.mode)).toFuture
+      Ok(FoodBeverageActivitiesLvl3Page(FoodBeverageActivitiesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -257,9 +256,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") RestaurantFoodServicesLvl4Form else RestaurantFoodServicesLvl4Form.fill(FormValues(sector))
-      Ok(RestaurantFoodServicesLvl4Page(form, journey.mode)).toFuture
+      Ok(RestaurantFoodServicesLvl4Page(RestaurantFoodServicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -283,8 +280,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form = if (sector == "") ElectricityLvl3Form else ElectricityLvl3Form.fill(FormValues(sector))
-      Ok(ElectricityLvl3Page(form, journey.mode)).toFuture
+      Ok(ElectricityLvl3Page(ElectricityLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -332,8 +328,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") ElectricityLvl4Form else ElectricityLvl4Form.fill(FormValues(sector))
-      Ok(ElectricityLvl4Page(form, journey.mode)).toFuture
+      Ok(ElectricityLvl4Page(ElectricityLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -357,8 +352,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") GasManufactureLvl4Form else GasManufactureLvl4Form.fill(FormValues(sector))
-      Ok(GasManufactureLvl4Page(form, journey.mode)).toFuture
+      Ok(GasManufactureLvl4Page(GasManufactureLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -382,8 +376,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") WasteCollectionLvl4Form else WasteCollectionLvl4Form.fill(FormValues(sector))
-      Ok(WasteCollectionLvl4Page(form, journey.mode)).toFuture
+      Ok(WasteCollectionLvl4Page(WasteCollectionLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -407,9 +400,9 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") WasteCollectionRecoveryLvl3Form else WasteCollectionRecoveryLvl3Form.fill(FormValues(sector))
-      Ok(WasteCollectionRecoveryLvl3Page(form, journey.mode)).toFuture
+      Ok(
+        WasteCollectionRecoveryLvl3Page(WasteCollectionRecoveryLvl3Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -457,8 +450,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") WasteDisposalLvl4Form else WasteDisposalLvl4Form.fill(FormValues(sector))
-      Ok(WasteDisposalLvl4Page(form, journey.mode)).toFuture
+      Ok(WasteDisposalLvl4Page(WasteDisposalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -482,8 +474,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") WasteRecoveryLvl4Form else WasteRecoveryLvl4Form.fill(FormValues(sector))
-      Ok(WasteRecoveryLvl4Page(form, journey.mode)).toFuture
+      Ok(WasteRecoveryLvl4Page(WasteRecoveryLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -507,8 +498,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      val form = if (sector == "") WaterLvl2Form else WaterLvl2Form.fill(FormValues(sector))
-      Ok(WaterLvl2Page(form, journey.mode)).toFuture
+      Ok(WaterLvl2Page(WaterLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
