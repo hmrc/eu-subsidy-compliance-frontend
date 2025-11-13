@@ -95,7 +95,7 @@ class AccountController @Inject() (
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     logger.info("handleExistingUndertaking")
 
-    val isNaceUpdated = undertaking.industrySector.toString.length == 20
+    val isNaceUpdated = undertaking.industrySector.toString.length == 5
 
     undertaking.undertakingStatus match {
       case Some(status)

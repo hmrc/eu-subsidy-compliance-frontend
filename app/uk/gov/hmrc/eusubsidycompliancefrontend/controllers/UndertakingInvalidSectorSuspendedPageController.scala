@@ -24,10 +24,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.{constructDateString, govDisplayFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UndertakingInvalidSectorSuspendedPage
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.Future
 
@@ -47,7 +45,7 @@ class UndertakingInvalidSectorSuspendedPageController @Inject() (
       case Some(code) =>
         val lastSubmitted = request.session.get("reportDue").orElse(Some(timeProvider.today))
         val output = lastSubmitted.getOrElse("").toString
-         val month = output.drop(5).dropRight(3)
+        val month = output.drop(5).dropRight(3)
         def dueDate: String = constructDateString(output, month)
 
          def constructDateString(output: String, month:String)(implicit messages: Messages): String = Seq(
