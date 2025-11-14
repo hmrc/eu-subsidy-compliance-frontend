@@ -106,6 +106,7 @@ class AccountController @Inject() (
           Future.successful(
             Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
               .addingToSession("suspensionCode" -> status.id.toString)
+              .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
           )
         }
       case _ =>
