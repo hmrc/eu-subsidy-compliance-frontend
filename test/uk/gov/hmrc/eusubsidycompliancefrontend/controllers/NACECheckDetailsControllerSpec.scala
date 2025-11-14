@@ -289,7 +289,6 @@ class NACECheckDetailsControllerSpec
               Right(journey.copy(internalNaceCode = "", isNaceCYA = false))
             )
           }
-
           checkIsRedirect(
             performAction("confirmDetails" -> "false"),
             routes.UndertakingController.getSector.url
