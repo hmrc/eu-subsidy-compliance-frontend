@@ -124,8 +124,7 @@ class FoodBeveragesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") animalFeedsLvl4Form else animalFeedsLvl4Form.fill(FormValues(sector))
-      Ok(animalFeedsLvl4Page(form, journey.mode)).toFuture
+      Ok(animalFeedsLvl4Page(animalFeedsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -152,9 +151,7 @@ class FoodBeveragesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") bakeryAndFarinaceousLvl4Form else bakeryAndFarinaceousLvl4Form.fill(FormValues(sector))
-      Ok(bakeryAndFarinaceousLvl4Page(form, journey.mode)).toFuture
+      Ok(bakeryAndFarinaceousLvl4Page(bakeryAndFarinaceousLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -181,8 +178,7 @@ class FoodBeveragesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") dairyProductsLvl4Form else dairyProductsLvl4Form.fill(FormValues(sector))
-      Ok(dairyProductsLvl4Page(form, journey.mode)).toFuture
+      Ok(dairyProductsLvl4Page(dairyProductsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -209,8 +205,7 @@ class FoodBeveragesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") fruitAndVegLvl4Form else fruitAndVegLvl4Form.fill(FormValues(sector))
-      Ok(fruitAndVegLvl4Page(form, journey.mode)).toFuture
+      Ok(fruitAndVegLvl4Page(fruitAndVegLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -237,8 +232,7 @@ class FoodBeveragesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") grainAndStarchLvl4Form else grainAndStarchLvl4Form.fill(FormValues(sector))
-      Ok(grainAndStarchLvl4Page(form, journey.mode)).toFuture
+      Ok(grainAndStarchLvl4Page(grainAndStarchLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -265,8 +259,7 @@ class FoodBeveragesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") meatLvl4Form else meatLvl4Form.fill(FormValues(sector))
-      Ok(meatLvl4Page(form, journey.mode)).toFuture
+      Ok(meatLvl4Page(meatLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -293,8 +286,7 @@ class FoodBeveragesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") oilsAndFatsLvl4Form else oilsAndFatsLvl4Form.fill(FormValues(sector))
-      Ok(oilsAndFatsLvl4Page(form, journey.mode)).toFuture
+      Ok(oilsAndFatsLvl4Page(oilsAndFatsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -321,8 +313,7 @@ class FoodBeveragesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") otherFoodProductsLvl4Form else otherFoodProductsLvl4Form.fill(FormValues(sector))
-      Ok(otherFoodProductsLvl4Page(form, journey.mode)).toFuture
+      Ok(otherFoodProductsLvl4Page(otherFoodProductsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -349,8 +340,7 @@ class FoodBeveragesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") beveragesLvl4Form else beveragesLvl4Form.fill(FormValues(sector))
-      Ok(beveragesLvl4Page(form, journey.mode)).toFuture
+      Ok(beveragesLvl4Page(beveragesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 

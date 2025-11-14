@@ -85,8 +85,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") ComponentsBoardsLvl4Form else ComponentsBoardsLvl4Form.fill(FormValues(sector))
-      Ok(ComponentsBoardsLvl4Page(form, journey.mode)).toFuture
+      Ok(ComponentsBoardsLvl4Page(ComponentsBoardsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -164,8 +163,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") DomesticAppliancesLvl4Form else DomesticAppliancesLvl4Form.fill(FormValues(sector))
-      Ok(DomesticAppliancesLvl4Page(form, journey.mode)).toFuture
+      Ok(DomesticAppliancesLvl4Page(DomesticAppliancesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -241,8 +239,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") GeneralPurposeLvl4Form else GeneralPurposeLvl4Form.fill(FormValues(sector))
-      Ok(GeneralPurposeLvl4Page(form, journey.mode)).toFuture
+      Ok(GeneralPurposeLvl4Page(GeneralPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -269,10 +266,9 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") MeasuringTestingInstrumentsLvl4Form
-        else MeasuringTestingInstrumentsLvl4Form.fill(FormValues(sector))
-      Ok(MeasuringTestingInstrumentsLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        MeasuringTestingInstrumentsLvl4Page(MeasuringTestingInstrumentsLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -299,8 +295,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") MetalFormingLvl4Form else MetalFormingLvl4Form.fill(FormValues(sector))
-      Ok(MetalFormingLvl4Page(form, journey.mode)).toFuture
+      Ok(MetalFormingLvl4Page(MetalFormingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -327,8 +322,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") MotorsGeneratorsLvl4Form else MotorsGeneratorsLvl4Form.fill(FormValues(sector))
-      Ok(MotorsGeneratorsLvl4Page(form, journey.mode)).toFuture
+      Ok(MotorsGeneratorsLvl4Page(MotorsGeneratorsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -355,8 +349,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") OtherGeneralPurposeLvl4Form else OtherGeneralPurposeLvl4Form.fill(FormValues(sector))
-      Ok(OtherGeneralPurposeLvl4Page(form, journey.mode)).toFuture
+      Ok(OtherGeneralPurposeLvl4Page(OtherGeneralPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -432,8 +425,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") OtherSpecialPurposeLvl4Form else OtherSpecialPurposeLvl4Form.fill(FormValues(sector))
-      Ok(OtherSpecialPurposeLvl4Page(form, journey.mode)).toFuture
+      Ok(OtherSpecialPurposeLvl4Page(OtherSpecialPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -460,8 +452,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") RepairMaintenanceLvl4Form else RepairMaintenanceLvl4Form.fill(FormValues(sector))
-      Ok(RepairMaintenanceLvl4Page(form, journey.mode)).toFuture
+      Ok(RepairMaintenanceLvl4Page(RepairMaintenanceLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -537,8 +528,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") WiringAndDevicesLvl4Form else WiringAndDevicesLvl4Form.fill(FormValues(sector))
-      Ok(WiringAndDevicesLvl4Page(form, journey.mode)).toFuture
+      Ok(WiringAndDevicesLvl4Page(WiringAndDevicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 

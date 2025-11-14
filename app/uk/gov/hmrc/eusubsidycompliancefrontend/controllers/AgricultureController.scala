@@ -123,8 +123,9 @@ class AgricultureController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") SupportActivitiesLvl4Form else SupportActivitiesLvl4Form.fill(FormValues(sector))
-      Ok(SupportActivitiesLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        SupportActivitiesLvl4Page(SupportActivitiesLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -150,8 +151,9 @@ class AgricultureController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") AnimalProductionLvl4Form else AnimalProductionLvl4Form.fill(FormValues(sector))
-      Ok(AnimalProductionLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        AnimalProductionLvl4Page(AnimalProductionLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -177,8 +179,9 @@ class AgricultureController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") PerennialCropLvl4Form else PerennialCropLvl4Form.fill(FormValues(sector))
-      Ok(PerennialCropLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        PerennialCropLvl4Page(PerennialCropLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -204,8 +207,9 @@ class AgricultureController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") NonPerennialCropLvl4Form else NonPerennialCropLvl4Form.fill(FormValues(sector))
-      Ok(NonPerennialCropLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        NonPerennialCropLvl4Page(NonPerennialCropLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -231,8 +235,9 @@ class AgricultureController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form = if (sector == "") ForestryLvl3Form else ForestryLvl3Form.fill(FormValues(sector))
-      Ok(ForestryLvl3Page(form, journey.mode)).toFuture
+      Ok(
+        ForestryLvl3Page(ForestryLvl3Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -280,9 +285,9 @@ class AgricultureController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") FishingAndAquacultureLvl3Form else FishingAndAquacultureLvl3Form.fill(FormValues(sector))
-      Ok(FishingAndAquacultureLvl3Page(form, journey.mode)).toFuture
+      Ok(
+        FishingAndAquacultureLvl3Page(FishingAndAquacultureLvl3Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
@@ -330,8 +335,9 @@ class AgricultureController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") AquacultureLvl4Form else AquacultureLvl4Form.fill(FormValues(sector))
-      Ok(AquacultureLvl4Page(form, journey.mode)).toFuture
+      Ok(
+        AquacultureLvl4Page(AquacultureLvl4Form.fill(FormValues(sector)), journey.mode)
+      ).toFuture
     }
   }
 
