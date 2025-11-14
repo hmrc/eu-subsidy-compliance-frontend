@@ -23,10 +23,11 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
+
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    govukButton : GovukButton,
     govukHint: GovukHint
 )
 
@@ -59,6 +60,9 @@
     </p>
 
     @formHelper(action = controllers.routes.NaceUndertakingCategoryIntroController.continue) {
-        @button("common.start", id = Some("start-button"))
+        @govukButton(Button(
+            isStartButton = true,
+            content = Text((messages("common.start")))
+        ))
     }
 }
