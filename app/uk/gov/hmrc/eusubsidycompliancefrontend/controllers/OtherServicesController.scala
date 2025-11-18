@@ -356,7 +356,7 @@ class OtherServicesController @Inject() (
       .fold(
         formWithErrors => BadRequest(motorVehiclesRepairLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
