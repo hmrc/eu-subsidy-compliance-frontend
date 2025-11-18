@@ -2875,8 +2875,6 @@ class UndertakingControllerSpec
     }
   }
 
-
-
 }
 
 object UndertakingControllerSpec {

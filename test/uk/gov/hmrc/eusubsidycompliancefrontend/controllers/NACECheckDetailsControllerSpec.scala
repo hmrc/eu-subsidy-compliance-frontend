@@ -447,6 +447,296 @@ class NACECheckDetailsControllerSpec
         controller.deriveLevel1Code("97") shouldBe "U"
         controller.deriveLevel1Code("98") shouldBe "U"
       }
+
+      "return V for extraterritorial codes" in {
+        controller.deriveLevel1Code("99") shouldBe "V"
+      }
+    }
+
+    "building NACE view model" must {
+
+      "correctly derive all NACE levels for a retail code (47.11)" in {
+        val naceCode = "47.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+
+        viewModel.naceLevel4Code shouldBe "47.11"
+        viewModel.naceLevel3Code shouldBe "47.1"
+        viewModel.naceLevel2Code shouldBe "47"
+        viewModel.naceLevel1Code shouldBe "G"
+        viewModel.sector shouldBe Sector.other
+      }
+
+      "set showLevel1 to true for non-agriculture sectors" in {
+        val naceCode = "47.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.showLevel1 shouldBe true
+      }
+
+      "set showLevel1_1 correctly for manufacturing sector (C)" in {
+        val naceCode = "10.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.naceLevel1Code shouldBe "C"
+        viewModel.showLevel1_1 shouldBe true
+      }
+
+      "set showLevel1_1 to false for manufacturing code 32" in {
+        val naceCode = "32.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.naceLevel1Code shouldBe "C"
+        viewModel.showLevel1_1 shouldBe false
+      }
+
+      "set showLevel1_1 to false for manufacturing code 33" in {
+        val naceCode = "33.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.showLevel1_1 shouldBe false
+      }
+
+      "set showLevel2 to true for other codes" in {
+        val naceCode = "47.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.showLevel2 shouldBe true
+      }
+
+      "set showLevel2 to false for public administration code 84" in {
+        val naceCode = "84"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.showLevel2 shouldBe false
+      }
+
+      "set showLevel3 to true when level3 code does not end with .0" in {
+        val naceCode = "47.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.naceLevel3Code shouldBe "47.1"
+        viewModel.showLevel3 shouldBe true
+      }
+
+      "set showLevel4 to true when last digits don't match" in {
+        val naceCode = "47.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.showLevel4 shouldBe true
+      }
+
+      "generate correct change URLs" in {
+        val naceCode = "47.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+
+        viewModel.changeSectorUrl shouldBe routes.UndertakingController.getSector.url
+        viewModel.changeLevel1Url should not be empty
+        viewModel.changeLevel2Url should not be empty
+        viewModel.changeLevel3Url should not be empty
+        viewModel.changeLevel4Url should not be empty
+      }
+    }
+
+    "generating level 2 change URLs" must {
+
+      "return correct URL for manufacturing (C)" in {
+        val naceCode = "10.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for construction (F)" in {
+        val naceCode = "41"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for retail (G)" in {
+        val naceCode = "47.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for accommodation (I)" in {
+        val naceCode = "55.1"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for publishing (J)" in {
+        val naceCode = "58.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for administrative (O)" in {
+        val naceCode = "77.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for health (R)" in {
+        val naceCode = "86.1"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for households (U)" in {
+        val naceCode = "97"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for transport (H)" in {
+        val naceCode = "49.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for mining (B)" in {
+        val naceCode = "05.10"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for professional (N)" in {
+        val naceCode = "69.1"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for water supply (E)" in {
+        val naceCode = "36"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for telecommunications (K)" in {
+        val naceCode = "61.1"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for arts (S)" in {
+        val naceCode = "90.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+
+      "return correct URL for financial (L)" in {
+        val naceCode = "64.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url should not be empty
+      }
+    }
+
+    "testing getLevel1_1ChangeUrl for manufacturing subcategories" must {
+
+      "return correct URL for clothes/textiles/homeware - textiles (13)" in {
+        val naceCode = "13.10"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
+      }
+
+      "return correct URL for clothes/textiles/homeware - leather (15)" in {
+        val naceCode = "15.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
+      }
+
+      "return correct URL for clothes/textiles/homeware - wood (16)" in {
+        val naceCode = "16.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
+      }
+
+      "return correct URL for clothes/textiles/homeware - rubber/plastic (22)" in {
+        val naceCode = "22.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
+      }
+
+      "return correct URL for clothes/textiles/homeware - furniture (31)" in {
+        val naceCode = "31"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
+      }
+
+      "return correct URL for computers/electronics/machinery - computers (26)" in {
+        val naceCode = "26.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController
+          .loadComputersElectronicsMachineryPage()
+          .url
+      }
+
+      "return correct URL for computers/electronics/machinery - electrical (27)" in {
+        val naceCode = "27.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController
+          .loadComputersElectronicsMachineryPage()
+          .url
+      }
+
+      "return correct URL for computers/electronics/machinery - other machinery (28)" in {
+        val naceCode = "28.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController
+          .loadComputersElectronicsMachineryPage()
+          .url
+      }
+
+      "return correct URL for food/beverages/tobacco - food (10)" in {
+        val naceCode = "10.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage().url
+      }
+
+      "return correct URL for food/beverages/tobacco - tobacco (12)" in {
+        val naceCode = "12"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage().url
+      }
+
+      "return correct URL for metals/chemicals/materials - chemicals (20)" in {
+        val naceCode = "20.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().url
+      }
+
+      "return correct URL for metals/chemicals/materials - non-metallic (23)" in {
+        val naceCode = "23.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().url
+      }
+
+      "return correct URL for metals/chemicals/materials - fabricated metal (25)" in {
+        val naceCode = "25.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().url
+      }
+
+      "return correct URL for paper/printed - paper (17)" in {
+        val naceCode = "17.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage().url
+      }
+
+      "return correct URL for paper/printed - printing (18)" in {
+        val naceCode = "18.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage().url
+      }
+
+      "return correct URL for vehicles/transport - other transport (30)" in {
+        val naceCode = "30.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadVehiclesTransportPage().url
+      }
+
+      "return default URL for other manufacturing (32)" in {
+        val naceCode = "32.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
+      }
+
+      "return default URL for repair/maintenance (33)" in {
+        val naceCode = "33.11"
+        val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+        viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
+      }
     }
   }
 }
