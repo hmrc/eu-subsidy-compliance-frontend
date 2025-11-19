@@ -118,7 +118,7 @@ class AccountController @Inject() (
       case Some(UndertakingStatus.suspendedAutomated) =>
         if (suspendedPageCounter > 0) {
           print(
-            "Case 1 Suspended first time to see suspend screen---------------------------------------------------------"
+            "Case 1 Suspended already seen suspend screen---------------------------------------------------------"
           )
 
           proceedToAccountPage(undertaking)
