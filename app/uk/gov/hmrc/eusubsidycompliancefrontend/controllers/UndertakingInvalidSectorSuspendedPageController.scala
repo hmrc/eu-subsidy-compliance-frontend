@@ -73,7 +73,6 @@ class UndertakingInvalidSectorSuspendedPageController @Inject() (
       case Some(_) =>
         Future.successful(
           Redirect(routes.AccountController.getAccountPage)
-            .addingToSession("naceSector" -> "true")
         )
     }
 
