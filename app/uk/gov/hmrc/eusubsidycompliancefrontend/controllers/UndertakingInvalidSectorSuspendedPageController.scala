@@ -62,13 +62,20 @@ class UndertakingInvalidSectorSuspendedPageController @Inject() (
   }
 
   def continue: Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.put[UndertakingJourney](UndertakingJourney())
-    store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
+    request.session.get("sector") match {
+      case Some("0" | "1" | "2" | "3") =>
+        implicit val eori: EORI = request.eoriNumber
+        store.put[UndertakingJourney](UndertakingJourney())
+        store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
+        Future.successful(
+          Redirect(routes.NaceUndertakingCategoryIntroController.showPage)
+        )
+      case Some(_) =>
+        Future.successful(
+          Redirect(routes.AccountController.getAccountPage)
+            .addingToSession("naceSector" -> "true")
+        )
+    }
 
-    Future.successful(
-      Redirect(routes.NaceUndertakingCategoryIntroController.showPage)
-    )
   }
-
 }

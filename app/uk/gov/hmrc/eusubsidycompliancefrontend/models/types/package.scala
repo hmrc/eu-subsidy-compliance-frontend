@@ -1248,7 +1248,7 @@ package object types extends SimpleJson {
     val active: types.UndertakingStatus.Value = Value(0)
     val suspendedAutomated: types.UndertakingStatus.Value = Value(1)
     val suspendedManual: types.UndertakingStatus.Value = Value(5)
-    val naceSuspendedUndertaking: types.UndertakingStatus.Value = Value(8)
+    val suspendedUndertaking: types.UndertakingStatus.Value = Value(8)
     val inactive: types.UndertakingStatus.Value = Value(9)
     implicit val format: Format[UndertakingStatus] = Json.formatEnum(UndertakingStatus)
   }

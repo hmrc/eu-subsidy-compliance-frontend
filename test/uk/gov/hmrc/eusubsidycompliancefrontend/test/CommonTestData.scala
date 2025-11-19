@@ -129,7 +129,7 @@ object CommonTestData {
   val undertaking = Undertaking(
     undertakingRef,
     UndertakingName("TestUndertaking"),
-    transport,
+    cerealsLeguminousCrops,
     IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
     Some(active),
@@ -139,7 +139,7 @@ object CommonTestData {
   val manuallySuspendedUndertaking = Undertaking(
     undertakingRef,
     UndertakingName("TestUndertaking"),
-    transport,
+    cerealsLeguminousCrops,
     IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
     Some(suspendedManual),
@@ -155,7 +155,7 @@ object CommonTestData {
   val undertaking1 = Undertaking(
     undertakingRef,
     UndertakingName("TestUndertaking"),
-    transport,
+    cerealsLeguminousCrops,
     IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
     Some(active),
@@ -165,7 +165,7 @@ object CommonTestData {
   val undertaking2 = Undertaking(
     undertakingRef,
     UndertakingName("TestUndertaking"),
-    transport,
+    cerealsLeguminousCrops,
     IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
     Some(active),
@@ -175,7 +175,7 @@ object CommonTestData {
   val undertaking3 = Undertaking(
     undertakingRef,
     UndertakingName("TestUndertaking"),
-    agriculture,
+    cerealsLeguminousCrops,
     IndustrySectorLimit(32.34),
     Some(LocalDate.of(2021, 1, 18)),
     Some(active),

@@ -90,6 +90,7 @@ class UndertakingInvalidSectorSuspendedPageControllerSpec
         val result =
           controller.continue(
             FakeRequest(POST, routes.UndertakingInvalidSectorSuspendedPageController.continue.url)
+              .withSession("sector" -> "1")
           )
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(routes.NaceUndertakingCategoryIntroController.showPage.url)

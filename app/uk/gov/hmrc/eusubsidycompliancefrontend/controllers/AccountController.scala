@@ -57,6 +57,8 @@ class AccountController @Inject() (
 
   import actionBuilders._
 
+  private var suspendedPageCounter: Int = 0
+
   def getAccountPage: Action[AnyContent] = {
     enrolled.async { implicit request =>
       implicit val eori: EORI = request.eoriNumber
@@ -98,22 +100,51 @@ class AccountController @Inject() (
     val isNaceUpdated = undertaking.industrySector.toString.length == 5
 
     undertaking.undertakingStatus match {
-      case Some(status)
-          if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.naceSuspendedUndertaking =>
+
+      case Some(UndertakingStatus.suspendedUndertaking) =>
         if (isNaceUpdated) {
+          print("Case 8 Suspended with nace updated---------------------------------------------------------")
           proceedToAccountPage(undertaking)
         } else {
+          print("Case8  Suspended without nace updated---------------------------------------------------------")
           Future.successful(
             Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
-              .addingToSession("suspensionCode" -> status.id.toString)
+              .addingToSession("suspensionCode" -> "8")
+              .addingToSession("sector" -> undertaking.industrySector.toString)
               .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
           )
         }
-      case _ =>
-        if (undertaking.industrySector == Sector.agriculture || undertaking.industrySector == Sector.other) {
-          Future.successful(Redirect(routes.NaceUndertakingCategoryIntroController.showPage))
-        } else {
+
+      case Some(UndertakingStatus.suspendedAutomated) =>
+        if (suspendedPageCounter > 0) {
+          print(
+            "Case 1 Suspended first time to see suspend screen---------------------------------------------------------"
+          )
+
           proceedToAccountPage(undertaking)
+        } else {
+          print("Case 1 Suspended ---------------------------------------------------------")
+
+          suspendedPageCounter = suspendedPageCounter + 1
+          Future.successful(
+            Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
+              .addingToSession("suspensionCode" -> "1")
+              .addingToSession("sector" -> undertaking.industrySector.toString)
+              .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
+          )
+        }
+
+      case _ =>
+        if (isNaceUpdated) {
+          print(
+            "nace active or manual Suspended but has a sector of 5---------------------------------------------------------"
+          )
+          proceedToAccountPage(undertaking)
+        } else {
+          print(
+            "Case active or manual Suspended  doesnt have a sector of 5 its ->" + undertaking.industrySector.toString + "<- ---------------------------------------------------------"
+          )
+          Future.successful(Redirect(routes.NaceUndertakingCategoryIntroController.showPage))
         }
     }
   }

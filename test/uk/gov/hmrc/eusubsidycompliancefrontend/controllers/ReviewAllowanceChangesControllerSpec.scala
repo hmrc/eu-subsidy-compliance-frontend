@@ -136,7 +136,7 @@ class ReviewAllowanceChangesControllerSpec
       data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
       val document = Jsoup.parse(data)
 
-      verifyAgricultureInsetText(document)
+      verifyInsetText(document)
     }
 
   }

@@ -54,7 +54,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           endYear = end.getYear,
           hmrcSubsidyTotal = emptyUndertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = emptyUndertakingSubsidies.nonHMRCSubsidyTotalEUR,
-          sector = Sector.transport,
+          sector = Sector.cerealsLeguminousCrops,
           sectorCap = IndustrySectorLimit(BigDecimal(12.34))
         ),
         taxYears = Seq(2021, 2020, 2019).map { year =>
@@ -94,7 +94,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           endYear = end.getYear,
           hmrcSubsidyTotal = undertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = undertakingSubsidies.nonHMRCSubsidyTotalEUR,
-          sector = Sector.transport,
+          sector = Sector.cerealsLeguminousCrops,
           sectorCap = IndustrySectorLimit(BigDecimal(12.34))
         ),
         taxYears = Seq(
@@ -137,7 +137,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           endYear = end.getYear,
           hmrcSubsidyTotal = undertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = SubsidyAmount.Zero,
-          sector = Sector.transport,
+          sector = Sector.cerealsLeguminousCrops,
           sectorCap = IndustrySectorLimit(BigDecimal(12.34))
         ),
         taxYears = Seq(
@@ -168,7 +168,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
         endYear = 2001,
         hmrcSubsidyTotal = SubsidyAmount(1.00),
         nonHmrcSubsidyTotal = SubsidyAmount(2.00),
-        sector = Sector.other,
+        sector = Sector.cerealsLeguminousCrops,
         sectorCap = IndustrySectorLimit(300000.00)
       )
 
@@ -184,7 +184,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
       endYear = 2001,
       hmrcSubsidyTotal = SubsidyAmount(300000.00),
       nonHmrcSubsidyTotal = SubsidyAmount(300000.00),
-      sector = Sector.other,
+      sector = Sector.cerealsLeguminousCrops,
       sectorCap = IndustrySectorLimit(300000.00)
     )
 
