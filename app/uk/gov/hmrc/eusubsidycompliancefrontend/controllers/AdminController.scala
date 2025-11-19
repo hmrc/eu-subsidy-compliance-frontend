@@ -82,8 +82,7 @@ class AdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form = if (sector == "") TravelLvl3Form else TravelLvl3Form.fill(FormValues(sector))
-      Ok(TravelLvl3Page(form, journey.mode)).toFuture
+      Ok(TravelLvl3Page(TravelLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -131,8 +130,7 @@ class AdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form = if (sector == "") RentalLvl3Form else RentalLvl3Form.fill(FormValues(sector))
-      Ok(RentalLvl3Page(form, journey.mode)).toFuture
+      Ok(RentalLvl3Page(RentalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -180,8 +178,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") TravelAgencyLvl4Form else TravelAgencyLvl4Form.fill(FormValues(sector))
-      Ok(TravelAgencyLvl4Page(form, journey.mode)).toFuture
+      Ok(TravelAgencyLvl4Page(TravelAgencyLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -253,8 +250,7 @@ class AdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form = if (sector == "") BuildingsLvl3Form else BuildingsLvl3Form.fill(FormValues(sector))
-      Ok(BuildingsLvl3Page(form, journey.mode)).toFuture
+      Ok(BuildingsLvl3Page(BuildingsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -302,8 +298,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") CleaningLvl4Form else CleaningLvl4Form.fill(FormValues(sector))
-      Ok(CleaningLvl4Page(form, journey.mode)).toFuture
+      Ok(CleaningLvl4Page(CleaningLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -327,8 +322,7 @@ class AdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form = if (sector == "") EmploymentLvl3Form else EmploymentLvl3Form.fill(FormValues(sector))
-      Ok(EmploymentLvl3Page(form, journey.mode)).toFuture
+      Ok(EmploymentLvl3Page(EmploymentLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -376,9 +370,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") IntermediationServicesLvl4Form else IntermediationServicesLvl4Form.fill(FormValues(sector))
-      Ok(IntermediationServicesLvl4Page(form, journey.mode)).toFuture
+      Ok(IntermediationServicesLvl4Page(IntermediationServicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -426,8 +418,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") MachineryEquipmentLvl4Form else MachineryEquipmentLvl4Form.fill(FormValues(sector))
-      Ok(MachineryEquipmentLvl4Page(form, journey.mode)).toFuture
+      Ok(MachineryEquipmentLvl4Page(MachineryEquipmentLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -451,8 +442,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") MotorVehiclesLvl4Form else MotorVehiclesLvl4Form.fill(FormValues(sector))
-      Ok(MotorVehiclesLvl4Page(form, journey.mode)).toFuture
+      Ok(MotorVehiclesLvl4Page(MotorVehiclesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -476,8 +466,7 @@ class AdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      val form = if (sector == "") OfficeLvl3Form else OfficeLvl3Form.fill(FormValues(sector))
-      Ok(OfficeLvl3Page(form, journey.mode)).toFuture
+      Ok(OfficeLvl3Page(OfficeLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -525,9 +514,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form =
-        if (sector == "") OtherBusinessSupportLvl4Form else OtherBusinessSupportLvl4Form.fill(FormValues(sector))
-      Ok(OtherBusinessSupportLvl4Page(form, journey.mode)).toFuture
+      Ok(OtherBusinessSupportLvl4Page(OtherBusinessSupportLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -551,8 +538,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      val form = if (sector == "") PersonalHouseholdLvl4Form else PersonalHouseholdLvl4Form.fill(FormValues(sector))
-      Ok(PersonalHouseholdLvl4Page(form, journey.mode)).toFuture
+      Ok(PersonalHouseholdLvl4Page(PersonalHouseholdLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -568,5 +554,4 @@ class AdminController @Inject() (
         }
       )
   }
-
 }
