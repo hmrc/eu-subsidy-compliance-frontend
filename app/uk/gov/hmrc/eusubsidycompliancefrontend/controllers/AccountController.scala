@@ -57,7 +57,7 @@ class AccountController @Inject() (
 
   import actionBuilders._
 
-   var suspendedPageCounter = 0
+  var suspendedPageCounter = 0
 
   def getAccountPage: Action[AnyContent] = {
     enrolled.async { implicit request =>
