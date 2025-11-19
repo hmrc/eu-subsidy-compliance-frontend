@@ -57,7 +57,7 @@ class AccountController @Inject() (
 
   import actionBuilders._
 
-  private var suspendedPageCounter: Int = 0
+   var suspendedPageCounter = 0
 
   def getAccountPage: Action[AnyContent] = {
     enrolled.async { implicit request =>
@@ -72,6 +72,7 @@ class AccountController @Inject() (
 
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
     logger.info("handleUndertakingNotCreated")
+    suspendedPageCounter = 0
     val result = getOrCreateJourneys().map {
       case (eligibilityJourney, undertakingJourney) if !eligibilityJourney.isComplete && undertakingJourney.isEmpty =>
         logger.info(
@@ -117,12 +118,15 @@ class AccountController @Inject() (
 
       case Some(UndertakingStatus.suspendedAutomated) =>
         if (suspendedPageCounter > 0) {
+
+          print(suspendedPageCounter)
           print(
-            "Case 1 Suspended already seen suspend screen---------------------------------------------------------"
+            "Hello Case 1 Suspended already seen suspend screen---------------------------------------------------------"
           )
 
           proceedToAccountPage(undertaking)
         } else {
+          print(suspendedPageCounter)
           print("Case 1 Suspended ---------------------------------------------------------")
 
           suspendedPageCounter = suspendedPageCounter + 1
