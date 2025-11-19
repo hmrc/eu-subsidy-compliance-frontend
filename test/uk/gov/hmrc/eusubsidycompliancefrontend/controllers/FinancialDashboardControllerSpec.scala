@@ -98,7 +98,7 @@ class FinancialDashboardControllerSpec
           )
 
         status(result) shouldBe Status.OK
-        contentAsString(result) shouldBe page(summaryData, "generalTrade")(request, messages, instanceOf[AppConfig])
+        contentAsString(result) shouldBe page(summaryData, "agriculture")(request, messages, instanceOf[AppConfig])
           .toString()
 
         val data = contentAsString(result)
@@ -153,7 +153,7 @@ class FinancialDashboardControllerSpec
       val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
       val result = route(app, request).get
       val page = instanceOf[FinancialDashboardPage]
-      val industrySectorKey = "generalTrade"
+      val industrySectorKey = "agriculture"
 
       val summaryData = FinancialDashboardSummary
         .fromUndertakingSubsidies(
@@ -183,7 +183,7 @@ class FinancialDashboardControllerSpec
       val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
       val result = route(app, request).get
       val page = instanceOf[FinancialDashboardPage]
-      val industrySectorKey = "generalTrade"
+      val industrySectorKey = "agriculture"
 
       val summaryData = FinancialDashboardSummary
         .fromUndertakingSubsidies(

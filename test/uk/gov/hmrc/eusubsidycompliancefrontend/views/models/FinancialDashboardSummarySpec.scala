@@ -54,7 +54,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           endYear = end.getYear,
           hmrcSubsidyTotal = emptyUndertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = emptyUndertakingSubsidies.nonHMRCSubsidyTotalEUR,
-          sector = Sector.transport,
+          sector = Sector.cerealsLeguminousCrops,
           sectorCap = IndustrySectorLimit(BigDecimal(12.34))
         ),
         taxYears = Seq(2021, 2020, 2019).map { year =>
@@ -94,7 +94,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           endYear = end.getYear,
           hmrcSubsidyTotal = undertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = undertakingSubsidies.nonHMRCSubsidyTotalEUR,
-          sector = Sector.transport,
+          sector = Sector.cerealsLeguminousCrops,
           sectorCap = IndustrySectorLimit(BigDecimal(12.34))
         ),
         taxYears = Seq(
@@ -137,7 +137,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           endYear = end.getYear,
           hmrcSubsidyTotal = undertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = SubsidyAmount.Zero,
-          sector = Sector.transport,
+          sector = Sector.cerealsLeguminousCrops,
           sectorCap = IndustrySectorLimit(BigDecimal(12.34))
         ),
         taxYears = Seq(
@@ -168,12 +168,12 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
         endYear = 2001,
         hmrcSubsidyTotal = SubsidyAmount(1.00),
         nonHmrcSubsidyTotal = SubsidyAmount(2.00),
-        sector = Sector.other,
-        sectorCap = IndustrySectorLimit(300000.00)
+        sector = Sector.cerealsLeguminousCrops,
+        sectorCap = IndustrySectorLimit(50000.00)
       )
 
       underTest.total shouldBe SubsidyAmount(3.00)
-      underTest.allowanceRemaining shouldBe SubsidyAmount(299997.00)
+      underTest.allowanceRemaining shouldBe SubsidyAmount(49997.00)
       underTest.allowanceExceeded shouldBe false
     }
   }
@@ -182,10 +182,10 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
     val underTest = OverallSummary(
       startYear = 2000,
       endYear = 2001,
-      hmrcSubsidyTotal = SubsidyAmount(300000.00),
-      nonHmrcSubsidyTotal = SubsidyAmount(300000.00),
-      sector = Sector.other,
-      sectorCap = IndustrySectorLimit(300000.00)
+      hmrcSubsidyTotal = SubsidyAmount(50000.00),
+      nonHmrcSubsidyTotal = SubsidyAmount(50000.00),
+      sector = Sector.cerealsLeguminousCrops,
+      sectorCap = IndustrySectorLimit(50000.00)
     )
 
     underTest.allowanceExceeded shouldBe true
