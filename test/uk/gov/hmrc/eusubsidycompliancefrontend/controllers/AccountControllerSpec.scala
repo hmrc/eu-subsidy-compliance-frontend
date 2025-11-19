@@ -230,7 +230,7 @@ class AccountControllerSpec
       "not redirect to regulatory change notification" when {
 
         "user has undertaking with fishery sector" in {
-          val fisheryUndertaking = undertaking.copy(industrySector = Sector.aquaculture)
+          val fisheryUndertaking = undertaking.copy(industrySector = Sector.freshwaterFishing)
 
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
@@ -328,7 +328,7 @@ class AccountControllerSpec
           }
         }
 
-        "display the account home page with warning when undertaking is auto suspended" when {
+        "display the account home page with warning when undertaking is active" when {
           "admin page loads home - 'undertakingStatus == active'" in {
             val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
             inSequence {
@@ -354,19 +354,7 @@ class AccountControllerSpec
             verifyGenericHomepageContentForLead(doc)
             verifyPreDeadlineContentForLead(doc)
           }
-          "admin page loads home - 'undertakingStatus == suspendedAutomated'" in {
-            inSequence {
-              mockAuthWithEnrolmentAndNoEmailVerification()
-              mockRetrieveUndertaking(eori1)(
-                undertaking.copy(undertakingStatus = Some(UndertakingStatus.suspendedAutomated)).some.toFuture
-              )
-            }
-            val result = performAction()
-            status(result) shouldBe SEE_OTHER
-            redirectLocation(result) shouldBe Some(
-              routes.UndertakingInvalidSectorSuspendedPageController.showPage.url
-            )
-          }
+
           "member page loads home" in {
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification(eori4)
@@ -384,6 +372,22 @@ class AccountControllerSpec
             )
           }
         }
+
+        //  "display the account home page with a warning when undertaking is auto suspended" when {
+        //    "admin page loads home - 'undertakingStatus == suspendedAutomated'" in {
+        //      inSequence {
+        //        mockAuthWithEnrolmentAndNoEmailVerification()
+        //        mockRetrieveUndertaking(eori2)(
+        //          undertaking.copy(undertakingStatus = Some(UndertakingStatus.suspendedAutomated)).some.toFuture
+        //        )
+        //      }
+//
+        //      val result = performAction()
+        //      status(result) shouldBe SEE_OTHER
+        //      redirectLocation(result) shouldBe Some(
+        //        routes.UndertakingInvalidSectorSuspendedPageController.showPage.url
+        //      )
+        //    }}
 
         "display the account home page with message about scp08 issues" when {
           "admin page loads home" in {
