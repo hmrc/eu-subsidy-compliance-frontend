@@ -2771,7 +2771,7 @@ class UndertakingControllerSpec
 
     "transform sector code '10' to display value '00' in UpdateNaceMode" in {
       val journey = UndertakingJourney(
-        sector = UndertakingSectorFormPage(Sector.food.some), // "10"
+        sector = UndertakingSectorFormPage(Sector.food.some),
         about = AboutUndertakingFormPage("Test Undertaking".some),
         mode = appConfig.UpdateNaceMode
       )
@@ -2847,7 +2847,7 @@ class UndertakingControllerSpec
       val journey = UndertakingJourney(
         sector = UndertakingSectorFormPage(Sector.cropAnimalProduction.some),
         about = AboutUndertakingFormPage("Test Undertaking".some),
-        mode = appConfig.NewRegMode // Not UpdateNaceMode
+        mode = appConfig.NewRegMode
       )
       inSequence {
         mockAuthWithEnrolment()
@@ -2862,7 +2862,7 @@ class UndertakingControllerSpec
     "redirect to about undertaking page when about is not answered" in {
       val journey = UndertakingJourney(
         sector = UndertakingSectorFormPage(Sector.cropAnimalProduction.some),
-        about = AboutUndertakingFormPage(None), // No undertaking name
+        about = AboutUndertakingFormPage(None),
         mode = appConfig.NewRegMode
       )
       inSequence {
