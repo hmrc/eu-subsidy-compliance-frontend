@@ -613,7 +613,7 @@ class UndertakingController @Inject() (
     case _ => "C"
   }
 
-  private def buildViewModel(naceLevel4Code: String)(implicit messages: Messages): NaceCheckDetailsViewModel = {
+  def buildViewModel(naceLevel4Code: String)(implicit messages: Messages): NaceCheckDetailsViewModel = {
     val naceLevel3Code = if (naceLevel4Code.length >= 4) naceLevel4Code.take(4) else naceLevel4Code
     val naceLevel2Code = if (naceLevel4Code.length >= 2) naceLevel4Code.take(2) else naceLevel4Code
     val naceLevel1Code = deriveLevel1Code(naceLevel2Code)
