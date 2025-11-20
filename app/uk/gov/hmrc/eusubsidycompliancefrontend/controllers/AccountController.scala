@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
 import cats.implicits.catsSyntaxOptionId
-import org.apache.pekko.dispatch.Futures.promise
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
@@ -40,7 +39,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -256,21 +254,6 @@ class AccountController @Inject() (
         ).toFuture
       }
     }
-  }
-
-  def delay(d: FiniteDuration): Future[Unit] = {
-    val p = promise[Unit]()
-    val t = new java.util.Timer()
-    t.schedule(
-      new java.util.TimerTask {
-        def run(): Unit = {
-          p.success(())
-          t.cancel()
-        }
-      },
-      d.toMillis
-    )
-    p.future
   }
 
 }
