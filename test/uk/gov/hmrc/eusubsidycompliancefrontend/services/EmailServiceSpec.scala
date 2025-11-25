@@ -262,5 +262,30 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
         await(result) shouldBe Some(VerifiedStatus.Verified)
       }
     }
+    "retrieveVerifiedEmailAddressByEORI" must {
+      "return the email address string when one is present" in {
+        mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+        val result = service.retrieveVerifiedEmailAddressByEORI(eori1)
+        await(result) shouldBe validEmailAddress.value
+      }
+
+      "throw an exception when no email address is present" in {
+        mockRetrieveEmail(eori1)(Future.successful(HttpResponse(NOT_FOUND, " ")))
+        val result = service.retrieveVerifiedEmailAddressByEORI(eori1)
+        assertThrows[RuntimeException](await(result))
+      }
+    }
+    "updateEmailForEori" must {
+      "delegate to customsDataStoreConnector and complete successfully" in {
+        when(
+          mockRetrieveEmailConnector
+            .updateEmailForEori(any[EORI], any[String], any())(any())
+        ).thenReturn(Future.successful(()))
+
+        val result = service.updateEmailForEori(eori1, validEmailAddress.value)
+
+        await(result) shouldBe ((): Unit)
+      }
+    }
   }
 }
