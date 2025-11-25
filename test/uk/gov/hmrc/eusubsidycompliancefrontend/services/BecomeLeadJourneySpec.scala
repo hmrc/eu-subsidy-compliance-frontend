@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import org.scalatest.matchers.should.Matchers
+import play.api.libs.json.Json
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BecomeLeadJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
@@ -58,5 +59,31 @@ class BecomeLeadJourneySpec extends BaseSpec with Matchers {
       }
     }
 
+  }
+  "setAcceptResponsibilities" should {
+    "update the acceptResponsibilities value" in {
+      val journey = BecomeLeadJourney()
+      val updated = journey.setAcceptResponsibilities(true)
+
+      updated.acceptResponsibilities.value shouldBe Some(true)
+    }
+
+    "preserve other form page values" in {
+      val journey = BecomeLeadJourney()
+      val updated = journey.setAcceptResponsibilities(false)
+
+      updated.becomeLeadEori shouldBe journey.becomeLeadEori
+      updated.confirmation shouldBe journey.confirmation
+    }
+  }
+
+  "JSON serialization" should {
+    "serialize and deserialize correctly" in {
+      val journey = BecomeLeadJourney().setAcceptResponsibilities(true)
+      val json = Json.toJson(journey)
+      val deserialized = json.as[BecomeLeadJourney]
+
+      deserialized shouldBe journey
+    }
   }
 }
