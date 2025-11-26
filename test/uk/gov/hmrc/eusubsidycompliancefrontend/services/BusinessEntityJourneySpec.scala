@@ -35,5 +35,15 @@ class BusinessEntityJourneySpec extends BaseSpec with Matchers {
       BusinessEntityJourney().setAddBusiness(true) shouldBe
         BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some))
     }
+    "correctly report if on lead select journey" in {
+      BusinessEntityJourney(isLeadSelectJourney = None).onLeadSelectJourney shouldBe false
+      BusinessEntityJourney(isLeadSelectJourney = Some(false)).onLeadSelectJourney shouldBe false
+      BusinessEntityJourney(isLeadSelectJourney = Some(true)).onLeadSelectJourney shouldBe true
+    }
+
+    "correctly report if journey is an amendment" in {
+      BusinessEntityJourney(oldEORI = None).isAmend shouldBe false
+      BusinessEntityJourney(oldEORI = Some(eori1)).isAmend shouldBe true
+    }
   }
 }
