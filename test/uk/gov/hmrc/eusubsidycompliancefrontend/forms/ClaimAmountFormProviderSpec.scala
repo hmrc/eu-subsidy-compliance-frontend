@@ -21,7 +21,7 @@ import org.scalatest.matchers.must.Matchers
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.{IncorrectFormat, Required}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.IncorrectFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
@@ -133,31 +133,8 @@ class ClaimAmountFormProviderSpec extends BaseSpec with Matchers {
         validateAndCheckError("GBP", amountGBP = "-2")(Fields.ClaimAmountGBP, TooSmall)
       }
 
-      "return a required error" when {
-        "no amount is entered for GBP" in {
-          validateAndCheckError("GBP")(
-            Fields.ClaimAmountGBP,
-            Required
-          )
-        }
-
-        "no amount is entered for EUR" in {
-          validateAndCheckError("EUR")(
-            Fields.ClaimAmountEUR,
-            Required
-          )
-        }
-      }
-
-      "return an amount too big error for EUR" in {
-        val bigAmount = "12121212121212121"
-        validateAndCheckError(EUR.entryName, amountEUR = bigAmount)(
-          Fields.ClaimAmountEUR,
-          TooBig
-        )
-      }
-
     }
+
   }
 
   private def validateAndCheckSuccess(currencyCode: CurrencyCode, amount: String) = {

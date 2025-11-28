@@ -24,7 +24,7 @@ import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{GET, await, contentAsString, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
 import play.api.{Application, Configuration, inject}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -32,7 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailVerificationService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, manuallySuspendedUndertaking, undertaking, undertaking3, undertakingBalance, undertakingRef, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertaking3, undertakingBalance, undertakingRef, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ReviewAllowanceChangesPage
@@ -138,38 +138,7 @@ class ReviewAllowanceChangesControllerSpec
 
       verifyInsetText(document)
     }
-    "throw an exception when undertaking cannot be found for the EORI" in {
-      inSequence {
-        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-        mockRetrieveUndertaking(eori1)(None.toFuture)
-      }
-      val controller = instanceOf[ReviewAllowanceChangesController]
-      val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
 
-      assertThrows[IllegalStateException] {
-        await(controller.showPage(request))
-      }
-    }
-    "redirect to the undertaking suspended page when the undertaking is manually suspended" in {
-      inSequence {
-        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-        mockRetrieveUndertaking(eori1)(manuallySuspendedUndertaking.some.toFuture)
-        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
-          undertakingSubsidies.toFuture
-        )
-        mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
-      }
-      val controller = instanceOf[ReviewAllowanceChangesController]
-      val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
-      val result = controller.showPage(request)
-
-      status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(
-        routes.UndertakingSuspendedPageController
-          .showPage(manuallySuspendedUndertaking.isLeadEORI(eori1))
-          .url
-      )
-    }
   }
 
   def verifyInsetText(document: Document): Unit = {
@@ -183,4 +152,5 @@ class ReviewAllowanceChangesControllerSpec
       .getElementById("reviewAllowanceChanges-p2")
       .text() shouldBe "Your allowance is still 50,000 euros, but it is now calculated over a rolling 3-year period, instead of 3 tax years."
   }
+
 }

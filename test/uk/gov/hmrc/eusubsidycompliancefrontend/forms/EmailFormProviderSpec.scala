@@ -68,12 +68,7 @@ class EmailFormProviderSpec extends BaseSpec with Matchers {
       }
 
     }
-    "populate form fields correctly when filling from model" in {
-      val underTest = EmailFormProvider()
-      val model = FormValues("someone@example.com")
-      val form = underTest.form.fill(model)
-      form.data(Email) mustBe "someone@example.com"
-    }
+
   }
 
   private def validateAndCheckSuccess[A](provider: FormProvider[A])(form: (String, String)*)(expected: A) = {

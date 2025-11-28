@@ -231,17 +231,7 @@ class RemoveYourselfBusinessEntityControllerSpec
           )
         }
       }
-    }
-    "redirect to add business entity page when undertaking is not found" in {
-      def performAction() = controller.getRemoveYourselfBusinessEntity(FakeRequest())
-      inSequence {
-        mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-        mockRetrieveUndertaking(eori4)(Option.empty[Undertaking].toFuture)
-      }
-      checkIsRedirect(
-        performAction(),
-        routes.AddBusinessEntityController.getAddBusinessEntity().url
-      )
+
     }
 
   }

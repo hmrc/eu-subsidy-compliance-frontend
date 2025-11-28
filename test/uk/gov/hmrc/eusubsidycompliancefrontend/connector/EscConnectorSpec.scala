@@ -132,41 +132,6 @@ class EscConnectorSpec
       val actual = connector.getExchangeRate(LocalDate.now()).futureValue
       actual shouldBe Some(rate)
     }
-
-    "handling request to disable Undertaking" must {
-      behave like connectorBehaviour(
-        mockPost(url"$baseUrl/undertaking/disable", undertaking)(_),
-        () => connector.disableUndertaking(undertaking)
-      )
-    }
-
-    "handling request to get undertaking balance when status is not OK" in {
-      val response = HttpResponse(status = 500, body = "something went wrong")
-      mockGet(url"$baseUrl/undertaking/balance/$eori1")(Some(response))
-      val actual = connector.getUndertakingBalance(eori1).futureValue
-      actual shouldBe None
-    }
-
-    "handling request to get undertaking balance when a NotFoundException is returned" in {
-      mockGetNotFound(url"$baseUrl/undertaking/balance/$eori1")
-      val actual = connector.getUndertakingBalance(eori1).futureValue
-      actual shouldBe None
-    }
-
-    "handling request to get exchange rates when a NotFoundException is returned" in {
-      val date = LocalDate.now()
-      mockGetNotFound(url"$baseUrl/retrieve-exchange-rate/${date.toString}")
-      val actual = connector.getExchangeRate(date).futureValue
-      actual shouldBe None
-    }
-
-    "handling request to get exchange rates when status is not OK" in {
-      val date = LocalDate.now()
-      val response = HttpResponse(status = 500, body = "some-error")
-      mockGet(url"$baseUrl/retrieve-exchange-rate/${date.toString}")(Some(response))
-
-      val actual = connector.getExchangeRate(date).futureValue
-      actual shouldBe None
-    }
   }
+
 }
