@@ -2254,7 +2254,7 @@ class UndertakingControllerSpec
         }
         checkIsRedirect(
           performAction("undertakingSector" -> "00"),
-          routes.NACECheckDetailsController.getCheckDetails().url
+          routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
         )
       }
     }
@@ -2274,7 +2274,7 @@ class UndertakingControllerSpec
         }
         checkIsRedirect(
           performAction("undertakingSector" -> "00"),
-          routes.NACECheckDetailsController.getCheckDetails().url
+          routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
         )
       }
 
@@ -2292,7 +2292,7 @@ class UndertakingControllerSpec
         }
         checkIsRedirect(
           performAction("undertakingSector" -> "00"),
-          routes.NACECheckDetailsController.getCheckDetails().url
+          routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
         )
       }
 
@@ -2328,7 +2328,7 @@ class UndertakingControllerSpec
         }
         checkIsRedirect(
           performAction("undertakingSector" -> "00"),
-          routes.NACECheckDetailsController.getCheckDetails().url
+          routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
         )
       }
 
@@ -2346,10 +2346,11 @@ class UndertakingControllerSpec
         }
         checkIsRedirect(
           performAction("undertakingSector" -> "00"),
-          routes.NACECheckDetailsController.getCheckDetails().url
+          routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage().url
         )
       }
     }
+
     "handling request to get check your answers page" must {
 
       def performAction() = controller.getCheckAnswers(
