@@ -172,7 +172,7 @@ sector.hint.0= Includes transport and all other activities. The subsidy allowanc
 sector.hint.2=Includes crop and animal production, hunting and related services. The subsidy allowance for this sector is {0}
 sector.hint.Cont= euros over a rolling 3-year period.
 sector.hint.3=Includes freshwater and marine fishing, aquaculture and related support activities. The subsidy allowance for this sector is {0}
-sector.hint.3Cont= euros over 3 tax years.
+sector.hint.3Cont= euros over a rolling 3-year period.
 
 addBusinessIntent.title = Businesses in your undertaking
 addBusinessIntent.legend = Are there other businesses in your undertaking?
@@ -434,9 +434,12 @@ reportPayment.option2 = I have no payments to report
 reportPayment.error.required = Select if you need to report a non-customs payment or you have no payments to report
 
 # ReportNonCustomSubsidy
-reportNonCustomSubsidy.title = You must report all non-customs subsidies for 3 tax years
-reportNonCustomSubsidy.p1 = You need to report for the current tax year, and the previous 2 tax years:
-reportNonCustomSubsidy.p2.dateRange = 6 April {0} to 5 April {1}
+reportNonCustomSubsidy.title = You must report all non-customs subsidies for the last 3 years
+reportNonCustomSubsidy.p1 = You must report all non-customs subsidies you have recieved in the 3 years up to today. This is a rolling 3-year period, not fixed tax years.
+reportNonCustomSubsidy.p2 = Today is
+reportNonCustomSubsidy.p2Cont = , so you must report all non-customs subsidies recieved from
+reportNonCustomSubsidy.p2ContFurther = to today.
+
 
 add-claim-date.title = What date were you awarded the payment?
 add-claim-date.p1 = What date were you awarded the payment?
@@ -564,9 +567,9 @@ removeYourselfBusinessEntity.error.required = Select yes if you want to leave th
 noClaimNotification.title = Confirm your undertaking has no payments to report
 noClaimNotification.p1 = If you have not received any non-customs subsidy payments, you must report this at least once every 90 days.
 noClaimNotification.p2 = If you have never submitted a payment or no payments report
-noClaimNotification.p3 = You must confirm that you have received no non-customs subsidy payments since 6 April 2021.
+noClaimNotification.p3 = You must confirm that you have received any non-customs subsidy payments since
 noClaimNotification.p4 = If you have previously submitted a payment or no payments report
-noClaimNotification.p5 = You must confirm that you have received no non-customs subsidy payments within your latest 90-day reporting period.
+noClaimNotification.p5 = You must confirm that you have not received any non-customs subsidy payments within your latest 90-day reporting period.
 noClaimNotification.label = This undertaking does not have any non-customs subsidy payments to report for the relevant period.
 noClaimNotification.error.required = Select if you have not received non-customs subsidy payments in the period of time relevant to you
 

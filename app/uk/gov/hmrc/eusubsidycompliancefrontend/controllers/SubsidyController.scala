@@ -49,6 +49,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.formatEori
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
@@ -200,11 +201,14 @@ class SubsidyController @Inject() (
         val updatedForm =
           journey.reportedNonCustomSubsidy.value
             .fold(reportedPaymentNonCustomSubsidyForm)(v => reportedPaymentNonCustomSubsidyForm.fill(FormValues(v)))
-
+        val today = timeProvider.today.toDisplayFormat
+        val today1095Back = (timeProvider.today).minusDays(1095).toDisplayFormat
         Ok(
           reportNonCustomSubsidyPage(
             updatedForm,
-            journey.previous
+            journey.previous,
+            today,
+            today1095Back
           )
         )
       }
