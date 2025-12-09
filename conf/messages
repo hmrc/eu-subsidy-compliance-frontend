@@ -624,26 +624,6 @@ dashboard.insetText = Customs subsidies (Customs Duty waivers) claims can take u
 dashboardAlt.insetText = Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here.
 dashboard.scp08.warningText = Your ''Undertaking balance'', ''Total claimed'' and ''Customs subsidies (Customs Duty waivers)'' amounts in the first section may show temporary differences to your own records. They may take up to 24 hours to be amended here, so keeping a record of any payments you have received is advised.
 
-reviewAllowanceChanges.title = Review changes to your allowance
-reviewAllowanceChanges.p1 =The EU has changed its regulations on customs and non-customs state aid (de minimis aid). This affects all undertakings in the ‘agricultural’ and ‘other’ sectors.
-reviewAllowanceChanges.p2 =Your allowance is still
-reviewAllowanceChanges.50000 = 50,000 euros
-reviewAllowanceChanges.300000 = 300,000 euros
-reviewAllowanceChanges.p2Cont =, but it is now calculated over a rolling 3-year period, instead of 3 tax years.
-reviewAllowanceChanges.p3 = This online service still works out your balance using tax years. We will update the calculations as soon as we can. Meanwhile, the balance shown may be incorrect.
-reviewAllowanceChanges.p4 = This does not apply to the ‘fisheries and aquaculture’ sector. For this sector, de minimis aid is still calculated on a 3-tax-year basis.
-reviewAllowanceChanges.h2 =What you need to do
-reviewAllowanceChanges.p5 = You need to:
-reviewAllowanceChanges.ul1 = Keep your own records to make sure you stay within the limit, until further notice
-reviewAllowanceChanges.ul2 =include both customs state aid (Customs Duty waivers) and non-customs state aid in your calculations
-reviewAllowanceChanges.h3 =Calculate your balance
-reviewAllowanceChanges.p6 =To work out your rolling 3-year period, count back 3 years from the date you last made a declaration.
-reviewAllowanceChanges.p7 =For example, if you submit a declaration on 14 February 2025, your total claims between 15 February 2022 and 14 February 2025 must add up to
-reviewAllowanceChanges.p7Cont = or less.
-reviewAllowanceChanges.p8 = You can:
-reviewAllowanceChanges.url1 = read the full guidance on claiming waivers (opens in new tab)
-reviewAllowanceChanges.url2 = go to your undertaking homepage
-
 become-admin.title = Change of undertaking administrator
 become-admin.p1 = As the administrator for this undertaking you will be responsible for reporting all non-customs subsidy payments received by any member of the undertaking.
 become-admin.p2 = You must do this every 90 days.

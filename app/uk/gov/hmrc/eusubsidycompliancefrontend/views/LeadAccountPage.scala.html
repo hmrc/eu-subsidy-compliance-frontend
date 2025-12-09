@@ -93,12 +93,6 @@
                 @messages("lead-account-homepage.important")
             </h2>
         </div>
-        <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">
-                @messages("lead-account-homepage.banner")
-                <a class="govuk-notification-banner__link" href="@routes.ReviewAllowanceChangesController.showPage.url">@messages("lead-account-homepage.banner.link")</a>.
-            </p>
-        </div>
     </div>
     }
     @H1(messages("lead-account-homepage.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"))
@@ -164,7 +158,6 @@
         <strong class="govuk-warning-text__text" id = "undertaking-balance-section-content-agri-other">
             <span class="govuk-visually-hidden">Warning</span>
             @messages(s"$key.p3.agri")
-            <a class="govuk-link" href="@routes.ReviewAllowanceChangesController.showPage.url">@messages("lead-account-homepage.p3.link")</a>.
         </strong>
     </div>
     } else {
