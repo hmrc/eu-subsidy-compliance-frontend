@@ -596,15 +596,19 @@ noBusinessPresent.title = There are no other businesses added to your undertakin
 # Financial Dashboard
 
 dashboard.title = Summary of your allowance
-dashboard.p1 = This report summarises all customs subsidies (Customs Duty waivers) and non-customs subsidy payments recorded against your undertaking. These payments are referred to as ‘de minimis aid’.
-dashboard.p2 = The report includes all payments recorded against your undertaking since 6 April {0}.
-dashboardAlt.p1 = This page lists all payments recorded against your undertaking for the current tax year and the previous 2 tax years.
-dashboardAlt.p2 = The balance may be incorrect, as your allowance must now be calculated over a rolling 3-year period.
-dashboardAlt.p3 = You need to keep your own records to make sure you stay within your allowance.
-dashboardAlt.important = Your balance may be incorrect.
-dashboardAlt.importantURL = Review changes to your allowance and what you need to do
+dashboard.p1 = This summary includes customs subsidies (Customs Duty waivers) and non-customs subsidy payments. Together, these payments are known as ‘de minimis aid’.
+dashboard.p2 = Your maximum allowance includes all de minimis aid you can claim over a rolling 3-year period.
+dashboard.details.title = Changes to balance calculation from 6 April 2026
+dashboard.details.p1 = If you registered for this service before 6 April 2026, you may notice a change in the way your balance is calulated.
+dashboard.details.p2 = It is now calculated over a rolling 3-year period, instead of 3 tax years.
+dashboard.details.p3 = To work out your claim period, count back 3 years from the date you report a payment.
+dashboard.details.p4 = 3 years means 1,095 days (3 X 365 days).
+
+
+dashboard.insetText = Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here.
+
 dashboard.current-tax-year.heading = Current tax year
-dashboard.year.summary.heading = Tax year {0} to {1}
+dashboard.year.summary.heading = Undertaking balance for {0} to {1}
 dashboard.customs.duty.heading = Customs subsidies (Customs Duty waivers)
 dashboard.de.minimis.aid.heading = Non-customs subsidies
 dashboard.total.claimed.heading = Total claimed
@@ -616,8 +620,8 @@ dashboard.sector.name.3 = Aquaculture
 dashboard.undertaking.balance.heading = Undertaking balance
 dashboardAlt.undertaking.balance.heading = Undertaking balance for 6 April
 dashboardAlt.undertaking.balance.headingCont = to 5 April
-dashboard.insetText = Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here. This means that keeping a record of payments that you have received is advised.
-dashboardAlt.insetText = Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here.
+
+
 dashboard.scp08.warningText = Your ''Undertaking balance'', ''Total claimed'' and ''Customs subsidies (Customs Duty waivers)'' amounts in the first section may show temporary differences to your own records. They may take up to 24 hours to be amended here, so keeping a record of any payments you have received is advised.
 
 become-admin.title = Change of undertaking administrator
