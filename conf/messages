@@ -322,7 +322,7 @@ lead-account-homepage.ul4-li3 = Deregister your undertaking
 lead-account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.
 lead-account-homepage-overdue.inset=Your due date of {0} has passed. You have not submitted your return within the 90-day period.
 lead-account-homepage-never-submitted-overdue=You have created an undertaking, but not yet reported a claim. This means either you need to report a claim within the next 90 days, or that you are now overdue. You can report de minimis aid payments (less Customs Duty waivers), or let HMRC know that you have not received any, by following the links in the Reporting payments section below.
-
+lead-account-homepage.under-taking.p1= Your balance is calculated over rolling 3-year period. For more information,
 account-homepage.scp08Issues.text=Your undertaking balance may show a temporary difference to your own records, which will be amended here within 24 hours.
 
 non-lead-account-homepage.title = Your undertaking

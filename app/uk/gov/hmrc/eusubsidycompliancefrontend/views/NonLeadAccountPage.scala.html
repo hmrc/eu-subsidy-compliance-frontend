@@ -61,20 +61,7 @@ agriOtherFlag: Boolean
   backLinkEnabled = false,
   backLink = None
 ) {
-    @if(agriOtherFlag) {
-    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-        <div class="govuk-notification-banner__header">
-            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                @messages("non-lead-account-homepage.important")
-            </h2>
-        </div>
-        <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">
-                @messages("non-lead-account-homepage.banner")
-            </p>
-        </div>
-    </div>
-    }
+
   @H1(messages(s"$key.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"))
 
   <p class="govuk-hint govuk-!-font-size-24 govuk-!-margin-top-1 govuk-!-margin-bottom-8">@eori</p>
@@ -94,26 +81,19 @@ agriOtherFlag: Boolean
   }
 
 
-  @H2(balanceHeading, id = Some("undertaking-balance-section-heading"))
-  @possibleMiscalculationContent
-    @if(agriOtherFlag) {
-    <div class="govuk-warning-text">
-        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-        <strong class="govuk-warning-text__text">
-            <span class="govuk-visually-hidden">Warning</span>
-        </strong>
-    </div>
-    } else{
+    @H2(balanceHeading, id = Some("undertaking-balance-section-heading"))
+    @possibleMiscalculationContent
     @P(messages(s"$key.p2", remainingAmount, allowance), id = Some("undertaking-balance-section-content"))
-    }
-  <ul class="govuk-list govuk-list--spaced">
-    <li><a href="@routes.FinancialDashboardController.getFinancialDashboard" class="govuk-link">@messages(s"$key.ul1-li1")</a></li>
-  </ul>
+    <div class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
+        <p class="govuk-body">@messages("lead-account-homepage.under-taking.p1")
+            <a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.ul3-li1")</a>
+        </p>
+    </div>
 
-  @H2(messages(s"$key.h2-4"))
-  <ul class="govuk-list govuk-list--spaced">
-    <li><a href="@routes.BecomeLeadController.getAcceptResponsibilities()" class="govuk-link">@messages(s"$key.ul2-li1")</a></li>
-    <li><a href="@routes.RemoveYourselfBusinessEntityController.getRemoveYourselfBusinessEntity" class="govuk-link">@messages(s"$key.ul2-li2")</a></li>
-  </ul>
+    @H2(messages(s"$key.h2-4"))
+    <ul class="govuk-list govuk-list--spaced">
+        <li><a href="@routes.BecomeLeadController.getAcceptResponsibilities()" class="govuk-link">@messages(s"$key.ul2-li1")</a></li>
+        <li><a href="@routes.RemoveYourselfBusinessEntityController.getRemoveYourselfBusinessEntity" class="govuk-link">@messages(s"$key.ul2-li2")</a></li>
+    </ul>
 
 }
