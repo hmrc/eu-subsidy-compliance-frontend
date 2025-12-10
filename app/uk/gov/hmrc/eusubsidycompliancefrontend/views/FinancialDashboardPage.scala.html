@@ -179,7 +179,8 @@ industrySectorKey: String)(implicit request: Request[_], messages: Messages, app
                 )
             )
         ))
-
+    if(eori != undertaking){
     <div><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments">@messages("dashboard.urltext")</a></div><br>
+    }
     <div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("dashboard.url2text")</a></div>
 }
