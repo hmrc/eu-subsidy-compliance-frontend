@@ -332,8 +332,6 @@ non-lead-account-homepage.banner.link = Review changes to your allowance and wha
 non-lead-account-homepage.h2-2 = Remaining allowance
 non-lead-account-homepage.h2.undertakingBalance = Undertaking balance
 non-lead-account-homepage.p2 = Your undertaking currently has a remaining balance of <strong>{0}</strong>, from your sector allowance of {1}.
-non-lead-account-homepage.p2.agri = Your balance may be incorrect. To work out your balance,
-non-lead-account-homepage.p2.link = review changes to your allowance
 
 non-lead-account-homepage.ul1-li1 = View summary of your allowance (customs and non-customs subsidies)
 
