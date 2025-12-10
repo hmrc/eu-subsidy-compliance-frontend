@@ -603,11 +603,12 @@ dashboard.details.p1 = If you registered for this service before 6 April 2026, y
 dashboard.details.p2 = It is now calculated over a rolling 3-year period, instead of 3 tax years.
 dashboard.details.p3 = To work out your claim period, count back 3 years from the date you report a payment.
 dashboard.details.p4 = 3 years means 1,095 days (3 X 365 days).
+dashboard.details.p5 = For example, if today is 14 February 2025, your total claims from 15 February 2022 to today must not exceed your maximum allowance.
 
 
 dashboard.insetText = Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here.
 
-dashboard.current-tax-year.heading = Current tax year
+dashboard.claimPeriod.heading = Your claim period
 dashboard.year.summary.heading = Undertaking balance for {0} to {1}
 dashboard.customs.duty.heading = Customs subsidies (Customs Duty waivers)
 dashboard.de.minimis.aid.heading = Non-customs subsidies
@@ -617,9 +618,15 @@ dashboard.sector.name.0 = Other
 dashboard.sector.name.1 = Transport
 dashboard.sector.name.2 = Agriculture
 dashboard.sector.name.3 = Aquaculture
-dashboard.undertaking.balance.heading = Undertaking balance
-dashboardAlt.undertaking.balance.heading = Undertaking balance for 6 April
-dashboardAlt.undertaking.balance.headingCont = to 5 April
+dashboard.undertaking.balance.heading = Undertaking balance for {0} to {1}
+dashboard.claimPeriod.heading = Your claim period
+dashboard.claimPeriod.h1 = Start date
+dashboard.claimPeriod.h2 = End date
+dashboard.claimPeriod.h3 = Your last report of a non-customs subsidy payment within the claim period
+dashboard.claimPeriod.h4 = Your earliest report of a non-customs subsidy payment within the claim period
+
+dashboard.urltext = View reported non-customs subsidy payments
+dashboard.url2text = Back to manage your undertaking
 
 
 dashboard.scp08.warningText = Your ''Undertaking balance'', ''Total claimed'' and ''Customs subsidies (Customs Duty waivers)'' amounts in the first section may show temporary differences to your own records. They may take up to 24 hours to be amended here, so keeping a record of any payments you have received is advised.
