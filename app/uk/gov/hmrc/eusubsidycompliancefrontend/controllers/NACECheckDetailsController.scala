@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +51,8 @@ class NACECheckDetailsController @Inject() (
   undertakingController: UndertakingController,
   escService: EscService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends BaseController(mcc) {
+    extends BaseController(mcc)
+    with Logging {
 
   import actionBuilders._
 
@@ -261,7 +263,7 @@ class NACECheckDetailsController @Inject() (
           .fromMessages(usersLastAnswer)(messages)
           .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $usersLastAnswer"))
 
-        println(
+        logger.info(
           s"""
              |Debug URLs for NACE code ${viewModel.naceLevel4Code}:
              |  Level 1 Code: ${viewModel.naceLevel1Code} - Display: ${viewModel.naceLevel1Display}
