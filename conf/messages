@@ -2893,12 +2893,13 @@ NACE.Administrative.Lvl2.OfficeSupport.hint = Includes call centres, collection 
 
 #Insurance
 
-NACE.insurance.Lvl2.insurance.title = What is your undertaking''s main business activity in insurance, reinsurance and pension funding?
+NACE.insurance.Lvl2.insurance.title = What is your undertaking’s main business activity in insurance, reinsurance and pension funding?
 NACE.insurance.Lvl2.insurance.error = Select your undertaking’s main business activity in insurance, reinsurance and pension funding
 NACE.radio.65.1 = Insurance
-NACE.radio.65.title = What is your undertaking's main business activity in insurance, reinsurance and pension funding?
+NACE.radio.65.title = What is your undertaking’s main business activity in insurance, reinsurance and pension funding?
 NACE.radio.65.2 = Reinsurance
 NACE.radio.65.3 = Pension funding
+NACE.radio.65.1.title = What type of insurance does your undertaking provide?
 NACE.insurance.Lvl4.insuranceType.title = What type of insurance does your undertaking provide?
 NACE.insurance.Lvl4.insuranceType.error = Select the type of insurance your undertaking provides
 NACE.radio.65.11 = Life insurance
@@ -6870,7 +6871,7 @@ NACE.58.13.b2 = publishing of radio and television schedules All the feasible fo
 
 NACE.58.19.heading = 58.19 Other publishing activities, except software publishing
 NACE.58.19.intro = This class includes:
-NACE.58.12.b1 = publishing in any format, including print, digital or on the internet, e.g.: directories and mailing lists; compilations (e.g. case law, pharmaceutical compendia); catalogues; photographs, engravings and postcards; calendars; greeting cards; forms; posters; reproductions of works of art; non-bound leaflets and advertising material; statistics and other information; datasets/databases without associated data processing services
+NACE.58.19.b1 = publishing in any format, including print, digital or on the internet, e.g.: directories and mailing lists; compilations (e.g. case law, pharmaceutical compendia); catalogues; photographs, engravings and postcards; calendars; greeting cards; forms; posters; reproductions of works of art; non-bound leaflets and advertising material; statistics and other information; datasets/databases without associated data processing services
 
 NACE.58.21.heading = 58.21 Publishing of video games
 NACE.58.21.intro = This class includes:
@@ -7451,13 +7452,13 @@ NACE.78.10.b2 = activities of casting agencies and bureaux (e.g. theatrical cast
 NACE.78.10.b3 = activities of online employment placement agencies
 
 NACE.78.20.heading = 78.20 Temporary employment agency activities and other human resource provisions
-NACE.78.20.inro = This class includes the activities of supplying workers to clients’ businesses for specific periods of time to temporarily replace or supplement the workforce of the client. In such an employment arrangement, the temporary employment agency or provider of human resources is the employer of the individual workers provided. However, the client is responsible for the supervision of the temporary personnel. These activities are providing human resources for clients’ businesses. The units classified here represent the employer of record for the temporary employees on matters relating to payroll, taxes, and other fiscal and human resource issues, but they are not responsible for the management and supervision of employees. The units classified here perform a wide range of human resource and personnel management duties associated with this provision.
+NACE.78.20.intro = This class includes the activities of supplying workers to clients’ businesses for specific periods of time to temporarily replace or supplement the workforce of the client. In such an employment arrangement, the temporary employment agency or provider of human resources is the employer of the individual workers provided. However, the client is responsible for the supervision of the temporary personnel. These activities are providing human resources for clients’ businesses. The units classified here represent the employer of record for the temporary employees on matters relating to payroll, taxes, and other fiscal and human resource issues, but they are not responsible for the management and supervision of employees. The units classified here perform a wide range of human resource and personnel management duties associated with this provision.
 
 NACE.79.11.heading = 79.11 Travel agency activities
 NACE.79.11.intro = This class includes:
-NACE.77.11.b1 = activities of agencies, primarily engaged in the sale of packaged tours and cruises to the general public or to commercial clients, alongside additional accommodation advice or expertise: reservation services for pre-packaged tours, domestic (national) and international; reservation services for customised tour packages for groups, domestic (national) or international
-NACE.77.11.b2 = intermediation service activities for the conclusion of contracts for the provision of tourist services from tour operators
-NACE.77.11.b3 = intermediation of packaged travel services in the destination
+NACE.79.11.b1 = activities of agencies, primarily engaged in the sale of packaged tours and cruises to the general public or to commercial clients, alongside additional accommodation advice or expertise: reservation services for pre-packaged tours, domestic (national) and international; reservation services for customised tour packages for groups, domestic (national) or international
+NACE.79.11.b2 = intermediation service activities for the conclusion of contracts for the provision of tourist services from tour operators
+NACE.79.11.b3 = intermediation of packaged travel services in the destination
 
 NACE.79.12.heading = 79.12 Tour operator activities
 NACE.79.12.intro = This class includes: arranging, assembling and marketing packaged tours: pre-packaged tours, domestic (national) and international; customised tour packages for groups, domestic (national) and international Package tours usually include passenger and baggage transport, accommodation, food and sightseeing services. Tour operators are engaged in the operation of tour packages that are sold by travel agencies, including arranging and assembling different services in the packaged tour. Tour operators might be employed or contracted by a travel agency, or they might operate as independent tour operators.
@@ -7612,7 +7613,7 @@ NACE.radio.80.0.title = What is your undertaking's main business activity in inv
 NACE.radio.81.title = What type of building or landscape service does your undertaking provide?
 NACE.radio.81.2.title = What type of cleaning does your undertaking do?
 NACE.radio.82.title = What type of office or business support does your undertaking provide?
-NACE.radio.82.9.title = What type of other business support services does your undertaking provide?Retry
+NACE.radio.82.9.title = What type of other business support services does your undertaking provide?
 
 NACE.84.11.heading = 84.11 General public administration activities
 NACE.84.11.intro = This class includes:
