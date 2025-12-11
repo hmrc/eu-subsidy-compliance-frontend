@@ -444,7 +444,7 @@ class OtherServicesControllerSpec
         val document = Jsoup.parse(contentAsString(result))
         val radios = Table(
           ("id", "text"),
-          ("sector-label-repairConsumerElectronics", "Consumer electronic"),
+          ("sector-label-repairConsumerElectronics", "Consumer electronics"),
           ("sector-label-repairFootwearLeather", "Footwear and leather goods"),
           ("sector-label-repairFurnitureHome", "Furniture and home furnishings"),
           ("sector-label-repairHouseholdAppliances", "Household appliances and home and garden equipment"),
