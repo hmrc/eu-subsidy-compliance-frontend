@@ -27,13 +27,14 @@ import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailVerificationRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailVerificationStatusResponse, VerificationStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmailVerificationServiceSpec
@@ -122,5 +123,66 @@ class EmailVerificationServiceSpec
 
     }
 
+  }
+  "getEmailVerificationStatus" must {
+    "return a verified and unlocked email" in {
+      implicit val request: AuthenticatedEnrolledRequest[AnyContent] = AuthenticatedEnrolledRequest(
+        authorityId = "SomeAuthorityId",
+        groupId = "SomeGroupId",
+        request = FakeRequest(GET, "/"),
+        eoriNumber = eori1
+      )
+
+      val verificationStatus = VerificationStatus(
+        emailAddress = "test@example.com",
+        verified = true,
+        locked = false
+      )
+
+      val response = EmailVerificationStatusResponse(
+        emails = List(verificationStatus)
+      )
+
+      (mockEmailVerificationConnector
+        .getVerificationStatus(_: String)(_: HeaderCarrier, _: ExecutionContext))
+        .expects("SomeAuthorityId", *, *)
+        .returning(Future.successful(response))
+
+      val result = service.getEmailVerificationStatus
+
+      whenReady(result) { res =>
+        res shouldBe Some(verificationStatus)
+      }
+    }
+
+    "return None when no verified and unlocked email exists" in {
+      implicit val request: AuthenticatedEnrolledRequest[AnyContent] = AuthenticatedEnrolledRequest(
+        authorityId = "SomeAuthorityId",
+        groupId = "SomeGroupId",
+        request = FakeRequest(GET, "/"),
+        eoriNumber = eori1
+      )
+
+      val lockedEmail = VerificationStatus(
+        emailAddress = "locked@example.com",
+        verified = true,
+        locked = true
+      )
+
+      val response = EmailVerificationStatusResponse(
+        emails = List(lockedEmail)
+      )
+
+      (mockEmailVerificationConnector
+        .getVerificationStatus(_: String)(_: HeaderCarrier, _: ExecutionContext))
+        .expects("SomeAuthorityId", *, *)
+        .returning(Future.successful(response))
+
+      val result = service.getEmailVerificationStatus
+
+      whenReady(result) { res =>
+        res shouldBe None
+      }
+    }
   }
 }

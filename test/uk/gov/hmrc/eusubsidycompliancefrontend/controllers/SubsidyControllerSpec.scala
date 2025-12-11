@@ -2285,6 +2285,29 @@ class SubsidyControllerSpec
         }
       }
     }
+    "handling backFromCheckYourAnswers" must {
+
+      def performAction() =
+        controller.backFromCheckYourAnswers(
+          FakeRequest(GET, routes.SubsidyController.backFromCheckYourAnswers.url)
+        )
+
+      "reset cya to false and redirect to add claim reference" in {
+        val journeyWithCyaFalse =
+          subsidyJourney.copy(cya = CyaFormPage(value = Some(false)))
+
+        inSequence {
+          mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockUpdate[SubsidyJourney](eori1)(Right(journeyWithCyaFalse))
+        }
+
+        checkIsRedirect(
+          performAction(),
+          routes.SubsidyController.getAddClaimReference.url
+        )
+      }
+    }
 
   }
 

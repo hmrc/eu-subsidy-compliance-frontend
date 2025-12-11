@@ -338,8 +338,39 @@ class BusinessEntityEoriControllerSpec
             }
           }
         }
+        "user is updating an existing business entity (amend journey)" in {
+          val oldEori = EORI("GB123456789999")
+          val newEori = EORI("GB123456789010")
+
+          val amendBusinessEntityJourney = BusinessEntityJourney(
+            addBusiness = AddBusinessFormPage(true.some),
+            eori = AddEoriFormPage(None),
+            oldEORI = oldEori.some // This makes isAmend return true
+          )
+
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[BusinessEntityJourney](eori1)(Right(amendBusinessEntityJourney.some))
+
+            mockRetrieveUndertakingWithErrorResponse(newEori)(Right(None))
+            mockGet[BusinessEntityJourney](eori1)(Right(amendBusinessEntityJourney.some))
+            mockRemoveMember(undertakingRef, BusinessEntity(oldEori, leadEORI = false))(Right(undertakingRef))
+            mockSendEmail(newEori, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
+            mockSendEmail(eori1, newEori, AddMemberToLead, undertaking)(Right(EmailSent))
+            mockSendAuditEvent(AuditEvent.BusinessEntityUpdated(undertakingRef, "1123", eori1, newEori))
+          }
+
+          checkIsRedirect(
+            performAction("businessEntityEori" -> "GB123456789010"),
+            routes.AddBusinessEntityController
+              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(newEori))
+              .url
+          )
+        }
       }
     }
 
   }
+
 }
