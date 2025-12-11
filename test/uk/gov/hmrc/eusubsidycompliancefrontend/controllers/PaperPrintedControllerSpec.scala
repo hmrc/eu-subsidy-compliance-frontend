@@ -65,7 +65,6 @@ class PaperPrintedControllerSpec
     val otherPrinting = "18.12"
     val pulp4 = "17.11"
     val paper = "17.12"
-
   }
 
   import SectorCodes._
@@ -85,7 +84,7 @@ class PaperPrintedControllerSpec
         val radios = Table(
           ("id", "text"),
           ("sector-label-corrugated", "Corrugated paper, paperboard and containers of paper and paperboard"),
-          ("sector-label-sanitary", "Household and sanitary goods and of toilet requisites"),
+          ("sector-label-sanitary", "Household and sanitary goods and toilet requisites"),
           ("sector-label-stationary", "Paper stationery"),
           ("sector-label-wallpaper", "Wallpaper"),
           ("sector-label-other", "Other articles of paper and paperboard")
