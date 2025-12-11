@@ -71,13 +71,13 @@ class NACECheckDetailsController @Inject() (
   }
 
   private def getLevel1_1ChangeUrl(level2Code: String): String = level2Code match {
-    case "13" | "14" | "15" | "16" | "22" | "31" =>
+    case "13" | "14" | "15" | "16" | "31" =>
       routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
     case "26" | "27" | "28" =>
       routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().url
     case "10" | "11" | "12" =>
       routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage().url
-    case "19" | "20" | "23" | "24" | "25" =>
+    case "19" | "20" | "23" | "24" | "22" | "25" =>
       routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().url
     case "17" | "18" =>
       routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage().url
@@ -88,10 +88,10 @@ class NACECheckDetailsController @Inject() (
   }
 
   private def getLevel1_1Display(level2Code: String)(implicit messages: Messages): String = level2Code match {
-    case "13" | "14" | "15" | "16" | "22" | "31" => messages("NACE.radio.INT002")
+    case "13" | "14" | "15" | "16" | "31" => messages("NACE.radio.INT002")
     case "26" | "27" | "28" | "33" => messages("NACE.radio.INT003")
     case "10" | "11" | "12" => messages("NACE.radio.INT004")
-    case "19" | "20" | "23" | "24" | "25" => messages("NACE.radio.INT005")
+    case "19" | "20" | "22" | "23" | "24" | "25" => messages("NACE.radio.INT005")
     case "17" | "18" => messages("NACE.radio.INT006")
     case "29" | "30" => messages("NACE.radio.INT007")
     case _ => ""

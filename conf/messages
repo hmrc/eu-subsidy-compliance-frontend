@@ -1941,14 +1941,13 @@ NACE.TransportationAndStorage.Lvl2.AirTransport.error = Select the type of air t
 NACE.radio.51.1 = Passenger air transport
 NACE.TransportationAndStorage.Lvl4.PassengerAir = Passenger air transport
 NACE.radio.51.2 = Freight air transport and space transport
-NACE.radio.52.2.title = What type of freight air transport or space transport does your undertaking provide?
+NACE.radio.51.2.title = What type of freight air transport or space transport does your undertaking provide?
 NACE.TransportationAndStorage.Lvl3.FreightAirSpace.error = Select the type of freight transport or space transport your undertaking provides
 NACE.radio.51.21 = Freight air transport
 NACE.radio.51.22 = Space transport
 
 NACE.radio.52 = Warehousing, storage and support activities for transport
 NACE.radio.52.title = What type of warehousing, storage or support activity does your undertaking do?
-NACE.radio.51.2.title = What type of transport support activities does your undertaking do?
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint = Includes cargo handling, logistics and intermediation services for transport.
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport.error = Select the type of warehousing, storage or support activity your undertaking does
 NACE.radio.52.1 = Warehousing and storage
