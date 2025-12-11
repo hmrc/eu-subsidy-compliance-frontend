@@ -57,4 +57,4 @@ Test / test := (Test / test)
   .dependsOn(scalafmtCheckAll)
   .value
 
-addCommandAlias("precommit", ";scalafmt;test:scalafmt;it/Test/scalafmt;coverage;test;coverageReport;coverageOff;it/test")
+addCommandAlias("precommit", ";scalafmt;test:scalafmt;it/Test/scalafmt;coverage;test;it/test;coverageReport")
