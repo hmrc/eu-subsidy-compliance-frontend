@@ -642,7 +642,7 @@ class NACECheckDetailsControllerSpec
         viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
       }
 
-      "return correct URL for clothes/textiles/homeware - rubber/plastic (22)" in {
+      "return correct URL for metals/chemicals/materials - rubber/plastic (22)" in {
         val naceCode = "22.11"
         val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
         viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().url
