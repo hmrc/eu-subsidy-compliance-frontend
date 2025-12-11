@@ -2,16 +2,16 @@ import sbt.*
 
 object AppDependencies {
 
-  val bootStrapVersion = "9.18.0"
-  val hmrcMongoVersion = "2.6.0"
+  val bootStrapVersion = "10.4.0"
+  val hmrcMongoVersion = "2.11.0"
 
   val compile = Seq(
     "uk.gov.hmrc"           %% "bootstrap-frontend-play-30"                 % bootStrapVersion,
-    "uk.gov.hmrc"           %% "play-frontend-hmrc-play-30"                 % "12.8.0",
+    "uk.gov.hmrc"           %% "play-frontend-hmrc-play-30"                 % "12.23.0",
     "uk.gov.hmrc.mongo"     %% "hmrc-mongo-play-30"                         % hmrcMongoVersion,
     "org.typelevel"         %% "cats-core"                                  % "2.10.0",
     "com.chuusai"           %% "shapeless"                                  % "2.3.10",
-    "uk.gov.hmrc"           %% "play-conditional-form-mapping-play-30"      % "3.3.0",
+    "uk.gov.hmrc"           %% "play-conditional-form-mapping-play-30"      % "3.4.0",
     "com.beachape"          %% "enumeratum"                                 % "1.7.3",
     "com.beachape"          %% "enumeratum-play-json"                       % "1.8.0"
   )
