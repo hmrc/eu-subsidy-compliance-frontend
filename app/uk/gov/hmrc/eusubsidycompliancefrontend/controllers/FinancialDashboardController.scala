@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
@@ -49,6 +50,8 @@ class FinancialDashboardController @Inject() (
 
     val today = timeProvider.today
 
+    val minusDays = timeProvider.getMinusDaysForVal(appConfig.minusDays).toDisplayFormat
+
     // The search period covers the current tax year to date, and the previous 2 tax years.
     for {
       undertakingOpt <- escService.retrieveUndertaking(eori)
@@ -68,7 +71,8 @@ class FinancialDashboardController @Inject() (
     } yield
       if (undertaking.isManuallySuspended)
         Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url)
-      else Ok(financialDashboardPage(summary, industrySectorKey))
+
+      else Ok(financialDashboardPage(summary, industrySectorKey, minusDays))
 
   }
 

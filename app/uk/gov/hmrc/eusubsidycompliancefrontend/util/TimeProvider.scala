@@ -25,6 +25,7 @@ trait TimeProvider {
   def today: LocalDate
   def zonedToday(z: ZoneId): LocalDate
   def now: LocalDateTime
+  def getMinusDaysForVal(minusDays: Int): LocalDate
 }
 
 @Singleton
@@ -32,4 +33,5 @@ class SystemTimeProvider extends TimeProvider {
   override def today: LocalDate = LocalDate.now()
   override def zonedToday(z: ZoneId): LocalDate = LocalDate.now(z)
   override def now: LocalDateTime = LocalDateTime.now()
+  override def getMinusDaysForVal(minusDays: Int): LocalDate = today.minusDays(minusDays)
 }

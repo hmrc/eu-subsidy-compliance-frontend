@@ -240,7 +240,7 @@ class AccountController @Inject() (
           nonLeadAccountPage(
             undertaking = undertaking,
             eori = undertaking.getLeadEORI,
-            isLead = "false",
+            isLead = false,
             dueDate = dueDate,
             isOverdue = isOverdue,
             lastSubmitted = lastSubmitted.map(_.toDisplayFormat),

@@ -73,4 +73,7 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val NewRegChangeMode: String = "NewRegChangeMode"
   lazy val UpdateNaceMode: String = "UpdateNaceMode"
   lazy val AmendNaceMode: String = "AmendNaceMode"
+
+
+  lazy val minusDays: Int = config.get[Int]("minusDays")
 }

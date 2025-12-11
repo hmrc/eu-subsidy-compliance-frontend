@@ -33,8 +33,7 @@
   govukNotificationBanner : GovukNotificationBanner
 )
 
-@(summary: FinancialDashboardSummary,
-industrySectorKey: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summary: FinancialDashboardSummary,industrySectorKey: String, previousDate: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"dashboard"}
 
 @title = @{messages(s"$key.title")}
@@ -114,7 +113,7 @@ industrySectorKey: String)(implicit request: Request[_], messages: Messages, app
     Seq(
         SummaryListRow(
             key = Key(
-                content = HtmlContent(s"""<span id="undertaking-balance-heading">${messages(s"$key.undertaking.balance.heading")}</span>""")
+                content = HtmlContent(s"""<span id="undertaking-balance-heading">${messages(s"$key.undertaking.balance.heading", previousDate, summary.currentDate)}</span>""")
             ),
             value = Value(
                 content = HtmlContent(s"""<span id="undertaking-balance-value">${summary.undertakingBalanceEUR.toEuros}</span>""")
@@ -150,7 +149,7 @@ industrySectorKey: String)(implicit request: Request[_], messages: Messages, app
                     content = Text(messages(s"dashboard.claimPeriod.h1"))
                     ),
                     value = Value(
-                    content = Text("today")
+                    content = Text(previousDate)
                     )
                 ),
                 SummaryListRow(
@@ -158,7 +157,7 @@ industrySectorKey: String)(implicit request: Request[_], messages: Messages, app
                     content = Text(messages(s"dashboard.claimPeriod.h2"))
                     ),
                     value = Value(
-                    content = Text("End Date")
+                    content = Text(summary.currentDate)
                     )
                 ),
                 SummaryListRow(
