@@ -25,6 +25,7 @@ import play.api.libs.ws.BodyWritable
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailVerificationStatusResponse
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.http.client.RequestBuilder
+import uk.gov.hmrc.http.NotFoundException
 
 import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
@@ -81,6 +82,21 @@ trait HttpSupport { this: MockFactory with Matchers =>
           Future.failed(new Exception("Test exception message"))
         )(Future.successful)
       )
+  }
+
+  def mockExecuteNotFound(): Unit = {
+    (mockRequestBuilder
+      .execute[HttpResponse](_: HttpReads[HttpResponse], _: ExecutionContext))
+      .expects(*, *)
+      .returning(Future.failed(new NotFoundException("Test not found")))
+  }
+
+  def mockGetNotFound(url: URL): Unit = {
+    (mockHttp
+      .get(_: URL)(_: HeaderCarrier))
+      .expects(url, *)
+      .returning(mockRequestBuilder)
+    mockExecuteNotFound()
   }
 
   def mockWithBody[B : Writes](requestBody: B) = {

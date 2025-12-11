@@ -167,7 +167,30 @@ class ReviewAllowanceChangesControllerSpec
 
       exception.getMessage should include("Undertaking for EORI")
     }
+      assertThrows[IllegalStateException] {
+        await(controller.showPage(request))
+      }
+    }
+    "redirect to the undertaking suspended page when the undertaking is manually suspended" in {
+      inSequence {
+        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+        mockRetrieveUndertaking(eori1)(manuallySuspendedUndertaking.some.toFuture)
+        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
+          undertakingSubsidies.toFuture
+        )
+        mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
+      }
+      val controller = instanceOf[ReviewAllowanceChangesController]
+      val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
+      val result = controller.showPage(request)
 
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(
+        routes.UndertakingSuspendedPageController
+          .showPage(manuallySuspendedUndertaking.isLeadEORI(eori1))
+          .url
+      )
+    }
   }
 
   def verifyInsetText(document: Document): Unit = {
@@ -181,5 +204,4 @@ class ReviewAllowanceChangesControllerSpec
       .getElementById("reviewAllowanceChanges-p2")
       .text() shouldBe "Your allowance is still 50,000 euros, but it is now calculated over a rolling 3-year period, instead of 3 tax years."
   }
-
 }

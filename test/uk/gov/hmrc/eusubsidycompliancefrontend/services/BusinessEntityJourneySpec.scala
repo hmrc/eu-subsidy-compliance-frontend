@@ -35,7 +35,6 @@ class BusinessEntityJourneySpec extends BaseSpec with Matchers {
       BusinessEntityJourney().setAddBusiness(true) shouldBe
         BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some))
     }
-
     "return correct steps array" in {
       val journey = BusinessEntityJourney()
       journey.steps should have length 2
