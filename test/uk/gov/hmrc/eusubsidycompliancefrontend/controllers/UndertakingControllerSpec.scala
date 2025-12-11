@@ -44,7 +44,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import java.time.LocalDate
 import scala.concurrent.Future
 
-
 class UndertakingControllerSpec
     extends ControllerSpec
     with AuthSupport
