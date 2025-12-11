@@ -104,92 +104,67 @@ class ReviewAllowanceChangesControllerSpec
         val document = Jsoup.parse(data)
 
         verifyInsetText(document)
-
       }
 
-    }
+      "display sector cap as agriculture on Review Allowance Changes Page" in {
+        inSequence {
+          mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+          mockRetrieveUndertaking(eori1)(undertaking3.some.toFuture)
+          mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
+            undertakingSubsidies.toFuture
+          )
+          mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
+        }
 
-    "display sector cap as agriculture on Review Allowance Changes Page" in {
-      inSequence {
+        val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
+        val result = route(app, request).get
+        val page = instanceOf[ReviewAllowanceChangesPage]
+
+        val summaryData = FinancialDashboardSummary
+          .fromUndertakingSubsidies(
+            undertaking = undertaking3,
+            subsidies = undertakingSubsidies,
+            balance = undertakingBalance.some,
+            today = fakeTimeProvider.today
+          )
+
+        status(result) shouldBe Status.OK
+        val data = contentAsString(result)
+        data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
+        val document = Jsoup.parse(data)
+
+        verifyInsetText(document)
+      }
+
+      "redirect to suspended page when undertaking is manually suspended" in {
+        inSequence {
+          mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+          mockRetrieveUndertaking(eori1)(manuallySuspendedUndertaking.some.toFuture)
+          mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
+            undertakingSubsidies.toFuture
+          )
+          mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
+        }
+
+        val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
+        val result = route(app, request).get
+
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some(routes.UndertakingSuspendedPageController.showPage(true).url)
+      }
+
+      "throw IllegalStateException when undertaking is not found" in {
         mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-        mockRetrieveUndertaking(eori1)(undertaking3.some.toFuture)
-        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
-          undertakingSubsidies.toFuture
-        )
-        mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
+        mockRetrieveUndertaking(eori1)(None.toFuture)
+
+        val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
+
+        val exception = intercept[IllegalStateException] {
+          await(route(app, request).get)
+        }
+
+        exception.getMessage should include("Undertaking for EORI")
       }
-
-      val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
-      val result = route(app, request).get
-      val page = instanceOf[ReviewAllowanceChangesPage]
-
-      val summaryData = FinancialDashboardSummary
-        .fromUndertakingSubsidies(
-          undertaking = undertaking3,
-          subsidies = undertakingSubsidies,
-          balance = undertakingBalance.some,
-          today = fakeTimeProvider.today
-        )
-
-      status(result) shouldBe Status.OK
-      val data = contentAsString(result)
-      data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
-      val document = Jsoup.parse(data)
-
-      verifyInsetText(document)
-    }
-    "redirect to suspended page when undertaking is manually suspended" in {
-      inSequence {
-        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-        mockRetrieveUndertaking(eori1)(manuallySuspendedUndertaking.some.toFuture)
-        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
-          undertakingSubsidies.toFuture
-        )
-        mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
-      }
-
-      val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
-      val result = route(app, request).get
-
-      status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(routes.UndertakingSuspendedPageController.showPage(true).url)
-    }
-
-    "throw IllegalStateException when undertaking is not found" in {
-      mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-      mockRetrieveUndertaking(eori1)(None.toFuture)
-
-      val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
-
-      val exception = intercept[IllegalStateException] {
-        await(route(app, request).get)
-      }
-
-      exception.getMessage should include("Undertaking for EORI")
-    }
-      assertThrows[IllegalStateException] {
-        await(controller.showPage(request))
-      }
-    }
-    "redirect to the undertaking suspended page when the undertaking is manually suspended" in {
-      inSequence {
-        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-        mockRetrieveUndertaking(eori1)(manuallySuspendedUndertaking.some.toFuture)
-        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
-          undertakingSubsidies.toFuture
-        )
-        mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
-      }
-      val controller = instanceOf[ReviewAllowanceChangesController]
-      val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
-      val result = controller.showPage(request)
-
-      status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(
-        routes.UndertakingSuspendedPageController
-          .showPage(manuallySuspendedUndertaking.isLeadEORI(eori1))
-          .url
-      )
     }
   }
 
