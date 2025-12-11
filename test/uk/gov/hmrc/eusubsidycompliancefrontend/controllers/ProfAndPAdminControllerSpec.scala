@@ -366,7 +366,7 @@ class ProfAndPAdminControllerSpec
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
         val expectedErrorMsg =
-          "Select your undertaking’s main business activity in advertising, market research and public relations"
+          "Select your undertaking''s main business activity in advertising, market research and public relations"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"

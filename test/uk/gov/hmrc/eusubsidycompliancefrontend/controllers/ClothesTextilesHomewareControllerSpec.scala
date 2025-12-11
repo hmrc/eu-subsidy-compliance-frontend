@@ -415,7 +415,7 @@ class ClothesTextilesHomewareControllerSpec
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
-        val expectedErrorMsg = "Select your undertaking’s main business activity in wood, cork or straw products"
+        val expectedErrorMsg = "Select your undertakings main business activity in wood, cork or straw products"
         val summary = document.selectFirst(".govuk-error-summary")
         summary should not be null
         summary.selectFirst(".govuk-error-summary__title").text() shouldBe "There is a problem"
