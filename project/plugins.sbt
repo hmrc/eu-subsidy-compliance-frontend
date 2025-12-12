@@ -13,3 +13,5 @@ addSbtPlugin("com.github.sbt"        % "sbt-gzip"             % "2.0.0")
 addSbtPlugin("io.github.irundaia"    % "sbt-sassify"          % "1.5.2")
 addSbtPlugin("org.scoverage"         % "sbt-scoverage"        % "2.3.1")
 addSbtPlugin("com.timushev.sbt"      % "sbt-rewarn"           % "0.1.3")
+addSbtPlugin("com.timushev.sbt"      % "sbt-updates"          % "0.6.4")
+
