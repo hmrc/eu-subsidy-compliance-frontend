@@ -781,12 +781,10 @@ class UndertakingController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       val result = for {
         updatedJourney <- updateIsAmendState(value = false).toContext
-        undertakingName <- updatedJourney.about.value.toContext
         undertakingSector <- updatedJourney.sector.value.toContext
         retrievedUndertaking <- escService.retrieveUndertaking(eori).toContext
         undertakingRef <- retrievedUndertaking.reference.toContext
-        updatedUndertaking = retrievedUndertaking
-          .copy(name = UndertakingName(undertakingName), industrySector = undertakingSector)
+        updatedUndertaking = retrievedUndertaking.copy(industrySector = undertakingSector)
         _ <- escService.updateUndertaking(updatedUndertaking).toContext
         _ = auditService.sendEvent(
           UndertakingUpdated(
