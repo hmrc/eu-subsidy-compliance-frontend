@@ -46,7 +46,9 @@ class NaceUndertakingCategoryIntroController @Inject() (
 
   def continue: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     for {
+      _ <- store.getOrCreate[UndertakingJourney](UndertakingJourney())
       _ <- store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
     } yield Redirect(routes.UndertakingController.getSector)
   }
