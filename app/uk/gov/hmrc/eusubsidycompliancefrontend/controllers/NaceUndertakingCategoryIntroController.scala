@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.NaceUndertakingCategoryIntroPage
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class NaceUndertakingCategoryIntroController @Inject() (
   mcc: MessagesControllerComponents,
@@ -33,7 +33,8 @@ class NaceUndertakingCategoryIntroController @Inject() (
   NaceUndertakingCategoryIntroPage: NaceUndertakingCategoryIntroPage,
   val store: Store
 )(implicit
-  val appConfig: AppConfig
+  val appConfig: AppConfig,
+  ec: ExecutionContext
 ) extends BaseController(mcc) {
 
   import actionBuilders._
@@ -45,10 +46,8 @@ class NaceUndertakingCategoryIntroController @Inject() (
 
   def continue: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
-
-    Future.successful(
-      Redirect(routes.UndertakingController.getSector)
-    )
+    for {
+      _ <- store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
+    } yield Redirect(routes.UndertakingController.getSector)
   }
 }
