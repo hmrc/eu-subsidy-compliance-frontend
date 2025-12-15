@@ -106,7 +106,6 @@ class UndertakingController @Inject() (
       case EmailStatus.Amend => routes.UndertakingController.getAmendUndertakingDetails
       case EmailStatus.BecomeLead => routes.BecomeLeadController.getConfirmEmail
       case EmailStatus.CYA => routes.UndertakingController.getCheckAnswers
-      case EmailStatus.New => routes.UndertakingController.getConfirmEmail
       case _ => routes.UndertakingController.getSector
     }
   }
