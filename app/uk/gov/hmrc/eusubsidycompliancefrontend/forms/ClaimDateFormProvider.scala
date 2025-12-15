@@ -74,23 +74,25 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
     case _ => Valid
   }
 
-  private val dateInAllowedRange: RawFormValues => ValidationResult = { case (d, m, y) =>
-    localDateFromValues(d, m, y)
-      .map { parsedDate =>
-        val today = timeProvider.zonedToday(ZoneId.of("Europe/London"))
-        val earliestAllowedDate = today.toEarliestTaxYearStart
+  private val dateInAllowedRange: RawFormValues => ValidationResult = {
+    case (d, m, y) =>
+      localDateFromValues(d, m, y)
+        .map { parsedDate =>
+          val today = timeProvider.zonedToday(ZoneId.of("Europe/London"))
+          val earliestAllowedDate = today.toEarliestTaxYearStart
 
-        if (parsedDate.isBefore(earliestAllowedDate))
-          invalid(OutsideAllowedTaxYearRange, earliestAllowedDate.format(dateFormatter))
-        else if (parsedDate.isAfter(today))
-          invalid(
-            InFuture,
-            earliestAllowedDate.format(dateFormatter),
-            today.toTaxYearEnd.minusYears(1).format(dateFormatter)
-          )
-        else Valid
-      }
-      .getOrElse(Valid)
+          if (parsedDate.isBefore(earliestAllowedDate))
+            invalid(OutsideAllowedTaxYearRange, earliestAllowedDate.format(dateFormatter))
+          else if (parsedDate.isAfter(today))
+            invalid(
+              InFuture,
+              earliestAllowedDate.format(dateFormatter),
+              today.toTaxYearEnd.minusYears(1).format(dateFormatter)
+            )
+          else Valid
+        }
+        .getOrElse(Valid)
+    case _ => Valid
   }
 
   private def invalid(error: String, params: String*) =
