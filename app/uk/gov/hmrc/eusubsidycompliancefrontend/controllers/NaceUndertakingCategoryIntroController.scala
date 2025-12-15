@@ -45,7 +45,6 @@ class NaceUndertakingCategoryIntroController @Inject() (
 
   def continue: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.put[UndertakingJourney](UndertakingJourney())
     store.update[UndertakingJourney](_.copy(mode = appConfig.UpdateNaceMode))
 
     Future.successful(
