@@ -76,13 +76,16 @@ class GeneralTradeGroupsController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      print("-----------------------------------------sector----------------------------------------"+ sector)
       val previousLevel1Code =
-        if (sector.equals("L") || sector.equals("E") || sector.equals("D") || sector.equals("B") || sector.equals("I") || sector.equals("S") || sector.equals("85") || sector.equals("R") || sector.equals("84") || sector.equals("T") || sector.equals("U") || sector.equals("99.00")) "INT00"
-        else {if(sector.equals(Sector.generalTrade.toString) || sector.length < 2) sector
-              else naceCheckDetailsController.deriveLevel1Code(sector)}
-      print("--------------------------------------previousLevel1Code-------------------------------------------"+ previousLevel1Code)
-
+        if (
+          sector.equals("L") || sector.equals("E") || sector.equals("D") || sector.equals("B") || sector
+            .equals("I") || sector.equals("S") || sector.equals("85") || sector.equals("R") || sector
+            .equals("84") || sector.equals("T") || sector.equals("U") || sector.equals("99.00")
+        ) "INT00"
+        else {
+          if (sector.equals(Sector.generalTrade.toString) || sector.length < 2) sector
+          else naceCheckDetailsController.deriveLevel1Code(sector)
+        }
       Ok(
         generalTradeUndertakingPage(generalTradeUndertakingForm.fill(FormValues(previousLevel1Code)), journey.mode)
       ).toFuture
