@@ -119,6 +119,7 @@ class NACECheckDetailsController @Inject() (
     case "94" | "95" | "96" => "T"
     case "97" | "98" => "U"
     case "99" => "V"
+    case "IN" => "INT00"
     case _ => "C"
   }
 
