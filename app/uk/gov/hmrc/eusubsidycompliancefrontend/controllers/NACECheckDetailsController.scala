@@ -100,6 +100,9 @@ class NACECheckDetailsController @Inject() (
   def deriveLevel1Code(level2Code: String): String = level2Code match {
     case "01" | "02" | "03" => "A"
     case "05" | "06" | "07" | "08" | "09" => "B"
+    case "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" => "C"
+    case "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" => "C"
+    case "30" | "31" | "32" | "33" => "C"
     case "35" => "D"
     case "36" | "37" | "38" | "39" => "E"
     case "41" | "42" | "43" => "F"
@@ -120,7 +123,7 @@ class NACECheckDetailsController @Inject() (
     case "97" | "98" => "U"
     case "99" => "V"
     case "IN" => "INT00"
-    case _ => "C"
+    case _ => ""
   }
 
   def buildViewModel(naceLevel4Code: String)(implicit messages: Messages): NaceCheckDetailsViewModel = {
