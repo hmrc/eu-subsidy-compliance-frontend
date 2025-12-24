@@ -165,7 +165,7 @@
                     content = Text(messages(s"dashboard.claimPeriod.h3"))
                     ),
                     value = Value(
-                    content = Text("last report")
+                    content = Text(summary.lastReportDate)
                     )
                 ),
                 SummaryListRow(
@@ -173,7 +173,7 @@
                     content = Text(messages(s"dashboard.claimPeriod.h4"))
                     ),
                     value = Value(
-                    content = Text("earliest report")
+                     content = Text(summary.earliestDate)
                     )
                 )
             )
