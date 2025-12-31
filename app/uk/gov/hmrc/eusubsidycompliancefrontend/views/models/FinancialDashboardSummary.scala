@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 import play.api.i18n.Messages
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, SubsidyAmount}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import java.time.{LocalDate, Month}
@@ -29,7 +29,8 @@ case class FinancialDashboardSummary(
   scp08IssuesExist: Boolean,
   currentDate: String,
   earliestDate: String,
-  lastReportDate: String
+  lastReportDate: String,
+  leadEORI: String
 )
 case class OverallSummary(
   startYear: Int,
@@ -121,6 +122,8 @@ object FinancialDashboardSummary {
         (first.toDisplayFormat, lastEle.toDisplayFormat)
       }
       .getOrElse(("-", "-"))
+    val leadUndertaking: BusinessEntity = undertaking.undertakingBusinessEntity.find(_.leadEORI).getOrElse(throw new IllegalStateException("Missing Lead EORI"))
+    val leadEORI = leadUndertaking.businessEntityIdentifier
     FinancialDashboardSummary(
       overall = overallSummary,
       taxYears = taxYearSummaries,
@@ -128,7 +131,8 @@ object FinancialDashboardSummary {
       scp08IssuesExist = balance.isEmpty,
       today.toDisplayFormat,
       earliestDate,
-      lastReportDate
+      lastReportDate,
+      leadEORI
     )
   }
 }

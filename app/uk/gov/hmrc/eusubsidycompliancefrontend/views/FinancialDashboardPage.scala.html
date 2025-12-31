@@ -33,7 +33,7 @@
   govukNotificationBanner : GovukNotificationBanner
 )
 
-@(summary: FinancialDashboardSummary,industrySectorKey: String, previousDate: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eori: String, summary: FinancialDashboardSummary,industrySectorKey: String, previousDate: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"dashboard"}
 
 @title = @{messages(s"$key.title")}
@@ -178,8 +178,10 @@
                 )
             )
         ))
-    if(eori != undertaking){
+    @if(summary.leadEORI == eori){
     <div><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments">@messages("dashboard.urltext")</a></div><br>
-    }
+
     <div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("dashboard.url2text")</a></div>
-}
+    } else {
+    <div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("dashboard.urlAltText")</a></div>
+}}
