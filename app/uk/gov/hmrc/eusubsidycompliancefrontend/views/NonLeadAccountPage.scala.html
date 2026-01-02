@@ -84,10 +84,10 @@ agriOtherFlag: Boolean
 
     @H2(balanceHeading, id = Some("undertaking-balance-section-heading"))
     @possibleMiscalculationContent
-    @P(messages(s"$key.p2", remainingAmount, allowance), id = Some("undertaking-balance-section-content"))
+    <p class="govuk-body">@messages(s"$key.p3") <Strong>@remainingAmount</Strong>, @messages(s"$key.p3Cont",  allowance)</p>
     <div class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
         <p class="govuk-body">@messages("lead-account-homepage.under-taking.p1")
-            <a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.ul3-li1")</a>
+            <a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.ul3-li1")</a>.
         </p>
     </div>
 
