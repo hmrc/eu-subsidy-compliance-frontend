@@ -250,7 +250,7 @@ class SubsidyController @Inject() (
             },
             form =>
               store
-                .update[SubsidyJourney](_.setClaimDate(form))
+                .update[SubsidyJourney](_ => journey.setClaimDate(form))
                 .flatMap(_.next)
                 .toContext
           )
