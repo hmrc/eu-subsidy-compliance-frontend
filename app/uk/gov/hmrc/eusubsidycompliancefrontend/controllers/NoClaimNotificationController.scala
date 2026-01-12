@@ -70,8 +70,6 @@ class NoClaimNotificationController @Inject() (
           val previous = routes.SubsidyController.getReportPayment.url
           val today = timeProvider.today
           val today1095Back = (timeProvider.today).minusDays(1095).toDisplayFormat
-          println("-----------------------------get -today----------------------------- "+ today.toDisplayFormat)
-          println("----------------------------get today1095Back------------------------------- "+ today1095Back)
           val startDate = today.toEarliestTaxYearStart
 
           val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
@@ -108,9 +106,6 @@ class NoClaimNotificationController @Inject() (
           val today = timeProvider.today
           val startDate = today.toEarliestTaxYearStart
           val today1095Back = (timeProvider.today).minusDays(1095).toDisplayFormat
-          println("----------------------------------post today------------------------- "+ today.toDisplayFormat)
-          println("---------------------------------post startDate-------------------------- "+ startDate.toDisplayFormat)
-          println("-----------------------------------post today1095Back------------------------ "+ today1095Back)
           val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
 
           noClaimForm

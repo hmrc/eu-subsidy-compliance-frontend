@@ -261,28 +261,6 @@ class NACECheckDetailsController @Inject() (
           .fromMessages(usersLastAnswer)(messages)
           .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $usersLastAnswer"))
 
-        println(
-          s"""
-             |Debug URLs for NACE code ${viewModel.naceLevel4Code}:
-             |  Level 1 Code: ${viewModel.naceLevel1Code} - Display: ${viewModel.naceLevel1Display}
-             |  Level 1.1 Display: ${viewModel.naceLevel1_1Display}
-             |  Level 2 Code: ${viewModel.naceLevel2Code} - Display: ${viewModel.naceLevel2Display}
-             |  Level 3 Code: ${viewModel.naceLevel3Code} - Display: ${viewModel.naceLevel3Display}
-             |  Level 4 Code: ${viewModel.naceLevel4Code} - Display: ${viewModel.naceLevel4Display}
-             |  changeSectorUrl: ${viewModel.changeSectorUrl}
-             |  changeLevel1Url: ${viewModel.changeLevel1Url}
-             |  changeLevel1_1Url: ${viewModel.changeLevel1_1Url}
-             |  changeLevel2Url: ${viewModel.changeLevel2Url}
-             |  changeLevel3Url: ${viewModel.changeLevel3Url}
-             |  changeLevel4Url: ${viewModel.changeLevel4Url}
-             |  showLevel1: ${viewModel.showLevel1}
-             |  showLevel1_1: ${viewModel.showLevel1_1}
-             |  showLevel2: ${viewModel.showLevel2}
-             |  showLevel3: ${viewModel.showLevel3}
-             |  showLevel4: ${viewModel.showLevel4}
-             |"""
-        )
-
         Ok(naceCYAView(confirmDetailsForm, viewModel, naceLevel4Notes)(request, messages, appConfig)).toFuture
       } else {
         Redirect(routes.UndertakingController.getSector).toFuture
