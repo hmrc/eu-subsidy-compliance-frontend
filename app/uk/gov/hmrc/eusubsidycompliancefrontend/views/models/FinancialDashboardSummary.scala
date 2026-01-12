@@ -122,7 +122,9 @@ object FinancialDashboardSummary {
         (first.toDisplayFormat, lastEle.toDisplayFormat)
       }
       .getOrElse(("-", "-"))
-    val leadUndertaking: BusinessEntity = undertaking.undertakingBusinessEntity.find(_.leadEORI).getOrElse(throw new IllegalStateException("Missing Lead EORI"))
+    val leadUndertaking: BusinessEntity = undertaking.undertakingBusinessEntity
+      .find(_.leadEORI)
+      .getOrElse(throw new IllegalStateException("Missing Lead EORI"))
     val leadEORI = leadUndertaking.businessEntityIdentifier
     FinancialDashboardSummary(
       overall = overallSummary,

@@ -168,5 +168,4 @@ class NoClaimNotificationController @Inject() (
       }
   }
 
-
 }

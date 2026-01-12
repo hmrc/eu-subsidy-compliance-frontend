@@ -71,7 +71,6 @@ class FinancialDashboardController @Inject() (
     } yield
       if (undertaking.isManuallySuspended)
         Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url)
-
       else Ok(financialDashboardPage(eori, summary, industrySectorKey, minusDays))
 
   }
