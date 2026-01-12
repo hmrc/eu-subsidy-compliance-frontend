@@ -24,7 +24,7 @@ import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{GET, await, contentAsString, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
 import play.api.{Application, Configuration, inject}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -32,7 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailVerificationService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertaking3, undertakingBalance, undertakingRef, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, manuallySuspendedUndertaking, undertaking, undertaking3, undertakingBalance, undertakingRef, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ReviewAllowanceChangesPage
@@ -104,41 +104,68 @@ class ReviewAllowanceChangesControllerSpec
         val document = Jsoup.parse(data)
 
         verifyInsetText(document)
-
       }
 
-    }
+      "display sector cap as agriculture on Review Allowance Changes Page" in {
+        inSequence {
+          mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+          mockRetrieveUndertaking(eori1)(undertaking3.some.toFuture)
+          mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
+            undertakingSubsidies.toFuture
+          )
+          mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
+        }
 
-    "display sector cap as agriculture on Review Allowance Changes Page" in {
-      inSequence {
+        val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
+        val result = route(app, request).get
+        val page = instanceOf[ReviewAllowanceChangesPage]
+
+        val summaryData = FinancialDashboardSummary
+          .fromUndertakingSubsidies(
+            undertaking = undertaking3,
+            subsidies = undertakingSubsidies,
+            balance = undertakingBalance.some,
+            today = fakeTimeProvider.today
+          )
+
+        status(result) shouldBe Status.OK
+        val data = contentAsString(result)
+        data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
+        val document = Jsoup.parse(data)
+
+        verifyInsetText(document)
+      }
+
+      "redirect to suspended page when undertaking is manually suspended" in {
+        inSequence {
+          mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+          mockRetrieveUndertaking(eori1)(manuallySuspendedUndertaking.some.toFuture)
+          mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
+            undertakingSubsidies.toFuture
+          )
+          mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
+        }
+
+        val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
+        val result = route(app, request).get
+
+        status(result) shouldBe Status.SEE_OTHER
+        redirectLocation(result) shouldBe Some(routes.UndertakingSuspendedPageController.showPage(true).url)
+      }
+
+      "throw IllegalStateException when undertaking is not found" in {
         mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-        mockRetrieveUndertaking(eori1)(undertaking3.some.toFuture)
-        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
-          undertakingSubsidies.toFuture
-        )
-        mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
+        mockRetrieveUndertaking(eori1)(None.toFuture)
+
+        val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
+
+        val exception = intercept[IllegalStateException] {
+          await(route(app, request).get)
+        }
+
+        exception.getMessage should include("Undertaking for EORI")
       }
-
-      val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
-      val result = route(app, request).get
-      val page = instanceOf[ReviewAllowanceChangesPage]
-
-      val summaryData = FinancialDashboardSummary
-        .fromUndertakingSubsidies(
-          undertaking = undertaking3,
-          subsidies = undertakingSubsidies,
-          balance = undertakingBalance.some,
-          today = fakeTimeProvider.today
-        )
-
-      status(result) shouldBe Status.OK
-      val data = contentAsString(result)
-      data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
-      val document = Jsoup.parse(data)
-
-      verifyInsetText(document)
     }
-
   }
 
   def verifyInsetText(document: Document): Unit = {
@@ -152,5 +179,4 @@ class ReviewAllowanceChangesControllerSpec
       .getElementById("reviewAllowanceChanges-p2")
       .text() shouldBe "Your allowance is still 50,000 euros, but it is now calculated over a rolling 3-year period, instead of 3 tax years."
   }
-
 }

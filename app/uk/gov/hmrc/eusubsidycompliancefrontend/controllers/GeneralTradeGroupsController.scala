@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.generalTrade
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -76,8 +77,15 @@ class GeneralTradeGroupsController @Inject() (
         case None => ""
       }
       val previousLevel1Code =
-        if (sector.equals("00") || sector.length < 2) sector else naceCheckDetailsController.deriveLevel1Code(sector)
-
+        if (
+          sector.equals("L") || sector.equals("E") || sector.equals("D") || sector.equals("B") || sector
+            .equals("I") || sector.equals("S") || sector.equals("85") || sector.equals("R") || sector
+            .equals("84") || sector.equals("T") || sector.equals("U") || sector.equals("99.00")
+        ) "INT00"
+        else {
+          if (sector.equals(Sector.generalTrade.toString) || sector.length < 2) sector
+          else naceCheckDetailsController.deriveLevel1Code(sector)
+        }
       Ok(
         generalTradeUndertakingPage(generalTradeUndertakingForm.fill(FormValues(previousLevel1Code)), journey.mode)
       ).toFuture

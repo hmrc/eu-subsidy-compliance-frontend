@@ -344,7 +344,7 @@ non-lead-account-homepage.ul2-li2 = Leave the undertaking
 non-lead-account-homepage.link2 = View financial dashboard for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
 
-non-lead-account-homepage.postDeadline.warning = Your undertaking''s deadline to submit a report passed on {0}.
+non-lead-account-homepage.postDeadline.warning = Your undertaking’s deadline to submit a report passed on {0}.
 
 reportedPayments.title = Reported payment history
 reportedPayments.p1=You have not yet reported any payments.
@@ -1135,8 +1135,8 @@ NACE.radio.14.24 = Leather and fur clothing
 NACE.radio.14.29 = Other clothing and accessories
 
 ### Leather ###
-NACE.radio.15.title = What is your undertaking's main business activity in leather or related products?
-NACE.manufacturing.Leather.error = Select your undertaking's main business activity in leather or related products
+NACE.radio.15.title = What is your undertaking’s main business activity in leather or related products?
+NACE.manufacturing.Leather.error = Select your undertaking’s main business activity in leather or related products
 
 NACE.radio.15.1.title = What type of manufacturing or related activity does your undertaking do?
 NACE.Manufacturing.TanningLeather.error = Select the type of manufacturing or related activity your undertaking does
@@ -1148,8 +1148,8 @@ NACE.radio.15.2 = Manufacture of footwear
 NACE.radio.15.20 = Manufacture of footwear
 
 ### Wood cork and straw ###
-NACE.radio.16.title = What is your undertaking's main business activity in wood, cork or straw products?
-NACE.Manufacturing.WoodCorkStraw.error = Select your undertaking's main business activity in wood, cork or straw products
+NACE.radio.16.title = What is your undertaking’s main business activity in wood, cork or straw products?
+NACE.Manufacturing.WoodCorkStraw.error = Select your undertaking’s main business activity in wood, cork or straw products
 
 NACE.radio.16.1 = Sawmilling, planing, processing or finishing of wood
 NACE.Manufacturing.SawmillingWood.Lvl4.error = Select how your undertaking manufactures or processes wood
@@ -1184,7 +1184,7 @@ NACE.Manufacturing.ArticlesPaperPaperboard.error = Select the type of paper or p
 NACE.radio.17.2 = Articles of paper and paperboard
 NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard.hint = Includes corrugated paper, household and sanitary goods, stationery and wallpaper.
 NACE.radio.17.21 = Corrugated paper, paperboard and containers of paper and paperboard
-NACE.radio.17.22 = Household and sanitary goods and of toilet requisites
+NACE.radio.17.22 = Household and sanitary goods and toilet requisites
 NACE.radio.17.23 = Paper stationery
 NACE.radio.17.24 = Wallpaper
 NACE.radio.17.25 = Other articles of paper and paperboard
@@ -1652,9 +1652,9 @@ NACE.electricityGasSteamAir.Lvl4.steamAirConditioning = Steam and air conditioni
 NACE.radio.35.4 = Activities of brokers and agents for electric power and natural gas
 NACE.electricityGasSteamAir.Lvl4.brokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
 
-NACE.radio.35.title = What is your undertaking's main business activity in electricity, gas, steam and air conditioning supply?
-NACE.radio.35.1.title = What is your undertaking's main business activity in electricity?
-NACE.radio.35.2.title = What is your undertaking's main business activity in manufacture and distribution of gas?
+NACE.radio.35.title = What is your undertaking’s main business activity in electricity, gas, steam and air conditioning supply?
+NACE.radio.35.1.title = What is your undertaking’s main business activity in electricity?
+NACE.radio.35.2.title = What is your undertaking’s main business activity in manufacture and distribution of gas?
 NACE.radio.35.3.title = Steam and air conditioning supply
 NACE.radio.35.4.title = Activities of brokers and agents for electric power and natural gas
 
@@ -1693,10 +1693,10 @@ NACE.WaterSewerageWasteRemediation.Lvl3.Remediation = Remediation activities and
 NACE.WaterSewerageWasteRemediation.Lvl4.Remediation = Remediation activities and other waste management service activities
 
 # Water Radio titles
-NACE.radio.E.title = What is your undertaking's main business activity in water supply, sewerage and waste management?
+NACE.radio.E.title = What is your undertaking’s main business activity in water supply, sewerage and waste management?
 NACE.radio.36.title = Water collection, treatment and supply
 NACE.radio.37.title = Sewerage
-NACE.radio.38.title = What is your undertaking's main business activity in waste collection, recovery and disposal?
+NACE.radio.38.title = What is your undertaking’s main business activity in waste collection, recovery and disposal?
 NACE.radio.38.1.title = What type of waste does your undertaking collect?
 NACE.radio.38.2.title = What type of waste recovery does your undertaking do?
 NACE.radio.38.3.title = What type of waste disposal does your undertaking do?
@@ -1931,14 +1931,13 @@ NACE.TransportationAndStorage.Lvl2.AirTransport.error = Select the type of air t
 NACE.radio.51.1 = Passenger air transport
 NACE.TransportationAndStorage.Lvl4.PassengerAir = Passenger air transport
 NACE.radio.51.2 = Freight air transport and space transport
-NACE.radio.52.2.title = What type of freight air transport or space transport does your undertaking provide?
+NACE.radio.51.2.title = What type of freight air transport or space transport does your undertaking provide?
 NACE.TransportationAndStorage.Lvl3.FreightAirSpace.error = Select the type of freight transport or space transport your undertaking provides
 NACE.radio.51.21 = Freight air transport
 NACE.radio.51.22 = Space transport
 
 NACE.radio.52 = Warehousing, storage and support activities for transport
 NACE.radio.52.title = What type of warehousing, storage or support activity does your undertaking do?
-NACE.radio.51.2.title = What type of transport support activities does your undertaking do?
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint = Includes cargo handling, logistics and intermediation services for transport.
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport.error = Select the type of warehousing, storage or support activity your undertaking does
 NACE.radio.52.1 = Warehousing and storage
@@ -2054,17 +2053,17 @@ NACE.radio.60.31 = News agency activities
 NACE.radio.60.39 = Other content distribution activities
 
 #Publishing Radio titles
-NACE.radio.J.title = What is your undertaking's main business activity in publishing and broadcasting?
-NACE.radio.58.title = What is your undertaking's main business activity in publishing?
+NACE.radio.J.title = What is your undertaking’s main business activity in publishing and broadcasting?
+NACE.radio.58.title = What is your undertaking’s main business activity in publishing?
 NACE.radio.58.1.title = What type of material does your undertaking publish?
 NACE.radio.58.2.title = What type of software does your undertaking publish?
-NACE.radio.59.title = What is your undertaking's main business activity in film, TV and video production, sound recording and music publishing?
+NACE.radio.59.title = What is your undertaking’s main business activity in film, TV and video production, sound recording and music publishing?
 NACE.radio.59.1.title = What type of film, TV and video service does your undertaking provide?
 NACE.radio.59.2.title = Sound recording and music publishing activities
-NACE.radio.60.title = What is your undertaking's main business activity in programming, broadcasting, news agency and content distribution?
+NACE.radio.60.title = What is your undertaking’s main business activity in programming, broadcasting, news agency and content distribution?
 NACE.radio.60.1.title = Radio broadcasting and audio distribution activities
 NACE.radio.60.2.title = Television programming, broadcasting and video distribution activities
-NACE.radio.60.3.title = What is your undertaking's main business activity in news agency and content distribution?
+NACE.radio.60.3.title = What is your undertaking’s main business activity in news agency and content distribution?
 
 #telecommunicationsComputing NACE Sector2,3,4
 NACE.radio.K.title = What is your undertaking’s main business activity in telecommunications and computing?
@@ -2141,10 +2140,10 @@ NACE.FinancialServicesInsurance.Lvl4.OtherAuxiliaryInsurancePensionFundingNEC = 
 NACE.FinancialServicesInsurance.Lvl4.FundManagement = Fund management activities
 
 #RealEstate NACE Sector2,3,4
-NACE.radio.68.title = What is your undertaking''s main business activity in real estate?
+NACE.radio.68.title = What is your undertaking’s main business activity in real estate?
 NACE.realEstate.Lvl3.realEstate.error = Select your undertaking’s main business activity in real estate
 NACE.radio.68.1 = Real estate activities with own property and development of building projects
-NACE.radio.68.1.title = What is your undertaking''s main business activity in property and development?
+NACE.radio.68.1.title = What is your undertaking’s main business activity in property and development?
 NACE.realEstate.Lvl4.propertyDevelopment.error = Select your undertaking’s main business activity in property and development
 NACE.radio.68.11 = Buying and selling of own real estate
 NACE.radio.68.12 = Development of building projects
@@ -2267,10 +2266,10 @@ NACE.radio.84.25 = Fire service activities
 NACE.radio.84.3 = Compulsory social security activities
 NACE.publicAdministration.Lvl4.compulsorySocialSecurity = Compulsory social security activities
 
-NACE.radio.P.title = What is your undertaking's main business activity in public administration, defence and compulsory social security?
-NACE.radio.84.title = What is your undertaking's main business activity in public administration, defence and compulsory social security?
-NACE.radio.84.1.title = What is your undertaking's main business activity in public administration?
-NACE.radio.84.2.title = What is your undertaking's main business activity in provision of services to the community?
+NACE.radio.P.title = What is your undertaking’s main business activity in public administration, defence and compulsory social security?
+NACE.radio.84.title = What is your undertaking’s main business activity in public administration, defence and compulsory social security?
+NACE.radio.84.1.title = What is your undertaking’s main business activity in public administration?
+NACE.radio.84.2.title = What is your undertaking’s main business activity in provision of services to the community?
 NACE.radio.84.3.title = Compulsory social security activities
 
 #Education NACE Sector2,3,4
@@ -2303,8 +2302,8 @@ NACE.radio.85.61 = Intermediation service activities for courses and tutors
 NACE.radio.85.69 = Other educational support
 
 #Education Radio Titles
-NACE.radio.Q.title = What is your undertaking's main business activity in education?
-NACE.radio.85.title = What is your undertaking's main business activity in education?
+NACE.radio.Q.title = What is your undertaking’s main business activity in education?
+NACE.radio.85.title = What is your undertaking’s main business activity in education?
 NACE.radio.85.1.title = Pre-primary education
 NACE.radio.85.2.title = Primary education
 NACE.radio.85.3.title = What type of secondary or post-secondary education does your undertaking provide?
@@ -2432,17 +2431,17 @@ NACE.artsSportsRecreation.Lvl3.amusementRecreation.error = Select your undertaki
 NACE.radio.93.21 = Amusement and theme parks
 NACE.radio.93.29 = Other amusement and recreation activities
 
-NACE.radio.90.title = What is your undertaking's main business activity in arts creation and performing arts?
-NACE.radio.90.1.title = What is your undertaking's main business activity in arts creation?
+NACE.radio.90.title = What is your undertaking’s main business activity in arts creation and performing arts?
+NACE.radio.90.1.title = What is your undertaking’s main business activity in arts creation?
 NACE.radio.90.2.title = Activities of performing arts
-NACE.radio.90.3.title = What is your undertaking's main business activity in arts support activities?
+NACE.radio.90.3.title = What is your undertaking’s main business activity in arts support activities?
 NACE.radio.91.2.title = What type of museum, collection or site does your undertaking operate?
 NACE.radio.91.3.title = Conservation, restoration and other support activities for cultural heritage
 NACE.radio.91.4.title = What type of garden or reserve does your undertaking operate?
 NACE.radio.92.title = Gambling and betting activities
-NACE.radio.93.title = What is your undertaking's main business activity in sports, amusement and recreation?
+NACE.radio.93.title = What is your undertaking’s main business activity in sports, amusement and recreation?
 NACE.radio.93.1.title = What type of sports activity does your undertaking do?
-NACE.radio.93.2.title = What is your undertaking's main business activity in amusement and recreation?
+NACE.radio.93.2.title = What is your undertaking’s main business activity in amusement and recreation?
 
 #OtherService NACE Sector2,3,4
 NACE.radio.T.title = What type of services does your undertaking provide?
@@ -2533,7 +2532,7 @@ NACE.ActivitiesExtraterritorial.Lvl4.OrganisationsBodies = Activities of extrate
 
 #Wholesale / Retail
 
-NACE.radio.G.title = What is your undertaking''s main business activity in retail and wholesale?
+NACE.radio.G.title = What is your undertaking’s main business activity in retail and wholesale?
 NACE.RetailWholesale.error = Select your undertaking’s main business activity in retail and wholesale
 NACE.radio.46 = Wholesale
 NACE.radio.47 = Retail
@@ -2646,7 +2645,7 @@ NACE.radio.46.23 = Live animals
 NACE.radio.46.3.title = What type of food, beverages or tobacco does your undertaking wholesale?
 NACE.wholesale.Lvl4.foodWholesale.error = Select the type of food, beverages or tobacco your undertaking wholesales
 NACE.radio.46.34 = Beverages
-NACE.wholesale.Lvl4.BeveragesWholesale.hint = For example, wholesale of alcoholic and non-alcoholic beverages
+NACE.wholesale.Lvl4.BeveragesWholesale.hint = Includes alcohol and soft drinks.
 NACE.radio.46.37 = Coffee, tea, cocoa and spices
 NACE.radio.46.33 = Dairy products, eggs and edible oils and fats
 NACE.radio.46.31 = Fruit and vegetables
@@ -2695,8 +2694,8 @@ NACE.radio.46.89 = Other specialised wholesale
 
 # Financial services
 
-NACE.radio.L.title = What is your undertaking''s main business activity in financial services and insurance?
-NACE.Financial.error = Select your undertaking''s main business activity in financial services and insurance
+NACE.radio.L.title = What is your undertaking’s main business activity in financial services and insurance?
+NACE.Financial.error = Select your undertaking’s main business activity in financial services and insurance
 NACE.radio.64 = Financial services (except insurance and pension funding)
 NACE.Financial.Lvl2.FinancialServices.hint = Includes financial leasing, holding companies and financial conduits, monetary intermediation, trusts and funds, and other financial service activities.
 NACE.radio.65 = Insurance, reinsurance and pension funding
@@ -2704,7 +2703,7 @@ NACE.radio.66 = Activities auxiliary to financial services and insurance activit
 NACE.Financial.Lvl2.Auxiliary.hint = Includes administration of financial markets, fund management, risk and damage evaluation, security and commodity contracts brokerage, and other auxiliary activities.
 
 # Level 3: Financial Services categories
-NACE.radio.64.title = What is your undertaking''s main business activity in financial services?
+NACE.radio.64.title = What is your undertaking’s main business activity in financial services?
 NACE.financialServices.error = Select your undertaking’s main business activity in financial services
 NACE.financialServices.hint = Includes financial leasing, holding companies and financial conduits, monetary intermediation, trusts and funds, and other financial service activities.
 NACE.radio.64.1 = Monetary intermediation
@@ -2713,7 +2712,7 @@ NACE.radio.64.2 = Holding companies and financing conduits
 NACE.radio.64.3 = Trusts, funds and similar financial entities
 NACE.radio.64.9 = Other financial services (except insurance and pension funding)
 NACE.financialServices.Lvl3.otherFinancial.hint = Includes financial leasing and other credit granting.
-NACE.financialServices.error.required = Select your undertaking''s main business activity in financial services
+NACE.financialServices.error.required = Select your undertaking’s main business activity in financial services
 
 
 # Level 4: Holding Companies and Financing Conduits
@@ -2775,7 +2774,7 @@ NACE.radio.66.19 = Other activities auxiliary to financial services (except insu
 #Admin
 
 NACE.Administrative.Buildings.title = What type of building or landscape service does your undertaking provide?
-NACE.Administrative.Buildings.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.Buildings.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.Administrative.Buildings.error = Select the type of building or landscape service your undertaking provides
 NACE.radio.81.1 = Combined facilities support
 NACE.Administrative.Lvl3.CombinedFacilities.hint =
@@ -2784,7 +2783,7 @@ NACE.Administrative.Lvl3.Cleaning.hint =
 NACE.radio.81.3 = Landscaping
 
 NACE.Administrative.Cleaning.title = What type of cleaning does your undertaking do?
-NACE.Administrative.Cleaning.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.Cleaning.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.Administrative.Cleaning.error = Select the type of cleaning your undertaking does
 NACE.radio.81.21 = General cleaning of buildings
 NACE.radio.81.22 = Other building and industrial cleaning activities
@@ -2795,8 +2794,8 @@ NACE.Administrative.Employment.error = Select your undertaking’'s main busines
 NACE.radio.78.1 = Activities of employment placement agencies
 NACE.radio.78.2 = Temporary employment agency activities and other human resource provisions
 
-NACE.Administrative.Investigation.title = What is your undertaking''s main business activity in investigation and security?
-NACE.Administrative.Investigation.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.Investigation.title = What is your undertaking’s main business activity in investigation and security?
+NACE.Administrative.Investigation.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.Administrative.Investigation.error = Select your undertaking’s main business activity in investigation and security
 NACE.radio.80.01 = Investigation and private security activities
 NACE.radio.80.09 = Another type of security activities
@@ -2815,7 +2814,7 @@ NACE.Administrative.Lvl3.OtherBusinessSupport.hint = Includes collection agencie
 NACE.radio.82.4 = Intermediation services for business support
 
 NACE.Administrative.OtherBusinessSupport.title = What type of other business support services does your undertaking provide?
-NACE.Administrative.OtherBusinessSupport.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.OtherBusinessSupport.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.Administrative.OtherBusinessSupport.error = Select the type of other business support services your undertaking provides
 NACE.radio.82.91 = Collection agencies and credit bureaus
 NACE.radio.82.92 = Packaging activities
@@ -2824,11 +2823,11 @@ NACE.radio.82.99 = Other business support service activities
 NACE.Administrative.IntermediationServices.title = For what type of goods does your undertaking provide intermediation services for rental and leasing?
 NACE.radio.77.51 = Cars, motorhomes and trailers
 NACE.radio.77.52 = Other tangible goods and non-financial intangible assets
-NACE.Administrative.IntermediationServices.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.IntermediationServices.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.Administrative.IntermediationServices.error = Select the type of goods for which your undertaking provides intermediation services for rental and leasing
 
 NACE.Administrative.MachineryEquipment.title = What type of other machinery, equipment and tangible goods does your undertaking rent or lease?
-NACE.Administrative.MachineryEquipment.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.MachineryEquipment.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.Administrative.MachineryEquipment.error = Select the type of other machinery, equipment and tangible goods your undertaking rents or leases
 NACE.radio.77.31 = Agricultural machinery and equipment
 NACE.radio.77.32 = Construction and civil engineering machinery and equipment
@@ -2838,13 +2837,13 @@ NACE.radio.77.35 = Air transport equipment
 NACE.radio.77.39 = Other machinery, equipment and tangible goods
 
 NACE.Administrative.PersonalHousehold.title = What type of personal or household goods does your undertaking rent or lease?
-NACE.Administrative.PersonalHousehold.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.PersonalHousehold.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.Administrative.PersonalHousehold.error = Select the type of personal or household goods your undertaking rents or leases
 NACE.radio.77.21 = Recreational and sports goods
 NACE.radio.77.22 = Other personal and household goods
 
 NACE.Administrative.Rental.title = What type of goods does your undertaking rent or lease?
-NACE.Administrative.Rental.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.Rental.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.Administrative.Rental.error = Select the type of goods your undertaking rents or leases
 NACE.Administrative.MotorVehicles.title = What type of motor vehicles does your undertaking rent or lease?
 NACE.Administrative.MotorVehicles.error = Select the type of motor vehicles your undertaking rents or leases
@@ -2857,20 +2856,20 @@ NACE.radio.77.3 = Other machinery, equipment and tangible goods
 NACE.radio.77.4 = Intellectual property and similar products (except copyrighted works)
 NACE.radio.77.5 = My undertaking provides intermediation services for rental and leasing of tangible goods and non-financial intangible assets
 
-NACE.Administrative.TravelAgency.title = What is your undertaking''s main business activity in travel agency and tour operator activities?
-NACE.Administrative.TravelAgency.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.TravelAgency.title = What is your undertaking’s main business activity in travel agency and tour operator activities?
+NACE.Administrative.TravelAgency.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.Administrative.TravelAgency.error = Select your undertaking'’s main business activity in travel agency and tour operator activities - Added by John. 8/10
 NACE.radio.79.11 = Travel agency activities
 NACE.radio.79.12 = Tour operator activities
 
-NACE.Administrative.Travel.title = What is your undertaking''s main business activity in travel and other reservation services?
-NACE.Administrative.Travel.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.Travel.title = What is your undertaking’s main business activity in travel and other reservation services?
+NACE.Administrative.Travel.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.Administrative.Travel.error = Select your undertaking'’s main business activity in travel and other reservation services
 NACE.radio.79.1 = Travel agency and tour operator activities
 NACE.radio.79.9 = Other reservation services and related activities
 
 NACE.Administrative.title = What type of administrative and support services does your undertaking provide?
-NACE.Administrative.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.Administrative.error = Select the type of administrative and support services your undertaking provides
 NACE.radio.77 = Rental and leasing
 NACE.radio.78 = Employment
@@ -2883,12 +2882,13 @@ NACE.Administrative.Lvl2.OfficeSupport.hint = Includes call centres, collection 
 
 #Insurance
 
-NACE.insurance.Lvl2.insurance.title = What is your undertaking''s main business activity in insurance, reinsurance and pension funding?
+NACE.insurance.Lvl2.insurance.title = What is your undertaking’s main business activity in insurance, reinsurance and pension funding?
 NACE.insurance.Lvl2.insurance.error = Select your undertaking’s main business activity in insurance, reinsurance and pension funding
 NACE.radio.65.1 = Insurance
-NACE.radio.65.title = What is your undertaking's main business activity in insurance, reinsurance and pension funding?
+NACE.radio.65.title = What is your undertaking’s main business activity in insurance, reinsurance and pension funding?
 NACE.radio.65.2 = Reinsurance
 NACE.radio.65.3 = Pension funding
+NACE.radio.65.1.title = What type of insurance does your undertaking provide?
 NACE.insurance.Lvl4.insuranceType.title = What type of insurance does your undertaking provide?
 NACE.insurance.Lvl4.insuranceType.error = Select the type of insurance your undertaking provides
 NACE.radio.65.11 = Life insurance
@@ -6860,7 +6860,7 @@ NACE.58.13.b2 = publishing of radio and television schedules All the feasible fo
 
 NACE.58.19.heading = 58.19 Other publishing activities, except software publishing
 NACE.58.19.intro = This class includes:
-NACE.58.12.b1 = publishing in any format, including print, digital or on the internet, e.g.: directories and mailing lists; compilations (e.g. case law, pharmaceutical compendia); catalogues; photographs, engravings and postcards; calendars; greeting cards; forms; posters; reproductions of works of art; non-bound leaflets and advertising material; statistics and other information; datasets/databases without associated data processing services
+NACE.58.19.b1 = publishing in any format, including print, digital or on the internet, e.g.: directories and mailing lists; compilations (e.g. case law, pharmaceutical compendia); catalogues; photographs, engravings and postcards; calendars; greeting cards; forms; posters; reproductions of works of art; non-bound leaflets and advertising material; statistics and other information; datasets/databases without associated data processing services
 
 NACE.58.21.heading = 58.21 Publishing of video games
 NACE.58.21.intro = This class includes:
@@ -7441,13 +7441,13 @@ NACE.78.10.b2 = activities of casting agencies and bureaux (e.g. theatrical cast
 NACE.78.10.b3 = activities of online employment placement agencies
 
 NACE.78.20.heading = 78.20 Temporary employment agency activities and other human resource provisions
-NACE.78.20.inro = This class includes the activities of supplying workers to clients’ businesses for specific periods of time to temporarily replace or supplement the workforce of the client. In such an employment arrangement, the temporary employment agency or provider of human resources is the employer of the individual workers provided. However, the client is responsible for the supervision of the temporary personnel. These activities are providing human resources for clients’ businesses. The units classified here represent the employer of record for the temporary employees on matters relating to payroll, taxes, and other fiscal and human resource issues, but they are not responsible for the management and supervision of employees. The units classified here perform a wide range of human resource and personnel management duties associated with this provision.
+NACE.78.20.intro = This class includes the activities of supplying workers to clients’ businesses for specific periods of time to temporarily replace or supplement the workforce of the client. In such an employment arrangement, the temporary employment agency or provider of human resources is the employer of the individual workers provided. However, the client is responsible for the supervision of the temporary personnel. These activities are providing human resources for clients’ businesses. The units classified here represent the employer of record for the temporary employees on matters relating to payroll, taxes, and other fiscal and human resource issues, but they are not responsible for the management and supervision of employees. The units classified here perform a wide range of human resource and personnel management duties associated with this provision.
 
 NACE.79.11.heading = 79.11 Travel agency activities
 NACE.79.11.intro = This class includes:
-NACE.77.11.b1 = activities of agencies, primarily engaged in the sale of packaged tours and cruises to the general public or to commercial clients, alongside additional accommodation advice or expertise: reservation services for pre-packaged tours, domestic (national) and international; reservation services for customised tour packages for groups, domestic (national) or international
-NACE.77.11.b2 = intermediation service activities for the conclusion of contracts for the provision of tourist services from tour operators
-NACE.77.11.b3 = intermediation of packaged travel services in the destination
+NACE.79.11.b1 = activities of agencies, primarily engaged in the sale of packaged tours and cruises to the general public or to commercial clients, alongside additional accommodation advice or expertise: reservation services for pre-packaged tours, domestic (national) and international; reservation services for customised tour packages for groups, domestic (national) or international
+NACE.79.11.b2 = intermediation service activities for the conclusion of contracts for the provision of tourist services from tour operators
+NACE.79.11.b3 = intermediation of packaged travel services in the destination
 
 NACE.79.12.heading = 79.12 Tour operator activities
 NACE.79.12.intro = This class includes: arranging, assembling and marketing packaged tours: pre-packaged tours, domestic (national) and international; customised tour packages for groups, domestic (national) and international Package tours usually include passenger and baggage transport, accommodation, food and sightseeing services. Tour operators are engaged in the operation of tour packages that are sold by travel agencies, including arranging and assembling different services in the packaged tour. Tour operators might be employed or contracted by a travel agency, or they might operate as independent tour operators.
@@ -7595,14 +7595,14 @@ NACE.radio.77.1.title = What type of motor vehicles does your undertaking rent o
 NACE.radio.77.2.title = What type of personal or household goods does your undertaking rent or lease?
 NACE.radio.77.3.title = What type of other machinery, equipment and tangible goods does your undertaking rent or lease?
 NACE.radio.77.5.title = For what type of goods does your undertaking provide intermediation services for rental and leasing?
-NACE.radio.78.title = What is your undertaking's main business activity in employment services?
-NACE.radio.79.title = What is your undertaking's main business activity in travel and other reservation services?
-NACE.radio.79.1.title = What is your undertaking's main business activity in travel agency and tour operator activities?
-NACE.radio.80.0.title = What is your undertaking's main business activity in investigation and security?
+NACE.radio.78.title = What is your undertaking’s main business activity in employment services?
+NACE.radio.79.title = What is your undertaking’s main business activity in travel and other reservation services?
+NACE.radio.79.1.title = What is your undertaking’s main business activity in travel agency and tour operator activities?
+NACE.radio.80.0.title = What is your undertaking’s main business activity in investigation and security?
 NACE.radio.81.title = What type of building or landscape service does your undertaking provide?
 NACE.radio.81.2.title = What type of cleaning does your undertaking do?
 NACE.radio.82.title = What type of office or business support does your undertaking provide?
-NACE.radio.82.9.title = What type of other business support services does your undertaking provide?Retry
+NACE.radio.82.9.title = What type of other business support services does your undertaking provide?
 
 NACE.84.11.heading = 84.11 General public administration activities
 NACE.84.11.intro = This class includes:
@@ -8272,12 +8272,12 @@ NACE.99.00.b3 = activities of general government agencies of other countries (e.
 # NACE Check Details Page
 NACE.check-details.title = Confirm the details of your undertaking
 NACE.check-details.your-answers = Your answers
-NACE.check-details.summary-list.sector.key = What is your undertaking''s industry sector?
+NACE.check-details.summary-list.sector.key = What is your undertaking’s industry sector?
 NACE.check-details.summary-list.lvl.key = H1 heading of L
 NACE.check-details.change.hidden.sector = industry sector
 NACE.check-details.change.hidden.NACE = NACE categories
 
-NACE.check-details.NACE-categories = Your undertaking''s NACE sectors
+NACE.check-details.NACE-categories = Your undertaking’s NACE sectors
 NACE.check-details.NACE-p1 = Based on your answers, we have selected NACE sectors for your undertaking.
 NACE.check-details.NACE-p2 = Check the details carefully and make sure they are right for your undertaking. If your undertaking operates in more than one undertaking area, your Level 4 (Class) sector should be your main area of business activity.
 NACE.check-details.NACE-p3-prefix = NACE is a classification system used in the European Union. You can browse the

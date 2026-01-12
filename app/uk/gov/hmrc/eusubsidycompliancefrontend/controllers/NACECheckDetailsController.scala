@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +51,8 @@ class NACECheckDetailsController @Inject() (
   undertakingController: UndertakingController,
   escService: EscService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends BaseController(mcc) {
+    extends BaseController(mcc)
+    with Logging {
 
   import actionBuilders._
 
@@ -69,13 +71,13 @@ class NACECheckDetailsController @Inject() (
   }
 
   private def getLevel1_1ChangeUrl(level2Code: String): String = level2Code match {
-    case "13" | "14" | "15" | "16" | "22" | "31" =>
+    case "13" | "14" | "15" | "16" | "31" =>
       routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
     case "26" | "27" | "28" =>
       routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().url
     case "10" | "11" | "12" =>
       routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage().url
-    case "19" | "20" | "23" | "24" | "25" =>
+    case "19" | "20" | "23" | "24" | "22" | "25" =>
       routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().url
     case "17" | "18" =>
       routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage().url
@@ -86,10 +88,10 @@ class NACECheckDetailsController @Inject() (
   }
 
   private def getLevel1_1Display(level2Code: String)(implicit messages: Messages): String = level2Code match {
-    case "13" | "14" | "15" | "16" | "22" | "31" => messages("NACE.radio.INT002")
+    case "13" | "14" | "15" | "16" | "31" => messages("NACE.radio.INT002")
     case "26" | "27" | "28" | "33" => messages("NACE.radio.INT003")
     case "10" | "11" | "12" => messages("NACE.radio.INT004")
-    case "19" | "20" | "23" | "24" | "25" => messages("NACE.radio.INT005")
+    case "19" | "20" | "22" | "23" | "24" | "25" => messages("NACE.radio.INT005")
     case "17" | "18" => messages("NACE.radio.INT006")
     case "29" | "30" => messages("NACE.radio.INT007")
     case _ => ""
@@ -98,6 +100,9 @@ class NACECheckDetailsController @Inject() (
   def deriveLevel1Code(level2Code: String): String = level2Code match {
     case "01" | "02" | "03" => "A"
     case "05" | "06" | "07" | "08" | "09" => "B"
+    case "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" => "C"
+    case "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" => "C"
+    case "30" | "31" | "32" | "33" => "C"
     case "35" => "D"
     case "36" | "37" | "38" | "39" => "E"
     case "41" | "42" | "43" => "F"
@@ -117,7 +122,8 @@ class NACECheckDetailsController @Inject() (
     case "94" | "95" | "96" => "T"
     case "97" | "98" => "U"
     case "99" => "V"
-    case _ => "C"
+    case "IN" => "INT00"
+    case _ => ""
   }
 
   def buildViewModel(naceLevel4Code: String)(implicit messages: Messages): NaceCheckDetailsViewModel = {

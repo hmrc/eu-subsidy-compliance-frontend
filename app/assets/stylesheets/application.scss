@@ -1,6 +1,6 @@
-@import "lib/hmrc-frontend/hmrc/all";
-@import "lib/govuk-frontend/dist/govuk/all";
-@import "interrupt-card";
+$govuk-assets-path: "/agent/assets/lib/govuk-frontend/dist/govuk/assets/";
+@import "lib/govuk-frontend/dist/govuk/base";
+
 $govuk-border-colour: #b1b4b6;
 
 $govuk-new-organisation-colours: true;
