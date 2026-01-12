@@ -119,6 +119,19 @@ class JourneySpec extends BaseSpec with Matchers with MockFactory with ScalaFutu
       }
 
     }
+    "getStepWithPath is called" should {
+
+      "return the matching form page when the path exists" in {
+        val result = underTest.getStepWithPath("/bar")
+        result shouldBe Some(formPage2)
+      }
+
+      "return None when the path does not exist" in {
+        val result = underTest.getStepWithPath("/not-a-real-path")
+        result shouldBe None
+      }
+
+    }
 
   }
 

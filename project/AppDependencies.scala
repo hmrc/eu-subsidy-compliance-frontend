@@ -2,7 +2,8 @@ import sbt.*
 
 object AppDependencies {
 
-  val bootStrapVersion = "9.19.0"
+  val bootStrapVersion = "10.5.0"
+
   val hmrcMongoVersion = "2.11.0"
 
   val compile = Seq(
@@ -14,6 +15,7 @@ object AppDependencies {
     "uk.gov.hmrc"           %% "play-conditional-form-mapping-play-30"      % "3.4.0",
     "com.beachape"          %% "enumeratum"                                 % "1.9.2",
     "com.beachape"          %% "enumeratum-play-json"                       % "1.9.2"
+
   )
 
   val test = Seq(

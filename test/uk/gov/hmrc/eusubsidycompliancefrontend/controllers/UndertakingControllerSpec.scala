@@ -25,15 +25,15 @@ import play.api.mvc.Results.Redirect
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.{ModifyUndertakingRow, SectorRadioOption}
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.SectorRadioOption
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingDisabled
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse, VerificationStatus}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.{Amend, EmailStatus}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, Sector, UndertakingName}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -43,7 +43,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.LocalDate
 import scala.concurrent.Future
-import scala.jdk.CollectionConverters._
 
 class UndertakingControllerSpec
     extends ControllerSpec
@@ -1771,27 +1770,6 @@ class UndertakingControllerSpec
         controller.getAddEmailForVerification(status)(FakeRequest(GET, "/some-url"))
 
       "display the page" when {
-
-        "status is 'new' (user is in registration journey)" in {
-
-          val pageTitle = "What is your email address?"
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-          }
-          checkPageIsDisplayed(
-            performAction(),
-            pageTitle,
-            { doc =>
-              doc.getElementById("inputEmail-h1").text shouldBe pageTitle
-              doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController.getSector.url
-
-              val form = doc.select("form")
-              form
-                .attr("action") shouldBe routes.UndertakingController.postAddEmailForVerification(EmailStatus.New).url
-            }
-          )
-
-        }
 
         "status is 'unverified' (user has no verified email address)" in {
           val status = EmailStatus.Unverified

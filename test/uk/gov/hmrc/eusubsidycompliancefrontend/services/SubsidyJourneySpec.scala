@@ -26,7 +26,7 @@ import play.api.test.Helpers.{GET, defaultAwaitTimeout, redirectLocation, status
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, OptionalClaimEori, OptionalTraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -251,6 +251,60 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
       }
     }
 
+    "setSubmitted is called" in {
+      SubsidyJourney().setSubmitted(true).isSubmitted shouldBe true
+      SubsidyJourney().setSubmitted(false).isSubmitted shouldBe false
+    }
+
+    "getReportPayment returns false by default and true when set" in {
+      SubsidyJourney().getReportPayment shouldBe false
+
+      val journey = SubsidyJourney(
+        reportPayment = ReportPaymentFormPage(Some(true))
+      )
+      journey.getReportPayment shouldBe true
+    }
+
+    "getClaimAmount returns the BigDecimal representation of the claim amount" in {
+      val journey = SubsidyJourney(
+        claimAmount = ClaimAmountFormPage(claimAmountPounds.some)
+      )
+      journey.getClaimAmount shouldBe Some(BigDecimal(claimAmountPounds.amount))
+    }
+
+    "getConvertedClaimAmount returns the BigDecimal representation of the converted claim amount" in {
+      val journey = SubsidyJourney(
+        convertedClaimAmountConfirmation = ConvertedClaimAmountConfirmationPage(claimAmountPounds.some)
+      )
+      journey.getConvertedClaimAmount shouldBe Some(BigDecimal(claimAmountPounds.amount))
+    }
+
+    "getClaimEori returns the EORI when one has been entered" in {
+      val eoriString = eori1
+      val optionalClaimEori = OptionalClaimEori("true", Some(eoriString))
+      val journey = SubsidyJourney(
+        addClaimEori = AddClaimEoriFormPage(optionalClaimEori.some)
+      )
+      journey.getClaimEori shouldBe Some(EORI(eoriString))
+    }
+
+    "getAddBusiness returns false by default and true when set" in {
+      SubsidyJourney().getAddBusiness shouldBe false
+
+      val journey = SubsidyJourney(
+        addClaimBusiness = AddClaimBusinessFormPage(Some(true))
+      )
+      journey.getAddBusiness shouldBe true
+    }
+
+    "getReportedNoCustomSubsidy returns false by default and true when set" in {
+      SubsidyJourney().getReportedNoCustomSubsidy shouldBe false
+
+      val journey = SubsidyJourney(
+        reportedNonCustomSubsidy = ReportedNonCustomSubsidyFormPage(Some(true))
+      )
+      journey.getReportedNoCustomSubsidy shouldBe true
+    }
   }
 
   private def testPreviousWhenCyaAlreadyVisited(uri: String): Unit = {

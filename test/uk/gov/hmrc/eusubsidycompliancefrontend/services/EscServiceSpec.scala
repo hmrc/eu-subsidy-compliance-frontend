@@ -115,6 +115,16 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
     when(mockUndertakingCache.deleteUndertakingSubsidies(argEq(ref)))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
+  private def mockDisableUndertaking(undertaking: Undertaking)(
+    result: Either[ConnectorError, HttpResponse]
+  ) =
+    when(mockEscConnector.disableUndertaking(argEq(undertaking))(any()))
+      .thenReturn(result.toFuture)
+
+  private def mockGetExchangeRate(date: LocalDate)(result: Option[MonthlyExchangeRate]) =
+    when(mockEscConnector.getExchangeRate(argEq(date))(any()))
+      .thenReturn(result.toFuture)
+
   private val undertakingRefJson = Json.toJson(undertakingRef)
   private val undertakingJson: JsValue = Json.toJson(undertaking)
   private val undertakingSubsidiesJson = Json.toJson(undertakingSubsidies)
@@ -498,6 +508,115 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
 
           service.clearUndertakingCache(undertakingRef).futureValue shouldBe ()
         }
+      }
+    }
+    "handling request to disable an undertaking" must {
+
+      "return an error" when {
+
+        def isError: Assertion = {
+          val result = service.disableUndertaking(undertaking)
+          result.failed.futureValue shouldBe a[RuntimeException]
+        }
+
+        "the http call fails" in {
+          mockDisableUndertaking(undertaking)(Left(ConnectorError("")))
+          isError
+        }
+
+        "the http response doesn't come back with status 200(OK)" in {
+          mockDisableUndertaking(undertaking)(
+            Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders))
+          )
+          isError
+        }
+
+        "there is no json in the response" in {
+          mockDisableUndertaking(undertaking)(Right(HttpResponse(OK, "hi")))
+          isError
+        }
+
+        "the json in the response can't be parsed" in {
+          val json = Json.parse("""{ "a" : 1 }""")
+          mockDisableUndertaking(undertaking)(Right(HttpResponse(OK, json, emptyHeaders)))
+          isError
+        }
+      }
+
+      "return successfully" when {
+
+        "the http call succeeds and the body of the response can be parsed" in {
+          mockDisableUndertaking(undertaking)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
+          mockCacheDeleteUndertaking(undertakingRef)(Right(()))
+          mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(()))
+
+          service.disableUndertaking(undertaking).futureValue shouldBe undertakingRef
+        }
+      }
+    }
+    "handling request to get an exchange rate" must {
+
+      "return successfully" when {
+
+        "the connector returns a rate" in {
+          val today = LocalDate.now()
+          val rate = MonthlyExchangeRate("curr1", "curr2", 123, today, today)
+
+          mockGetExchangeRate(today)(Some(rate))
+
+          service.getExchangeRate(today).futureValue shouldBe Some(rate)
+        }
+      }
+    }
+    "handling request to retrieve subsidy for a date range" must {
+
+      "return successfully when the http call succeeds and the body of the response can be parsed" in {
+        val start = LocalDate.of(2020, 1, 1)
+        val end = LocalDate.of(2020, 12, 31)
+        val dateRange = (start, end)
+        val subsidyRetrieveForRange = SubsidyRetrieve(undertakingRef, dateRange.some)
+
+        mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
+        mockRetrieveSubsidy(subsidyRetrieveForRange)(
+          Right(HttpResponse(OK, undertakingSubsidiesJson, emptyHeaders))
+        )
+        mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
+
+        service.retrieveSubsidiesForDateRange(undertakingRef, dateRange).futureValue shouldBe undertakingSubsidies
+      }
+    }
+    "handling request to get an undertaking" must {
+
+      "return successfully when an undertaking exists" in {
+        // Cache already has the undertaking, so retrieveUndertaking(eori) => Some(undertaking)
+        mockCacheGet[Undertaking](eori1)(Right(undertaking.some))
+
+        service.getUndertaking(eori1).futureValue shouldBe undertaking
+      }
+
+      "throw IllegalStateException when no undertaking exists" in {
+        mockCacheGet[Undertaking](eori1)(Right(None))
+        val ex = UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND)
+        mockRetrieveUndertaking(eori1)(Left(ConnectorError(ex)))
+
+        val result = service.getUndertaking(eori1).failed.futureValue
+        result shouldBe a[IllegalStateException]
+        result.getMessage shouldBe "Expected undertaking not found"
+      }
+    }
+    "handling request to retrieve an undertaking" must {
+      "return an error" when {
+        "the json in the response cannot be validated as an Undertaking" in {
+          mockCacheGet[Undertaking](eori1)(Right(None))
+          val invalidJson = Json.parse("""{ "a" : 1 }""")
+          mockRetrieveUndertaking(eori1)(
+            Right(HttpResponse(OK, invalidJson, emptyHeaders))
+          )
+
+          val result = service.retrieveUndertaking(eori1)
+          result.failed.futureValue shouldBe a[RuntimeException]
+        }
+
       }
     }
 
