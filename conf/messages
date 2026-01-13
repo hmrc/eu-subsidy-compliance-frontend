@@ -433,9 +433,9 @@ reportPayment.error.required = Select if you need to report a non-customs paymen
 
 # ReportNonCustomSubsidy
 reportNonCustomSubsidy.title = You must report all non-customs subsidies for the last 3 years
-reportNonCustomSubsidy.p1 = You must report all non-customs subsidies you have recieved in the 3 years up to today. This is a rolling 3-year period, not fixed tax years.
+reportNonCustomSubsidy.p1 = You must report all non-customs subsidies you have received in the 3 years up to today. This is a rolling 3-year period, not fixed tax years.
 reportNonCustomSubsidy.p2 = Today is
-reportNonCustomSubsidy.p2Cont = , so you must report all non-customs subsidies recieved from
+reportNonCustomSubsidy.p2Cont = , so you must report all non-customs subsidies received from
 reportNonCustomSubsidy.p2ContFurther = to today.
 
 
