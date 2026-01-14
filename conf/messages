@@ -438,7 +438,6 @@ reportNonCustomSubsidy.p2 = Today is
 reportNonCustomSubsidy.p2Cont = , so you must report all non-customs subsidies received from
 reportNonCustomSubsidy.p2ContFurther = to today.
 
-
 add-claim-date.title = What date were you awarded the payment?
 add-claim-date.p1 = What date were you awarded the payment?
 add-claim-date.p2 = Enter the date you received formal confirmation of the payment due to be awarded.
