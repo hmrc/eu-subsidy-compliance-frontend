@@ -435,10 +435,13 @@ reportPayment.error.required = Select if you need to report a non-customs paymen
 
 # ReportNonCustomSubsidy
 reportNonCustomSubsidy.title = You must report all non-customs subsidies for the last 3 years
-reportNonCustomSubsidy.p1 = You must report all non-customs subsidies you have received in the 3 years up to today. This is a rolling 3-year period, not fixed tax years.
-reportNonCustomSubsidy.p2 = Today is
-reportNonCustomSubsidy.p2Cont = , so you must report all non-customs subsidies received from
-reportNonCustomSubsidy.p2ContFurther = to today.
+reportNonCustomSubsidy.p1 = You need to report for the current tax year, and the previous 2 tax years:
+reportNonCustomSubsidy.p2.dateRange = 6 April {0} to 5 April {1}
+
+#reportNonCustomSubsidy.p1 = You must report all non-customs subsidies you have received in the 3 years up to today. This is a rolling 3-year period, not fixed tax years.
+#reportNonCustomSubsidy.p2 = Today is
+#reportNonCustomSubsidy.p2Cont = , so you must report all non-customs subsidies received from
+#reportNonCustomSubsidy.p2ContFurther = to today.
 
 add-claim-date.title = What date were you awarded the payment?
 add-claim-date.p1 = What date were you awarded the payment?
