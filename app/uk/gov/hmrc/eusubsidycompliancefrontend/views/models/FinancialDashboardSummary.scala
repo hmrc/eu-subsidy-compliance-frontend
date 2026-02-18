@@ -15,23 +15,21 @@
  */
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
-import play.api.i18n.Messages
+
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, SubsidyAmount}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking, UndertakingBalance, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
+
 import java.time.{LocalDate, Month}
+
 case class FinancialDashboardSummary(
   overall: OverallSummary,
   taxYears: Seq[TaxYearSummary] = Seq.empty,
   undertakingBalanceEUR: SubsidyAmount,
-  scp08IssuesExist: Boolean,
-  currentDate: String,
-  earliestDate: String,
-  lastReportDate: String,
-  leadEORI: String
+  scp08IssuesExist: Boolean
 )
+
 case class OverallSummary(
   startYear: Int,
   endYear: Int,
@@ -40,13 +38,14 @@ case class OverallSummary(
   sector: Sector,
   sectorCap: IndustrySectorLimit
 ) {
+  def total: SubsidyAmount = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
+  def allowanceExceeded: Boolean = total > sectorCap
   // If the allowance has been exceeded we must show the remaining amount as zero rather than a negative number.
   def allowanceRemaining: SubsidyAmount =
     if (allowanceExceeded) SubsidyAmount(0)
     else SubsidyAmount(sectorCap - total)
-  def allowanceExceeded: Boolean = total > sectorCap
-  def total: SubsidyAmount = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
 }
+
 case class TaxYearSummary(
   startYear: Int,
   hmrcSubsidyTotal: SubsidyAmount,
@@ -56,7 +55,9 @@ case class TaxYearSummary(
   def total: SubsidyAmount = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
   def endYear: Int = startYear + 1
 }
+
 object FinancialDashboardSummary {
+
   // Generates summarised data to populate the financial dashboard page.
   // All currency amounts in EUR.
   def fromUndertakingSubsidies(
@@ -64,10 +65,13 @@ object FinancialDashboardSummary {
     subsidies: UndertakingSubsidies,
     balance: Option[UndertakingBalance],
     today: LocalDate
-  )(implicit messages: Messages): FinancialDashboardSummary = {
+  ): FinancialDashboardSummary = {
+
     val startDate = today.toEarliestTaxYearStart
     val endDate = today.toTaxYearEnd
+
     val sectorCap: IndustrySectorLimit = undertaking.industrySectorLimit
+
     val overallSummary = OverallSummary(
       startYear = startDate.getYear,
       endYear = endDate.getYear,
@@ -76,6 +80,7 @@ object FinancialDashboardSummary {
       sector = undertaking.industrySector,
       sectorCap = sectorCap
     )
+
     // We assume that acceptanceDate is the correct field to use since it's mandatory. There is also an issueDate
     // field but since this is optional it makes grouping by tax year impossible if no value is present.
     // We also assume that the amount field holds a value in EUR.
@@ -85,22 +90,27 @@ object FinancialDashboardSummary {
           .map(_._2)
           .fold(SubsidyAmount.Zero)((a, b) => SubsidyAmount(a + b))
       }
+
     val hmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = sumByTaxYear(
       subsidies.hmrcSubsidyUsage
         .map(i => i.acceptanceDate.toTaxYearStart -> i.hmrcSubsidyAmtEUR.getOrElse(SubsidyAmount.Zero))
     )
+
     val nonHmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = sumByTaxYear(
       subsidies.nonHMRCSubsidyUsage
         .filterNot(_.isRemoved)
         .map(i => i.allocationDate.toTaxYearStart -> i.nonHMRCSubsidyAmtEUR)
     )
+
     def isCurrentTaxYear(startYear: Int) = {
       val startDate = LocalDate.of(startYear, Month.APRIL, 6)
       val endDate = LocalDate.of(startYear + 1, Month.APRIL, 5)
+
       today.isEqual(startDate) ||
       today.isEqual(endDate) ||
       (today.isAfter(startDate) && today.isBefore(endDate))
     }
+
     // Generate summaries for each starting tax year value in descending year order.
     val taxYearSummaries = (endDate.toTaxYearStart.getYear to startDate.getYear by -1)
       .map(_ - startDate.getYear)
@@ -113,28 +123,12 @@ object FinancialDashboardSummary {
           isCurrentTaxYear = isCurrentTaxYear(d.getYear)
         )
       )
-    val (earliestDate, lastReportDate) = subsidies.nonHMRCSubsidyUsage
-      .map(_.allocationDate)
-      .sorted
-      .headOption
-      .map { first =>
-        val lastEle = subsidies.nonHMRCSubsidyUsage.map(_.allocationDate).max
-        (first.toDisplayFormat, lastEle.toDisplayFormat)
-      }
-      .getOrElse(("-", "-"))
-    val leadUndertaking: BusinessEntity = undertaking.undertakingBusinessEntity
-      .find(_.leadEORI)
-      .getOrElse(throw new IllegalStateException("Missing Lead EORI"))
-    val leadEORI = leadUndertaking.businessEntityIdentifier
+
     FinancialDashboardSummary(
       overall = overallSummary,
       taxYears = taxYearSummaries,
       undertakingBalanceEUR = balance.fold(overallSummary.allowanceRemaining)(_.availableBalanceEUR),
-      scp08IssuesExist = balance.isEmpty,
-      today.toDisplayFormat,
-      earliestDate,
-      lastReportDate,
-      leadEORI
+      scp08IssuesExist = balance.isEmpty
     )
   }
 }

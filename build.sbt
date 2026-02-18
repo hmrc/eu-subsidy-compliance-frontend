@@ -4,7 +4,7 @@ import uk.gov.hmrc.DefaultBuildSettings
 val appName = "eu-subsidy-compliance-frontend"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.18"
+ThisBuild / scalaVersion := "2.13.16"
 
 PlayKeys.playDefaultPort := 9093
 

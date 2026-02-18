@@ -86,8 +86,24 @@
   backLinkEnabled = false,
   backLink = None
 ) {
+    @if(agriOtherFlag) {
+    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                @messages("lead-account-homepage.important")
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">
+                @messages("lead-account-homepage.banner")
+                <a class="govuk-notification-banner__link" href="@routes.ReviewAllowanceChangesController.showPage.url">@messages("lead-account-homepage.banner.link")</a>.
+            </p>
+        </div>
+    </div>
+    }
     @H1(messages("lead-account-homepage.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"))
     <p id="undertaking-eori-number" class="govuk-hint govuk-!-font-size-24 govuk-!-margin-top-1 govuk-!-margin-bottom-8">@eori</p>
+
     @if(isSuspended) {
         @govukWarningText(WarningText(
             content = Text(messages("lead-account-homepage.postDeadline.warning", dueDate)), attributes = Map("id" -> "warning-text")
@@ -122,23 +138,42 @@
         @P(messages("lead-account-homepage.preDeadline.h2.p2"), id = Some("lead-account-homepage-h2-p2"))
         @P(messages("lead-account-homepage.preDeadline.h2.p3"), id = Some("lead-account-homepage-h2-p3"))
     }
-    @govukDetails(Details(summary = Text(messages("lead-account-homepage.details.title")),content = HtmlContent(detailsContent)))
-    @button(msg = "common.submit-report",href = Some(continueUrl))
+
+    @govukDetails(
+        Details(
+            summary = Text(messages("lead-account-homepage.details.title")),
+            content = HtmlContent(detailsContent)
+        )
+    )
+
+    @button(
+      msg = "common.submit-report",
+      href = Some(continueUrl),
+    )
+
     @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-4"))
     <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
-        <li><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments">@messages("lead-account-homepage.ul2-li1")</a></li>
+      <li><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments">@messages("lead-account-homepage.ul2-li1")</a></li>
     </ul>
+
     @H2(balanceHeading, Some("govuk-heading-m govuk-!-margin-top-4"), id = Some("undertaking-balance-section-heading"))
     @possibleMiscalculationContent
-
-    <p class="govuk-body">@messages(s"$key.p3") <Strong>@remainingAmount</Strong>, @messages(s"$key.p3Cont",  allowance)</p>
-
-    <div class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
-        <p class="govuk-body">@messages("lead-account-homepage.under-taking.p1")
-            <a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.ul3-li1")</a>.
-        </p>
+    @if(agriOtherFlag) {
+    <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true" >!</span>
+        <strong class="govuk-warning-text__text" id = "undertaking-balance-section-content-agri-other">
+            <span class="govuk-visually-hidden">Warning</span>
+            @messages(s"$key.p3.agri")
+            <a class="govuk-link" href="@routes.ReviewAllowanceChangesController.showPage.url">@messages("lead-account-homepage.p3.link")</a>.
+        </strong>
     </div>
+    } else {
+    @P(messages(s"$key.p3", remainingAmount, allowance), id = Some("undertaking-balance-section-content"))
+    }
 
+    <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
+      <li><a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.ul3-li1")</a></li>
+    </ul>
     @H2(messages("lead-account-homepage.h2-5"), Some("govuk-heading-m"))
     <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
       <li><a class="govuk-link" href="@routes.AddBusinessEntityController.startJourney()">@messages("lead-account-homepage.ul4-li1")</a></li>

@@ -29,12 +29,20 @@
   govukSummaryList: GovukSummaryList,
   govukInsetText: GovukInsetText,
   govukWarningText: GovukWarningText,
-  govukDetails : GovukDetails,
   govukNotificationBanner : GovukNotificationBanner
 )
 
-@(eori: String, summary: FinancialDashboardSummary,industrySectorKey: String, previousDate: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summary: FinancialDashboardSummary,
+industrySectorKey: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"dashboard"}
+
+
+
+@result = @{ if(industrySectorKey == "fisheryAndAquaculture" ){
+    messages(s"$key.undertaking.balance.heading")
+    } else {
+    messages(s"dashboardAlt.undertaking.balance.heading") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString) +" "+ messages(s"dashboardAlt.undertaking.balance.headingCont") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.plusYears(1)).getYear.toString)
+    }}
 
 @title = @{messages(s"$key.title")}
 
@@ -42,14 +50,6 @@
         <aside aria-label="Print-page" class="print-dialogue">
             <a class="govuk-link" href="#print-dialogue">@messages("common.print")</a>
         </aside>
-}
-
-@detailsContent = {
-@P(messages("dashboard.details.p1"), id = Some("dashboard.details.p1"))
-@P(messages("dashboard.details.p2"), id = Some("dashboard.details.p2"))
-@P(messages("dashboard.details.p3"), id = Some("dashboard.details.p3"))
-@P(messages("dashboard.details.p4"), id = Some("dashboard.details.p4"))
-@P(messages("dashboard.details.p5"), id = Some("dashboard.details.p5"))
 }
 
 @scp08Warning = @{
@@ -61,9 +61,12 @@
 }
 
 @insetText = {
-@govukInsetText(InsetText(content = Text(messages("dashboard.insetText")), id = Some("dashboard-inset-text")))
+    @if(industrySectorKey == "fisheryAndAquaculture"){
+@govukInsetText(InsetText(  content = Text(messages("dashboard.insetText")), id = Some("dashboard-inset-text")))
+    } else {
+@govukInsetText(InsetText(content = Text(messages("dashboardAlt.insetText")), id = Some("dashboard-inset-text")))
 }
-
+}
 
 @insetTextOrWarning = @{
     if(summary.scp08IssuesExist){
@@ -113,7 +116,7 @@
     Seq(
         SummaryListRow(
             key = Key(
-                content = HtmlContent(s"""<span id="undertaking-balance-heading">${messages(s"$key.undertaking.balance.heading", previousDate, summary.currentDate)}</span>""")
+                content = HtmlContent(s"""<span id="undertaking-balance-heading">${messages(s"$result")}</span>""")
             ),
             value = Value(
                 content = HtmlContent(s"""<span id="undertaking-balance-value">${summary.undertakingBalanceEUR.toEuros}</span>""")
@@ -130,58 +133,72 @@
     printDialog = Some(printDialog)
 ) {
 
+@if(industrySectorKey != "fisheryAndAquaculture"){
+<div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+    <div class="govuk-notification-banner__header"><h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Important</h2></div>
+    <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">@messages("dashboardAlt.important") <a class="govuk-notification-banner__link" href="@routes.ReviewAllowanceChangesController.showPage">@messages("dashboardAlt.importantURL")</a>.</p>
+    </div>
+</div>
+}
+
     @H1(title)
 
+ @if(industrySectorKey != "fisheryAndAquaculture"){
+    @P(messages("dashboardAlt.p1"))
+} else {
     @P(messages(s"$key.p1"))
-    @P(messages(s"$key.p2"))
-    @govukDetails(Details(summary = Text(messages("dashboard.details.title")),content = HtmlContent(detailsContent)))
+}
+
+@if(industrySectorKey != "fisheryAndAquaculture"){
+    @P(messages("dashboardAlt.p2"))
+    @P(messages("dashboardAlt.p3"))
+} else {
+@P(messages(s"$key.p2", TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString))
+}
+
+
     @insetTextOrWarning
 
     @govukSummaryList(SummaryList(
         rows = mainSummary
     ))
 
-        @H2(messages("dashboard.claimPeriod.heading"), Some("govuk-heading-m govuk-!-margin-top-8"))
+    @for(taxYear <- summary.taxYears) {
+        @if(taxYear.isCurrentTaxYear) {
+            @H2(messages("dashboard.current-tax-year.heading"), Some("govuk-heading-m govuk-!-margin-top-9"))
+        } else {
+            @H2(messages("dashboard.year.summary.heading", taxYear.startYear.toString, taxYear.endYear.toString), Some("govuk-heading-m govuk-!-margin-top-8"))
+        }
         @govukSummaryList(SummaryList(
             rows = Seq(
                 SummaryListRow(
                     key = Key(
-                    content = Text(messages(s"dashboard.claimPeriod.h1"))
+                    content = Text(messages(s"$key.customs.duty.heading"))
                     ),
                     value = Value(
-                    content = Text(previousDate)
+                    content = Text(taxYear.hmrcSubsidyTotal.toEuros)
                     )
                 ),
                 SummaryListRow(
                     key = Key(
-                    content = Text(messages(s"dashboard.claimPeriod.h2"))
+                    content = Text(messages(s"$key.de.minimis.aid.heading"))
                     ),
                     value = Value(
-                    content = Text(summary.currentDate)
+                    content = Text(taxYear.nonHmrcSubsidyTotal.toEuros)
                     )
                 ),
                 SummaryListRow(
                     key = Key(
-                    content = Text(messages(s"dashboard.claimPeriod.h3"))
+                    content = Text(messages(s"$key.total.claimed.heading"))
                     ),
                     value = Value(
-                    content = Text(summary.lastReportDate)
-                    )
-                ),
-                SummaryListRow(
-                    key = Key(
-                    content = Text(messages(s"dashboard.claimPeriod.h4"))
-                    ),
-                    value = Value(
-                     content = Text(summary.earliestDate)
+                    content = Text(taxYear.total.toEuros)
                     )
                 )
             )
         ))
-    @if(summary.leadEORI == eori){
-    <div><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments">@messages("dashboard.urltext")</a></div><br>
+    }
 
-    <div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("dashboard.url2text")</a></div>
-    } else {
-    <div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("dashboard.urlAltText")</a></div>
-}}
+    <div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("common.go-undertaking-home")</a></div>
+}
