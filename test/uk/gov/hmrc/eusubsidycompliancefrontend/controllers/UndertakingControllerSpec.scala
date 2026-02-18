@@ -1771,6 +1771,27 @@ class UndertakingControllerSpec
 
       "display the page" when {
 
+        "status is 'new' (user is in registration journey)" in {
+
+          val pageTitle = "What is your email address?"
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            pageTitle,
+            { doc =>
+              doc.getElementById("inputEmail-h1").text shouldBe pageTitle
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController.getConfirmEmail.url
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController.postAddEmailForVerification(EmailStatus.New).url
+            }
+          )
+
+        }
+
         "status is 'unverified' (user has no verified email address)" in {
           val status = EmailStatus.Unverified
           val pageTitle = "What is your email address?"

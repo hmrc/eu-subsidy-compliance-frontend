@@ -71,7 +71,6 @@ class NoClaimNotificationControllerSpec
           mockTimeProviderToday(fixedDate)
           mockRetrieveSubsidiesForDateRange(undertakingRef, (startDate, fixedDate))(undertakingSubsidies.toFuture)
           mockTimeProviderToday(fixedDate)
-          mockTimeProviderToday(fixedDate)
         }
 
         val result = performAction
@@ -84,11 +83,11 @@ class NoClaimNotificationControllerSpec
         val p2Text = document.getElementById("noClaimNotification-p2").text()
         p2Text shouldBe "If you have never submitted a payment or no payments report"
         val p3Text = document.getElementById("noClaimNotification-p3").text()
-        p3Text shouldBe "You must confirm that you have not received any non-customs subsidy payments since 21 January 2018."
+        p3Text shouldBe "You must confirm that you have received no non-customs subsidy payments since 6 April 2021."
         val p4Text = document.getElementById("noClaimNotification-p4").text()
         p4Text shouldBe "If you have previously submitted a payment or no payments report"
         val p5Text = document.getElementById("noClaimNotification-p5").text()
-        p5Text shouldBe "You must confirm that you have not received any non-customs subsidy payments within your latest 90-day reporting period."
+        p5Text shouldBe "You must confirm that you have received no non-customs subsidy payments within your latest 90-day reporting period."
 
         val chkLabel = document.select("label[for=noClaimNotification]")
         chkLabel.text() shouldBe "This undertaking does not have any non-customs subsidy payments to report for the relevant period."
@@ -101,7 +100,6 @@ class NoClaimNotificationControllerSpec
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(fixedDate)
           mockRetrieveSubsidiesForDateRange(undertakingRef, (startDate, fixedDate))(emptyUndertakingSubsidies.toFuture)
-          mockTimeProviderToday(fixedDate)
           mockTimeProviderToday(fixedDate)
         }
 
@@ -209,7 +207,6 @@ class NoClaimNotificationControllerSpec
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
-            mockTimeProviderToday(currentDay)
             mockUpdate[NilReturnJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
@@ -221,7 +218,6 @@ class NoClaimNotificationControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDay)
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
-            mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
             mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))
@@ -243,7 +239,6 @@ class NoClaimNotificationControllerSpec
             mockTimeProviderToday(currentDay)
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
-            mockTimeProviderToday(currentDay)
           }
 
           checkFormErrorIsDisplayed(
@@ -262,7 +257,6 @@ class NoClaimNotificationControllerSpec
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(currentDay)
           mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
-          mockTimeProviderToday(currentDay)
           mockTimeProviderToday(currentDay)
           mockTimeProviderToday(currentDay)
           mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))

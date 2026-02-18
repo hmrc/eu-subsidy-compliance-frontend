@@ -191,7 +191,6 @@ class AccountController @Inject() (
       val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
       val isSuspended = undertaking.isAutoSuspended
       val startDate = today.toEarliestTaxYearStart
-      var isLead = true
 
       val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
         undertaking,
@@ -240,7 +239,6 @@ class AccountController @Inject() (
           nonLeadAccountPage(
             undertaking = undertaking,
             eori = undertaking.getLeadEORI,
-            isLead = false,
             dueDate = dueDate,
             isOverdue = isOverdue,
             lastSubmitted = lastSubmitted.map(_.toDisplayFormat),

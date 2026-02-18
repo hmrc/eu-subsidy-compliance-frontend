@@ -24,32 +24,29 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class FinancialDashboardController @Inject() (
+class ReviewAllowanceChangesController @Inject() (
+  mcc: MessagesControllerComponents,
+  reviewAllowanceChangesPage: ReviewAllowanceChangesPage,
   actionBuilders: ActionBuilders,
   escService: EscService,
-  financialDashboardPage: FinancialDashboardPage,
-  mcc: MessagesControllerComponents,
   timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, ec: ExecutionContext)
     extends BaseController(mcc) {
 
   import actionBuilders._
 
-  def getFinancialDashboard: Action[AnyContent] = enrolled.async { implicit request =>
+  def showPage: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
-    logger.info("FinancialDashboardController.getFinancialDashboard")
 
     val today = timeProvider.today
 
-    // The search period covers the current tax year to date, and the previous 2 tax years.
     for {
       undertakingOpt <- escService.retrieveUndertaking(eori)
       undertaking = undertakingOpt match {
@@ -59,17 +56,10 @@ class FinancialDashboardController @Inject() (
       subsidies <- escService.retrieveSubsidiesForDateRange(undertaking.reference, today.toSearchRange)
       balanceOpt: Option[UndertakingBalance] <- escService.getUndertakingBalance(eori)
       summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, balanceOpt, today)
-      sector = summary.overall.sector.toString.take(2)
-      industrySectorKey: String = sector match {
-        case "01" => "agriculture"
-        case "03" => "fisheryAndAquaculture"
-        case _ => "generalTrade"
-      }
     } yield
       if (undertaking.isManuallySuspended)
         Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url)
-      else Ok(financialDashboardPage(summary, industrySectorKey))
-
+      else Ok(reviewAllowanceChangesPage(summary))
   }
 
 }

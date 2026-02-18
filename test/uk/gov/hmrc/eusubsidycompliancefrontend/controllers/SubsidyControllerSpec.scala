@@ -511,6 +511,46 @@ class SubsidyControllerSpec
           FakeRequest(GET, routes.SubsidyController.getReportedNoCustomSubsidyPage.url)
         )
 
+      "render the page with bullet list of current tax year and previous 2 years for returning user" in {
+        val journeyWithReportedNonCustomSubsidyReturningUser = subsidyJourney
+          .setReportPayment(true)
+
+        inSequence {
+          mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney(eori1)
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockGetOrCreate[SubsidyJourney](eori1)(Right(journeyWithReportedNonCustomSubsidyReturningUser))
+        }
+
+        val result = performAction()
+        val document: Document = Jsoup.parse(contentAsString(result))
+        document
+          .select(".govuk-back-link")
+          .attr("href") shouldBe routes.SubsidyController.getReportPayment.url
+
+        verifyTaxYearsPage(result, document)
+
+      }
+
+      "render the page with bullet list of current tax year and previous 2 years for first time user" in {
+        val journeyWithReportedNonCustomSubsidyFirstTimeUser = subsidyJourney
+          .setReportPayment(false)
+
+        inSequence {
+          mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney(eori1)
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockGetOrCreate[SubsidyJourney](eori1)(Right(journeyWithReportedNonCustomSubsidyFirstTimeUser))
+        }
+
+        val result = performAction()
+        val document: Document = Jsoup.parse(contentAsString(result))
+
+        document
+          .select(".govuk-back-link")
+          .attr("href") shouldBe routes.SubsidyController.getReportPayment.url
+
+        verifyTaxYearsPage(result, document)
+      }
+
       "redirect to payment already submitted page" when {
         "cya is true" in {
           inSequence {
