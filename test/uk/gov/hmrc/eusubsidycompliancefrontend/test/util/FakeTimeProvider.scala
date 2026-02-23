@@ -27,6 +27,7 @@ object FakeTimeProvider {
       override def today: LocalDate = LocalDate.of(year, month, day)
       override def zonedToday(z: ZoneId): LocalDate = today
       override def now: LocalDateTime = LocalDateTime.of(year, month, day, hr, mm, ss)
+      override def getMinusDaysForVal(minusDays: Int): LocalDate = today.minusDays(minusDays)
     }
 
 }

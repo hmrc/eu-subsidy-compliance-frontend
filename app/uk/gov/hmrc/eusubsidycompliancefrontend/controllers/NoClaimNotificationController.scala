@@ -35,6 +35,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, Time
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
+import java.util.Date
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -68,6 +69,7 @@ class NoClaimNotificationController @Inject() (
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
           val previous = routes.SubsidyController.getReportPayment.url
           val today = timeProvider.today
+          val today1095Back = (timeProvider.today).minusDays(1095).toDisplayFormat
           val startDate = today.toEarliestTaxYearStart
 
           val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
@@ -80,6 +82,7 @@ class NoClaimNotificationController @Inject() (
               previous,
               undertakingSubsidies.hasNeverSubmitted,
               startDate.toDisplayFormat,
+              today1095Back,
               lastSubmitted
                 .map(_.toDisplayFormat)
                 .getOrElse("")
@@ -102,7 +105,7 @@ class NoClaimNotificationController @Inject() (
           val previous = routes.SubsidyController.getReportPayment.url
           val today = timeProvider.today
           val startDate = today.toEarliestTaxYearStart
-
+          val today1095Back = (timeProvider.today).minusDays(1095).toDisplayFormat
           val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
 
           noClaimForm
@@ -117,6 +120,7 @@ class NoClaimNotificationController @Inject() (
                     previous,
                     undertakingSubsidies.hasNeverSubmitted,
                     startDate.toDisplayFormat,
+                    today1095Back,
                     lastSubmitted
                       .map(_.toDisplayFormat)
                       .getOrElse("")

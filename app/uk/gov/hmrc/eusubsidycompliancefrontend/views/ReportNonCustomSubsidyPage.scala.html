@@ -29,7 +29,8 @@
     button: components.Button
 )
 
-@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: Journey.Uri, today: String,
+today1095Back: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"reportNonCustomSubsidy"}
 @title = @{messages(s"$key.title")}
 
@@ -47,12 +48,9 @@
 ) {
     @H1(messages("reportNonCustomSubsidy.title"))
     @{P(messages(s"reportNonCustomSubsidy.p1"))}
-    <ul class="govuk-list govuk-list--bullet">
-        <li id="twoYearBack"> @messages("reportNonCustomSubsidy.p2.dateRange", twoYearsAgoTaxYearStartYear, previousTaxYearStartYear) </li>
-        <li id="previousYear"> @messages("reportNonCustomSubsidy.p2.dateRange", previousTaxYearStartYear, currentTaxYearStartYear) </li>
-        <li id="currentYear"> @messages("reportNonCustomSubsidy.p2.dateRange", currentTaxYearStartYear, currentTaxYearEndYear) </li>
-    </ul>
+    @{P(messages(s"reportNonCustomSubsidy.p2") +" "+today+ messages(s"reportNonCustomSubsidy.p2Cont") +" "+today1095Back +" "+ messages("reportNonCustomSubsidy.p2ContFurther"))}
 
-    @button("common.continue", href = Some(controllers.routes.SubsidyController.getClaimDate.url))
+
+    @button("common.continue.only", href = Some(controllers.routes.SubsidyController.getClaimDate.url))
 }
 
