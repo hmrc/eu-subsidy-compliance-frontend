@@ -102,6 +102,16 @@ class AccountController @Inject() (
 
     for {
       result <- undertaking.undertakingStatus match {
+
+        case Some(UndertakingStatus.inactive) =>
+          if (isUpdated) {
+            proceedToAccountPage(undertaking)
+          } else {
+            Future.successful(
+              Future.successful(Redirect(routes.UndertakingInactivePageController.showPage.url))
+            )
+          }
+
         case Some(UndertakingStatus.suspendedUndertaking) =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)

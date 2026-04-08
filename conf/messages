@@ -633,7 +633,6 @@ dashboard.urltext = View reported non-customs subsidy payments
 dashboard.url2text = Back to manage your undertaking
 dashboard.urlAltText = Back to your undertaking
 
-
 dashboard.scp08.warningText = Your ''Undertaking balance'', ''Total claimed'' and ''Customs subsidies (Customs Duty waivers)'' amounts in the first section may show temporary differences to your own records. They may take up to 24 hours to be amended here, so keeping a record of any payments you have received is advised.
 
 become-admin.title = Change of undertaking administrator
@@ -706,6 +705,32 @@ NACE.undertakingSuspended.ALTp2= To start using this service again, you need to:
 NACE.undertakingSuspended.ALTul1= answer some questions about your undertaking
 NACE.undertakingSuspended.ALTul2= submit a report
 NACE.undertakingSuspended.ALTp3= Once you have done this, you can use the service as normal.
+
+#Undertaking Inactive page
+undertakingInactive.title=Contact HMRC and update your details to keep using this service
+undertakingInactive.p1=You cannot use this online service because your undertaking does not have:
+undertakingInactive.ul1=an assigned administrator
+undertakingInactive.ul2=up-to-date information about your NACE sector
+undertakingInactive.p2= If you want to continue using this online service, follow the steps on this page.
+
+#Undertaking suspended page
+undertakingInactive.subheading1= 1. Choose a NACE sector for your undertaking
+undertakingInactive.section1.p1= NACE is a classification system used in the European Union. You can browse the <a class="govuk-link" target="_blank" href="https://showvoc.op.europa.eu/#/datasets/ESTAT_Statistical_Classification_of_Economic_Activities_in_the_European_Community_Rev._2.1._%28NACE_2.1%29/data?resId=http:%2F%2Fdata.europa.eu%2Fux2%2Fnace2.1%2Fsections">full list of NACE sectors from the EU (opens in a new tab)</a>.
+undertakingInactive.section1.p2= You need to choose a Level 4 (Class) NACE sector that describes what your undertaking does. If your undertaking operates in more than one business area, this should be your main area of business activity.
+undertakingInactive.section1.p3=  It’s a 4–digit code – for example, 10.51 is the NACE code for manufacture of dairy products.
+undertakingInactive.section1.p4=  You will need this code when you contact HMRC.
+undertakingInactive.subheading2= 2. Contact HMRC
+undertakingInactive.section2.p1 = Contact HMRC by filling in the form on the <a class="govuk-link" target="_blank" href="https://www.tax.service.gov.uk/contact/report-technical-problem?service=report-and-manage-your-allowance-for-customs-duty-waiver-claims">get help with a technical problem page (opens in a new tab)</a>. Make sure you include your 4–digit NACE code.
+undertakingInactive.section2.p2 = A caseworker will contact you within 5 days. They will help update your undertaking’s NACE sector details.
+undertakingInactive.section2.p3 = You will get an email confirmation with this process is complete.
+undertakingInactive.subheading3= 3. Assign an administrator to your undertaking
+undertakingInactive.section3.p1 = You can only do this after HMRC has emailed you to confirm that your NACE sector details have been updated.
+undertakingInactive.section3.p2 = Sign in to your account and select the ‘Become the undertaking administrator’ link on the ‘Your undertaking’ page.
+undertakingInactive.section3.p3 = An administrator is responsible for submitting reports to HMRC and keeping business details up to date.
+undertakingInactive.section3.p4 = Once you make yourself the administrator, you can:
+undertakingInactive.section3.p4.ul1 = use the online service as normal
+undertakingInactive.section3.p4.ul2 = add businesses to your undertaking
+undertakingInactive.section3.p4.ul3 =invite someone else to become the administrator if you’d rather not take on the role
 
 # Access denied for agents page
 accessDeniedForAgents.title=You cannot access this service
