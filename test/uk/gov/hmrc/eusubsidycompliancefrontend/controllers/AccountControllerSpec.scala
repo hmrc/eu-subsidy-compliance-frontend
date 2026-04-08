@@ -373,21 +373,22 @@ class AccountControllerSpec
           }
         }
 
-        //  "display the account home page with a warning when undertaking is auto suspended" when {
-        //    "admin page loads home - 'undertakingStatus == suspendedAutomated'" in {
-        //      inSequence {
-        //        mockAuthWithEnrolmentAndNoEmailVerification()
-        //        mockRetrieveUndertaking(eori2)(
-        //          undertaking.copy(undertakingStatus = Some(UndertakingStatus.suspendedAutomated)).some.toFuture
-        //        )
-        //      }
-//
-        //      val result = performAction()
-        //      status(result) shouldBe SEE_OTHER
-        //      redirectLocation(result) shouldBe Some(
-        //        routes.UndertakingInvalidSectorSuspendedPageController.showPage.url
-        //      )
-        //    }}
+        "inactive page loads when user is inactive page when user doesn't have an active nace code" in {
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification(eori4)
+            mockRetrieveUndertaking(eori4)(
+              inactiveUndertaking.copy(undertakingStatus = Some(UndertakingStatus.inactive)).some.toFuture
+            )
+          }
+          val result = performAction()
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(
+            routes.UndertakingInactivePageController.showPage.url
+          )
+          session(result).get("suspensionCode") shouldBe Some(
+            UndertakingStatus.inactive.id.toString
+          )
+        }
 
         "display the account home page with message about scp08 issues" when {
           "admin page loads home" in {

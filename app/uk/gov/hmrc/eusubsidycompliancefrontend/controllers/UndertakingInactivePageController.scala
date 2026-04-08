@@ -25,7 +25,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class UndertakingInactivePageController @Inject()(
+class UndertakingInactivePageController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
   undertakingInactivePage: UndertakingInactivePage

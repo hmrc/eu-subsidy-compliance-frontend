@@ -103,15 +103,6 @@ class AccountController @Inject() (
     for {
       result <- undertaking.undertakingStatus match {
 
-        case Some(UndertakingStatus.inactive) =>
-          if (isUpdated) {
-            proceedToAccountPage(undertaking)
-          } else {
-            Future.successful(
-              Future.successful(Redirect(routes.UndertakingInactivePageController.showPage.url))
-            )
-          }
-
         case Some(UndertakingStatus.suspendedUndertaking) =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)
@@ -119,6 +110,18 @@ class AccountController @Inject() (
             Future.successful(
               Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
                 .addingToSession("suspensionCode" -> "8")
+                .addingToSession("sector" -> undertaking.industrySector.toString)
+                .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
+            )
+          }
+
+        case Some(UndertakingStatus.inactive) =>
+          if (isUpdated) {
+            proceedToAccountPage(undertaking)
+          } else {
+            Future.successful(
+              Redirect(routes.UndertakingInactivePageController.showPage)
+                .addingToSession("suspensionCode" -> "9")
                 .addingToSession("sector" -> undertaking.industrySector.toString)
                 .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
             )
