@@ -27,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendRequest}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{agriculture, cerealsLeguminousCrops, transport}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{agriculture, cerealsLeguminousCrops, other, transport}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{DeclarationID, EORI, EisSubsidyAmendmentType, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TaxType, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
@@ -144,6 +144,16 @@ object CommonTestData {
     LocalDate.of(2021, 1, 18).some,
     Some(suspendedManual),
     List(businessEntity1, businessEntity2)
+  )
+
+  val inactiveUndertaking = Undertaking(
+    undertakingRef,
+    UndertakingName("TestUndertaking"),
+    other,
+    IndustrySectorLimit(12.34),
+    LocalDate.of(2021, 1, 18).some,
+    Some(inactive),
+    List(businessEntity1, businessEntity4)
   )
 
   val writeableUndertaking = UndertakingCreate(
