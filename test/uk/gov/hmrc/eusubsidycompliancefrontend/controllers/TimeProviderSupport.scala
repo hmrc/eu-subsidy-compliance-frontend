@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import org.scalamock.handlers.CallHandler0
+import org.scalamock.handlers.{CallHandler0, CallHandler1}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.{LocalDate, LocalDateTime}
@@ -31,4 +31,6 @@ trait TimeProviderSupport { this: ControllerSpec =>
   def mockTimeProviderToday(now: LocalDate): CallHandler0[LocalDate] =
     (() => mockTimeProvider.today).expects().returning(now)
 
+  def mockTimeProviderTodayMinusDays(now: LocalDate): CallHandler0[LocalDate] =
+    (() => mockTimeProvider.getMinusDaysForVal(1095)).expects().returning(now)
 }
