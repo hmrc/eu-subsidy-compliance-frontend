@@ -43,7 +43,7 @@
     hmrcStandardFooter: HmrcStandardFooter,
     hmrcScripts: HmrcScripts,
     hmrcStandardHeader: HmrcStandardHeader,
-    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+    hmrcLanguageSelectHelper: HmrcServiceNavigationLanguageSelect,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     beforeContentBlock: components.BeforeContent,
     scripts: components.Scripts,
@@ -87,7 +87,6 @@
 
 @beforeContentWrapper = {
     @beforeContentBlock(backLinkEnabled, backLink)
-    @{if(appConfig.welshLanguageSupportEnabled) Some(hmrcLanguageSelectHelper()) else None}
     @printDialog.getOrElse(Html(""))
 }
 
@@ -105,8 +104,9 @@
     headBlock = Some(hmrcHead(headBlock = Some(head))),
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl  = Some(routes.AccountController.getAccountPage.url),
-        signOutUrl = if(showSignOutLink) Some(appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))) else None)
-    ),
+        signOutUrl = if(showSignOutLink) Some(appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))) else None,
+        isWelshTranslationAvailable = false
+    )),
     scriptsBlock = Some(hmrcScripts(scriptsBlock = Some(scripts))),
     footerBlock = Some(hmrcStandardFooter()),
     beforeContentBlock = Some(beforeContentWrapper),
