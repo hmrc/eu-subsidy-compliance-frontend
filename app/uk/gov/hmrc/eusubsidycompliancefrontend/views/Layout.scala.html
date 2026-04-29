@@ -29,7 +29,7 @@
         hmrcStandardFooter: HmrcStandardFooter,
         hmrcScripts: HmrcScripts,
         hmrcStandardHeader: HmrcStandardHeader,
-        hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+        hmrcLanguageSelectHelper: HmrcServiceNavigationLanguageSelect,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         beforeContentBlock: components.BeforeContent,
         scripts: components.Scripts,
@@ -74,7 +74,6 @@
 
 @beforeContentWrapper = {
     @beforeContentBlock(backLinkEnabled, backLink)
-    @{if(appConfig.welshLanguageSupportEnabled) Some(hmrcLanguageSelectHelper()) else None}
     @printDialog.getOrElse(Html(""))
 }
 
