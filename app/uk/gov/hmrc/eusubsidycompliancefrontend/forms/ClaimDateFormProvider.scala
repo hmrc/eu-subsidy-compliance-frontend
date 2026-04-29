@@ -79,7 +79,7 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
       localDateFromValues(d, m, y)
         .map { parsedDate =>
           val today = timeProvider.zonedToday(ZoneId.of("Europe/London"))
-          val earliestAllowedDate = today.toEarliestTaxYearStart
+          val earliestAllowedDate = today.minusDays(1095)
 
           if (parsedDate.isBefore(earliestAllowedDate))
             invalid(OutsideAllowedTaxYearRange, earliestAllowedDate.format(dateFormatter))

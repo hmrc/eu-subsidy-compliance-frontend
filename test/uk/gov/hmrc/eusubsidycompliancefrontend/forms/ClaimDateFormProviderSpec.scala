@@ -30,9 +30,9 @@ import java.time.LocalDate
 
 class ClaimDateFormProviderSpec extends BaseSpec with Matchers {
 
-  private val day = 1
-  private val month = 1
-  private val year = 2022
+  private val day = 2
+  private val month = 2
+  private val year = 2026
 
   private val fakeTimeProvider = FakeTimeProvider.withFixedDate(day, month, year)
 
@@ -81,11 +81,11 @@ class ClaimDateFormProviderSpec extends BaseSpec with Matchers {
     }
 
     "return date in future error if date is in the future" in {
-      validateAndCheckError((day + 1).toString, "1", "9999")(InFuture, "6 4 2019", "5 4 2021")
+      validateAndCheckError((day + 1).toString, "1", "9999")(InFuture, "3 2 2023", "5 4 2025")
     }
 
     "return date outside of tax year range error for date before the start of the tax year range" in {
-      validateAndCheckError("1", "1", "1900")(OutsideAllowedTaxYearRange, "6 4 2019")
+      validateAndCheckError("1", "1", "1900")(OutsideAllowedTaxYearRange, "3 2 2023")
     }
 
     "return no errors for todays date" in {
