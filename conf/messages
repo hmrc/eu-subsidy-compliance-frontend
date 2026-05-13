@@ -704,8 +704,7 @@ undertakingSuspendedBen.p3=When this is done, you will be able to sign in to you
 
 beneficiaryNotification.title = Notification of changes to how we use your data
 beneficiaryNotification.p1 = From 1 January 2026, Commission Regulation (EU) 2023/2831 requires all de minimis state aid granted to undertakings to be recorded in a central, publicly accessible register. This includes de minimis aid granted under the Customs Duty Waiver Scheme.
-beneficiaryNotification.p2 = To meet this requirement, HMRC must publish some information about de minimis aid awards on
-beneficiaryNotification.p2.url =the EU eAidRegister (opens in new tab).
+beneficiaryNotification.p2 = To meet this requirement, HMRC must publish some information about de minimis aid awards on <a class="govuk-link" target="_blank" href="https://aid-register.ec.europa.eu/home">the EU eAidRegister (opens in new tab)</a>.
 beneficiaryNotification.h1 =The information we will publish
 beneficiaryNotification.p3 =We will publish the:
 beneficiaryNotification.p3.ul1 =identity of the beneficiary (may include the beneficiary’s name and ID, which can be either a company registration number, VAT registration number, charity registration number or National Insurance number)
@@ -720,14 +719,22 @@ beneficiaryNotification.p6 =Records of this information will be kept for 10 year
 beneficiaryNotification.h2 =Who this applies to
 beneficiaryNotification.p7 =This publication requirement applies to the undertaking receiving the aid. This includes all members of the undertaking, as defined by de minimis state aid rules.
 beneficiaryNotification.h3 =Lawful basis for processing
-beneficiaryNotification.p8 =Under the UK General Data Protection Regulation (UK GDPR), the lawful basis for processing this personal data is
-beneficiaryNotification.p8.url =Article 6(1)(c) – legal obligation (opens in new tab)
-beneficiaryNotification.p8.cont =. HMRC is legally required to process and disclose this information to comply with deminimis state aid transparency requirements.
+beneficiaryNotification.p8 =Under the UK General Data Protection Regulation (UK GDPR), the lawful basis for processing this personal data is <a class="govuk-link" target="_blank" href="https://www.legislation.gov.uk/eur/2016/679/article/6">Article 6(1)(c) – legal obligation (opens in new tab)</a>. HMRC is legally required to process and disclose this information to comply with deminimis state aid transparency requirements.
 beneficiaryNotification.h4 =Data protection and your rights
 beneficiaryNotification.p9 =HMRC processes personal data in accordance with the UK GDPR and the Data Protection Act 2018. You have individual rights in relation to your personal data, including the right to request access to your data and to request correction of inaccurate data. The right to erasure and the right to object do not apply where HMRC is processing data to comply with a legal obligation.
-beneficiaryNotification.p10 =You can find more information about how HMRC uses personal data, including details of how to exercise your data protection rights, in
-beneficiaryNotification.p10.url =HMRC’s personal information charter (opens in new tab).
+beneficiaryNotification.p10 =You can find more information about how HMRC uses personal data, including details of how to exercise your data protection rights, in <a class="govuk-link" target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/about/personal-information-charter">HMRC’s personal information charter (opens in new tab)</a>.
 beneficiaryNotification.p11 =By continuing you confirm you understand all the information on this page.
+
+emailHMRC.title = Email HMRC to update your business details
+emailHMRC.p1 = You have told us your business details are wrong.
+emailHMRC.p2 = To update them, email <a href="mailto:customs.duty-waivers@hmrc.gov.uk"> customs.duty-waivers@hmrc.gov.uk </a> and include:
+emailHMRC.p2.ul1 = your EORI number
+emailHMRC.p2.ul2 = the company registration number (CRN) for the business connected to your EORI number
+emailHMRC.p3 = If the business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
+emailHMRC.h1 = After we get your email
+emailHMRC.p4 = A caseworker will contact you within 5 working days. They will help update your details.
+emailHMRC.p5 = Once this is complete, we’ll email you a confirmation. You can then sign in and continue registering for this online service.<br> <br>
+emailHMRC.url = Back to confirm your details
 
 #Undertaking suspended page
 NACE.undertakingSuspended.title=You cannot use this service until you update your undertaking information
