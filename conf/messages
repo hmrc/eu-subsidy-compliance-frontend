@@ -8451,3 +8451,23 @@ needRegistrationNumberBusinesses.whatYouNeedToDo.p2=If any business does not hav
 needRegistrationNumberBusinesses.afterWeGetYourEmail.heading=After we get your email
 needRegistrationNumberBusinesses.afterWeGetYourEmail.p1=A caseworker will contact you within 5 working days. They will help update your details.
 needRegistrationNumberBusinesses.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation. You can then sign in and use the service.
+
+memberBusinessDetails.title=Your business details
+memberBusinessDetails.inset.p1=Your undertaking administrator confirmed these details for your business on [date].
+memberBusinessDetails.inset.p2=If any of your details are wrong, contact your administrator.
+memberBusinessDetails.table.eoriNumber=EORI number
+memberBusinessDetails.table.typeOfId=Type of ID
+memberBusinessDetails.table.idNumber=ID number
+memberBusinessDetails.table.companyRegistrationNumber=Company registration number
+memberBusinessDetails.table.placeholder=12345678
+memberBusinessDetails.continue=Continue
+
+memberBusinessDetails.title=Your business details
+memberBusinessDetails.inset.p1=Your undertaking administrator confirmed these details for your business on [date].
+memberBusinessDetails.inset.p2=If any of your details are wrong, contact your administrator.
+memberBusinessDetails.table.eoriNumber=EORI number
+memberBusinessDetails.table.typeOfId=Type of ID
+memberBusinessDetails.table.idNumber=ID number
+memberBusinessDetails.table.companyRegistrationNumber=Company registration number
+memberBusinessDetails.table.placeholder=12345678
+memberBusinessDetails.continue=Continue
