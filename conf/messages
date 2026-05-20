@@ -8471,3 +8471,16 @@ memberBusinessDetails.table.idNumber=ID number
 memberBusinessDetails.table.companyRegistrationNumber=Company registration number
 memberBusinessDetails.table.placeholder=12345678
 memberBusinessDetails.continue=Continue
+
+emailHMRCUpdateBusinessDetails.title=Email HMRC to update your business details
+emailHMRCUpdateBusinessDetails.p1=You have told us some of your business details are wrong.
+emailHMRCUpdateBusinessDetails.p2=To update them, email <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a>. Make sure you include:
+emailHMRCUpdateBusinessDetails.bullet1=your undertaking''s EORI number
+emailHMRCUpdateBusinessDetails.bullet2=the EORI numbers of other businesses in your undertaking, if applicable
+emailHMRCUpdateBusinessDetails.bullet3=the company registration number (CRN) for each business in your undertaking
+emailHMRCUpdateBusinessDetails.p3=If any business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
+emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.heading=After we get your email
+emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p1=A caseworker will contact you within 5 working days. They will help update your details.
+emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation.
+emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p3=Until your details are updated, you will not be able to use this online service to report and manage your allowance for Customs Duty waiver claims.
+emailHMRCUpdateBusinessDetails.backToConfirm=Back to confirm your details
