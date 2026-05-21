@@ -93,7 +93,6 @@
         serviceUrl  = Some(routes.AccountController.getAccountPage.url),
         signOutUrl = if(showSignOutLink) Some(appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))) else None,
         phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrlNoAuth)),
-        additionalBannersBlock = Some(userResearchBanner()),
         isWelshTranslationAvailable = false
     )),
     scriptsBlock = Some(hmrcScripts(scriptsBlock = Some(scripts))),
