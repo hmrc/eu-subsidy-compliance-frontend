@@ -1,0 +1,70 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1,P}
+
+@this(
+layout: Layout,
+formHelper: FormWithCSRF,
+button: components.Button,
+govukErrorSummary: GovukErrorSummary,
+govukInput : GovukInput
+)
+
+@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@layout(
+pageTitle = Some(messages("beneficiaryNotification.title")),
+backLinkEnabled = true,
+backLink = Some(previous),
+hasErrors = form.hasErrors
+) {
+
+@H1(messages("beneficiaryNotification.title"))
+@P(messages("beneficiaryNotification.p1"))
+@P(messages("beneficiaryNotification.p2"))
+
+@H1(messages("beneficiaryNotification.h1"), Some("govuk-heading-m" ), id = Some("undertaking-suspended-banner-title"))
+&nbsp;
+@P(messages("beneficiaryNotification.p3"),Some("govuk-body tight-paragraph"))
+<ul class="govuk-list govuk-list--bullet tight-bullet-list">
+ <li>@messages("beneficiaryNotification.p3.ul1")</li>
+ <li>@messages("beneficiaryNotification.p3.ul2")</li>
+ <li>@messages("beneficiaryNotification.p3.ul3")</li>
+ <li>@messages("beneficiaryNotification.p3.ul4")</li>
+ <li>@messages("beneficiaryNotification.p3.ul5")</li>
+ <li>@messages("beneficiaryNotification.p3.ul6")</li>
+
+</ul>
+@P(messages("beneficiaryNotification.p4"))
+@P(messages("beneficiaryNotification.p5"))
+@P(messages("beneficiaryNotification.p6"))
+
+@H1(messages("beneficiaryNotification.h2"), Some("govuk-heading-m" ), id = Some("undertaking-suspended-banner-title"))
+@P(messages("beneficiaryNotification.p7"))
+
+@H1(messages("beneficiaryNotification.h3"), Some("govuk-heading-m"), id = Some("undertaking-suspended-banner-title"))
+@P(messages("beneficiaryNotification.p8"))
+
+@H1(messages("beneficiaryNotification.h4"), Some("govuk-heading-m"), id = Some("undertaking-suspended-banner-title"))
+@P(messages("beneficiaryNotification.p9"))
+@P(messages("beneficiaryNotification.p10"))
+@P(messages("beneficiaryNotification.p11"))
+
+@button("common.continue.only")
+}

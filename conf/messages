@@ -21,6 +21,8 @@ common.print = Print this page
 common.go-undertaking-home = Go to undertaking homepage
 common.radioItem.or = or
 common.home = Home
+common.yes = Yes
+common.no = No
 
 continue.button=Save and continue
 button.addBusiness = Add a business to this undertaking
@@ -697,6 +699,46 @@ undertakingSuspended.admin.p2=You will have received a letter in the post about 
 undertakingSuspended.user.p2=Contact your lead undertaking administrator for more information.
 
 #Undertaking suspended page
+undertakingSuspendedBen.title= You cannot use this service at the moment
+undertakingSuspendedBen.p1=Your undertaking administrator needs to approve some business details.
+undertakingSuspendedBen.p2=You may want to contact your administrator and ask them to sign in and complete the approval.
+undertakingSuspendedBen.p3=When this is done, you will be able to sign in to your account.
+
+beneficiaryNotification.title = Notification of changes to how we use your data
+beneficiaryNotification.p1 = From 1 January 2026, Commission Regulation (EU) 2023/2831 requires all de minimis state aid granted to undertakings to be recorded in a central, publicly accessible register. This includes de minimis aid granted under the Customs Duty Waiver Scheme.
+beneficiaryNotification.p2 = To meet this requirement, HMRC must publish some information about de minimis aid awards on <a class="govuk-link" target="_blank" href="https://aid-register.ec.europa.eu/home">the EU eAidRegister (opens in new tab)</a>.
+beneficiaryNotification.h1 =The information we will publish
+beneficiaryNotification.p3 =We will publish the:
+beneficiaryNotification.p3.ul1 =identity of the beneficiary (may include the beneficiary’s name and ID, which can be either a company registration number, VAT registration number, charity registration number or National Insurance number)
+beneficiaryNotification.p3.ul2 =aid amount
+beneficiaryNotification.p3.ul3 =date the aid was granted
+beneficiaryNotification.p3.ul4 =granting authority’s name
+beneficiaryNotification.p3.ul5 =type of aid instrument
+beneficiaryNotification.p3.ul6 =undertaking’s sector of activity (NACE classification)
+beneficiaryNotification.p4 =The information will be published on the EU eAidRegister, which is publicly accessible. This means the data will be available outside the UK. This disclosure is required by law and is limited to the information specified in Commission Regulation (EU) 2023/2831.
+beneficiaryNotification.p5 =If the ID is a National Insurance number, it will not be shown on the public register. Instead it will be pseduonymised (replaced with an artificial identifier, like a code). This is in line with data protection requirements.
+beneficiaryNotification.p6 =Records of this information will be kept for 10 years from the date the aid is granted. This is in line with Commission Regulation (EU) 2023/2831.
+beneficiaryNotification.h2 =Who this applies to
+beneficiaryNotification.p7 =This publication requirement applies to the undertaking receiving the aid. This includes all members of the undertaking, as defined by de minimis state aid rules.
+beneficiaryNotification.h3 =Lawful basis for processing
+beneficiaryNotification.p8 =Under the UK General Data Protection Regulation (UK GDPR), the lawful basis for processing this personal data is <a class="govuk-link" target="_blank" href="https://www.legislation.gov.uk/eur/2016/679/article/6">Article 6(1)(c) – legal obligation (opens in new tab)</a>. HMRC is legally required to process and disclose this information to comply with deminimis state aid transparency requirements.
+beneficiaryNotification.h4 =Data protection and your rights
+beneficiaryNotification.p9 =HMRC processes personal data in accordance with the UK GDPR and the Data Protection Act 2018. You have individual rights in relation to your personal data, including the right to request access to your data and to request correction of inaccurate data. The right to erasure and the right to object do not apply where HMRC is processing data to comply with a legal obligation.
+beneficiaryNotification.p10 =You can find more information about how HMRC uses personal data, including details of how to exercise your data protection rights, in <a class="govuk-link" target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/about/personal-information-charter">HMRC’s personal information charter (opens in new tab)</a>.
+beneficiaryNotification.p11 =By continuing you confirm you understand all the information on this page.
+
+emailHMRC.title = Email HMRC to update your business details
+emailHMRC.p1 = You have told us your business details are wrong.
+emailHMRC.p2 = To update them, email <a href="mailto:customs.duty-waivers@hmrc.gov.uk"> customs.duty-waivers@hmrc.gov.uk </a> and include:
+emailHMRC.p2.ul1 = your EORI number
+emailHMRC.p2.ul2 = the company registration number (CRN) for the business connected to your EORI number
+emailHMRC.p3 = If the business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
+emailHMRC.h1 = After we get your email
+emailHMRC.p4 = A caseworker will contact you within 5 working days. They will help update your details.
+emailHMRC.p5 = Once this is complete, we’ll email you a confirmation. You can then sign in and continue registering for this online service.<br> <br>
+emailHMRC.url = Back to confirm your details
+
+#Undertaking suspended page
 NACE.undertakingSuspended.title=You cannot use this service until you update your undertaking information
 NACE.undertakingSuspended.p1= You can still trade, but you cannot use state aid to waive customs duty.
 NACE.undertakingSuspended.p2= To start using this service again, you need to answer some questions about your undertaking. Once you have done this, you can use the service as normal.
@@ -751,6 +793,30 @@ industrySectorResearchBanner.h2 = Changes are coming to this service
 industrySectorResearchBanner.link.text = Get involved – help us make it work for you (opens in new tab)
 industrySectorResearchBanner.hide.button = Hide message
 industrySectorResearchBanner.visually.hidden = Hide message. I do not want to take part in research
+
+confirmBusinessDetails.title = Confirm your business details
+confirmBusinessDetails.h1 = Confirm your business details
+confirmBusinessDetails.noSuspend.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page before DATE PLACEHOLDER
+confirmBusinessDetails.noSuspend.p2 = If you do not, your undertaking will not be able to claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty
+confirmBusinessDetails.suspended.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page.
+confirmBusinessDetails.suspended.p2 = Until you do this, your undertaking cannot claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
+confirmBusinessDetails.radio.heading = Are these details correct?
+confirmBusinessDetails.eoriNumber = EORI number
+confirmBusinessDetails.typeOfId = Type of ID
+confirmBusinessDetails.idNumber = ID number
+confirmBusinessDetails.error.required= Select yes if these details are correct
+
+confirmMultipleBusinessDetails.title = Confirm details for all EORI numbers in your undertaking
+confirmMultipleBusinessDetails.h1 = Confirm details for all EORI numbers in your undertaking
+confirmMultipleBusinessDetails.noSuspend.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page before DATE PLACEHOLDER
+confirmMultipleBusinessDetails.noSuspend.p2 = If you do not, your undertaking will not be able to claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
+confirmMultipleBusinessDetails.suspended.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page.
+confirmMultipleBusinessDetails.suspended.p2 = Until you do this, your undertaking cannot claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
+confirmMultipleBusinessDetails.radio.heading = Are all these details correct?
+confirmMultipleBusinessDetails.eoriNumber = EORI number
+confirmMultipleBusinessDetails.typeOfId = Type of ID
+confirmMultipleBusinessDetails.idNumber = ID number
+confirmMultipleBusinessDetails.error.required= Select yes if all these details are correct
 
 ############################################## NACE #################################################################################################################
 
