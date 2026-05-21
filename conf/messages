@@ -21,6 +21,8 @@ common.print = Print this page
 common.go-undertaking-home = Go to undertaking homepage
 common.radioItem.or = or
 common.home = Home
+common.yes = Yes
+common.no = No
 
 continue.button=Save and continue
 button.addBusiness = Add a business to this undertaking
@@ -791,6 +793,30 @@ industrySectorResearchBanner.h2 = Changes are coming to this service
 industrySectorResearchBanner.link.text = Get involved – help us make it work for you (opens in new tab)
 industrySectorResearchBanner.hide.button = Hide message
 industrySectorResearchBanner.visually.hidden = Hide message. I do not want to take part in research
+
+confirmBusinessDetails.title = Confirm your business details
+confirmBusinessDetails.h1 = Confirm your business details
+confirmBusinessDetails.noSuspend.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page before DATE PLACEHOLDER
+confirmBusinessDetails.noSuspend.p2 = If you do not, your undertaking will not be able to claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty
+confirmBusinessDetails.suspended.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page.
+confirmBusinessDetails.suspended.p2 = Until you do this, your undertaking cannot claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
+confirmBusinessDetails.radio.heading = Are these details correct?
+confirmBusinessDetails.eoriNumber = EORI number
+confirmBusinessDetails.typeOfId = Type of ID
+confirmBusinessDetails.idNumber = ID number
+confirmBusinessDetails.error.required= Select yes if these details are correct
+
+confirmMultipleBusinessDetails.title = Confirm details for all EORI numbers in your undertaking
+confirmMultipleBusinessDetails.h1 = Confirm details for all EORI numbers in your undertaking
+confirmMultipleBusinessDetails.noSuspend.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page before DATE PLACEHOLDER
+confirmMultipleBusinessDetails.noSuspend.p2 = If you do not, your undertaking will not be able to claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
+confirmMultipleBusinessDetails.suspended.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page.
+confirmMultipleBusinessDetails.suspended.p2 = Until you do this, your undertaking cannot claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
+confirmMultipleBusinessDetails.radio.heading = Are all these details correct?
+confirmMultipleBusinessDetails.eoriNumber = EORI number
+confirmMultipleBusinessDetails.typeOfId = Type of ID
+confirmMultipleBusinessDetails.idNumber = ID number
+confirmMultipleBusinessDetails.error.required= Select yes if all these details are correct
 
 ############################################## NACE #################################################################################################################
 
