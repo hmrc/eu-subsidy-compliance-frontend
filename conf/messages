@@ -8462,15 +8462,6 @@ memberBusinessDetails.table.companyRegistrationNumber=Company registration numbe
 memberBusinessDetails.table.placeholder=12345678
 memberBusinessDetails.continue=Continue
 
-memberBusinessDetails.title=Your business details
-memberBusinessDetails.inset.p1=Your undertaking administrator confirmed these details for your business on [date].
-memberBusinessDetails.inset.p2=If any of your details are wrong, contact your administrator.
-memberBusinessDetails.table.eoriNumber=EORI number
-memberBusinessDetails.table.typeOfId=Type of ID
-memberBusinessDetails.table.idNumber=ID number
-memberBusinessDetails.table.companyRegistrationNumber=Company registration number
-memberBusinessDetails.table.placeholder=12345678
-memberBusinessDetails.continue=Continue
 
 emailHMRCUpdateBusinessDetails.title=Email HMRC to update your business details
 emailHMRCUpdateBusinessDetails.p1=You have told us some of your business details are wrong.
