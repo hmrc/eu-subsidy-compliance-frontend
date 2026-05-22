@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -32,9 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPag
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4Catalogue
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureToOptionTOps, OptionToOptionTOps}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UpdateConfirmationPage
 
 import javax.inject.{Inject, Singleton}
