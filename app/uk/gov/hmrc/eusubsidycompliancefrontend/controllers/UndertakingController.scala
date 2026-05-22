@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,6 @@ class UndertakingController @Inject() (
   private val addBusinessForm: Form[FormValues] = formWithSingleMandatoryField("addBusinessIntent")
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
   private val confirmationForm: Form[FormValues] = formWithSingleMandatoryField("confirm")
-  private val amendUndertakingForm: Form[FormValues] = formWithSingleMandatoryField("amendUndertaking")
   private val disableUndertakingConfirmForm: Form[FormValues] = formWithSingleMandatoryField(
     "disableUndertakingConfirm"
   )
