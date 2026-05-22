@@ -8418,3 +8418,60 @@ NACE.Lvl2.1.foodBeveragesTobacco=Food, beverages and tobacco
 NACE.Lvl2.1.metalsChemicalsMaterials=Metals, chemicals and materials
 NACE.Lvl2.1.paperPrintedProducts=Paper and printed products
 NACE.Lvl2.1.vehiclesTransport=Vehicles and transport equipment
+
+#BENID
+
+needRegistrationNumberBusiness.title=We need a registration number for your business
+needRegistrationNumberBusiness.eoriNumber=EORI number: {0}
+needRegistrationNumberBusiness.p1=We could not find a registration number for the business linked to your EORI number.
+needRegistrationNumberBusiness.p2=Due to a change in EU regulations, you need to provide one to keep using this service.
+needRegistrationNumberBusiness.p3=This must be a company registration number (CRN), if the business has one. If it does not, you can provide its VAT registration number, National Insurance number or charity number.
+needRegistrationNumberBusiness.whatYouNeedToDo.heading=What you need to do
+needRegistrationNumberBusiness.whatYouNeedToDo.p1=Email  <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a> and include:
+needRegistrationNumberBusiness.whatYouNeedToDo.bullet1=your EORI number
+needRegistrationNumberBusiness.whatYouNeedToDo.bullet2=the business''s registration number
+needRegistrationNumberBusiness.afterWeGetYourEmail.heading=After we get your email
+needRegistrationNumberBusiness.afterWeGetYourEmail.p1=A caseworker will contact you within 5 working days. They will help update your details.
+needRegistrationNumberBusiness.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation. You can then sign in and use the service.
+needRegistrationNumberBusinesses.title=We need registration numbers for your businesses
+needRegistrationNumberBusinesses.p1=We could not find a registration number for one or more businesses in your undertaking.
+needRegistrationNumberBusinesses.p2=Due to a change in EU regulations, you need to provide this information to keep using this service.
+needRegistrationNumberBusinesses.table.eoriNumber=EORI number
+needRegistrationNumberBusinesses.table.typeOfId=Type of ID
+needRegistrationNumberBusinesses.table.idNumber=ID number
+needRegistrationNumberBusinesses.table.noneFound=None found
+needRegistrationNumberBusinesses.table.undertakingAdministrator=(undertaking administrator)
+needRegistrationNumberBusinesses.table.companyRegistrationNumber=Company registration number
+needRegistrationNumberBusinesses.whatYouNeedToDo.heading=What you need to do
+needRegistrationNumberBusinesses.whatYouNeedToDo.p1=Email <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a> and include:
+needRegistrationNumberBusinesses.whatYouNeedToDo.bullet1=your undertaking''s EORI number
+needRegistrationNumberBusinesses.whatYouNeedToDo.bullet2=the EORI numbers of other businesses you have added to your undertaking
+needRegistrationNumberBusinesses.whatYouNeedToDo.bullet3=the company registration number (CRN) for each business in your undertaking
+needRegistrationNumberBusinesses.whatYouNeedToDo.p2=If any business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
+needRegistrationNumberBusinesses.afterWeGetYourEmail.heading=After we get your email
+needRegistrationNumberBusinesses.afterWeGetYourEmail.p1=A caseworker will contact you within 5 working days. They will help update your details.
+needRegistrationNumberBusinesses.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation. You can then sign in and use the service.
+
+memberBusinessDetails.title=Your business details
+memberBusinessDetails.inset.p1=Your undertaking administrator confirmed these details for your business on [date].
+memberBusinessDetails.inset.p2=If any of your details are wrong, contact your administrator.
+memberBusinessDetails.table.eoriNumber=EORI number
+memberBusinessDetails.table.typeOfId=Type of ID
+memberBusinessDetails.table.idNumber=ID number
+memberBusinessDetails.table.companyRegistrationNumber=Company registration number
+memberBusinessDetails.table.placeholder=12345678
+memberBusinessDetails.continue=Continue
+
+
+emailHMRCUpdateBusinessDetails.title=Email HMRC to update your business details
+emailHMRCUpdateBusinessDetails.p1=You have told us some of your business details are wrong.
+emailHMRCUpdateBusinessDetails.p2=To update them, email <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a>. Make sure you include:
+emailHMRCUpdateBusinessDetails.bullet1=your undertaking''s EORI number
+emailHMRCUpdateBusinessDetails.bullet2=the EORI numbers of other businesses in your undertaking, if applicable
+emailHMRCUpdateBusinessDetails.bullet3=the company registration number (CRN) for each business in your undertaking
+emailHMRCUpdateBusinessDetails.p3=If any business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
+emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.heading=After we get your email
+emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p1=A caseworker will contact you within 5 working days. They will help update your details.
+emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation.
+emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p3=Until your details are updated, you will not be able to use this online service to report and manage your allowance for Customs Duty waiver claims.
+emailHMRCUpdateBusinessDetails.backToConfirm=Back to confirm your details
