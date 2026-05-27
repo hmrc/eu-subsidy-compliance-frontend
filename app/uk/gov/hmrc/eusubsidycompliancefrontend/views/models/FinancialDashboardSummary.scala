@@ -15,13 +15,17 @@
  */
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
+
 import play.api.i18n.Messages
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, SubsidyAmount}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.IndustrySectorLimit.IndustrySectorLimit
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyAmount.SubsidyAmount
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import java.time.{LocalDate, Month}
+
 case class FinancialDashboardSummary(
   overall: OverallSummary,
   taxYears: Seq[TaxYearSummary] = Seq.empty,

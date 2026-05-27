@@ -65,7 +65,7 @@ class VerifiedEoriActionBuilder @Inject() (
   override def invokeBlock[A](r: Request[A], f: AuthenticatedEnrolledRequest[A] => Future[Result]): Future[Result] =
     enrolledActionBuilder.invokeBlock(
       r,
-      { enrolledRequest: AuthenticatedEnrolledRequest[A] =>
+      { (enrolledRequest: AuthenticatedEnrolledRequest[A]) =>
         emailService
           .hasVerifiedEmail(enrolledRequest.eoriNumber)(
             hc(enrolledRequest),

@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromo
 
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 
 case class BusinessEntityPromoteItselfDetails(oldEori: EORI, newEori: EORI)
 object BusinessEntityPromoteItselfDetails {

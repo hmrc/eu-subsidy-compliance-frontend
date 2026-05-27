@@ -20,6 +20,7 @@ import cats.implicits.toFunctorOps
 import org.mongodb.scala.model._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats.Implicits.jatLocalDateFormat
 import uk.gov.hmrc.mongo.play.json.{Codecs, PlayMongoRepository}

@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 import com.google.inject.ImplementedBy
 import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 
 import scala.concurrent.Future
 import scala.reflect.ClassTag

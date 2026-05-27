@@ -17,6 +17,8 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.email
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName.UndertakingName
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName}
 
 case class EmailParameters(

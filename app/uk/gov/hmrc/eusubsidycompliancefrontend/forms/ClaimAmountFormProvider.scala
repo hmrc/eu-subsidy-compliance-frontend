@@ -51,7 +51,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
 
   private val allowedCurrencySymbols = CurrencyCode.values.map(_.symbol)
 
-  private val claimAmountIsBelowMaximumAllowedValueEUR = Constraint[String] { claimAmount: String =>
+  private val claimAmountIsBelowMaximumAllowedValueEUR = Constraint[String] { (claimAmount: String) =>
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
@@ -59,7 +59,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
     )
   }
 
-  private val claimAmountIsBelowMaximumAllowedValueGBP = Constraint[String] { claimAmount: String =>
+  private val claimAmountIsBelowMaximumAllowedValueGBP = Constraint[String] { (claimAmount: String) =>
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
@@ -71,7 +71,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
     )
   }
 
-  private val claimAmountFormatIsValid = Constraint[String] { claimAmount: String =>
+  private val claimAmountFormatIsValid = Constraint[String] { (claimAmount: String) =>
     val amount = cleanAmount(claimAmount)
     if (claimAmount.isEmpty) {
       Invalid(Required)
@@ -83,7 +83,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
     }
   }
 
-  private val claimAmountAboveZero = Constraint[String] { claimAmount: String =>
+  private val claimAmountAboveZero = Constraint[String] { (claimAmount: String) =>
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
@@ -92,7 +92,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
   }
 
   // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
-  private val claimAmountCurrencyMatchesSelection = Constraint[ClaimAmount] { claimAmount: ClaimAmount =>
+  private val claimAmountCurrencyMatchesSelection = Constraint[ClaimAmount] { (claimAmount: ClaimAmount) =>
     claimAmount.amount.head match {
       case GBP.symbol if claimAmount.currencyCode != GBP => Invalid(IncorrectFormat)
       case EUR.symbol if claimAmount.currencyCode != EUR => Invalid(IncorrectFormat)

@@ -25,6 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.ErrorHandler
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
@@ -66,7 +67,7 @@ class UndertakingJourneySubmittedActionBuilder @Inject() (
   override def invokeBlock[A](r: Request[A], f: AuthenticatedEnrolledRequest[A] => Future[Result]): Future[Result] =
     enrolledActionBuilder.invokeBlock(
       r,
-      { enrolledRequest: AuthenticatedEnrolledRequest[A] =>
+      { (enrolledRequest: AuthenticatedEnrolledRequest[A]) =>
         implicit val eori: EORI = enrolledRequest.eoriNumber
 
         store.get[UndertakingJourney].flatMap {

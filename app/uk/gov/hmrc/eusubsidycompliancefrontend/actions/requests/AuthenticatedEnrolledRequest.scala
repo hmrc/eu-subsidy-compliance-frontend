@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests
 
 import play.api.mvc.{Request, WrappedRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 
 // User has GG Auth and ESC Enrolment
 case class AuthenticatedEnrolledRequest[A](

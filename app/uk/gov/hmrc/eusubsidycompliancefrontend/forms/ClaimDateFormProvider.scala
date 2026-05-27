@@ -44,7 +44,7 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
 
   override protected def mapping: Mapping[DateFormValues] =
     formValueMapping
-      .transform({ case (d, m, y) => (d.trim, m.trim, y.trim) }, { v: RawFormValues => v })
+      .transform({ case (d, m, y) => (d.trim, m.trim, y.trim) }, { (v: RawFormValues) => v })
       .verifying(Constraint(allDateValuesEntered(_)))
       .verifying(Constraint(dateIsValid(_)))
       .verifying(Constraint(dateInAllowedRange(_)))
