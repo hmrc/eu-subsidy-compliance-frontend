@@ -18,6 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import play.api.libs.json.*
 
+import scala.util.{Failure, Success, Try}
+
 sealed trait Sector:
   def code: String
 
@@ -4122,18 +4124,17 @@ object Sector:
   private val byCode: Map[String, Sector] =
     all.map(s => s.code -> s).toMap
 
-  def fromCode(code: String): Option[Sector] =
-    byCode.get(code)
-
+  def fromCode(code: String): Sector =
+    byCode(code)
 
   given Format[Sector] = new Format[Sector]:
 
     override def reads(json: JsValue): JsResult[Sector] =
       json match
         case JsString(code) =>
-          Sector.fromCode(code) match
-            case Some(v) => JsSuccess(v)
-            case None => JsError(s"Unknown Sector code: $code")
+          Try(Sector.fromCode(code)) match
+            case Success(v) => JsSuccess(v)
+            case Failure(_) => JsError(s"Unknown Sector code: $code")
 
         case other =>
           JsError(s"Expected string Sector, got $other")

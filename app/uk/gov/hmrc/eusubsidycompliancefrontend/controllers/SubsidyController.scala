@@ -17,11 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
-import cats.implicits._
+import cats.implicits.*
 import play.api.data.Forms.{mapping, text}
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, FormError}
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -33,22 +33,24 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, C
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{Journey, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.formatEori
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 
 import java.time.LocalDate
@@ -93,7 +95,7 @@ class SubsidyController @Inject() (
   private val reportPaymentForm: Form[FormValues] = formWithSingleMandatoryField(
     "report-payment"
   )
-  private val enteredTradingRefIsValid = Constraint[String] { traderRef: String =>
+  private val enteredTradingRefIsValid = Constraint[String] { (traderRef: String) =>
     if (traderRef.matches(TraderRef.regex)) Valid
     else Invalid(IncorrectFormat)
   }

@@ -112,7 +112,7 @@ class ClothesTextilesHomewareController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -161,7 +161,7 @@ class ClothesTextilesHomewareController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -210,7 +210,7 @@ class ClothesTextilesHomewareController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -259,7 +259,7 @@ class ClothesTextilesHomewareController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -308,7 +308,7 @@ class ClothesTextilesHomewareController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -336,9 +336,9 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(manufactureOfTextilesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -363,9 +363,9 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(otherClothingLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -390,9 +390,9 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(plasticLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -417,9 +417,9 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(rubberLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -444,9 +444,9 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(sawmillingWoodworkLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -471,9 +471,9 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(tanningDressingDyeingLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -498,9 +498,9 @@ class ClothesTextilesHomewareController @Inject() (
       .fold(
         formWithErrors => BadRequest(woodCorkStrawPlaitingLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )

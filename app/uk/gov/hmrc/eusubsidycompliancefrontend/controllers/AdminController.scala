@@ -115,7 +115,7 @@ class AdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -163,7 +163,7 @@ class AdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -190,7 +190,7 @@ class AdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(TravelAgencyLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -235,7 +235,7 @@ class AdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -283,7 +283,7 @@ class AdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -310,7 +310,7 @@ class AdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(CleaningLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -355,7 +355,7 @@ class AdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -382,7 +382,7 @@ class AdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(IntermediationServicesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -406,7 +406,7 @@ class AdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(InvestigationLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -430,7 +430,7 @@ class AdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(MachineryEquipmentLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -454,7 +454,7 @@ class AdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(MotorVehiclesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -499,7 +499,7 @@ class AdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -526,7 +526,7 @@ class AdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(OtherBusinessSupportLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -550,7 +550,7 @@ class AdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(PersonalHouseholdLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )

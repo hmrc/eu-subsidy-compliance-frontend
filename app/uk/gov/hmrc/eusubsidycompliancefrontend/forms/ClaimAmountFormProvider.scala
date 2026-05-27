@@ -101,7 +101,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
     }
   }
 
-  private val currencyCodeIsValid = Constraint[String] { currencyCode: String =>
+  private val currencyCodeIsValid = Constraint[String] { (currencyCode: String) =>
     if (currencyCode.isEmpty || !CurrencyCode.namesToValuesMap.contains(currencyCode)) Invalid(IncorrectFormat)
     else Valid
   }

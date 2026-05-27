@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName.UndertakingName
 

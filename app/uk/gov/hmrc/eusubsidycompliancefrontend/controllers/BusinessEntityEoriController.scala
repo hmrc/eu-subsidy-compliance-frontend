@@ -23,21 +23,23 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.{mandatory}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.mandatory
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.formatEori
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

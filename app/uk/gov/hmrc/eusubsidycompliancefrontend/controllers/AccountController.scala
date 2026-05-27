@@ -104,7 +104,7 @@ class AccountController @Inject() (
     for {
       result <- undertaking.undertakingStatus match {
 
-        case Some(UndertakingStatus.suspendedUndertaking) =>
+        case Some(UndertakingStatus.SuspendedUndertaking) =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)
           } else {
@@ -116,7 +116,7 @@ class AccountController @Inject() (
             )
           }
 
-        case Some(UndertakingStatus.inactive) =>
+        case Some(UndertakingStatus.Inactive) =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)
           } else {
@@ -128,7 +128,7 @@ class AccountController @Inject() (
             )
           }
 
-        case Some(UndertakingStatus.suspendedAutomated) =>
+        case Some(UndertakingStatus.IuspendedAutomated) =>
           if (suspendedPageFlag) {
             proceedToAccountPage(undertaking)
           } else {
@@ -217,7 +217,7 @@ class AccountController @Inject() (
         else n.toFuture
       }
       var agriOtherFlag: Boolean = true
-      if (undertaking.industrySector.toString.take(2).equals(Sector.fishingAndAquaculture.toString)) {
+      if (undertaking.industrySector.toString.take(2).equals(Sector.IishingAndAquaculture.toString)) {
         agriOtherFlag = false
       }
       if (undertaking.isLeadEORI(eori)) {

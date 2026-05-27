@@ -25,6 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleM
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -118,7 +119,7 @@ class HouseHealthEducationController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -149,7 +150,7 @@ class HouseHealthEducationController @Inject() (
       .fold(
         formWithErrors => BadRequest(UndifferentiatedProducingActivitiesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -193,7 +194,7 @@ class HouseHealthEducationController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -241,7 +242,7 @@ class HouseHealthEducationController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -268,7 +269,7 @@ class HouseHealthEducationController @Inject() (
       .fold(
         formWithErrors => BadRequest(MedicalDentalLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -291,7 +292,7 @@ class HouseHealthEducationController @Inject() (
       .fold(
         formWithErrors => BadRequest(OtherHumanHealthLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -314,7 +315,7 @@ class HouseHealthEducationController @Inject() (
       .fold(
         formWithErrors => BadRequest(OtherResidentialCareLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -338,7 +339,7 @@ class HouseHealthEducationController @Inject() (
       .fold(
         formWithErrors => BadRequest(OtherSocialWorkLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -383,7 +384,7 @@ class HouseHealthEducationController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -410,7 +411,7 @@ class HouseHealthEducationController @Inject() (
       .fold(
         formWithErrors => BadRequest(SecondaryEducationLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -433,7 +434,7 @@ class HouseHealthEducationController @Inject() (
       .fold(
         formWithErrors => BadRequest(OtherEducationLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -477,7 +478,7 @@ class HouseHealthEducationController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -504,7 +505,7 @@ class HouseHealthEducationController @Inject() (
       .fold(
         formWithErrors => BadRequest(EducationalSupportLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -548,7 +549,7 @@ class HouseHealthEducationController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }

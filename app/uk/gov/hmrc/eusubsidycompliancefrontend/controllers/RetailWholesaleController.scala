@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -122,7 +123,7 @@ class RetailWholesaleController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -170,7 +171,7 @@ class RetailWholesaleController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -197,7 +198,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(culturalLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -222,7 +223,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(foodLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -247,7 +248,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(householdLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -272,7 +273,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(intermediationLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -297,7 +298,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(motorVehiclesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -322,7 +323,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(nonSpecialisedLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -347,7 +348,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(otherGoodsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -393,7 +394,7 @@ class RetailWholesaleController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -421,7 +422,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(agriculturalLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -446,7 +447,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(contractBasisLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -471,7 +472,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(foodWholesaleLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -496,7 +497,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(householdWholesaleLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -521,7 +522,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(machineryLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -548,7 +549,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(motorVehiclesWholesaleLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -573,7 +574,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(specialisedLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )

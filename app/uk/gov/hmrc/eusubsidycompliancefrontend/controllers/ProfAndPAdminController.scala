@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -116,7 +117,7 @@ class ProfAndPAdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -143,7 +144,7 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(PublicAdminLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -167,7 +168,7 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(ServiceProvisionLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -212,7 +213,7 @@ class ProfAndPAdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -239,7 +240,7 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(AdvertisingLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -284,7 +285,7 @@ class ProfAndPAdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -311,7 +312,7 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(ArchitecturalLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -356,7 +357,7 @@ class ProfAndPAdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -404,7 +405,7 @@ class ProfAndPAdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -452,7 +453,7 @@ class ProfAndPAdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -479,7 +480,7 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(OtherProfessionalLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -524,7 +525,7 @@ class ProfAndPAdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -572,7 +573,7 @@ class ProfAndPAdminController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -599,7 +600,7 @@ class ProfAndPAdminController @Inject() (
       .fold(
         formWithErrors => BadRequest(SpecialisedDesignLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )

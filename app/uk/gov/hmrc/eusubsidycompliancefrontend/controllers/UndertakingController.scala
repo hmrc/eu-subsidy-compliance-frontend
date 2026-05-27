@@ -32,11 +32,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EmailStatus, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName.UndertakingName
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{Store, UndertakingCache}
@@ -254,7 +253,7 @@ class UndertakingController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                   .toContext
                 updatedStoreFlag <- store.update[UndertakingJourney](_.copy(isNaceCYA = false)).toContext
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
@@ -637,9 +636,9 @@ class UndertakingController @Inject() (
     val level4Display = messages(s"NACE.radio.$naceLevel4Code")
 
     val sector = naceLevel2Code match {
-      case "01" => Sector.agriculture
-      case "03" => Sector.aquaculture
-      case _ => Sector.other
+      case "01" => Sector.Agriculture
+      case "03" => Sector.Aquaculture
+      case _ => Sector.Other
     }
 
     val showLevel1 = naceLevel1Code match {

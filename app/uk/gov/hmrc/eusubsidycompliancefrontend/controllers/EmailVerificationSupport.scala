@@ -28,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, Retrieve
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, FormValues}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps

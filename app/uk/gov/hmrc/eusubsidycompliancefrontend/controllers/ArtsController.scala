@@ -90,7 +90,7 @@ class ArtsController @Inject() (
       .fold(
         formWithErrors => BadRequest(AmusementAndRecreationLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -116,7 +116,7 @@ class ArtsController @Inject() (
       .fold(
         formWithErrors => BadRequest(ArtsCreationLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -163,7 +163,7 @@ class ArtsController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -195,7 +195,7 @@ class ArtsController @Inject() (
       .fold(
         formWithErrors => BadRequest(ArtsPerformingSupportActivitiesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -242,7 +242,7 @@ class ArtsController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -271,7 +271,7 @@ class ArtsController @Inject() (
       .fold(
         formWithErrors => BadRequest(BotanicalZoologicalReservesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -318,7 +318,7 @@ class ArtsController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -347,7 +347,7 @@ class ArtsController @Inject() (
       .fold(
         formWithErrors => BadRequest(LibrariesArchivesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -373,7 +373,7 @@ class ArtsController @Inject() (
       .fold(
         formWithErrors => BadRequest(MuseumsCollectionsMomumentsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
@@ -420,7 +420,7 @@ class ArtsController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -449,7 +449,7 @@ class ArtsController @Inject() (
       .fold(
         formWithErrors => BadRequest(SportsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )

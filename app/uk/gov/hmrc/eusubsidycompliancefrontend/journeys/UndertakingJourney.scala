@@ -25,7 +25,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.{Form, Uri}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
@@ -75,7 +74,7 @@ case class UndertakingJourney(
 
   def setUndertakingName(n: String): UndertakingJourney = this.copy(about = about.copy(value = Some(n)))
 
-  def setUndertakingSector(s: Int): UndertakingJourney = this.copy(sector = sector.copy(value = Some(Sector(s))))
+  def setUndertakingSector(s: Sector): UndertakingJourney = this.copy(sector = sector.copy(value = Some(s)))
 
   def setUndertakingCYA(b: Boolean): UndertakingJourney = this.copy(cya = cya.copy(value = Some(b)))
 

@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 
 case class NaceCheckDetailsViewModel(
   naceLevel1Display: String,

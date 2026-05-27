@@ -25,6 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleM
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -96,9 +97,9 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(ComponentsBoardsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -146,7 +147,7 @@ class ComputersElectronicsController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -174,9 +175,9 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(DomesticAppliancesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -222,7 +223,7 @@ class ComputersElectronicsController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -250,9 +251,9 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(GeneralPurposeLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -279,9 +280,9 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(MeasuringTestingInstrumentsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -306,9 +307,9 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(MetalFormingLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -333,9 +334,9 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(MotorsGeneratorsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -360,9 +361,9 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(OtherGeneralPurposeLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -408,7 +409,7 @@ class ComputersElectronicsController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -436,9 +437,9 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(OtherSpecialPurposeLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -463,9 +464,9 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(RepairMaintenanceLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -511,7 +512,7 @@ class ComputersElectronicsController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -539,9 +540,9 @@ class ComputersElectronicsController @Inject() (
       .fold(
         formWithErrors => BadRequest(WiringAndDevicesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
