@@ -51,14 +51,14 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-filmVideoActivities", messages("NACE.radio.59.1"))),
-            value = Some(Sector.filmVideoActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.filmVideoActivities.toString),
+            value = Some(Sector.FilmVideoActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FilmVideoActivities.toString),
             hint = Some(Hint(content = Text(messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.hint"))))
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-soundRecordingAndMusicPublishing", messages("NACE.radio.59.2"))),
-            value = Some(Sector.soundRecordingAndMusicPublishingActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.soundRecordingAndMusicPublishing.toString)
+            value = Some(Sector.SoundRecordingAndMusicPublishingActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.SoundRecordingAndMusicPublishing.toString)
         )
     )
 }

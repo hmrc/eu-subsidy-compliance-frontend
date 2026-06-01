@@ -51,8 +51,8 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-fibre-optic", messages("NACE.radio.27.31"))),
-            value = Some(Sector.fibreOpticCables.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fibreOpticCables.toString)
+            value = Some(Sector.FibreOpticCables.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FibreOpticCables.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-wiring", messages("NACE.radio.27.32"))),

@@ -56,13 +56,13 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.GeneralPublicAdm
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-healthEducationRegulation", messages("NACE.radio.84.12"))),
-value = Some(Sector.healthEducationRegulation.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.healthEducationRegulation.toString)
+value = Some(Sector.HealthEducationRegulation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.HealthEducationRegulation.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-businessRegulation", messages("NACE.radio.84.13"))),
-value = Some(Sector.businessRegulation.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.businessRegulation.toString)
+value = Some(Sector.BusinessRegulation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.BusinessRegulation.toString)
 )
 )
 }

@@ -56,8 +56,8 @@
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-webSearchPortal", messages("NACE.radio.63.9"))),
-                value = Some(Sector.webSearchPortal.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.webSearchPortal.toString)
+                value = Some(Sector.WebSearchPortal.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.WebSearchPortal.toString)
         )
     )
 }

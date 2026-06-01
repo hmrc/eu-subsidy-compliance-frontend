@@ -51,23 +51,23 @@
     Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-sewerage", messages("NACE.radio.37"))),
-value = Some(Sector.sewerage4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.sewerage.toString)
+value = Some(Sector.Sewerage4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Sewerage.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-waste-activities", messages("NACE.radio.38"))),
-value = Some(Sector.wasteManagement.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteManagement.toString)
+value = Some(Sector.WasteManagement.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.WasteManagement.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-water-collection-supply", messages("NACE.radio.36"))),
-value = Some(Sector.waterTreatment4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.waterTreatment.toString)
+value = Some(Sector.WaterTreatment4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.WaterTreatment.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-remediation", messages("NACE.radio.39"))),
-value = Some(Sector.wasteManagementRemediation4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteManagementRemediation.toString)
+value = Some(Sector.WasteManagementRemediation4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.WasteManagementRemediation.toString)
 )
     )
 }

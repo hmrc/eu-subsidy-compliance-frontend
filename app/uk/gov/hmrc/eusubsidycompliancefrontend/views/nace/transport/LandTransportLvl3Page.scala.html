@@ -49,8 +49,8 @@
   Seq(
     RadioItem(
       content = HtmlContent(radioText("sector-label-passenger-rail", messages("NACE.radio.49.1"))),
-      value = Some(Sector.passengerRailTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.passengerRailTransport.toString)
+      value = Some(Sector.PassengerRailTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PassengerRailTransport.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-other-passenger-land", messages("NACE.radio.49.3"))),
@@ -59,18 +59,18 @@
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-freight-rail", messages("NACE.radio.49.2"))),
-      value = Some(Sector.freightRailTransport4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightRailTransport.toString)
+      value = Some(Sector.FreightRailTransport4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.FreightRailTransport.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-freight-road-removal", messages("NACE.radio.49.4"))),
-      value = Some(Sector.freightRoadTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightRoadTransport.toString)
+      value = Some(Sector.FreightRoadTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.FreightRoadTransport.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-pipeline-transport", messages("NACE.radio.49.5"))),
-      value = Some(Sector.pipelineTransport4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.pipelineTransport.toString)
+      value = Some(Sector.PipelineTransport4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PipelineTransport.toString)
     )
   )
 }

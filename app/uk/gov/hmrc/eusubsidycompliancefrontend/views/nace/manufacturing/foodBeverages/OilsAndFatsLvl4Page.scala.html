@@ -51,8 +51,8 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-oilsfats-marg", messages("NACE.radio.10.42"))),
-            value = Some(Sector.margarine.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.margarine.toString)
+            value = Some(Sector.Margarine.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Margarine.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-oilsfats-other", messages("NACE.radio.10.41"))),

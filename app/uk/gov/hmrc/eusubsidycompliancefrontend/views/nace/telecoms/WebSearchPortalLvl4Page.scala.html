@@ -51,8 +51,8 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-webSearchPortalActivities", messages("NACE.radio.63.91"))),
-            value = Some(Sector.webSearchPortalActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.webSearchPortalActivities.toString)
+            value = Some(Sector.WebSearchPortalActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WebSearchPortalActivities.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.radio.63.92"))),

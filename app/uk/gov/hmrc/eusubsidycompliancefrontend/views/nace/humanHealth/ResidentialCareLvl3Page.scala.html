@@ -49,18 +49,18 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-disabledResidentialCareActivitiesMentalIllness", messages("NACE.radio.87.3"))),
-value = Some(Sector.disabledResidentialCareActivitiesMentalIllness4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.disabledResidentialCareActivitiesMentalIllness.toString)
+value = Some(Sector.DisabledResidentialCareActivitiesMentalIllness4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.DisabledResidentialCareActivitiesMentalIllness.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-residentialCareActivitiesMentalIllness", messages("NACE.radio.87.2"))),
-value = Some(Sector.residentialCareActivitiesMentalIllness4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialCareActivitiesMentalIllness.toString)
+value = Some(Sector.ResidentialCareActivitiesMentalIllness4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialCareActivitiesMentalIllness.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-residentialNursing", messages("NACE.radio.87.1"))),
-value = Some(Sector.residentialNursing4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialNursing.toString)
+value = Some(Sector.ResidentialNursing4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialNursing.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherResidentialCare", messages("NACE.radio.87.9"))),

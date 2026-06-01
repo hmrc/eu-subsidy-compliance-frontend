@@ -55,18 +55,18 @@
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-on-demand-passenger", messages("NACE.radio.49.33"))),
-      value = Some(Sector.onDemandPassengerRoadTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.onDemandPassengerRoadTransport.toString)
+      value = Some(Sector.OnDemandPassengerRoadTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.OnDemandPassengerRoadTransport.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-cableways-ski-lifts", messages("NACE.radio.49.34"))),
-      value = Some(Sector.cablewaysPassengerTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.cablewaysPassengerTransport.toString)
+      value = Some(Sector.CablewaysPassengerTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.CablewaysPassengerTransport.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-scheduled-passenger-road", messages("NACE.radio.49.31"))),
-      value = Some(Sector.scheduledPassengerRoadTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.scheduledPassengerRoadTransport.toString)
+      value = Some(Sector.ScheduledPassengerRoadTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ScheduledPassengerRoadTransport.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-other-land-transport", messages("NACE.radio.49.39"))),

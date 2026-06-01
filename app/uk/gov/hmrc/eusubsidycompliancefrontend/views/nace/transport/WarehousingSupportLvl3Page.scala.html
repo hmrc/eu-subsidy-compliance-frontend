@@ -49,19 +49,19 @@
   Seq(
     RadioItem(
       content = HtmlContent(radioText("sector-label-transportIntermediationServiceActivities", messages("NACE.radio.52.3"))),
-      value = Some(Sector.transportIntermediationServiceActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.transportIntermediationServiceActivities.toString)
+      value = Some(Sector.TransportIntermediationServiceActivities.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.TransportIntermediationServiceActivities.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-transportSupportActivities", messages("NACE.radio.52.2"))),
       hint = Some(Hint(content = Text(messages("NACE.TransportationAndStorage.Lvl3.SupportTransport.hint")))),
-       value = Some(Sector.transportSupportActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.transportSupportActivities.toString)
+       value = Some(Sector.TransportSupportActivities.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.TransportSupportActivities.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-warehousingStorage4", messages("NACE.radio.52.1"))),
-      value = Some(Sector.warehousingStorage4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.warehousingStorage.toString)
+      value = Some(Sector.WarehousingStorage4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WarehousingStorage.toString)
     )
   )
 }

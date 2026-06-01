@@ -50,28 +50,28 @@
   Seq(
     RadioItem(
       content = HtmlContent(radioText("sector-label-cargohandling", messages("NACE.radio.52.24"))),
-      value = Some(Sector.cargoHandling.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.cargoHandling.toString)
+      value = Some(Sector.CargoHandling.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.CargoHandling.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-logistics-services", messages("NACE.radio.52.25"))),
-      value = Some(Sector.logisticsServiceActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.logisticsServiceActivities.toString)
+      value = Some(Sector.LogisticsServiceActivities.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.LogisticsServiceActivities.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-air-transport-support", messages("NACE.radio.52.23"))),
-      value = Some(Sector.airTransportServiceActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.airTransportServiceActivities.toString)
+      value = Some(Sector.AirTransportServiceActivities.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.AirTransportServiceActivities.toString)
     ),
     RadioItem(
         content = HtmlContent(radioText("sector-label-land-transport-support", messages("NACE.radio.52.21"))),
-        value = Some(Sector.landTransportServiceActivities.toString),
-        checked = form.data.get(fieldName).fold(false)(x => x == Sector.landTransportServiceActivities.toString)
+        value = Some(Sector.LandTransportServiceActivities.toString),
+        checked = form.data.get(fieldName).fold(false)(x => x == Sector.LandTransportServiceActivities.toString)
     ),
     RadioItem(
         content = HtmlContent(radioText("sector-label-water-transport-support", messages("NACE.radio.52.22"))),
-        value = Some(Sector.waterTransportServiceActivities.toString),
-        checked = form.data.get(fieldName).fold(false)(x => x == Sector.waterTransportServiceActivities.toString)
+        value = Some(Sector.WaterTransportServiceActivities.toString),
+        checked = form.data.get(fieldName).fold(false)(x => x == Sector.WaterTransportServiceActivities.toString)
     ),
     RadioItem(
         content = HtmlContent(radioText("sector-label-other-transport-support", messages("NACE.radio.52.26"))),

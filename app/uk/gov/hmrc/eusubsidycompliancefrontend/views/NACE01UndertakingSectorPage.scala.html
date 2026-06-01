@@ -106,7 +106,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("undertakingSector.Error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
@@ -116,7 +116,7 @@
         ))
     )),
         hint = Some(Hint(
-        content = Text(messages("undertakingSector.p1"))
+        content = Text(messages("undertakingSector.P1"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

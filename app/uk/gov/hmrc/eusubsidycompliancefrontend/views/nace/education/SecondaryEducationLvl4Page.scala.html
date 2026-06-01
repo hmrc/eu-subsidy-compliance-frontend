@@ -55,8 +55,8 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.GeneralSecondary
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-vocationalSecondaryEducation", messages("NACE.radio.85.32"))),
-value = Some(Sector.vocationalSecondaryEducation.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.vocationalSecondaryEducation.toString)
+value = Some(Sector.VocationalSecondaryEducation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.VocationalSecondaryEducation.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-postSecondaryEducationNonTertiary", messages("NACE.radio.85.33"))),

@@ -51,8 +51,8 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-headOffice", messages("NACE.radio.70.1"))),
-value = Some(Sector.headOfficesActivities4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.headOffice.toString)
+value = Some(Sector.HeadOfficesActivities4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.HeadOffice.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-managementConsultancy", messages("NACE.radio.70.2"))),

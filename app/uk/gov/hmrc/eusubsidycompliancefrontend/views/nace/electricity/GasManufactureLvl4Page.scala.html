@@ -50,23 +50,23 @@
   Seq(
     RadioItem(
     content = HtmlContent(radioText("sector-label-distribution-gas", messages("NACE.radio.35.22"))),
-    value = Some(Sector.gaseousFuelDistribution.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelDistribution.toString)
+    value = Some(Sector.GaseousFuelDistribution.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.GaseousFuelDistribution.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-manufacture-gas", messages("NACE.radio.35.21"))),
-      value = Some(Sector.gaseousFuelManufacture.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelManufacture.toString)
+      value = Some(Sector.GaseousFuelManufacture.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.GaseousFuelManufacture.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-storage-gas", messages("NACE.radio.35.24"))),
-      value = Some(Sector.gaseousFuelStorage.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelStorage.toString)
+      value = Some(Sector.GaseousFuelStorage.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.GaseousFuelStorage.toString)
     ),
     RadioItem(
     content = HtmlContent(radioText("sector-label-trade-gas", messages("NACE.radio.35.23"))),
-    value = Some(Sector.gaseousFuelTrade.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelTrade.toString)
+    value = Some(Sector.GaseousFuelTrade.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.GaseousFuelTrade.toString)
     )
   )
 }

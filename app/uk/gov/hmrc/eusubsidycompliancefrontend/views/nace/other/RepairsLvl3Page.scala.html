@@ -51,24 +51,24 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-repairComputersCommunication", messages("NACE.radio.95.1"))),
-value = Some(Sector.repairComputersCommunication.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairComputersCommunication.toString)
+value = Some(Sector.RepairComputersCommunication.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.RepairComputersCommunication.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-repairMotorVehiclesMotorcycles", messages("NACE.radio.95.3"))),
-value = Some(Sector.repairMotorVehiclesMotorcycles.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairMotorVehiclesMotorcycles.toString)
+value = Some(Sector.RepairMotorVehiclesMotorcycles.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.RepairMotorVehiclesMotorcycles.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-repairHouseholdGoods", messages("NACE.radio.95.2"))),
-value = Some(Sector.repairHouseholdGoods.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairHouseholdGoods.toString)
+value = Some(Sector.RepairHouseholdGoods.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.RepairHouseholdGoods.toString)
 ),
 RadioItem( divider = Some("or")),
 RadioItem(
 content = HtmlContent(radioText("sector-label-intermediationRepairMaintenance", messages("NACE.radio.95.4"))),
 value = Some(Sector.ComputerAndMotorcycleMaintenanceIntermediationServiceActivities4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.intermediationRepairMaintenance.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.IntermediationRepairMaintenance.toString)
 )
 )
 }

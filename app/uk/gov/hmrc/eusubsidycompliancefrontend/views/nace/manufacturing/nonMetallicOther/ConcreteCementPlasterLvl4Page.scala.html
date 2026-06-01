@@ -56,8 +56,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-fibre-cement", messages("NACE.radio.23.65"))),
-            value = Some(Sector.fibreCement.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fibreCement.toString)
+            value = Some(Sector.FibreCement.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FibreCement.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-mortars", messages("NACE.radio.23.64"))),

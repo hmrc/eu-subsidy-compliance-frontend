@@ -65,8 +65,8 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-auxiliary", messages("NACE.Financial.Lvl2.Auxiliary.hint")))
             )),
-            value = Some(Sector.auxiliaryActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.auxiliaryActivities.toString)
+            value = Some(Sector.AuxiliaryActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.AuxiliaryActivities.toString)
         )
     )
 }

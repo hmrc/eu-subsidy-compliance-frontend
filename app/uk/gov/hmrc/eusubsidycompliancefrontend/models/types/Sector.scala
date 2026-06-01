@@ -64,6 +64,114 @@ object Sector:
   case object ManuGroup7 extends Sector:
     val code = "INT07"
 
+  case object Food extends Sector:
+    val code = "10"
+
+  case object Manufacturing extends Sector:
+    val code = "C"
+
+  case object Meat extends Sector:
+    val code = "10.1"
+
+  case object MeatProcessing extends Sector:
+    val code = "10.11"
+
+  case object PoultryProcessing extends Sector:
+    val code = "10.12"
+
+  case object MeatProductsProduction extends Sector:
+    val code = "10.13"
+
+  case object Fish extends Sector:
+    val code = "10.2"
+
+  case object FishProcessing extends Sector:
+    val code = "10.20"
+
+  case object FruitAndVegetables extends Sector:
+    val code = "10.3"
+
+  case object FruitAndVegetableJuiceManufacture extends Sector:
+    val code = "10.32"
+
+  case object FruitAndVegetableProcessing extends Sector:
+    val code = "10.31"
+
+  case object OtherFruitAndVegetableProcessing extends Sector:
+    val code = "10.39"
+
+  case object Oils extends Sector:
+   val code = "10.4"
+
+  case object Margarine extends Sector:
+    val code = "10.42"
+
+  case object OtherOils extends Sector:
+    val code = "10.41"
+
+  case object DairyProducts extends Sector:
+    val code = "10.5"
+
+  case object DairyProducts4 extends Sector:
+    val code = "10.51"
+
+  case object IceCream extends Sector:
+    val code = "10.52"
+
+  case object GrainAndStarchProducts extends Sector:
+   val code = "10.6"
+
+  case object GrainProducts4 extends Sector:
+    val code = "10.61"
+
+  case object StarchProducts extends Sector:
+    val code = "10.62"
+
+  case object BakeryProducts extends Sector:
+    val code = "10.7"
+
+  case object BiscuitsAndPreservedCakes extends Sector:
+    val code = "10.72"
+
+  case object BreadAndFreshPastry extends Sector:
+    val code = "10.71"
+
+  case object FarinaceousProducts extends Sector:
+    val code = "10.73"
+
+  case object OtherFoodProducts extends Sector:
+    val code = "10.8"
+
+  case object OtherFoodProduct extends Sector:
+    val code = "10.89"
+
+  case object Confectionery extends Sector:
+    val code = "10.82"
+
+  case object Condiments extends Sector:
+    val code = "10.84"
+
+  case object HomogenisedFoodPreparations extends Sector:
+    val code = "10.86"
+
+  case object PreparedMeals extends Sector:
+    val code = "10.85"
+
+  case object Sugar extends Sector:
+    val code = "10.81"
+
+  case object TeaAndCoffee extends Sector:
+    val code = "10.83"
+
+  case object PreparedAnimalFeeds extends Sector:
+    val code = "10.9"
+
+  case object FarmAnimalsFood extends Sector:
+    val code = "10.91"
+
+  case object PetFood extends Sector:
+    val code = "10.92"
+
   case object AgricultureForestryFishing extends Sector:
     val code = "A"
 
@@ -1165,7 +1273,7 @@ object Sector:
   case object Bicycles extends Sector:
     val code = "30.92"
 
-  case object MotorcyclesEquipment extends Sector:
+  case object MotorCyclesEquipment extends Sector:
     val code = "30.91"
 
   case object OtherTransportEquipment4 extends Sector:
@@ -2836,6 +2944,9 @@ object Sector:
   case object ArtsSportsRecreation extends Sector:
     val code = "90"
 
+  case object LiteraryMusical extends Sector:
+    val code = "90.11"
+
   case object ArtsCreationPerforming extends Sector:
     val code = "90.1"
 
@@ -3476,7 +3587,7 @@ object Sector:
       MilitaryFightingVehiclesManufacture,
       OtherTransportEquipment3,
       Bicycles,
-      MotorcyclesEquipment,
+      MotorCyclesEquipment,
       OtherTransportEquipment4,
       FurnitureManufacture,
       FurnitureManufacture3,
@@ -4034,6 +4145,7 @@ object Sector:
       OtherSocialWorkNEC,
       ArtsSportsRecreation,
       ArtsCreationPerforming,
+      LiteraryMusical,
       ArtsCreation,
       VisualArtsCreation,
       OtherArtsCreation,
@@ -4118,7 +4230,43 @@ object Sector:
       ActivitiesExtraterritorial,
       ExtraterritorialOrganisationsActivities,
       ExtraterritorialOrganisationsActivities3,
-      ExtraterritorialOrganisationsActivities4
+      ExtraterritorialOrganisationsActivities4,
+      Food,
+      Manufacturing,
+      Meat,
+      MeatProcessing,
+      PoultryProcessing,
+      MeatProductsProduction,
+      Fish,
+      FishProcessing,
+      FruitAndVegetables,
+      FruitAndVegetableJuiceManufacture,
+      FruitAndVegetableProcessing,
+      OtherFruitAndVegetableProcessing,
+      Oils,
+      Margarine,
+      OtherOils,
+      DairyProducts,
+      DairyProducts4,
+      IceCream,
+      GrainAndStarchProducts,
+      GrainProducts4,
+      StarchProducts,
+      BakeryProducts,
+      BiscuitsAndPreservedCakes,
+      BreadAndFreshPastry,
+      FarinaceousProducts,
+      OtherFoodProducts,
+      OtherFoodProduct,
+      Confectionery,
+      Condiments,
+      HomogenisedFoodPreparations,
+      PreparedMeals,
+      Sugar,
+      TeaAndCoffee,
+      FarmAnimalsFood,
+      PreparedAnimalFeeds,
+      PetFood
     )
 
   private val byCode: Map[String, Sector] =

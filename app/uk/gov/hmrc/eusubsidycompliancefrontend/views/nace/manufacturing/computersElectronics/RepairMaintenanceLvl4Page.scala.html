@@ -51,13 +51,13 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-civ-aircraft", messages("NACE.radio.33.16"))),
-            value = Some(Sector.civilianAirRepair.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.civilianAirRepair.toString)
+            value = Some(Sector.CivilianAirRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CivilianAirRepair.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-civ-ships", messages("NACE.radio.33.15"))),
-            value = Some(Sector.civilianShipsRepair.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.civilianShipsRepair.toString)
+            value = Some(Sector.CivilianShipsRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CivilianShipsRepair.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-civ-other-transport", messages("NACE.radio.33.17"))),
@@ -86,8 +86,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-military-vehicles", messages("NACE.radio.33.18"))),
-            value = Some(Sector.militaryVehiclesRepair.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.militaryVehiclesRepair.toString)
+            value = Some(Sector.MilitaryVehiclesRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MilitaryVehiclesRepair.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-repair-other", messages("NACE.radio.33.19"))),

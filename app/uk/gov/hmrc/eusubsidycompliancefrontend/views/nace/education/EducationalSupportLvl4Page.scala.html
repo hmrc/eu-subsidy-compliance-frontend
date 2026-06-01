@@ -52,8 +52,8 @@ controllers.routes.HouseHealthEducationController.submitEducationalSupportLvl4Pa
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-educationalSupportIntermediation", messages("NACE.radio.85.61"))),
-value = Some(Sector.educationalSupportIntermediation.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.educationalSupportIntermediation.toString)
+value = Some(Sector.EducationalSupportIntermediation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.EducationalSupportIntermediation.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherEducationalSupport", messages("NACE.radio.85.69"))),

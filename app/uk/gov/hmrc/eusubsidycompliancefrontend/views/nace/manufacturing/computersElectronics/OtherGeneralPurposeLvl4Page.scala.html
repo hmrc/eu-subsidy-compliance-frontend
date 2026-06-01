@@ -61,8 +61,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-office-machinery", messages("NACE.radio.28.23"))),
-            value = Some(Sector.officeMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.officeMachinery.toString)
+            value = Some(Sector.OfficeMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OfficeMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-ovens", messages("NACE.radio.28.21"))),
@@ -71,8 +71,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-hand-tools", messages("NACE.radio.28.24"))),
-            value = Some(Sector.powerDrivenHandTools.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.powerDrivenHandTools.toString)
+            value = Some(Sector.PowerDrivenHandTools.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PowerDrivenHandTools.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.28.29"))),

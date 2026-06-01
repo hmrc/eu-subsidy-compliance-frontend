@@ -74,7 +74,7 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(messages("undertakingSector.error.required.nace.further")+" "+ messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction.error"))
+content = Text(messages("undertakingSector.Error.required.nace.further")+" "+ messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction.error"))
 )
 ),
 title = Text(messages("common.error.summary.title"))
@@ -103,7 +103,7 @@ title = Text(messages("common.error.summary.title"))
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.error.required.nace.further")+" "+ messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction.error"))
+content = Text(messages("undertakingSector.Error.required.nace.further")+" "+ messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(

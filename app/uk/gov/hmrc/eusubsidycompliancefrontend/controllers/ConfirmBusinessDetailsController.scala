@@ -66,7 +66,7 @@ class ConfirmBusinessDetailsController @Inject() (
           BadRequest(
             confirmBusinessDetailsPage(formWithErrors, isSuspended)
           ).toFuture,
-        _ => Redirect(routes.ConfirmBusinessDetailsController.showPage).toFuture
+        _ => Redirect(routes.ConfirmBusinessDetailsController.showPage()).toFuture
       )
   }
 }

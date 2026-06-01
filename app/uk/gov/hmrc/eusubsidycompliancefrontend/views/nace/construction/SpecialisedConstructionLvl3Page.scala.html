@@ -57,8 +57,8 @@
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-demolitionAndPreparation", messages("NACE.radio.43.1"))),
-                value = Some(Sector.demolitionAndPreparation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.demolitionAndPreparation.toString),
+                value = Some(Sector.DemolitionAndPreparation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.DemolitionAndPreparation.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.demolitionAndPreparation.hint"))))
         ),
         RadioItem(
@@ -69,18 +69,18 @@
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-specialisedConstructionIntermediationServices", messages("NACE.radio.43.6"))),
-                value = Some(Sector.specialisedConstructionIntermediationServices4.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedConstructionIntermediationServices.toString),
+                value = Some(Sector.SpecialisedConstructionIntermediationServices4.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SpecialisedConstructionIntermediationServices.toString),
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-specialisedCivilEngineering", messages("NACE.radio.43.5"))),
-                value = Some(Sector.specialisedCivilEngineering4.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedCivilEngineering.toString)
+                value = Some(Sector.SpecialisedCivilEngineering4.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SpecialisedCivilEngineering.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-specialisedBuildingActivities", messages("NACE.radio.43.4"))),
-                value = Some(Sector.specialisedBuildingActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedBuildingActivities.toString),
+                value = Some(Sector.SpecialisedBuildingActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SpecialisedBuildingActivities.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.specialisedBuildingActivities.hint"))))
         ),
         RadioItem(
