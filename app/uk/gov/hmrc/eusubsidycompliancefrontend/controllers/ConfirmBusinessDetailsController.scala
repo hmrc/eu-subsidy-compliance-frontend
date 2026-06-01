@@ -31,24 +31,24 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ConfirmBusinessDetailsController @Inject() (
-  mcc: MessagesControllerComponents,
-  actionBuilders: ActionBuilders,
-  confirmBusinessDetailsPage: ConfirmBusinessDetailsPage,
-  confirmMultipleBusinessDetailsPage: ConfirmMultipleBusinessDetailsPage
-)(implicit
-  val appConfig: AppConfig,
-  val executionContext: ExecutionContext
-) extends BaseController(mcc) {
+                                                   mcc: MessagesControllerComponents,
+                                                   actionBuilders: ActionBuilders,
+                                                   confirmBusinessDetailsPage: ConfirmBusinessDetailsPage,
+                                                   confirmMultipleBusinessDetailsPage: ConfirmMultipleBusinessDetailsPage
+                                                 )(implicit
+                                                   val appConfig: AppConfig,
+                                                   val executionContext: ExecutionContext
+                                                 ) extends BaseController(mcc) {
 
   import actionBuilders._
 
   private val confirmBusinessDetailsForm: Form[FormValues] =
     formWithSingleMandatoryField("confirmBusinessDetails")
 
-  def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    val multipleEoris = true // placeholder
-    val isSuspended = true // placeholder
+  private def multipleEoris: Boolean = true // placeholder
+  private def isSuspended: Boolean = true  // placeholder
 
+  def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
     if (multipleEoris) {
       Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended)).toFuture
     } else {
@@ -57,16 +57,17 @@ class ConfirmBusinessDetailsController @Inject() (
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    val isSuspended = false // placeholder
-
     confirmBusinessDetailsForm
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          BadRequest(
-            confirmBusinessDetailsPage(formWithErrors, isSuspended)
-          ).toFuture,
-        _ => Redirect(routes.ConfirmBusinessDetailsController.showPage()).toFuture
+          if (multipleEoris) {
+            BadRequest(confirmMultipleBusinessDetailsPage(formWithErrors, isSuspended)).toFuture
+          } else {
+            BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended)).toFuture
+          },
+        _ =>
+          Redirect(routes.ConfirmBusinessDetailsController.showPage).toFuture
       )
   }
 }

@@ -894,3 +894,9 @@ POST       /confirm-undertaking-details                                         
 
 GET        /confirm-business-details                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmBusinessDetailsController.showPage()
 POST       /confirm-business-details                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmBusinessDetailsController.submitPage()
+
+GET        /confirm-details-add-business                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmAddBusinessDetailsController.showPage()
+POST       /confirm-details-add-business                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmAddBusinessDetailsController.submitPage()
+
+GET        /confirm-business-details-register                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmRegisterBusinessDetailsController.showPage()
+POST       /confirm-business-details-register                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmRegisterBusinessDetailsController.submitPage()
