@@ -51,13 +51,13 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-perfume", messages("NACE.radio.20.42"))),
-            value = Some(Sector.perfumesToiletPreparations.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.perfumesToiletPreparations.toString)
+            value = Some(Sector.PerfumesToiletPreparations.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PerfumesToiletPreparations.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-detergents", messages("NACE.radio.20.41"))),
-            value = Some(Sector.soap.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.soap.toString)
+            value = Some(Sector.Soap.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Soap.toString)
         )
     )
 }

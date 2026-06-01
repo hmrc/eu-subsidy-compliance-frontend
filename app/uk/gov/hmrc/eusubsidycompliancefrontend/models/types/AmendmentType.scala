@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import play.api.libs.json.*
+import scala.util.{Failure, Success, Try}
 
 enum AmendmentType(val code: String):
   case Add    extends AmendmentType("1")
@@ -28,12 +29,12 @@ object AmendmentTypeCode:
   def code(a: AmendmentType): String =
     a.code
 
-  def from(code: String): Option[AmendmentType] =
+  def from(code: String): AmendmentType =
     code match
-      case "1" => Some(AmendmentType.Add)
-      case "2" => Some(AmendmentType.Amend)
-      case "3" => Some(AmendmentType.Delete)
-      case _   => None
+      case "1" => AmendmentType.Add
+      case "2" => AmendmentType.Amend
+      case "3" => AmendmentType.Delete
+      case _   => throw new IllegalArgumentException(s"$code is not a valid AmendmentTypeCode")
 
 
   given Format[AmendmentType] = new Format[AmendmentType]:
@@ -41,13 +42,11 @@ object AmendmentTypeCode:
     override def reads(json: JsValue): JsResult[AmendmentType] =
       json match
         case JsString(value) =>
-          AmendmentTypeCode.from(value) match
-            case Some(v) => JsSuccess(v)
-            case None =>
-              JsError(s"Unknown AmendmentType code: $value")
+          Try(AmendmentTypeCode.from(value)) match
+            case Success(v) => JsSuccess(v)
+            case Failure(_) => JsError(s"Unknown AmendmentType code: $value")
 
-        case other =>
-          JsError(s"Expected string AmendmentType, got $other")
+        case other => JsError(s"Expected string AmendmentType, got $other")
 
     override def writes(o: AmendmentType): JsValue =
       JsString(AmendmentTypeCode.code(o))

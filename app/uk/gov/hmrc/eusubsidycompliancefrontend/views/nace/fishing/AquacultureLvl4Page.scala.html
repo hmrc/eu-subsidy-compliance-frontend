@@ -50,13 +50,13 @@ controllers.routes.AgricultureController.submitAquacultureLvl4Page()
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-freshwaterAquaculture", messages("NACE.radio.03.22"))),
-value = Some(Sector.freshwaterAquaculture.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.freshwaterAquaculture.toString)
+value = Some(Sector.FreshwaterAquaculture.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.FreshwaterAquaculture.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-marineAquaculture", messages("NACE.radio.03.21"))),
-value = Some(Sector.marineAquaculture.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.marineAquaculture.toString)
+value = Some(Sector.MarineAquaculture.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.MarineAquaculture.toString)
 )
 )
 }

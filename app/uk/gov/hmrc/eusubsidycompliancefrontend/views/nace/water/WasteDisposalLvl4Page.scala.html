@@ -60,8 +60,8 @@
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-other-waste-disposal", messages("NACE.radio.38.33"))),
-       value = Some(Sector.otherWasteDisposal.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherWasteDisposal.toString)
+       value = Some(Sector.OtherWasteDisposal.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherWasteDisposal.toString)
     )
   )
 }

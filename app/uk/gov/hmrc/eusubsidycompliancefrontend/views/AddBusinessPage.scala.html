@@ -136,7 +136,7 @@
                   @b.businessEntityIdentifier
                 </dt>
                 <dd class="govuk-summary-list__actions">
-                  <a id="remove-link-@b.businessEntityIdentifier" class="govuk-link" href="@routes.RemoveBusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString">
+                  <a id="remove-link-@b.businessEntityIdentifier" class="govuk-link" href="@routes.RemoveBusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier.value).toString">
                     <span aria-hidden="true">@messages("common.remove")</span>
                     <span class="govuk-visually-hidden">@messages("common.remove") @b.businessEntityIdentifier</span>
                   </a>

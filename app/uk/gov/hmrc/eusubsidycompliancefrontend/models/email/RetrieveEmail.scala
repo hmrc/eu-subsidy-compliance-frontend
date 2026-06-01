@@ -17,8 +17,9 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.email
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 
-case class RetrieveEmail(eori: String)
+case class RetrieveEmail(eori: EORI)
 
 object RetrieveEmail {
   implicit val format: OFormat[RetrieveEmail] = Json.format[RetrieveEmail]

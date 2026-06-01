@@ -51,28 +51,28 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-corrugated", messages("NACE.radio.17.21"))),
-            value = Some(Sector.corrugatedPaperBoardAndContainers.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.corrugatedPaperBoardAndContainers.toString)
+            value = Some(Sector.CorrugatedPaperBoardAndContainers.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CorrugatedPaperBoardAndContainers.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-sanitary", messages("NACE.radio.17.22"))),
-            value = Some(Sector.sanitaryGoods.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.sanitaryGoods.toString)
+            value = Some(Sector.SanitaryGoods.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.SanitaryGoods.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-stationary", messages("NACE.radio.17.23"))),
-            value = Some(Sector.paperStationery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.paperStationery.toString)
+            value = Some(Sector.PaperStationery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PaperStationery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-wallpaper", messages("NACE.radio.17.24"))),
-            value = Some(Sector.wallpaper.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.wallpaper.toString)
+            value = Some(Sector.Wallpaper.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Wallpaper.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.17.25"))),
-            value = Some(Sector.otherPaper.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPaper.toString)
+            value = Some(Sector.OtherPaper.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPaper.toString)
         )
 
     )

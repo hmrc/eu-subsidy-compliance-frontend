@@ -45,7 +45,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.{toEuros, toPounds, toRoundedAmount}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -96,7 +96,7 @@ class SubsidyController @Inject() (
     "report-payment"
   )
   private val enteredTradingRefIsValid = Constraint[String] { (traderRef: String) =>
-    if (traderRef.matches(TraderRef.regex)) Valid
+    if (traderRef.matches(TraderRef.regex.regex)) Valid
     else Invalid(IncorrectFormat)
   }
 
@@ -108,7 +108,7 @@ class SubsidyController @Inject() (
         "true",
         text.verifying(enteredTradingRefIsValid)
       )
-    )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
+    )(OptionalTraderRef.apply)(optTraderRef => Some((optTraderRef.setValue, optTraderRef.value)))
   )
 
   private val claimPublicAuthorityForm: Form[String] = Form(
@@ -575,7 +575,7 @@ class SubsidyController @Inject() (
         optionalEori <- journey.addClaimEori.value.toContext
         authority <- journey.publicAuthority.value.toContext
         optionalTraderRef <- journey.traderRef.value.toContext
-        traderRef = optionalTraderRef.value.map(TraderRef(_))
+        traderRef = optionalTraderRef.value.map(TraderRef.from)
         claimEori = optionalEori.value.map(EORI(_))
         previous = journey.previous
       } yield Ok(cyaPage(claimDate, euroAmount, claimEori, authority, traderRef, previous))
@@ -756,18 +756,16 @@ object SubsidyController {
             submissionDate = currentDate,
             // this shouldn't be optional, is required in create API but not retrieve
             publicAuthority = Some(journey.publicAuthority.value.get),
-            traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
+            traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef.from)),
             nonHMRCSubsidyAmtEUR =
               if (journey.claimAmountIsInEuros)
-                SubsidyAmount(journey.getClaimAmount.getOrElse(sys.error("Claim amount Missing")))
+                SubsidyAmount.from(journey.getClaimAmount.getOrElse(sys.error("Claim amount Missing")))
               else
-                SubsidyAmount(journey.getConvertedClaimAmount.getOrElse(sys.error("Converted claim amount Missing"))),
-            businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
-              oprionalEORI.value.map(EORI(_))
-            ),
-            amendmentType = journey.existingTransactionId.fold(Some(EisSubsidyAmendmentType("1")))(_ =>
-              Some(EisSubsidyAmendmentType("2"))
-            )
+                SubsidyAmount.from(journey.getConvertedClaimAmount.getOrElse(sys.error("Converted claim amount Missing"))),
+            businessEntityIdentifier = journey.addClaimEori.value
+              .fold(sys.error("eori value missing"))(oprionalEORI => oprionalEORI.value.map(EORI(_))),
+            amendmentType = journey.existingTransactionId
+              .fold(Some(EisSubsidyAmendmentType.from("1")))(_ => Some(EisSubsidyAmendmentType.from("2")))
           )
         )
       )

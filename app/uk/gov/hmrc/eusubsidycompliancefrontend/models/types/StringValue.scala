@@ -22,7 +22,7 @@ trait StringValue[A]:
 
   def name: String
 
-  def from(value: String): Option[A]
+  def from(value: String): A
 
   extension (a: A)
     def value: String
@@ -34,13 +34,9 @@ trait StringValue[A]:
 
         case JsString(value) =>
           from(value) match
-            case Some(v) =>
-              JsSuccess(v)
+            case Some(v: A) => JsSuccess(v)
 
-            case None =>
-              JsError(
-                s"Expected a valid $name, got '$value' instead."
-              )
+            case None => JsError(s"Expected a valid $name, got '$value' instead.")
 
         case xs =>
           JsError(

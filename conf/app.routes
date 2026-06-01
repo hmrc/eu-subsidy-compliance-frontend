@@ -892,5 +892,5 @@ GET        /access-denied-for-agents                                            
 GET        /confirm-undertaking-details                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.getCheckDetails()
 POST       /confirm-undertaking-details                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.postCheckDetails
 
-GET        /confirm-business-details                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmBusinessDetailsController.showPage
+GET        /confirm-business-details                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmBusinessDetailsController.showPage()
 POST       /confirm-business-details                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmBusinessDetailsController.submitPage()

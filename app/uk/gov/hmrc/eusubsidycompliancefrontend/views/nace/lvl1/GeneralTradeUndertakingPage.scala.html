@@ -57,8 +57,8 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.wholesaleAndReta
 RadioItem(
 content = HtmlContent(radioText("sector-label-manufacturing", messages("NACE.radio.C"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.manufacturing.hint")))),
-value = Some(Sector.manufacturing.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.manufacturing.toString)
+value = Some(Sector.Manufacturing.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Manufacturing.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-professionalScientificTechnicalActivities", messages("NACE.radio.N"))),
@@ -98,8 +98,8 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.transportStorage
 RadioItem(
 content = HtmlContent(radioText("sector-label-forestry", messages("NACE.radio.A"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.forestry.hint")))),
-value = Some(Sector.forestry.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.forestry.toString)
+value = Some(Sector.Forestry.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Forestry.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-realEstate", messages("NACE.radio.M"))),
@@ -113,8 +113,8 @@ divider = Some("or")
 RadioItem(
 content = HtmlContent(radioText("sector-label-other", messages("Other"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.other.hint")))),
-value = Some(Sector.otherGeneralTrade.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherGeneralTrade.toString)
+value = Some(Sector.OtherGeneralTrade.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherGeneralTrade.toString)
 )
 )
 }

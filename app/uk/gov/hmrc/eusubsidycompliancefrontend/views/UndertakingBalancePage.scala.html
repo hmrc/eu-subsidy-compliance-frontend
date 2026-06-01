@@ -18,13 +18,14 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingBalance
 
 @this(
   layout: Layout
 )
 
-@(eori: String, balance: UndertakingBalance)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eori: EORI, balance: UndertakingBalance)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @listItem(fieldName: String, value: String) = {
     <li><strong>@fieldName:</strong> @value</li>

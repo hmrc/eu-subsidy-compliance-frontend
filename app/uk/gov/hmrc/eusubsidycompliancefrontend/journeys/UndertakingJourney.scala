@@ -99,7 +99,7 @@ object UndertakingJourney {
   implicit val format: Format[UndertakingJourney] = Json.format[UndertakingJourney]
 
   def fromUndertaking(undertaking: Undertaking): UndertakingJourney = UndertakingJourney(
-    about = AboutUndertakingFormPage(undertaking.name.some),
+    about = AboutUndertakingFormPage(undertaking.name.value.some),
     sector = UndertakingSectorFormPage(undertaking.industrySector.some)
   )
 

@@ -22,13 +22,14 @@ object SubsidyAmount:
 
   opaque type SubsidyAmount = BigDecimal
 
-  def from(in: BigDecimal): Option[SubsidyAmount] =
+  def from(in: BigDecimal): SubsidyAmount =
     Option(in).filter(x =>
       x >= -MaxInputValue &&
         x <= MaxInputValue &&
         x.scale <= 2
     )
-
+      .getOrElse(throw new IllegalArgumentException(s"$in is not a valid SubsidyAmount"))
+  
   extension (a: SubsidyAmount)
     def value: BigDecimal = a
 

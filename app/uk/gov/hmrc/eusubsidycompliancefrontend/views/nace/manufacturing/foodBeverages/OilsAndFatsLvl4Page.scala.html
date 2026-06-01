@@ -56,8 +56,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-oilsfats-other", messages("NACE.radio.10.41"))),
-            value = Some(Sector.otherOils.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherOils.toString)
+            value = Some(Sector.OtherOils.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherOils.toString)
         )
     )
 }

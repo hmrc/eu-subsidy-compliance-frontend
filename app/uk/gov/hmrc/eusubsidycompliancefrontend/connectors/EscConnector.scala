@@ -33,6 +33,8 @@ import uk.gov.hmrc.http.client.HttpClientV2
 
 import java.time.LocalDate
 
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+
 @Singleton
 class EscConnector @Inject() (
   override protected val http: HttpClientV2,
@@ -131,7 +133,7 @@ class EscConnector @Inject() (
     http
       .get(url"$getUndertakingBalanceUrl/$eori")
       .execute[HttpResponse]
-      .map { response: HttpResponse =>
+      .map { (response: HttpResponse) =>
         response.status match {
           case Status.OK => response.json.asOpt[UndertakingBalance]
           case _ => None
@@ -148,7 +150,7 @@ class EscConnector @Inject() (
     http
       .get(url"$getExchangeRateUrl/$dateAsString")
       .execute[HttpResponse]
-      .map { response: HttpResponse =>
+      .map { (response: HttpResponse) =>
         response.status match {
           case Status.OK => response.json.asOpt[MonthlyExchangeRate]
           case _ => None

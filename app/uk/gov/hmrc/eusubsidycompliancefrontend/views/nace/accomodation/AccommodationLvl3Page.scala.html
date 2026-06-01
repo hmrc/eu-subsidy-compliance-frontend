@@ -50,28 +50,28 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-campingGrounds", messages("NACE.radio.55.3"))),
-                value = Some(Sector.campingGrounds4.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.campingGrounds.toString)
+                value = Some(Sector.CampingGrounds4.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.CampingGrounds.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-holidayShortStay", messages("NACE.radio.55.2"))),
-                value = Some(Sector.holidayShortStay4.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.holidayShortStay.toString)
+                value = Some(Sector.HolidayShortStay4.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.HolidayShortStay.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-hotelsAccommodation", messages("NACE.radio.55.1"))),
-            value = Some(Sector.hotelsAccommodation4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.hotelsAccommodation.toString)
+            value = Some(Sector.HotelsAccommodation4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.HotelsAccommodation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-intermediationAccommodation", messages("NACE.radio.55.4"))),
-                value = Some(Sector.intermediationAccommodation4.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.intermediationAccommodation.toString)
+                value = Some(Sector.IntermediationAccommodation4.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.IntermediationAccommodation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-otherAccommodation", messages("NACE.radio.55.9"))),
-                value = Some(Sector.otherAccommodation4.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherAccommodation.toString)
+                value = Some(Sector.OtherAccommodation4.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherAccommodation.toString)
         )
     )
 }

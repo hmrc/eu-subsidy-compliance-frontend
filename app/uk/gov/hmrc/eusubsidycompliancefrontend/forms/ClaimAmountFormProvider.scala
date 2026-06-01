@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fie
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.{IncorrectFormat, Required}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.PositiveSubsidyAmount
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.PositiveSubsidyAmount.PositiveSubsidyAmount
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode, types}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
@@ -55,7 +56,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
-      amount => PositiveSubsidyAmount.validateAndTransform(amount).fold[ValidationResult](Invalid(TooBig))(_ => Valid)
+      amount => Try(PositiveSubsidyAmount.from(amount)).fold(_ => Invalid(TooBig), _ => Valid)
     )
   }
 

@@ -54,8 +54,8 @@ Seq(
     ),
     RadioItem(
     content = HtmlContent(radioText("sector-label-otherSocialWorkNEC", messages("NACE.radio.88.99"))),
-    value = Some(Sector.otherSocialWorkNEC.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSocialWorkNEC.toString)
+    value = Some(Sector.OtherSocialWorkNEC.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSocialWorkNEC.toString)
     )
 )
 }

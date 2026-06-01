@@ -54,8 +54,8 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.dental.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-generalPractice", messages("NACE.radio.86.21"))),
-value = Some(Sector.generalPractice.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.generalPractice.toString)
+value = Some(Sector.GeneralPractice.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.GeneralPractice.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-specialists", messages("NACE.radio.86.22"))),

@@ -50,13 +50,13 @@
   Seq(
     RadioItem(
     content = HtmlContent(radioText("sector-label-distribution-electricity", messages("NACE.radio.35.14"))),
-    value = Some(Sector.electricityDistribution.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityDistribution.toString)
+    value = Some(Sector.ElectricityDistribution.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricityDistribution.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-electricity-nonrenewable", messages("NACE.radio.35.11"))),
-      value = Some(Sector.nonRenewableElectricityProduction.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonRenewableElectricityProduction.toString)
+      value = Some(Sector.NonRenewableElectricityProduction.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonRenewableElectricityProduction.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-electricity-renewable", messages("NACE.radio.35.12"))),
@@ -65,18 +65,18 @@
     ),
     RadioItem(
     content = HtmlContent(radioText("sector-label-storage-electricity", messages("NACE.radio.35.16"))),
-    value = Some(Sector.electricityStorage.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityStorage.toString)
+    value = Some(Sector.ElectricityStorage.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricityStorage.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-trade-electricity", messages("NACE.radio.35.15"))),
-      value = Some(Sector.electricityTrade.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityTrade.toString)
+      value = Some(Sector.ElectricityTrade.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricityTrade.toString)
     ),
     RadioItem(
     content = HtmlContent(radioText("sector-label-transmission-electricity", messages("NACE.radio.35.13"))),
-    value = Some(Sector.electricityTransmission.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityTransmission.toString)
+    value = Some(Sector.ElectricityTransmission.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricityTransmission.toString)
     )
   )
 }

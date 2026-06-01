@@ -23,16 +23,15 @@ object UndertakingName
 
   opaque type UndertakingName = String
 
-  private val Regex =
-    """.{1,105}""".r
+  private val Regex = """.{1,105}""".r
 
-  override val name: String =
-    "UndertakingName"
+  override val name: String = "UndertakingName"
 
-  override def from(value: String): Option[UndertakingName] =
+  override def from(value: String): UndertakingName =
     Option(value)
       .map(_.trim)
       .filter(Regex.matches)
+      .getOrElse(throw new IllegalArgumentException(s"$value is not a valid UndertakingName"))
 
   extension (x: UndertakingName)
     override def value: String = x

@@ -23,11 +23,9 @@ object ErrorMessage
 
   opaque type ErrorMessage = String
 
-  private val Regex =
-    """.{1,255}""".r
+  private val Regex = """.{1,255}""".r
 
-  override val name: String =
-    "ErrorMessage"
+  override val name: String = "ErrorMessage"
 
   override def from(value: String): Option[ErrorMessage] =
     Option(value)

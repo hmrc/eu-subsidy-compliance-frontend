@@ -23,11 +23,11 @@ import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{CustomsDataStoreConnector, SendEmailConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.*
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailVerificationStatus.Verified
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.VerifiedStatus
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.VerifiedStatus.Verified
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.VerifiedEoriCache
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps

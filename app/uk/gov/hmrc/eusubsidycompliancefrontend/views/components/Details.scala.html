@@ -20,7 +20,7 @@
 @(linkText: String, content: String)(implicit messages: Messages)
 
 @govukDetails(
-    Details(
+    new Details(
         summary = Text(linkText),
         content = HtmlContent(content)
     )

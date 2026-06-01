@@ -25,7 +25,7 @@ case class EmailFormProvider() extends FormProvider[FormValues] {
 
   override protected def mapping: Mapping[FormValues] = Forms.mapping(
     Fields.Email -> EmailAddressFieldMapping
-  )(FormValues.apply)(FormValues.unapply)
+  )(FormValues.apply)(fv => Some(fv.value))
 
 }
 

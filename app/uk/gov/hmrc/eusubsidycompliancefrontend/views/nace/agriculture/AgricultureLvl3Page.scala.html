@@ -48,38 +48,38 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-animalProduction", messages("NACE.radio.01.4"))),
-value = Some(Sector.animalProduction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.animalProduction.toString)
+value = Some(Sector.AnimalProduction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.AnimalProduction.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-growingNonPerennialCrops", messages("NACE.radio.01.1"))),
-value = Some(Sector.growingNonPerennialCrops.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.growingNonPerennialCrops.toString)
+value = Some(Sector.GrowingNonPerennialCrops.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.GrowingNonPerennialCrops.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-growingPerennialCrops", messages("NACE.radio.01.2"))),
-value = Some(Sector.growingPerennialCrops.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.growingPerennialCrops.toString)
+value = Some(Sector.GrowingPerennialCrops.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.GrowingPerennialCrops.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-huntingTrapping", messages("NACE.radio.01.7"))),
-value = Some(Sector.huntingTrapping4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.huntingTrapping4.toString)
+value = Some(Sector.HuntingTrapping4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.HuntingTrapping4.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-mixedFarming", messages("NACE.radio.01.5"))),
-value = Some(Sector.mixedFarming4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.mixedFarming.toString)
+value = Some(Sector.MixedFarming4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.MixedFarming.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-plantPropagation", messages("NACE.radio.01.3"))),
-value = Some(Sector.plantPropagation4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.plantPropagation.toString)
+value = Some(Sector.PlantPropagation4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.PlantPropagation.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-supportActivities", messages("NACE.radio.01.6"))),
-value = Some(Sector.supportActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivities.toString)
+value = Some(Sector.SupportActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.SupportActivities.toString)
 )
 )
 }

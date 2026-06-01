@@ -54,7 +54,7 @@
                         content = Text(messages("subsidy.cya.summary-list.claimDate.key"))
                     ),
                     value = Value(
-                        content = Text(claimDate.govDisplayFormat)
+                        content = Text(claimDate.govDisplayFormat())
                     ),
                     actions = Some(Actions(
                         items = Seq(
@@ -88,7 +88,7 @@
                         content = Text(messages("subsidy.cya.summary-list.claim.key"))
                     ),
                     value = Value(
-                        content = Text(claimEori.getOrElse(""))
+                        content = Text(claimEori.map(_.value).getOrElse(""))
                     ),
                     actions = Some(Actions(
                         items = Seq(
@@ -122,7 +122,7 @@
                         content = Text(messages("subsidy.cya.summary-list.traderRef.key"))
                     ),
                     value = Value(
-                        content = Text(traderRef.getOrElse(""))
+                        content = Text(traderRef.map(_.value).getOrElse(""))
                     ),
                     actions = Some(Actions(
                         items = Seq(

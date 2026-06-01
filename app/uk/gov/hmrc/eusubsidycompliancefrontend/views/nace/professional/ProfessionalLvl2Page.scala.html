@@ -81,11 +81,11 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.veterinary.toStr
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherProfessionalScientific", messages("NACE.radio.74"))),
-value = Some(Sector.otherProfessionalScientific.toString),
+value = Some(Sector.OtherProfessionalScientific.toString),
 hint = Some(Hint(
 content = Text(messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical.hint"))
 )),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherProfessionalScientific.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherProfessionalScientific.toString)
 )
 )
 }

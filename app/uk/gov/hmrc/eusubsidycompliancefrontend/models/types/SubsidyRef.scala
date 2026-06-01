@@ -24,16 +24,15 @@ object SubsidyRef
 
   opaque type SubsidyRef = String
 
-  private val Regex =
-    """^[A-Za-z0-9]{1,10}$""".r
+  private val Regex = """^[A-Za-z0-9]{1,10}$""".r
 
-  override val name: String =
-    "SubsidyRef"
+  override val name: String = "SubsidyRef"
 
-  override def from(value: String): Option[SubsidyRef] =
+  override def from(value: String): SubsidyRef =
     Option(value)
       .map(_.trim)
       .filter(Regex.matches)
+      .getOrElse(throw new IllegalArgumentException(s"$value is not a valid SubsidyRef"))
 
   extension (x: SubsidyRef)
     override def value: String =

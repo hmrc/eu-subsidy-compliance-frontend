@@ -26,6 +26,8 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext
 
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+
 @Singleton
 class SendEmailConnector @Inject() (
   override protected val http: HttpClientV2,

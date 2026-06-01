@@ -23,16 +23,15 @@ object DeclarationID
 
   opaque type DeclarationID = String
 
-  private val Regex =
-    """.{1,18}""".r
+  private val Regex = """.{1,18}""".r
 
-  override val name: String =
-    "DeclarationID"
+  override val name: String = "DeclarationID"
 
-  override def from(value: String): Option[DeclarationID] =
+  override def from(value: String): DeclarationID =
     Option(value)
       .map(_.trim)
       .filter(Regex.matches)
+      .getOrElse(throw new IllegalArgumentException("$value is not a valid DeclarationID"))
 
   extension (x: DeclarationID)
     override def value: String = x

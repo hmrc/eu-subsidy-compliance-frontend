@@ -23,16 +23,16 @@ object EisSubsidyAmendmentType
 
   opaque type EisSubsidyAmendmentType = String
 
-  private val Regex =
-    """1|2|3""".r
+  private val Regex = """1|2|3""".r
 
-  override val name: String =
-    "EisSubsidyAmendmentType"
+  override val name: String = "EisSubsidyAmendmentType"
 
-  override def from(value: String): Option[EisSubsidyAmendmentType] =
+  override def from(value: String): EisSubsidyAmendmentType = {
     Option(value)
       .map(_.trim)
       .filter(Regex.matches)
+      .getOrElse(throw new IllegalArgumentException(s"$value is not a valid EisSubsidyAmendmentType"))
+  }
 
   extension (x: EisSubsidyAmendmentType)
     override def value: String = x

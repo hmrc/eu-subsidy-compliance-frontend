@@ -51,18 +51,18 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-coating", messages("NACE.radio.25.51"))),
-            value = Some(Sector.coating.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.coating.toString)
+            value = Some(Sector.Coating.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Coating.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-heat-treatment", messages("NACE.radio.25.52"))),
-            value = Some(Sector.heatTreatment.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.heatTreatment.toString)
+            value = Some(Sector.HeatTreatment.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.HeatTreatment.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-machining", messages("NACE.radio.25.53"))),
-            value = Some(Sector.machining.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.machining.toString)
+            value = Some(Sector.Machining.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Machining.toString)
         )
     )
 }

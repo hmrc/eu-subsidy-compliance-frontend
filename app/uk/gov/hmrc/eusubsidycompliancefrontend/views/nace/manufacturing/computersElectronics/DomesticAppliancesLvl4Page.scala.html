@@ -51,13 +51,13 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-electric", messages("NACE.radio.27.51"))),
-            value = Some(Sector.electricDomesticAppliances.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricDomesticAppliances.toString)
+            value = Some(Sector.ElectricDomesticAppliances.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricDomesticAppliances.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-non-electric", messages("NACE.radio.27.52"))),
-            value = Some(Sector.nonElectricDomesticAppliances.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonElectricDomesticAppliances.toString)
+            value = Some(Sector.NonElectricDomesticAppliances.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonElectricDomesticAppliances.toString)
         )
     )
 }

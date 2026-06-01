@@ -23,11 +23,12 @@ object IndustrySectorLimit:
 
   opaque type IndustrySectorLimit = BigDecimal
   
-  def from(in: BigDecimal): Option[IndustrySectorLimit] =
-    Option(in).filter { x =>
+  def from(value: BigDecimal): IndustrySectorLimit =
+    Option(value).filter { x =>
       x <= MaxInputValue &&
         x.scale <= 2
     }
+      .getOrElse(throw new IllegalArgumentException(s"$value is not a valid IndustrySectorLimit"))
 
   extension (x: IndustrySectorLimit)
     override def value: BigDecimal = x

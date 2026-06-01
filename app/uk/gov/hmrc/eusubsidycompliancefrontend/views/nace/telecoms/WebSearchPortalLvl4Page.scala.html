@@ -56,8 +56,8 @@
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.radio.63.92"))),
-                value = Some(Sector.otherInformationServices.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherInformationServices.toString)
+                value = Some(Sector.OtherInformationServices.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherInformationServices.toString)
         )
     )
 }

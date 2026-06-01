@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
-
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.toEuros
 
 @this(
     layout: Layout,
@@ -66,7 +66,7 @@
                         content = Text(messages("subsidy.cya.summary-list.amount.key"))
                     ),
                     value = Value(
-                        content = Text(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toEuros)
+                        content = Text(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.value.toEuros)
                     )
                 ),
                 SummaryListRow(
@@ -74,7 +74,7 @@
                         content = Text(messages("subsidy.cya.summary-list.claim.key"))
                     ),
                     value = Value(
-                        content = Text(nonHmrcSubsidy.businessEntityIdentifier.getOrElse(""))
+                        content = Text(nonHmrcSubsidy.businessEntityIdentifier.map(_.value).getOrElse(""))
                     )
                 ),
                 SummaryListRow(
@@ -90,7 +90,7 @@
                         content = Text(messages("subsidy.cya.summary-list.traderRef.key"))
                     ),
                     value = Value(
-                        content = Text(nonHmrcSubsidy.traderReference.getOrElse(""))
+                        content = Text(nonHmrcSubsidy.traderReference.map(_.value).getOrElse(""))
                     )
                 )
             )
@@ -98,7 +98,7 @@
 
     @P(messages("subsidy.remove.p1"))
 
-    @formHelper(action = controllers.routes.SubsidyController.postRemoveSubsidyClaim(nonHmrcSubsidy.subsidyUsageTransactionId.get)) {
+    @formHelper(action = controllers.routes.SubsidyController.postRemoveSubsidyClaim(nonHmrcSubsidy.subsidyUsageTransactionId.get.value)) {
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(

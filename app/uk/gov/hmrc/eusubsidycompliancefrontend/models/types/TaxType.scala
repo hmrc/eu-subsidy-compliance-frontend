@@ -25,16 +25,15 @@ object TaxType
 
   opaque type TaxType = String
 
-  private val Regex =
-    """.{0,3}""".r
+  private val Regex = """.{0,3}""".r
 
-  override val name: String =
-    "TaxType"
+  override val name: String = "TaxType"
 
-  override def from(value: String): Option[TaxType] =
+  override def from(value: String): TaxType =
     Option(value)
       .map(_.trim)
       .filter(Regex.matches)
+      .getOrElse(throw new IllegalArgumentException(s"$value is not a valid TaxType"))
 
   extension (x: TaxType)
     override def value: String = x

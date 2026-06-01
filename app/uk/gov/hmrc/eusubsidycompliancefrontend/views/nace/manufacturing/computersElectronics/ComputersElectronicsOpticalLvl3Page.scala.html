@@ -51,38 +51,38 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-communication", messages("NACE.radio.26.3"))),
-            value = Some(Sector.communicationEquipment4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.communicationEquipment.toString)
+            value = Some(Sector.CommunicationEquipment4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CommunicationEquipment.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-peripherals", messages("NACE.radio.26.2"))),
-            value = Some(Sector.computersPeripheralEquipment4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.computersPeripheralEquipment.toString)
+            value = Some(Sector.ComputersPeripheralEquipment4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ComputersPeripheralEquipment.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-consumer", messages("NACE.radio.26.4"))),
-            value = Some(Sector.consumerElectronics4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.consumerElectronics.toString)
+            value = Some(Sector.ConsumerElectronics4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ConsumerElectronics.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-components", messages("NACE.radio.26.1"))),
-            value = Some(Sector.electronicComponents.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.electronicComponents.toString)
+            value = Some(Sector.ElectronicComponents.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectronicComponents.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-irradiation", messages("NACE.radio.26.6"))),
-            value = Some(Sector.irradiationElectromedicalAndElectrotherapeuticEquipment4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.irradiationElectromedicalAndElectrotherapeuticEquipment.toString)
+            value = Some(Sector.IrradiationElectromedicalAndElectrotherapeuticEquipment4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.IrradiationElectromedicalAndElectrotherapeuticEquipment.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-measuring", messages("NACE.radio.26.5"))),
-            value = Some(Sector.measuringToolsAndClocks.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.measuringToolsAndClocks.toString)
+            value = Some(Sector.MeasuringToolsAndClocks.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MeasuringToolsAndClocks.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-optical", messages("NACE.radio.26.7"))),
-            value = Some(Sector.opticalEquipment4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.opticalEquipment.toString)
+            value = Some(Sector.OpticalEquipment4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OpticalEquipment.toString)
         )
     )
 }

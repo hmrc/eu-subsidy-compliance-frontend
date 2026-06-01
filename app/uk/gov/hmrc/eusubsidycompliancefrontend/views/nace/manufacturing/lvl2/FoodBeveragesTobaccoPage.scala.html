@@ -63,13 +63,13 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-beverages", messages("NACE.Manufacturing.Lvl2.2.Food.Beverages.hint")))
             )),
-            value = Some(Sector.beverages.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.beverages.toString)
+            value = Some(Sector.Beverages.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Beverages.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-tobacco", messages("NACE.radio.12"))),
-            value = Some(Sector.tobaccoProductsManufacture4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.tobaccoProducts.toString)
+            value = Some(Sector.TobaccoProductsManufacture4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TobaccoProducts.toString)
         )
     )
 }

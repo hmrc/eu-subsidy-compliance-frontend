@@ -20,11 +20,7 @@ import play.api.libs.json.*
 
 object BigDecimalCodec:
 
-  def format[A](
-                 name: String,
-                 from: BigDecimal => Option[A],
-                 to: A => BigDecimal
-               ): Format[A] =
+  def format[A](name: String, from: BigDecimal => A, to: A => BigDecimal): Format[A] =
 
     new Format[A]:
 
@@ -32,7 +28,7 @@ object BigDecimalCodec:
         json match
           case JsNumber(v) =>
             from(v) match
-              case Some(a) => JsSuccess(a)
+              case Some(a: A) => JsSuccess(a)
               case None    => JsError(s"Expected a valid $name, got $v instead.")
 
           case other =>

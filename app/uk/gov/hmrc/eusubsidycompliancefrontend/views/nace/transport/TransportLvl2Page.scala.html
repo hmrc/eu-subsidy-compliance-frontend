@@ -60,8 +60,8 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.airTransport.toS
     ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-postalAndCourierActivities", messages("NACE.radio.53"))),
-value = Some(Sector.postalAndCourierActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.postalAndCourierActivities.toString)
+value = Some(Sector.PostalAndCourierActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.PostalAndCourierActivities.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-warehousingStorageTransportSupportActivities", messages("NACE.radio.52"))),

@@ -35,7 +35,7 @@ object SubsidyRetrieve {
   implicit val writes: Writes[SubsidyRetrieve] = (o: SubsidyRetrieve) => {
     val l: List[(String, Json.JsValueWrapper)] =
       List(
-        ("undertakingIdentifier", JsString(o.undertakingIdentifier)),
+        ("undertakingIdentifier", JsString(o.undertakingIdentifier.value)),
         ("getNonHMRCUsageTransaction", JsBoolean(true)),
         ("getHMRCUsageTransaction", JsBoolean(true))
       )

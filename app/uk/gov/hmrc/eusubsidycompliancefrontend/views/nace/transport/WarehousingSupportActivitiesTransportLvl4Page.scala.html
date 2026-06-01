@@ -75,8 +75,8 @@
     ),
     RadioItem(
         content = HtmlContent(radioText("sector-label-other-transport-support", messages("NACE.radio.52.26"))),
-        value = Some(Sector.otherTransportSupportActivities.toString),
-        checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTransportSupportActivities.toString)
+        value = Some(Sector.OtherTransportSupportActivities.toString),
+        checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTransportSupportActivities.toString)
     )
   )
 }

@@ -18,13 +18,17 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import play.api.libs.json.*
 
+import scala.util.matching.Regex
+
 object EORI:
   opaque type EORI = String
 
-  def apply(s: String): Option[EORI] =
+  def apply(s: String): EORI = {
     Option(s)
       .map(normalize)
       .filter(valid)
+      .getOrElse(throw new IllegalArgumentException(s"$s is not a valid EORI"))
+  }
 
   extension (x: EORI)
     def value: String = x
@@ -32,8 +36,7 @@ object EORI:
   private def valid(s: String): Boolean =
     s.matches("^(GB|XI)[0-9]{12,15}$")
 
-  private val Regex =
-    "^(GB|XI)[0-9]{12,15}$".r
+  val Regex: Regex = "^(GB|XI)[0-9]{12,15}$".r
 
   private def normalize(s: String): String =
     s.trim.toUpperCase
@@ -46,8 +49,7 @@ object EORI:
     val s = eori.replaceAll(" ", "")
     s.take(2).toUpperCase + s.drop(2)
 
-  val ValidLengthsWithPrefix: Set[Int] =
-    Set(14, 17)
+  val ValidLengthsWithPrefix: Set[Int] = Set(14, 17)
 
   def from(raw: String): Option[EORI] =
     val formatted = formatEori(raw)

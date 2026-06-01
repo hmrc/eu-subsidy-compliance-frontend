@@ -61,13 +61,13 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-newspapers", messages("NACE.radio.58.12"))),
-            value = Some(Sector.newspapers.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.newspapers.toString)
+            value = Some(Sector.Newspapers.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Newspapers.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-otherPublishing", messages("NACE.radio.58.19"))),
-            value = Some(Sector.otherPublishing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPublishing.toString)
+            value = Some(Sector.OtherPublishing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPublishing.toString)
         )
     )
 }

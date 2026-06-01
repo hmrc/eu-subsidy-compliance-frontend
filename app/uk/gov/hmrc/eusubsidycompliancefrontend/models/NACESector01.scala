@@ -20,7 +20,7 @@ import play.api.libs.json._
 
 sealed trait NACESector01
 
-object NACESector01 extends {
+object NACESector01 {
 
   case object Agriculture extends WithName("agriculture") with NACESector01
 

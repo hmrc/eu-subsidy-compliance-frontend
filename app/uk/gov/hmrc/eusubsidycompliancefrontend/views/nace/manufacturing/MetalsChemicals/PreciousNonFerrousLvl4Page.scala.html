@@ -51,33 +51,33 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-nuclear-fuel", messages("NACE.radio.24.46"))),
-            value = Some(Sector.nuclearFuelProcessing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.nuclearFuelProcessing.toString)
+            value = Some(Sector.NuclearFuelProcessing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NuclearFuelProcessing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-aluminium", messages("NACE.radio.24.42"))),
-            value = Some(Sector.aluminiumProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.aluminiumProduction.toString)
+            value = Some(Sector.AluminiumProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.AluminiumProduction.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-copper", messages("NACE.radio.24.44"))),
-            value = Some(Sector.copperProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.copperProduction.toString)
+            value = Some(Sector.CopperProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CopperProduction.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-lead-zinc-tin", messages("NACE.radio.24.43"))),
-            value = Some(Sector.leadZincTinProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.leadZincTinProduction.toString)
+            value = Some(Sector.LeadZincTinProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.LeadZincTinProduction.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-precious", messages("NACE.radio.24.41"))),
-            value = Some(Sector.preciousMetalsProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.preciousMetalsProduction.toString)
+            value = Some(Sector.PreciousMetalsProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PreciousMetalsProduction.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-non-ferrous", messages("NACE.radio.24.45"))),
-            value = Some(Sector.nonFerrousMetalsProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonFerrousMetalsProduction.toString)
+            value = Some(Sector.NonFerrousMetalsProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonFerrousMetalsProduction.toString)
         )
     )
 }

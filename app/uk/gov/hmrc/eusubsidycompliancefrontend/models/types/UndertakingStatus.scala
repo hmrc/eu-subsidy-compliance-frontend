@@ -18,6 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import play.api.libs.json.*
 
+import scala.util.{Failure, Success, Try}
+
 enum UndertakingStatus(val code: Int):
   case Active               extends UndertakingStatus(0)
   case SuspendedAutomated   extends UndertakingStatus(1)
@@ -31,20 +33,19 @@ object UndertakingStatus:
   private val byCode: Map[Int, UndertakingStatus] =
     values.map(s => s.code -> s).toMap
 
-  def fromCode(code: Int): Option[UndertakingStatus] =
-    byCode.get(code)
+  def fromCode(code: Int): UndertakingStatus =
+    byCode(code)
   
   given Format[UndertakingStatus] = new Format[UndertakingStatus]:
 
     override def reads(json: JsValue): JsResult[UndertakingStatus] =
       json match
         case JsNumber(n) =>
-          UndertakingStatus.fromCode(n.toIntExact) match
-            case Some(v) => JsSuccess(v)
-            case None => JsError(s"Unknown UndertakingStatus code: $n")
+          Try(UndertakingStatus.fromCode(n.toIntExact)) match
+            case Success(v) => JsSuccess(v)
+            case Failure(_) => JsError(s"Unknown UndertakingStatus code: $n")
 
-        case other =>
-          JsError("Expected numeric UndertakingStatus")
+        case other => JsError("Expected numeric UndertakingStatus")
 
     override def writes(o: UndertakingStatus): JsValue =
       JsNumber(o.code)

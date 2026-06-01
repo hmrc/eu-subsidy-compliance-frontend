@@ -23,16 +23,15 @@ object UndertakingRef
 
   opaque type UndertakingRef = String
 
-  private val Regex =
-    """[A-Za-z0-9]{1,17}""".r
+  private val Regex = """[A-Za-z0-9]{1,17}""".r
 
-  override val name: String =
-    "UndertakingRef"
+  override val name: String = "UndertakingRef"
 
-  override def from(value: String): Option[UndertakingRef] =
+  override def from(value: String): UndertakingRef =
     Option(value)
       .map(_.trim)
       .filter(Regex.matches)
+      .getOrElse(throw new IllegalArgumentException(s"$value is not a valid UndertakingRef"))
 
   extension (x: UndertakingRef)
     override def value: String = x

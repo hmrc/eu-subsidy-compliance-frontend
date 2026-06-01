@@ -63,12 +63,12 @@ class BusinessEntityEoriController @Inject() (
 
   import actionBuilders._
 
-  private val isEoriLengthValid = Constraint[String] { eori: String =>
+  private val isEoriLengthValid = Constraint[String] { (eori: String) =>
     if (EORI.ValidLengthsWithPrefix.contains(eori.replaceAll(" ", "").length)) Valid
     else Invalid("businessEntityEori.error.incorrect-length")
   }
 
-  private val isEoriValid = Constraint[String] { eori: String =>
+  private val isEoriValid = Constraint[String] { (eori: String) =>
     if (eori.replaceAll(" ", "").matches("""^(gb|Gb|gB|GB)[0-9]{12,15}$""")) Valid
     else Invalid("businessEntityEori.regex.error")
   }
@@ -90,7 +90,7 @@ class BusinessEntityEoriController @Inject() (
         .toContext
         .foldF(Redirect(routes.AddBusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
           runStepIfEligible(journey) {
-            val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
+            val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori.value)))
             Ok(eoriPage(form, journey.previous)).toFuture
           }
         }
@@ -133,7 +133,7 @@ class BusinessEntityEoriController @Inject() (
             _ = sendAuditEvent(businessEntityJourney, undertakingRef, businessEori)
           } yield Redirect(
             routes.AddBusinessEntityController
-              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(businessEori))
+              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(businessEori.value))
           )
 
           result.fold(handleMissingSessionData("BusinessEntity Data"))(identity)

@@ -74,8 +74,8 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.OtherTransportEquipment.hint")))
             )),
-            value = Some(Sector.otherTransportEquipment3.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTransportEquipment3.toString)
+            value = Some(Sector.OtherTransportEquipment3.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTransportEquipment3.toString)
         )
     )
 }

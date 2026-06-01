@@ -18,21 +18,23 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef.TraderRef
 
+import scala.util.matching.Regex
+
 object TraderRef
   extends StringValue[TraderRef]:
 
   opaque type TraderRef = String
 
-  private val Regex =
-    """.{0,3}""".r
+  val regex: Regex = """.{0,3}""".r
 
   override val name: String =
     "TraderRef"
 
-  override def from(value: String): Option[TraderRef] =
+  override def from(value: String): TraderRef =
     Option(value)
       .map(_.trim)
-      .filter(Regex.matches)
+      .filter(regex.matches)
+      .getOrElse(throw new IllegalArgumentException(s"$value is not a valid trader reference"))
 
   extension (x: TraderRef)
     override def value: String = x

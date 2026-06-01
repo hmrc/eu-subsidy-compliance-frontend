@@ -92,7 +92,7 @@ class UndertakingController @Inject() (
   override val messagesApi: MessagesApi = mcc.messagesApi
 
   private val aboutUndertakingForm: Form[FormValues] = Form(
-    mapping("continue" -> mandatory("continue"))(FormValues.apply)(FormValues.unapply)
+    mapping("continue" -> mandatory("continue"))(FormValues.apply)(fv => Some(fv.value))
   )
 
   private val undertakingSectorForm: Form[FormValues] = formWithSingleMandatoryField("undertakingSector")
@@ -149,7 +149,7 @@ class UndertakingController @Inject() (
             _ =>
               for {
                 // We store the EORI in the undertaking name field.
-                updatedUndertakingJourney <- store.update[UndertakingJourney](_.setUndertakingName(eori))
+                updatedUndertakingJourney <- store.update[UndertakingJourney](_.setUndertakingName(eori.value))
                 redirect <- updatedUndertakingJourney.next
               } yield redirect
           )
@@ -483,7 +483,7 @@ class UndertakingController @Inject() (
             undertakingName <- updatedJourney.about.value.toContext
             undertakingSector <- updatedJourney.sector.value.toContext
             undertaking = UndertakingCreate(
-              name = UndertakingName(undertakingName),
+              name = UndertakingName.from(undertakingName),
               industrySector = undertakingSector,
               List(BusinessEntity(eori, leadEORI = true))
             )
@@ -517,7 +517,7 @@ class UndertakingController @Inject() (
           timeProvider.now
         )
         _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
-      } yield Redirect(routes.UndertakingController.getConfirmation(ref))
+      } yield Redirect(routes.UndertakingController.getConfirmation(ref.value))
     ).recoverWith { case error: NotFoundException =>
       logger.error(s"Error creating undertaking: $error")
       errorHandler.internalServerErrorTemplate(request).map { html =>
@@ -532,7 +532,7 @@ class UndertakingController @Inject() (
       case Some(journey) =>
         val result: OptionT[Future, Result] = for {
           addBusiness <- journey.addBusiness.value.toContext
-        } yield Ok(confirmationPage(UndertakingRef(ref), eori, addBusiness))
+        } yield Ok(confirmationPage(UndertakingRef.from(ref), eori, addBusiness))
         result.fold(Redirect(journey.previous))(identity)
       case _ => Redirect(routes.UndertakingController.getAboutUndertaking).toFuture
     }
@@ -773,9 +773,9 @@ class UndertakingController @Inject() (
     }
   }
 
-  private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] = {
+  private def updateIsAmendState(value: Boolean)(implicit eori: EORI): Future[UndertakingJourney] = {
     for {
-      updateName <- store.update[UndertakingJourney](_.setUndertakingName(e))
+      updateName <- store.update[UndertakingJourney](_.setUndertakingName(eori.value))
       updateIsAmend <- store.update[UndertakingJourney](_.copy(isAmend = value))
     } yield updateIsAmend
   }
