@@ -40,7 +40,7 @@
     <h1 class="govuk-heading-xl">Balance of undertaking with EORI: @eori</h1>
 
     <ul class="govuk-list govuk-list--bullet">
-        @listItem("Undertaking identifier", balance.undertakingIdentifier)
+        @listItem("Undertaking identifier", balance.undertakingIdentifier.value)
         @listItem("Industry sector limit", balance.industrySectorLimit.toString)
         @listItem("Available balance EUR", balance.availableBalanceEUR.toString)
         @listItem("Available balance GBP", balance.availableBalanceGBP.toString)
