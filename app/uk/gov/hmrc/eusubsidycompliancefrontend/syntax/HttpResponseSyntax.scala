@@ -38,11 +38,11 @@ object HttpResponseSyntax {
 
   implicit class HttpResponseOps[ResponseError](private val response: HttpResponse) extends AnyVal {
 
-    /**
-      * For now logging can be handled by a type class (version of an adaptor pattern passed often implicitly, such as sort stuff)
-      *  as going from no parenthesis to some will cause a lot of call changes and I want to limit noise in this PR.
+    /** For now logging can be handled by a type class (version of an adaptor pattern passed often implicitly, such as
+      * sort stuff) as going from no parenthesis to some will cause a lot of call changes and I want to limit noise in
+      * this PR.
       *
-      *  Due to GPDR etc we need to be picky what we log? Better to be safe than sorry
+      * Due to GPDR etc we need to be picky what we log? Better to be safe than sorry
       *
       * @param reads
       * @tparam A

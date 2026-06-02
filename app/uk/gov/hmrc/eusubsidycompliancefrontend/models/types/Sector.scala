@@ -39,7 +39,7 @@ object Sector:
 
   case object GeneralTrade extends Sector:
     val code = "00"
-    
+
   case object OtherGeneralTrade extends Sector:
     val code = "INT00"
 
@@ -101,7 +101,7 @@ object Sector:
     val code = "10.39"
 
   case object Oils extends Sector:
-   val code = "10.4"
+    val code = "10.4"
 
   case object Margarine extends Sector:
     val code = "10.42"
@@ -119,7 +119,7 @@ object Sector:
     val code = "10.52"
 
   case object GrainAndStarchProducts extends Sector:
-   val code = "10.6"
+    val code = "10.6"
 
   case object GrainProducts4 extends Sector:
     val code = "10.61"

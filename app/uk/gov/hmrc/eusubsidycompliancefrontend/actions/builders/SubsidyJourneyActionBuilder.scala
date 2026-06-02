@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders
 
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import play.api.{Logging}
+import play.api.Logging
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.ErrorHandler
@@ -34,11 +34,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * Action builder that runs the supplied block only if the user
-  *   o is authenticated with GG
-  *   o is enrolled for this service in ECC
-  *   o has a verified email address
+/** Action builder that runs the supplied block only if the user o is authenticated with GG o is enrolled for this
+  * service in ECC o has a verified email address
   *
   * The first two conditions are checked by delegating to the EnrolledAction builder.
   *

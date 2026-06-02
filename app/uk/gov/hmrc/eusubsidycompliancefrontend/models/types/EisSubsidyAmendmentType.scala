@@ -18,8 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EisSubsidyAmendmentType.EisSubsidyAmendmentType
 
-object EisSubsidyAmendmentType
-  extends StringValue[EisSubsidyAmendmentType]:
+object EisSubsidyAmendmentType extends StringValue[EisSubsidyAmendmentType]:
 
   opaque type EisSubsidyAmendmentType = String
 
@@ -34,5 +33,4 @@ object EisSubsidyAmendmentType
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid EisSubsidyAmendmentType"))
   }
 
-  extension (x: EisSubsidyAmendmentType)
-    override def value: String = x
+  extension (x: EisSubsidyAmendmentType) override def value: String = x

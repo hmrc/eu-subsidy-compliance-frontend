@@ -20,8 +20,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef.TraderRef
 
 import scala.util.matching.Regex
 
-object TraderRef
-  extends StringValue[TraderRef]:
+object TraderRef extends StringValue[TraderRef]:
 
   opaque type TraderRef = String
 
@@ -36,5 +35,4 @@ object TraderRef
       .filter(regex.matches)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid trader reference"))
 
-  extension (x: TraderRef)
-    override def value: String = x
+  extension (x: TraderRef) override def value: String = x

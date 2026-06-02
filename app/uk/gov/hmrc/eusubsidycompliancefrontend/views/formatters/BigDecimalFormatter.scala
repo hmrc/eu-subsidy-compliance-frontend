@@ -39,7 +39,7 @@ object BigDecimalFormatter {
   private def roundingMode = RoundingMode.DOWN
 
   object Syntax:
-    extension(b: BigDecimal)
+    extension (b: BigDecimal)
 
       def toEuros: String =
         eurFormatter.format(b.toRoundedAmount)

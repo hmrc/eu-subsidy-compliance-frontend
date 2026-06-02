@@ -83,7 +83,7 @@ class RetailWholesaleController @Inject() (
   )
   private val specialisedLvl4PageForm: Form[FormValues] = formWithSingleMandatoryField("specialWholesale4")
 
-  //retailWholesaleLvl2PageForm
+  // retailWholesaleLvl2PageForm
   def loadRetailWholesaleLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -131,7 +131,7 @@ class RetailWholesaleController @Inject() (
         }
       )
   }
-  //retailLvl3PageForm
+  // retailLvl3PageForm
   def loadRetailLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -179,7 +179,7 @@ class RetailWholesaleController @Inject() (
         }
       )
   }
-  //culturalLvl4PageForm
+  // culturalLvl4PageForm
   def loadCulturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -204,7 +204,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //foodLvl4PageForm
+  // foodLvl4PageForm
   def loadFoodLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -229,7 +229,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //householdLvl4PageForm
+  // householdLvl4PageForm
   def loadHouseholdLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -254,7 +254,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //intermediationLvl4PageForm
+  // intermediationLvl4PageForm
   def loadIntermediationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -279,7 +279,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //motorVehiclesLvl4PageForm
+  // motorVehiclesLvl4PageForm
   def loadMotorVehiclesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -304,7 +304,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //nonSpecialisedLvl4PageForm
+  // nonSpecialisedLvl4PageForm
   def loadNonSpecialisedLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -329,7 +329,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //otherGoodsLvl4PageForm
+  // otherGoodsLvl4PageForm
   def loadOtherGoodsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -354,7 +354,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //wholesaleLvl3PageForm
+  // wholesaleLvl3PageForm
   def loadWholesaleLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -403,7 +403,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //agriculturalLvl4PageForm
+  // agriculturalLvl4PageForm
   def loadAgriculturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -428,7 +428,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //contractBasisLvl4PageForm
+  // contractBasisLvl4PageForm
   def loadContractBasisLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -453,7 +453,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //foodWholesaleLvl4PageForm
+  // foodWholesaleLvl4PageForm
   def loadFoodWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -478,7 +478,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //householdWholesaleLvl4PageForm
+  // householdWholesaleLvl4PageForm
   def loadHouseholdWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -503,7 +503,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //machineryLvl4PageForm
+  // machineryLvl4PageForm
   def loadMachineryLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -528,7 +528,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //motorVehiclesWholesaleLvl4PageForm
+  // motorVehiclesWholesaleLvl4PageForm
   def loadMotorVehiclesWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -555,7 +555,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //specialisedLvl4PageForm
+  // specialisedLvl4PageForm
   def loadSpecialisedLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>

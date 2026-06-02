@@ -20,8 +20,7 @@ import play.api.libs.json.*
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TaxType.TaxType
 
-object TaxType
-  extends StringValue[TaxType]:
+object TaxType extends StringValue[TaxType]:
 
   opaque type TaxType = String
 
@@ -35,5 +34,4 @@ object TaxType
       .filter(Regex.matches)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid TaxType"))
 
-  extension (x: TaxType)
-    override def value: String = x
+  extension (x: TaxType) override def value: String = x

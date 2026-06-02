@@ -756,12 +756,15 @@ object SubsidyController {
             submissionDate = currentDate,
             // this shouldn't be optional, is required in create API but not retrieve
             publicAuthority = Some(journey.publicAuthority.value.get),
-            traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef.from)),
+            traderReference =
+              journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef.from)),
             nonHMRCSubsidyAmtEUR =
               if (journey.claimAmountIsInEuros)
                 SubsidyAmount.from(journey.getClaimAmount.getOrElse(sys.error("Claim amount Missing")))
               else
-                SubsidyAmount.from(journey.getConvertedClaimAmount.getOrElse(sys.error("Converted claim amount Missing"))),
+                SubsidyAmount.from(
+                  journey.getConvertedClaimAmount.getOrElse(sys.error("Converted claim amount Missing"))
+                ),
             businessEntityIdentifier = journey.addClaimEori.value
               .fold(sys.error("eori value missing"))(oprionalEORI => oprionalEORI.value.map(EORI(_))),
             amendmentType = journey.existingTransactionId

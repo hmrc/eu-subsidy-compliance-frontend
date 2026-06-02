@@ -24,15 +24,15 @@ object PositiveSubsidyAmount:
   opaque type PositiveSubsidyAmount = BigDecimal
 
   def from(value: BigDecimal): PositiveSubsidyAmount =
-    Option(value).filter { x =>
-      (x >= 0) &&
+    Option(value)
+      .filter { x =>
+        (x >= 0) &&
         (x <= MaxInputValue) &&
         (x.scale <= 2)
-    }
+      }
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid PositiveSubsidyAmount"))
 
-  extension (x: PositiveSubsidyAmount)
-    def value: BigDecimal = x
+  extension (x: PositiveSubsidyAmount) def value: BigDecimal = x
 
   given Format[PositiveSubsidyAmount] =
     BigDecimalCodec.format(

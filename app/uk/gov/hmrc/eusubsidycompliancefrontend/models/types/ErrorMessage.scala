@@ -18,8 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.ErrorMessage.ErrorMessage
 
-object ErrorMessage
-  extends StringValue[ErrorMessage]:
+object ErrorMessage extends StringValue[ErrorMessage]:
 
   opaque type ErrorMessage = String
 
@@ -33,5 +32,4 @@ object ErrorMessage
       .filter(Regex.matches)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid ErrorMessage"))
 
-  extension (x: ErrorMessage)
-    override def value: String = x
+  extension (x: ErrorMessage) override def value: String = x

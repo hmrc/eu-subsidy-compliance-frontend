@@ -21,11 +21,11 @@ import play.api.mvc.PathBindable
 import play.api.mvc.QueryStringBindable
 
 enum EmailStatus(val wire: String):
-  case Unverified  extends EmailStatus("unverified")
-  case New         extends EmailStatus("new")
-  case Amend       extends EmailStatus("amend")
-  case BecomeLead  extends EmailStatus("become-lead")
-  case CYA         extends EmailStatus("cya")
+  case Unverified extends EmailStatus("unverified")
+  case New extends EmailStatus("new")
+  case Amend extends EmailStatus("amend")
+  case BecomeLead extends EmailStatus("become-lead")
+  case CYA extends EmailStatus("cya")
 
 object EmailStatus:
 
@@ -35,8 +35,7 @@ object EmailStatus:
   def withName(name: String): Option[EmailStatus] =
     byWire.get(name)
 
-  /**
-    * JSON Format
+  /** JSON Format
     */
   given Format[EmailStatus] = new Format[EmailStatus]:
 
@@ -53,28 +52,26 @@ object EmailStatus:
     override def writes(o: EmailStatus): JsValue =
       JsString(o.wire)
 
-  /**
-    * PathBindable
+  /** PathBindable
     */
   given PathBindable[EmailStatus] with
 
     override def bind(key: String, value: String): Either[String, EmailStatus] =
-      EmailStatus.withName(value)
+      EmailStatus
+        .withName(value)
         .toRight(s"Cannot parse parameter '$key' as EmailStatus")
 
     override def unbind(key: String, value: EmailStatus): String =
       value.wire
 
-  /**
-    * QueryStringBindable
+  /** QueryStringBindable
     */
   given QueryStringBindable[EmailStatus] with
 
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, EmailStatus]] =
-      params.get(key).collect {
-        case Seq(value) =>
-          EmailStatus.withName(value).toRight(s"Invalid EmailStatus: $value")
+      params.get(key).collect { case Seq(value) =>
+        EmailStatus.withName(value).toRight(s"Invalid EmailStatus: $value")
       }
 
-    override def unbind(key: String, value: EmailStatus): String = 
+    override def unbind(key: String, value: EmailStatus): String =
       value.wire

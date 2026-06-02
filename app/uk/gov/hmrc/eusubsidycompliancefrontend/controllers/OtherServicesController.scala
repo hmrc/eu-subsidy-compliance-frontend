@@ -114,7 +114,7 @@ class OtherServicesController @Inject() (
       )
   }
 
-  //membershipOrgActivitiesLvl3Page
+  // membershipOrgActivitiesLvl3Page
   def loadMembershipOrgActivitiesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -165,7 +165,7 @@ class OtherServicesController @Inject() (
       )
   }
 
-  //personalServicesLvl3Page
+  // personalServicesLvl3Page
   def loadPersonalServicesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -214,7 +214,7 @@ class OtherServicesController @Inject() (
       )
   }
 
-  //repairsLvl3Page
+  // repairsLvl3Page
   def loadRepairsLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -263,7 +263,7 @@ class OtherServicesController @Inject() (
       )
   }
 
-  //hairdressingLvl4Page
+  // hairdressingLvl4Page
   def loadHairdressingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -288,7 +288,7 @@ class OtherServicesController @Inject() (
       )
   }
 
-  //householdRepairLvl4Page
+  // householdRepairLvl4Page
   def loadHouseholdRepairLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -313,7 +313,7 @@ class OtherServicesController @Inject() (
       )
   }
 
-  //membershipOrgsLvl4Page
+  // membershipOrgsLvl4Page
   def loadMembershipOrgsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -338,7 +338,7 @@ class OtherServicesController @Inject() (
       )
   }
 
-  //motorVehiclesRepairLvl4Page
+  // motorVehiclesRepairLvl4Page
   def loadMotorVehiclesRepairLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -363,7 +363,7 @@ class OtherServicesController @Inject() (
       )
   }
 
-  //otherMembershipOrgsLvl4Page
+  // otherMembershipOrgsLvl4Page
   def loadOtherMembershipOrgsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -388,7 +388,7 @@ class OtherServicesController @Inject() (
       )
   }
 
-  //otherPersonalServicesLvl4Page
+  // otherPersonalServicesLvl4Page
   def loadOtherPersonalServicesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>

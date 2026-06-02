@@ -18,9 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef.SubsidyRef
 
-
-object SubsidyRef
-  extends StringValue[SubsidyRef]:
+object SubsidyRef extends StringValue[SubsidyRef]:
 
   opaque type SubsidyRef = String
 

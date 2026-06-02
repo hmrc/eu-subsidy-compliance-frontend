@@ -21,12 +21,12 @@ import play.api.libs.json.*
 import scala.util.{Failure, Success, Try}
 
 enum UndertakingStatus(val code: Int):
-  case Active               extends UndertakingStatus(0)
-  case SuspendedAutomated   extends UndertakingStatus(1)
-  case SuspendedBen         extends UndertakingStatus(2)
-  case SuspendedManual      extends UndertakingStatus(5)
+  case Active extends UndertakingStatus(0)
+  case SuspendedAutomated extends UndertakingStatus(1)
+  case SuspendedBen extends UndertakingStatus(2)
+  case SuspendedManual extends UndertakingStatus(5)
   case SuspendedUndertaking extends UndertakingStatus(8)
-  case Inactive             extends UndertakingStatus(9)
+  case Inactive extends UndertakingStatus(9)
 
 object UndertakingStatus:
 
@@ -35,7 +35,7 @@ object UndertakingStatus:
 
   def fromCode(code: Int): UndertakingStatus =
     byCode(code)
-  
+
   given Format[UndertakingStatus] = new Format[UndertakingStatus]:
 
     override def reads(json: JsValue): JsResult[UndertakingStatus] =

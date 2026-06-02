@@ -66,7 +66,7 @@ class NonMetallicOtherController @Inject() (
   private val otherPorcelainAndCeramicsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("porcelain4")
   private val otherProductsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("otherProducts4")
 
-  //nonMetallicMineralLvl3Page
+  // nonMetallicMineralLvl3Page
   def loadNonMetallicMineralLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -115,7 +115,7 @@ class NonMetallicOtherController @Inject() (
       )
   }
 
-  //OtherManufacturingLvl3Page
+  // OtherManufacturingLvl3Page
   def loadOtherManufacturingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -164,7 +164,7 @@ class NonMetallicOtherController @Inject() (
       )
   }
 
-  //AnotherTypeLvl4Page
+  // AnotherTypeLvl4Page
   def loadAnotherTypeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -189,7 +189,7 @@ class NonMetallicOtherController @Inject() (
       )
   }
 
-  //CementLimePlasterLvl4Page
+  // CementLimePlasterLvl4Page
   def loadCementLimePlasterLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -214,7 +214,7 @@ class NonMetallicOtherController @Inject() (
       )
   }
 
-  //ClayBuildingMaterialsLvl4Page
+  // ClayBuildingMaterialsLvl4Page
   def loadClayBuildingMaterialsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -239,7 +239,7 @@ class NonMetallicOtherController @Inject() (
       )
   }
 
-  //ConcreteCementPlasterLvl4Page
+  // ConcreteCementPlasterLvl4Page
   def loadConcreteCementPlasterLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -264,7 +264,7 @@ class NonMetallicOtherController @Inject() (
       )
   }
 
-  //GlassProductsLvl4Page
+  // GlassProductsLvl4Page
   def loadGlassProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -289,7 +289,7 @@ class NonMetallicOtherController @Inject() (
       )
   }
 
-  //JewelleryCoinsLvl4Page
+  // JewelleryCoinsLvl4Page
   def loadJewelleryCoinsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -314,7 +314,7 @@ class NonMetallicOtherController @Inject() (
       )
   }
 
-  //OtherPorcelainAndCeramicsLvl4Page
+  // OtherPorcelainAndCeramicsLvl4Page
   def loadOtherPorcelainAndCeramicsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -341,7 +341,7 @@ class NonMetallicOtherController @Inject() (
       )
   }
 
-  //OtherProductsLvl4Page
+  // OtherProductsLvl4Page
   def loadOtherProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>

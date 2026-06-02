@@ -22,16 +22,16 @@ import play.api.libs.json.Format
 object IndustrySectorLimit:
 
   opaque type IndustrySectorLimit = BigDecimal
-  
+
   def from(value: BigDecimal): IndustrySectorLimit =
-    Option(value).filter { x =>
-      x <= MaxInputValue &&
+    Option(value)
+      .filter { x =>
+        x <= MaxInputValue &&
         x.scale <= 2
-    }
+      }
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid IndustrySectorLimit"))
 
-  extension (x: IndustrySectorLimit)
-    def value: BigDecimal = x
+  extension (x: IndustrySectorLimit) def value: BigDecimal = x
 
   given Format[IndustrySectorLimit] =
     BigDecimalCodec.format(

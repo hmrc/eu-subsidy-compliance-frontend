@@ -24,8 +24,7 @@ trait StringValue[A]:
 
   def from(value: String): A
 
-  extension (a: A)
-    def value: String
+  extension (a: A) def value: String
 
   given Format[A] = new Format[A]:
 

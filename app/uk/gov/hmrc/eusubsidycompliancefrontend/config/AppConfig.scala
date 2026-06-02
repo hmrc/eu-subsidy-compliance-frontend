@@ -68,7 +68,7 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
 
   def sectorCap(sector: String): String = config.get[String](s"sectorCap.$sector")
 
-  //NACE Modes
+  // NACE Modes
   lazy val NewRegMode: String = "NewRegMode"
   lazy val NewRegChangeMode: String = "NewRegChangeMode"
   lazy val UpdateNaceMode: String = "UpdateNaceMode"

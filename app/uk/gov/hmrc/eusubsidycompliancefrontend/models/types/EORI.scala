@@ -31,8 +31,7 @@ object EORI:
       .getOrElse(throw new IllegalArgumentException(s"$s is not a valid EORI"))
   }
 
-  extension (x: EORI)
-    def value: String = x
+  extension (x: EORI) def value: String = x
 
   private def valid(s: String): Boolean =
     s.matches("^(GB|XI)[0-9]{12,15}$")

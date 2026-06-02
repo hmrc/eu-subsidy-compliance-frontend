@@ -18,8 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.DeclarationID.DeclarationID
 
-object DeclarationID
-  extends StringValue[DeclarationID]:
+object DeclarationID extends StringValue[DeclarationID]:
 
   opaque type DeclarationID = String
 
@@ -33,5 +32,4 @@ object DeclarationID
       .filter(Regex.matches)
       .getOrElse(throw new IllegalArgumentException("$value is not a valid DeclarationID"))
 
-  extension (x: DeclarationID)
-    override def value: String = x
+  extension (x: DeclarationID) override def value: String = x

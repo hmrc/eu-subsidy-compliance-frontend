@@ -32,8 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * Action builder that runs the supplied block only if the user is authenticated with GG and is not enrolled for this
+/** Action builder that runs the supplied block only if the user is authenticated with GG and is not enrolled for this
   * service in ECC.
   *
   * If they are enrolled we redirect to / where the AccountController will figure out where to send the user according

@@ -18,8 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 
-object UndertakingRef
-  extends StringValue[UndertakingRef]:
+object UndertakingRef extends StringValue[UndertakingRef]:
 
   opaque type UndertakingRef = String
 
@@ -33,5 +32,4 @@ object UndertakingRef
       .filter(Regex.matches)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid UndertakingRef"))
 
-  extension (x: UndertakingRef)
-    override def value: String = x
+  extension (x: UndertakingRef) override def value: String = x

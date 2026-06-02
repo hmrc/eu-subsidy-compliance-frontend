@@ -20,8 +20,8 @@ import play.api.libs.json.*
 import scala.util.{Failure, Success, Try}
 
 enum AmendmentType(val code: String):
-  case Add    extends AmendmentType("1")
-  case Amend  extends AmendmentType("2")
+  case Add extends AmendmentType("1")
+  case Amend extends AmendmentType("2")
   case Delete extends AmendmentType("3")
 
 object AmendmentTypeCode:
@@ -34,8 +34,7 @@ object AmendmentTypeCode:
       case "1" => AmendmentType.Add
       case "2" => AmendmentType.Amend
       case "3" => AmendmentType.Delete
-      case _   => throw new IllegalArgumentException(s"$code is not a valid AmendmentTypeCode")
-
+      case _ => throw new IllegalArgumentException(s"$code is not a valid AmendmentTypeCode")
 
   given Format[AmendmentType] = new Format[AmendmentType]:
 

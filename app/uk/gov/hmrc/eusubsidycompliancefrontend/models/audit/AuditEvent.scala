@@ -81,7 +81,7 @@ object AuditEvent {
         )
       )
       AuditEvent.CreateUndertaking(ggCredId, UndertakingCreateWithSectorLimit(undertaking, sectorCap), eisResponse)
-    } //Do not delete
+    } // Do not delete
     implicit val writes: Writes[CreateUndertaking] = Json.writes
   }
 

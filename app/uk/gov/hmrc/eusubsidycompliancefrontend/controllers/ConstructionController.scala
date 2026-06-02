@@ -70,7 +70,7 @@ class ConstructionController @Inject() (
   private val otherSpecialisedConstructionLvl4Form: Form[FormValues] = formWithSingleMandatoryField("otherSpecial4")
   private val specialisedConstructionActivitiesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("special4")
 
-  //ConstructionLvl2Page
+  // ConstructionLvl2Page
   def loadConstructionLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -119,7 +119,7 @@ class ConstructionController @Inject() (
       )
   }
 
-  //CivilEngineeringLvl3Page
+  // CivilEngineeringLvl3Page
   def loadCivilEngineeringLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -168,7 +168,7 @@ class ConstructionController @Inject() (
       )
   }
 
-  //SpecialisedConstructionLvl3Page
+  // SpecialisedConstructionLvl3Page
   def loadSpecialisedConstructionLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -219,7 +219,7 @@ class ConstructionController @Inject() (
       )
   }
 
-  //BuildingCompletionLvl4Page
+  // BuildingCompletionLvl4Page
   def loadBuildingCompletionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -244,7 +244,7 @@ class ConstructionController @Inject() (
       )
   }
 
-  //ConstructionRoadsRailwaysLvl4Page
+  // ConstructionRoadsRailwaysLvl4Page
   def loadConstructionRoadsRailwaysLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -271,7 +271,7 @@ class ConstructionController @Inject() (
       )
   }
 
-  //ConstructionUtilityProjectsLvl4Page
+  // ConstructionUtilityProjectsLvl4Page
   def loadConstructionUtilityProjectsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -298,7 +298,7 @@ class ConstructionController @Inject() (
       )
   }
 
-  //DemolitionSitePreparationLvl4Page
+  // DemolitionSitePreparationLvl4Page
   def loadDemolitionSitePreparationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -325,7 +325,7 @@ class ConstructionController @Inject() (
       )
   }
 
-  //ElectricalPlumbingConstructionLvl4Page
+  // ElectricalPlumbingConstructionLvl4Page
   def loadElectricalPlumbingConstructionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -355,7 +355,7 @@ class ConstructionController @Inject() (
       )
   }
 
-  //OtherCivilEngineeringProjectsLvl4Page
+  // OtherCivilEngineeringProjectsLvl4Page
   def loadOtherCivilEngineeringProjectsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -385,7 +385,7 @@ class ConstructionController @Inject() (
       )
   }
 
-  //OtherSpecialisedConstructionLvl4Page
+  // OtherSpecialisedConstructionLvl4Page
   def loadOtherSpecialisedConstructionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -415,7 +415,7 @@ class ConstructionController @Inject() (
       )
   }
 
-  //SpecialisedConstructionActivitiesLvl4Page
+  // SpecialisedConstructionActivitiesLvl4Page
   def loadSpecialisedConstructionActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>

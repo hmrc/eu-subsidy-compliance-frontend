@@ -32,11 +32,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * Action builder that runs the supplied block only if the user
-  *   o is authenticated with GG
-  *   o is enrolled for this service in ECC
-  *   o journey hasn't already been submitted
+/** Action builder that runs the supplied block only if the user o is authenticated with GG o is enrolled for this
+  * service in ECC o journey hasn't already been submitted
   *
   * @param config
   * @param env
