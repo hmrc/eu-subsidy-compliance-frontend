@@ -27,10 +27,11 @@ object ErrorMessage
 
   override val name: String = "ErrorMessage"
 
-  override def from(value: String): Option[ErrorMessage] =
+  override def from(value: String): ErrorMessage =
     Option(value)
       .map(_.trim)
       .filter(Regex.matches)
+      .getOrElse(throw new IllegalArgumentException(s"$value is not a valid ErrorMessage"))
 
   extension (x: ErrorMessage)
     override def value: String = x

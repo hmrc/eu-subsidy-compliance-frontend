@@ -21,5 +21,5 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.mongo.cache.CacheIdType
 
 object EoriIdType extends CacheIdType[EORI] {
-  override def run: EORI => EORI = identity
+  override def run: EORI => String = _.value
 }

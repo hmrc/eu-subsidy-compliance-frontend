@@ -14,13 +14,15 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.button.Button as GButton
+
 @this(govukButton: GovukButton)
 
 @(msg: String, href: Option[String] = None, preventDoubleClick: Boolean = true, id: Option[String] = None, classes: Option[String] = None)(implicit messages: Messages)
 
 @govukButton(
     id.fold(
-     new Button(
+     GButton(
       content = Text(messages(msg)),
       href = href,
       preventDoubleClick = Some(preventDoubleClick),
@@ -28,7 +30,7 @@
      )
 
     )(id =>
-     new Button(
+     GButton(
       content = Text(messages(msg)),
       href = href,
       preventDoubleClick = Some(preventDoubleClick),

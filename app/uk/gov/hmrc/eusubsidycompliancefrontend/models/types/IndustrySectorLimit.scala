@@ -31,7 +31,7 @@ object IndustrySectorLimit:
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid IndustrySectorLimit"))
 
   extension (x: IndustrySectorLimit)
-    override def value: BigDecimal = x
+    def value: BigDecimal = x
 
   given Format[IndustrySectorLimit] =
     BigDecimalCodec.format(
