@@ -48,56 +48,56 @@ class ArtsControllerSpec
   private val controller = instanceOf[ArtsController]
 
   // Sector codes for Level 2
-  private val artsCreationPerforming = Sector.artsCreationPerforming.toString
-  private val gamblingActivities = Sector.gamblingActivities4.toString
-  private val librariesArchivesMuseums = Sector.librariesArchivesMuseums.toString
-  private val sportsAndRecreation = Sector.sportsAndRecreation.toString
+  private val artsCreationPerforming = Sector.ArtsCreationPerforming.toString
+  private val gamblingActivities = Sector.GamblingActivities4.toString
+  private val librariesArchivesMuseums = Sector.LibrariesArchivesMuseums.toString
+  private val sportsAndRecreation = Sector.SportsAndRecreation.toString
 
   // Sector codes for Level 3 - Arts Creation and Performing
-  private val artsCreation = Sector.artsCreation.toString
-  private val performingArts = Sector.performingArtsActivities.toString
-  private val performingArtsSupport = Sector.performingArtsSupport.toString
+  private val artsCreation = Sector.ArtsCreation.toString
+  private val performingArts = Sector.PerformingArtsActivities.toString
+  private val performingArtsSupport = Sector.PerformingArtsSupport.toString
 
   // Sector codes for Level 3 - Libraries, Archives, Museums
-  private val botanicalGardensNatureReserves = Sector.botanicalGardensAndNatureReserves.toString
-  private val culturalHeritageConservation = Sector.culturalHeritageConservation4.toString
-  private val libraryArchives = Sector.libraryArchives.toString
-  private val museumCollectionsMonuments = Sector.museumCollectionsMonuments.toString
+  private val botanicalGardensNatureReserves = Sector.BotanicalGardensAndNatureReserves.toString
+  private val culturalHeritageConservation =Sector.CulturalHeritageConservation4.toString
+  private val libraryArchives = Sector.LibraryArchives.toString
+  private val museumCollectionsMonuments = Sector.MuseumCollectionsMonuments.toString
 
   // Sector codes for Level 3 - Sports and Recreation
-  private val amusementRecreation = Sector.amusementRecreation.toString
-  private val sports = Sector.sports.toString
+  private val amusementRecreation = Sector.AmusementRecreation.toString
+  private val sports = Sector.Sports.toString
 
   // Sector codes for Level 4 - Arts Creation
-  private val literaryMusical = Sector.literaryMusical.toString
-  private val visualArtsCreation = Sector.visualArtsCreation.toString
-  private val otherArtsCreation = Sector.otherArtsCreation.toString
+  private val literaryMusical = Sector.LiteraryMusical.toString
+  private val visualArtsCreation = Sector.VisualArtsCreation.toString
+  private val otherArtsCreation = Sector.OtherArtsCreation.toString
 
   // Sector codes for Level 4 - Performing Arts Support
-  private val artsFacilitiesOperation = Sector.artsFacilitiesOperation.toString
-  private val otherPerformingArtsSupport = Sector.otherPerformingArtsSupport.toString
+  private val artsFacilitiesOperation = Sector.ArtsFacilitiesOperation.toString
+  private val otherPerformingArtsSupport = Sector.OtherPerformingArtsSupport.toString
 
   // Sector codes for Level 4 - Libraries and Archives
-  private val archives = Sector.archives.toString
-  private val libraries = Sector.libraries.toString
+  private val archives = Sector.Archives.toString
+  private val libraries = Sector.Libraries.toString
 
   // Sector codes for Level 4 - Museums and Collections
-  private val historicalSitesMonuments = Sector.historicalSitesMonuments.toString
-  private val museumsCollections = Sector.museumsCollections.toString
+  private val historicalSitesMonuments = Sector.HistoricalSitesMonuments.toString
+  private val museumsCollections = Sector.MuseumsCollections.toString
 
   // Sector codes for Level 4 - Botanical and Zoological
-  private val botanicalZoologicalGardens = Sector.botanicalZoologicalGardens.toString
-  private val natureReserves = Sector.natureReserves.toString
+  private val botanicalZoologicalGardens = Sector.BotanicalZoologicalGardens.toString
+  private val natureReserves = Sector.NatureReserves.toString
 
   // Sector codes for Level 4 - Sports
-  private val fitnessCentres = Sector.fitnessCentresActivities.toString
-  private val sportsClubs = Sector.sportsClubsActivities.toString
-  private val sportsFacilitiesOperation = Sector.sportsFacilitiesOperation.toString
-  private val otherSportsActivities = Sector.otherSportsActivities.toString
+  private val fitnessCentres = Sector.FitnessCentresActivities.toString
+  private val sportsClubs = Sector.SportsClubsActivities.toString
+  private val sportsFacilitiesOperation = Sector.SportsFacilitiesOperation.toString
+  private val otherSportsActivities = Sector.OtherSportsActivities.toString
 
   // Sector codes for Level 4 - Amusement and Recreation
-  private val amusementParks = Sector.amusementParks.toString
-  private val otherRecreationActivities = Sector.otherRecreationActivities.toString
+  private val amusementParks = Sector.AmusementParks.toString
+  private val otherRecreationActivities = Sector.OtherRecreationActivities.toString
 
   "ArtsController" when {
 

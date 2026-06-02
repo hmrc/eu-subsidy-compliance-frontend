@@ -27,10 +27,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendRequest}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{agriculture, cerealsLeguminousCrops, other, transport}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{Agriculture, CerealsLeguminousCrops, Other, Transport}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{DeclarationID, EORI, EisSubsidyAmendmentType, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TaxType, TraderRef, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.IndustrySectorLimit.IndustrySectorLimit
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.zero
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -43,23 +45,23 @@ object CommonTestData {
   val eori3 = EORI("GB123456789014")
   val eori4 = EORI("GB123456789010")
 
-  val businessEntity1 = BusinessEntity(EORI(eori1), leadEORI = true)
-  val businessEntity2 = BusinessEntity(EORI(eori2), leadEORI = true)
-  val businessEntity3 = BusinessEntity(EORI(eori3), leadEORI = true)
-  val businessEntity4 = BusinessEntity(EORI(eori4), leadEORI = false)
-  val businessEntity5 = BusinessEntity(EORI(eori1), leadEORI = true)
+  val businessEntity1 = BusinessEntity(eori1, leadEORI = true)
+  val businessEntity2 = BusinessEntity(eori2, leadEORI = true)
+  val businessEntity3 = BusinessEntity(eori3, leadEORI = true)
+  val businessEntity4 = BusinessEntity(eori4, leadEORI = false)
+  val businessEntity5 = BusinessEntity(eori1, leadEORI = true)
 
-  val optionalTraderRef = OptionalTraderRef("true", TraderRef("ABC123").some)
-  val optionalEORI = OptionalClaimEori("true", eori1.some)
+  val optionalTraderRef = OptionalTraderRef("true", TraderRef.from("ABC123").value.some)
+  val optionalEORI = OptionalClaimEori("true", eori1.value.some)
 
-  val undertakingRef = UndertakingRef("UR123456")
+  val undertakingRef = UndertakingRef.from("UR123456")
 
-  val subsidyAmount = SubsidyAmount(BigDecimal(123.45))
-  val nonHmrcSubsidyAmount = SubsidyAmount(BigDecimal(543.21))
+  val subsidyAmount = SubsidyAmount.from(BigDecimal(123.45))
+  val nonHmrcSubsidyAmount = SubsidyAmount.from(BigDecimal(543.21))
 
-  val declarationId = DeclarationID("12345")
+  val declarationId = DeclarationID.from("12345")
 
-  val traderRef = TraderRef("SomeTraderReference")
+  val traderRef = TraderRef.from("SomeTraderReference")
 
   val hmrcSubsidy = HmrcSubsidy(
     declarationID = declarationId,
@@ -67,26 +69,26 @@ object CommonTestData {
     acceptanceDate = fixedDate,
     declarantEORI = eori1,
     consigneeEORI = eori3,
-    taxType = Some(TaxType("1")),
+    taxType = Some(TaxType.from("1")),
     hmrcSubsidyAmtGBP = Some(subsidyAmount),
     hmrcSubsidyAmtEUR = Some(subsidyAmount),
     tradersOwnRefUCR = Some(traderRef)
   )
 
   val nonHmrcSubsidy = NonHmrcSubsidy(
-    subsidyUsageTransactionId = Some(SubsidyRef("AB12345")),
+    subsidyUsageTransactionId = Some(SubsidyRef.from("AB12345")),
     allocationDate = LocalDate.of(2022, 1, 1),
     submissionDate = fixedDate,
     publicAuthority = "Local Authority".some,
-    traderReference = TraderRef("ABC123").some,
+    traderReference = TraderRef.from("ABC123").some,
     nonHMRCSubsidyAmtEUR = nonHmrcSubsidyAmount,
     businessEntityIdentifier = eori1.some,
-    amendmentType = EisSubsidyAmendmentType("1").some
+    amendmentType = EisSubsidyAmendmentType.from("1").some
   )
 
   val nonHmrcSubsidyList = List(nonHmrcSubsidy)
 
-  val nonHmrcSubsidyList1 = nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionId = SubsidyRef("TID1234").some))
+  val nonHmrcSubsidyList1 = nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionId = SubsidyRef.from("TID1234").some))
 
   val undertakingSubsidies = UndertakingSubsidies(
     undertakingIdentifier = undertakingRef,
@@ -99,10 +101,10 @@ object CommonTestData {
   )
 
   val emptyUndertakingSubsidies = undertakingSubsidies.copy(
-    nonHMRCSubsidyTotalEUR = SubsidyAmount(0),
-    nonHMRCSubsidyTotalGBP = SubsidyAmount(0),
-    hmrcSubsidyTotalEUR = SubsidyAmount(0),
-    hmrcSubsidyTotalGBP = SubsidyAmount(0),
+    nonHMRCSubsidyTotalEUR = SubsidyAmount.from(zero),
+    nonHMRCSubsidyTotalGBP = SubsidyAmount.from(zero),
+    hmrcSubsidyTotalEUR = SubsidyAmount.from(zero),
+    hmrcSubsidyTotalGBP = SubsidyAmount.from(zero),
     nonHMRCSubsidyUsage = List.empty,
     hmrcSubsidyUsage = List.empty
   )
@@ -128,77 +130,77 @@ object CommonTestData {
 
   val undertaking = Undertaking(
     undertakingRef,
-    UndertakingName("TestUndertaking"),
-    cerealsLeguminousCrops,
-    IndustrySectorLimit(12.34),
+    UndertakingName.from("TestUndertaking"),
+    CerealsLeguminousCrops,
+    IndustrySectorLimit.from(12.34),
     LocalDate.of(2021, 1, 18).some,
-    Some(active),
+    Some(Active),
     List(businessEntity1, businessEntity2)
   )
 
   val manuallySuspendedUndertaking = Undertaking(
     undertakingRef,
-    UndertakingName("TestUndertaking"),
-    cerealsLeguminousCrops,
-    IndustrySectorLimit(12.34),
+    UndertakingName.from("TestUndertaking"),
+    CerealsLeguminousCrops,
+    IndustrySectorLimit.from(12.34),
     LocalDate.of(2021, 1, 18).some,
-    Some(suspendedManual),
+    Some(SuspendedManual),
     List(businessEntity1, businessEntity2)
   )
 
   val inactiveUndertaking = Undertaking(
     undertakingRef,
-    UndertakingName("TestUndertaking"),
-    other,
-    IndustrySectorLimit(12.34),
+    UndertakingName.from("TestUndertaking"),
+    Other,
+    IndustrySectorLimit.from(12.34),
     LocalDate.of(2021, 1, 18).some,
-    Some(inactive),
+    Some(Inactive),
     List(businessEntity1, businessEntity4)
   )
 
   val writeableUndertaking = UndertakingCreate(
-    UndertakingName("TestUndertaking"),
-    transport,
+    UndertakingName.from("TestUndertaking"),
+    Transport,
     List(businessEntity1)
   )
 
   val undertaking1 = Undertaking(
     undertakingRef,
-    UndertakingName("TestUndertaking"),
-    cerealsLeguminousCrops,
-    IndustrySectorLimit(12.34),
+    UndertakingName.from("TestUndertaking"),
+    CerealsLeguminousCrops,
+    IndustrySectorLimit.from(12.34),
     LocalDate.of(2021, 1, 18).some,
-    Some(active),
+    Some(Active),
     List(businessEntity1, businessEntity4)
   )
 
   val undertaking2 = Undertaking(
     undertakingRef,
-    UndertakingName("TestUndertaking"),
-    cerealsLeguminousCrops,
-    IndustrySectorLimit(12.34),
+    UndertakingName.from("TestUndertaking"),
+    CerealsLeguminousCrops,
+    IndustrySectorLimit.from(12.34),
     LocalDate.of(2021, 1, 18).some,
-    Some(active),
+    Some(Active),
     List(businessEntity4)
   )
 
   val undertaking3 = Undertaking(
     undertakingRef,
-    UndertakingName("TestUndertaking"),
-    cerealsLeguminousCrops,
-    IndustrySectorLimit(32.34),
+    UndertakingName.from("TestUndertaking"),
+    CerealsLeguminousCrops,
+    IndustrySectorLimit.from(32.34),
     Some(LocalDate.of(2021, 1, 18)),
-    Some(active),
+    Some(Active),
     List(businessEntity1, businessEntity2)
   )
 
   val undertaking4 = Undertaking(
     undertakingRef,
-    UndertakingName("TestUndertaking"),
-    cerealsLeguminousCrops,
-    IndustrySectorLimit(32.34),
+    UndertakingName.from("TestUndertaking"),
+    CerealsLeguminousCrops,
+    IndustrySectorLimit.from(32.34),
     Some(LocalDate.of(2025, 11, 11)),
-    Some(active),
+    Some(Active),
     List(businessEntity2)
   )
 
@@ -235,7 +237,7 @@ object CommonTestData {
 
   val undertakingJourneyComplete = UndertakingJourney(
     about = AboutUndertakingFormPage("TestUndertaking".some),
-    sector = UndertakingSectorFormPage(Sector(1).some),
+    sector = UndertakingSectorFormPage(Sector.fromCode("1").some),
     hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
     addBusiness = UndertakingAddBusinessFormPage(false.some),
     cya = UndertakingCyaFormPage(true.some),
@@ -247,7 +249,7 @@ object CommonTestData {
 
   val undertakingJourneyComplete1 = UndertakingJourney(
     about = AboutUndertakingFormPage("TestUndertaking1".some),
-    sector = UndertakingSectorFormPage(Sector(2).some),
+    sector = UndertakingSectorFormPage(Sector.fromCode("2").some),
     cya = UndertakingCyaFormPage(true.some),
     confirmation = UndertakingConfirmationFormPage(true.some),
     isAmend = true
@@ -255,7 +257,7 @@ object CommonTestData {
 
   val undertakingJourneyComplete2 = UndertakingJourney(
     about = AboutUndertakingFormPage("TestUndertaking1".some),
-    sector = UndertakingSectorFormPage(Sector(0).some),
+    sector = UndertakingSectorFormPage(Sector.fromCode("0").some),
     cya = UndertakingCyaFormPage(true.some),
     confirmation = UndertakingConfirmationFormPage(true.some),
     isAmend = true
@@ -291,7 +293,7 @@ object CommonTestData {
   val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, Some(Undeliverable("foo")))
 
   val undertakingCreated =
-    UndertakingCreate(UndertakingName("TestUndertaking"), transport, List(businessEntity5))
+    UndertakingCreate(UndertakingName.from("TestUndertaking"), Transport, List(businessEntity5))
 
   val singleEoriEmailParameters = EmailParameters(eori1, None, undertaking.name, None)
   val singleEoriWithDateEmailParameters = EmailParameters(eori1, None, undertaking.name, dateTime.toString.some)
@@ -339,16 +341,16 @@ object CommonTestData {
     None
   )
 
-  val industrySectorLimit = IndustrySectorLimit(50000)
+  val industrySectorLimit = IndustrySectorLimit.from(50000)
 
   val undertakingBalance = UndertakingBalance(
-    undertakingIdentifier = UndertakingRef("some-ref"),
+    undertakingIdentifier = UndertakingRef.from("some-ref"),
     nonHMRCSubsidyAllocationEUR = None,
     hmrcSubsidyAllocationEUR = None,
     industrySectorLimit = industrySectorLimit,
     availableBalanceEUR = subsidyAmount,
     availableBalanceGBP = subsidyAmount,
-    conversionRate = SubsidyAmount(1.2),
+    conversionRate = SubsidyAmount.from(1.2),
     nationalCapBalanceEUR = industrySectorLimit
   )
 

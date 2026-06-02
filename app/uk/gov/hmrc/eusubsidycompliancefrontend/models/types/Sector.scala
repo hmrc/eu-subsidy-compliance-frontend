@@ -23,6 +23,8 @@ import scala.util.{Failure, Success, Try}
 sealed trait Sector:
   def code: String
 
+  override def toString: String = code
+
 object Sector:
 
   case object Other extends Sector:

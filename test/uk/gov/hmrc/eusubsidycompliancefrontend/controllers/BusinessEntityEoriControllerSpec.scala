@@ -103,7 +103,7 @@ class BusinessEntityEoriControllerSpec
       document.title shouldBe s"${titlePrefix}Businesses in your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
       document
         .getElementsByAttributeValue("action", routes.AddBusinessEntityController.postAddBusinessEntity.url)
-        .size() shouldBe 1 //verify form is on the page
+        .size() shouldBe 1 // verify form is on the page
       document.getElementById("continue").text() shouldBe "Save and continue"
     }
 

@@ -91,11 +91,12 @@ class CustomsDataStoreConnectorSpec
       mockPost(updateVerifiedEmailUrl, UpdateEmailRequest(eori1, email, now))(
         Some(HttpResponse(500, "{}"))
       )
-      connector
-        .updateEmailForEori(eori1, email, now)
-        .map(
-          _ shouldBe new RuntimeException(s"Error updating email address for eori: $eori1, new email address: $email")
-        )
+
+      val exception = intercept[RuntimeException] {
+        connector.updateEmailForEori(eori1, email, now)
+      }
+
+      exception.getMessage shouldBe s"Error updating email address for eori: $eori1, new email address: $email"
     }
 
   }
