@@ -30,13 +30,13 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ConfirmAddBusinessDetailsController @Inject() (
-                                                      mcc: MessagesControllerComponents,
-                                                      actionBuilders: ActionBuilders,
-                                                      confirmAddBusinessDetailsPage: ConfirmAddBusinessDetailsPage
-                                                    )(implicit
-                                                      val appConfig: AppConfig,
-                                                      val executionContext: ExecutionContext
-                                                    ) extends BaseController(mcc) {
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  confirmAddBusinessDetailsPage: ConfirmAddBusinessDetailsPage
+)(implicit
+  val appConfig: AppConfig,
+  val executionContext: ExecutionContext
+) extends BaseController(mcc) {
 
   import actionBuilders._
 
@@ -51,10 +51,8 @@ class ConfirmAddBusinessDetailsController @Inject() (
     confirmAddBusinessDetailsForm
       .bindFromRequest()
       .fold(
-        formWithErrors =>
-          BadRequest(confirmAddBusinessDetailsPage(formWithErrors)).toFuture,
-        _ =>
-          Redirect(routes.ConfirmAddBusinessDetailsController.showPage).toFuture
+        formWithErrors => BadRequest(confirmAddBusinessDetailsPage(formWithErrors)).toFuture,
+        _ => Redirect(routes.ConfirmAddBusinessDetailsController.showPage).toFuture
       )
   }
 }

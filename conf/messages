@@ -836,6 +836,14 @@ confirmMultipleBusinessDetails.typeOfId = Type of ID
 confirmMultipleBusinessDetails.idNumber = ID number
 confirmMultipleBusinessDetails.error.required= Select yes if all these details are correct
 
+confirmedMemberBusinessDetails.title = Your business details
+confirmedMemberBusinessDetails.h1 = Your business details
+confirmedMemberBusinessDetails.p1 = Your undertaking administrator confirmed these details for your business on DATE PLACEHOLDER.
+confirmedMemberBusinessDetails.p2 = If any of your details are wrong, contact your administrator.
+confirmedMemberBusinessDetails.eoriNumber = EORI number
+confirmedMemberBusinessDetails.typeOfId = Type of ID
+confirmedMemberBusinessDetails.idNumber = ID number
+
 ############################################## NACE #################################################################################################################
 
 Other = Other

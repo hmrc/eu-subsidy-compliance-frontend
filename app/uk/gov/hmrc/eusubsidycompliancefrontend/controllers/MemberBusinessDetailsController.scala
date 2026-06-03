@@ -16,43 +16,32 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmRegisterBusinessDetailsPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmedMemberBusinessDetailsPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmRegisterBusinessDetailsController @Inject() (
-  mcc: MessagesControllerComponents,
-  actionBuilders: ActionBuilders,
-  confirmRegisterBusinessDetailsPage: ConfirmRegisterBusinessDetailsPage
-)(implicit
-  val appConfig: AppConfig,
-  val executionContext: ExecutionContext
-) extends BaseController(mcc) {
+class MemberBusinessDetailsController @Inject() (
+                                                  mcc: MessagesControllerComponents,
+                                                  actionBuilders: ActionBuilders,
+                                                  memberBusinessDetailsPage: ConfirmedMemberBusinessDetailsPage
+                                                )(implicit
+                                                  val appConfig: AppConfig,
+                                                  val executionContext: ExecutionContext
+                                                ) extends BaseController(mcc) {
 
   import actionBuilders._
 
-  private val confirmRegisterBusinessDetailsForm: Form[FormValues] =
-    formWithSingleMandatoryField("confirmRegisterBusinessDetails")
-
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm)).toFuture
+    Ok(memberBusinessDetailsPage()).toFuture
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    confirmRegisterBusinessDetailsForm
-      .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(confirmRegisterBusinessDetailsPage(formWithErrors)).toFuture,
-        _ => Redirect(routes.ConfirmRegisterBusinessDetailsController.showPage).toFuture
-      )
+    Redirect(routes.MemberBusinessDetailsController.showPage()).toFuture
   }
 }

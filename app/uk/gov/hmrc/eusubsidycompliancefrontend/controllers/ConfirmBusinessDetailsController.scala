@@ -31,14 +31,14 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ConfirmBusinessDetailsController @Inject() (
-                                                   mcc: MessagesControllerComponents,
-                                                   actionBuilders: ActionBuilders,
-                                                   confirmBusinessDetailsPage: ConfirmBusinessDetailsPage,
-                                                   confirmMultipleBusinessDetailsPage: ConfirmMultipleBusinessDetailsPage
-                                                 )(implicit
-                                                   val appConfig: AppConfig,
-                                                   val executionContext: ExecutionContext
-                                                 ) extends BaseController(mcc) {
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  confirmBusinessDetailsPage: ConfirmBusinessDetailsPage,
+  confirmMultipleBusinessDetailsPage: ConfirmMultipleBusinessDetailsPage
+)(implicit
+  val appConfig: AppConfig,
+  val executionContext: ExecutionContext
+) extends BaseController(mcc) {
 
   import actionBuilders._
 
@@ -46,7 +46,7 @@ class ConfirmBusinessDetailsController @Inject() (
     formWithSingleMandatoryField("confirmBusinessDetails")
 
   private def multipleEoris: Boolean = true // placeholder
-  private def isSuspended: Boolean = true  // placeholder
+  private def isSuspended: Boolean = true // placeholder
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
     if (multipleEoris) {
@@ -66,8 +66,7 @@ class ConfirmBusinessDetailsController @Inject() (
           } else {
             BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended)).toFuture
           },
-        _ =>
-          Redirect(routes.ConfirmBusinessDetailsController.showPage).toFuture
+        _ => Redirect(routes.ConfirmBusinessDetailsController.showPage).toFuture
       )
   }
 }

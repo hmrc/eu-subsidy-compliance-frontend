@@ -900,3 +900,6 @@ POST       /confirm-details-add-business                                        
 
 GET        /confirm-business-details-register                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmRegisterBusinessDetailsController.showPage()
 POST       /confirm-business-details-register                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmRegisterBusinessDetailsController.submitPage()
+
+GET        /member-business-details                                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MemberBusinessDetailsController.showPage()
+POST       /member-business-details                                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MemberBusinessDetailsController.submitPage()
