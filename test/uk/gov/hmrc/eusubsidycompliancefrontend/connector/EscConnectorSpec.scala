@@ -84,14 +84,14 @@ class EscConnectorSpec
     "handling request to add member in Business Entity Undertaking" must {
       behave like connectorBehaviour(
         mockPost(url"$baseUrl/undertaking/member/UR123456", businessEntity3)(_),
-        () => connector.addMember(UndertakingRef("UR123456"), businessEntity3)
+        () => connector.addMember(UndertakingRef.from("UR123456"), businessEntity3)
       )
     }
 
     "handling request to remove member from Business Entity Undertaking" must {
       behave like connectorBehaviour(
         mockPost(url"$baseUrl/undertaking/member/remove/UR123456", businessEntity3)(_),
-        () => connector.removeMember(UndertakingRef("UR123456"), businessEntity3)
+        () => connector.removeMember(UndertakingRef.from("UR123456"), businessEntity3)
       )
     }
 

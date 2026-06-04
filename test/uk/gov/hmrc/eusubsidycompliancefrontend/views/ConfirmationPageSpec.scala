@@ -32,7 +32,7 @@ class ConfirmationPageSpec extends PlaySupport {
       val view: ConfirmationPage = fakeApplication.injector.instanceOf[ConfirmationPage]
 
       val document: Document = Jsoup.parse(
-        view(UndertakingRef("UR123456"), EORI("GB922456789077"), intentToAddBusiness = true)(
+        view(UndertakingRef.from("UR123456"), EORI("GB922456789077"), intentToAddBusiness = true)(
           FakeRequest(),
           messages,
           appConfig
@@ -70,7 +70,7 @@ class ConfirmationPageSpec extends PlaySupport {
       val view: ConfirmationPage = fakeApplication.injector.instanceOf[ConfirmationPage]
 
       val document: Document = Jsoup.parse(
-        view(UndertakingRef("UR123456"), EORI("GB922456789077"), intentToAddBusiness = false)(
+        view(UndertakingRef.from("UR123456"), EORI("GB922456789077"), intentToAddBusiness = false)(
           FakeRequest(),
           messages,
           appConfig

@@ -199,7 +199,7 @@ class AccountControllerSpec
       "redirect to NACE Undertaking Category Intro page" when {
 
         "user has undertaking with agriculture sector" in {
-          val agricultureUndertaking = undertaking.copy(industrySector = Sector.agriculture)
+          val agricultureUndertaking = undertaking.copy(industrySector = Sector.Agriculture)
 
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -213,7 +213,7 @@ class AccountControllerSpec
         }
 
         "user has undertaking with other sector" in {
-          val otherUndertaking = undertaking.copy(industrySector = Sector.other)
+          val otherUndertaking = undertaking.copy(industrySector = Sector.Other)
 
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -230,7 +230,7 @@ class AccountControllerSpec
       "not redirect to regulatory change notification" when {
 
         "user has undertaking with fishery sector" in {
-          val fisheryUndertaking = undertaking.copy(industrySector = Sector.freshwaterFishing)
+          val fisheryUndertaking = undertaking.copy(industrySector = Sector.FreshwaterFishing)
 
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
@@ -263,7 +263,7 @@ class AccountControllerSpec
             val requestWithSession = FakeRequest().withSession("regulatoryChangeNotificationSeen" -> "true")
             def performActionWithSession() = controller.getAccountPage(requestWithSession)
 
-            val agricultureUndertaking = undertaking.copy(industrySector = Sector.agriculture)
+            val agricultureUndertaking = undertaking.copy(industrySector = Sector.Agriculture)
 
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
@@ -280,7 +280,7 @@ class AccountControllerSpec
             val requestWithSession = FakeRequest().withSession("regulatoryChangeNotificationSeen" -> "true")
             def performActionWithSession() = controller.getAccountPage(requestWithSession)
 
-            val otherUndertaking = undertaking.copy(industrySector = Sector.other)
+            val otherUndertaking = undertaking.copy(industrySector = Sector.Other)
 
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
@@ -334,7 +334,7 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
               mockRetrieveUndertaking(eori1)(
-                undertaking.copy(undertakingStatus = Some(UndertakingStatus.active)).some.toFuture
+                undertaking.copy(undertakingStatus = Some(UndertakingStatus.Active)).some.toFuture
               )
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
@@ -359,7 +359,7 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification(eori4)
               mockRetrieveUndertaking(eori4)(
-                undertaking1.copy(undertakingStatus = Some(UndertakingStatus.suspendedAutomated)).some.toFuture
+                undertaking1.copy(undertakingStatus = Some(UndertakingStatus.SuspendedAutomated)).some.toFuture
               )
             }
             val result = performAction()
@@ -368,7 +368,7 @@ class AccountControllerSpec
               routes.UndertakingInvalidSectorSuspendedPageController.showPage.url
             )
             session(result).get("suspensionCode") shouldBe Some(
-              UndertakingStatus.suspendedAutomated.id.toString
+              UndertakingStatus.SuspendedAutomated.code.toString
             )
           }
         }
@@ -377,7 +377,7 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(
-              inactiveUndertaking.copy(undertakingStatus = Some(UndertakingStatus.inactive)).some.toFuture
+              inactiveUndertaking.copy(undertakingStatus = Some(UndertakingStatus.Inactive)).some.toFuture
             )
           }
           val result = performAction()
@@ -386,7 +386,7 @@ class AccountControllerSpec
             routes.UndertakingInactivePageController.showPage.url
           )
           session(result).get("suspensionCode") shouldBe Some(
-            UndertakingStatus.inactive.id.toString
+            UndertakingStatus.Inactive.code.toString
           )
         }
 

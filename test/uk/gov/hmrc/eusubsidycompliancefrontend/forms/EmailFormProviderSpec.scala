@@ -86,7 +86,7 @@ class EmailFormProviderSpec extends BaseSpec with Matchers {
   )(form: (String, String)*)(errorField: String, errorMessage: String) = {
     val result = processForm[A](provider)(form: _*)
 
-    val foundExpectedErrorMessage = result.leftSideValue match {
+    val foundExpectedErrorMessage = result match {
       case Left(errors) => errors.map(_.message).contains(errorMessage)
       case _ => false
     }

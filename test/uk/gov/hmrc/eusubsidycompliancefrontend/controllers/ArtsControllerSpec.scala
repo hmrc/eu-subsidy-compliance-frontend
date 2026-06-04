@@ -60,7 +60,7 @@ class ArtsControllerSpec
 
   // Sector codes for Level 3 - Libraries, Archives, Museums
   private val botanicalGardensNatureReserves = Sector.BotanicalGardensAndNatureReserves.toString
-  private val culturalHeritageConservation =Sector.CulturalHeritageConservation4.toString
+  private val culturalHeritageConservation = Sector.CulturalHeritageConservation4.toString
   private val libraryArchives = Sector.LibraryArchives.toString
   private val museumCollectionsMonuments = Sector.MuseumCollectionsMonuments.toString
 

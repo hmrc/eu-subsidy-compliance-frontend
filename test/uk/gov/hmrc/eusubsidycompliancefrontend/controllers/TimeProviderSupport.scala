@@ -31,6 +31,6 @@ trait TimeProviderSupport { this: ControllerSpec =>
   def mockTimeProviderToday(now: LocalDate): CallHandler0[LocalDate] =
     (() => mockTimeProvider.today).expects().returning(now)
 
-  def mockTimeProviderTodayMinusDays(now: LocalDate): CallHandler0[LocalDate] =
-    (() => mockTimeProvider.getMinusDaysForVal(1095)).expects().returning(now)
+  def mockTimeProviderTodayMinusDays(now: LocalDate): CallHandler1[Int, LocalDate] =
+    (mockTimeProvider.getMinusDaysForVal _).expects(1095).returning(now)
 }

@@ -47,8 +47,7 @@ class FinancialDashboardControllerSpec
     with Matchers
     with ScalaFutures
     with IntegrationPatience
-    with EscServiceSupport
-    with GuiceOneAppPerSuite {
+    with EscServiceSupport {
 
   private val fakeTimeProvider = FakeTimeProvider.withFixedDate(1, 1, 2022)
 
@@ -67,11 +66,14 @@ class FinancialDashboardControllerSpec
     )
   )
 
-  override lazy val fakeApplication: Application =
+  override def buildFakeApplication(): Application = {
     new GuiceApplicationBuilder()
       .configure(additionalConfig)
       .overrides(overrideBindings: _*)
       .build()
+  }
+
+  lazy val app: Application = buildFakeApplication()
 
   "FinancialDashboardController" when {
 
@@ -100,7 +102,7 @@ class FinancialDashboardControllerSpec
           )
 
         status(result) shouldBe Status.OK
-        contentAsString(result) shouldBe page(eori1, summaryData, industrySectorKey, previous)(
+        contentAsString(result) shouldBe page(eori1.value, summaryData, industrySectorKey, previous)(
           request,
           messages,
           instanceOf[AppConfig]
@@ -172,7 +174,11 @@ class FinancialDashboardControllerSpec
 
       status(result) shouldBe Status.OK
       val data = contentAsString(result)
-      data shouldBe page(eori2, summaryData, industrySectorKey, previous)(request, messages, instanceOf[AppConfig])
+      data shouldBe page(eori2.value, summaryData, industrySectorKey, previous)(
+        request,
+        messages,
+        instanceOf[AppConfig]
+      )
         .toString()
       val document = Jsoup.parse(data)
       verifyInsetText(document)
@@ -204,7 +210,11 @@ class FinancialDashboardControllerSpec
 
       status(result) shouldBe Status.OK
       val data = contentAsString(result)
-      data shouldBe page(eori1, summaryData, industrySectorKey, previous)(request, messages, instanceOf[AppConfig])
+      data shouldBe page(eori1.value, summaryData, industrySectorKey, previous)(
+        request,
+        messages,
+        instanceOf[AppConfig]
+      )
         .toString()
       val document = Jsoup.parse(data)
       verifyInsetText(document)

@@ -31,6 +31,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney.FormPages.AddBusinessFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -195,7 +196,7 @@ class AddBusinessEntityControllerSpec
           document.getElementsByClass("govuk-summary-list__row").size() shouldBe 1
           document
             .getElementById(s"business-entity-${businessEntity4.businessEntityIdentifier}")
-            .text shouldBe businessEntity4.businessEntityIdentifier
+            .text shouldBe businessEntity4.businessEntityIdentifier.value
           document
             .getElementById(s"remove-link-${businessEntity4.businessEntityIdentifier}")
             .attr(

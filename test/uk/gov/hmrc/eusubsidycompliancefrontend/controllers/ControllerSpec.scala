@@ -28,6 +28,7 @@ import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.SectorRadioOption
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.PlaySupport
 
@@ -124,7 +125,7 @@ trait ControllerSpec extends PlaySupport with ScalaFutures with IntegrationPatie
 
   def verifyGenericHomepageContentForLead(doc: Document, eori: EORI = CommonTestData.eori1) = {
     doc.title() shouldBe "Manage your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
-    doc.getElementById("undertaking-eori-number").text shouldBe eori
+    doc.getElementById("undertaking-eori-number").text shouldBe eori.value
   }
 }
 

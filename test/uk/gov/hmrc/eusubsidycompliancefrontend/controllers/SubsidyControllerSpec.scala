@@ -47,7 +47,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.toEuros
 
-
 import java.time.LocalDate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
@@ -1746,13 +1745,14 @@ class SubsidyControllerSpec
           performAction(transactionId),
           messageFromMessageKey("subsidy.remove.title"),
           { doc =>
-            val rows =
+            val rows: Seq[RemoveSubsidyRow] =
               doc.select(".govuk-summary-list__row").asScala.toList.map { element =>
                 val question = element.select(".govuk-summary-list__key").text()
                 val answer = element.select(".govuk-summary-list__value").text()
                 RemoveSubsidyRow(question, answer)
               }
-            rows shouldBe expectedRows(nonHmrcSubsidyList1.head)
+            val xpectedRows: Seq[RemoveSubsidyRow] = expectedRows(nonHmrcSubsidyList1.head)
+            rows shouldBe xpectedRows
             val button = doc.select("form")
             button.attr("action") shouldBe routes.SubsidyController.postRemoveSubsidyClaim(transactionId).url
 

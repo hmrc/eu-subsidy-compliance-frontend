@@ -18,7 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailTemplate, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.VerifiedStatus.VerifiedStatus
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.VerifiedStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps

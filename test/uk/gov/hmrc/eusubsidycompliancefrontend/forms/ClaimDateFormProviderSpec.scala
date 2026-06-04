@@ -131,13 +131,13 @@ class ClaimDateFormProviderSpec extends BaseSpec with Matchers {
       )
     )
 
-    val foundExpectedErrorMessage = result.leftSideValue match {
+    val foundExpectedErrorMessage = result match {
       case Left(errors) => errors.contains(FormError("", s"add-claim-date.$errorMessage", args))
       case _ => false
     }
 
     foundExpectedErrorMessage mustBe true withClue
-      s"could not locate error message ending '$errorMessage' in list of errors: ${result.leftSideValue}"
+      s"could not locate error message ending '$errorMessage' in list of errors: ${result.leftSide.left.get}"
   }
 
 }

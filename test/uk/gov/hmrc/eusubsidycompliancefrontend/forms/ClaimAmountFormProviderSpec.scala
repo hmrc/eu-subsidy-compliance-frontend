@@ -173,9 +173,9 @@ class ClaimAmountFormProviderSpec extends BaseSpec with Matchers {
     field: String,
     errorMessage: String
   ) = {
-    val result = processForm(currencyCode, amountEUR, amountGBP)
+    val result: Either[Seq[FormError], ClaimAmount] = processForm(currencyCode, amountEUR, amountGBP)
 
-    val foundExpectedErrorMessage = result.leftSideValue match {
+    val foundExpectedErrorMessage = result match {
       case Left(errors) => errors.contains(FormError(field, s"$errorMessage"))
       case _ => false
     }

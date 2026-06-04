@@ -34,6 +34,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.Create
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailTemplate, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, VerifiedStatus}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.VerifiedEoriCache
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec

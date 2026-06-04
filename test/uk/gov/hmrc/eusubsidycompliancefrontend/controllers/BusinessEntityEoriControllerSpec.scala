@@ -332,7 +332,7 @@ class BusinessEntityEoriControllerSpec
               checkIsRedirect(
                 performAction("businessEntityEori" -> eoriEntered),
                 routes.AddBusinessEntityController
-                  .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(validEori))
+                  .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(validEori.value))
                   .url
               )
             }
@@ -364,7 +364,7 @@ class BusinessEntityEoriControllerSpec
           checkIsRedirect(
             performAction("businessEntityEori" -> "GB123456789010"),
             routes.AddBusinessEntityController
-              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(newEori))
+              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(newEori.value))
               .url
           )
         }

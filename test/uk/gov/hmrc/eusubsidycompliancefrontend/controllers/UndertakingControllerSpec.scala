@@ -32,7 +32,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.Undertaki
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse, VerificationStatus}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -131,7 +130,7 @@ class UndertakingControllerSpec
             testRedirect(
               UndertakingJourney(
                 about = AboutUndertakingFormPage("TestUndertaking".some),
-                sector = UndertakingSectorFormPage(Sector(1).some)
+                sector = UndertakingSectorFormPage(Sector.fromCode("1").some)
               ),
               routes.UndertakingController.getConfirmEmail.url
             )
@@ -141,7 +140,7 @@ class UndertakingControllerSpec
             testRedirect(
               UndertakingJourney(
                 about = AboutUndertakingFormPage("TestUndertaking".some),
-                sector = UndertakingSectorFormPage(Sector(1).some),
+                sector = UndertakingSectorFormPage(Sector.fromCode("1").some),
                 hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
               ),
               routes.UndertakingController.getAddBusiness.url
@@ -152,7 +151,7 @@ class UndertakingControllerSpec
             testRedirect(
               UndertakingJourney(
                 about = AboutUndertakingFormPage("TestUndertaking".some),
-                sector = UndertakingSectorFormPage(Sector(1).some),
+                sector = UndertakingSectorFormPage(Sector.fromCode("1").some),
                 hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
                 addBusiness = UndertakingAddBusinessFormPage(false.some)
               ),
@@ -164,7 +163,7 @@ class UndertakingControllerSpec
             testRedirect(
               UndertakingJourney(
                 about = AboutUndertakingFormPage("TestUndertaking".some),
-                sector = UndertakingSectorFormPage(Sector(1).some),
+                sector = UndertakingSectorFormPage(Sector.fromCode("1").some),
                 hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
                 addBusiness = UndertakingAddBusinessFormPage(false.some),
                 cya = UndertakingCyaFormPage(true.some)
@@ -177,7 +176,7 @@ class UndertakingControllerSpec
             testRedirect(
               UndertakingJourney(
                 about = AboutUndertakingFormPage("TestUndertaking".some),
-                sector = UndertakingSectorFormPage(Sector(1).some),
+                sector = UndertakingSectorFormPage(Sector.fromCode("1").some),
                 cya = UndertakingCyaFormPage(true.some),
                 hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
                 addBusiness = UndertakingAddBusinessFormPage(false.some),
@@ -439,7 +438,7 @@ class UndertakingControllerSpec
         //          test(
         //            undertakingJourney = UndertakingJourney(
         //              about = AboutUndertakingFormPage("TestUndertaking1".some),
-        //              sector = UndertakingSectorFormPage(Sector(2).some)
+        //              sector = UndertakingSectorFormPage(Sector.fromCode("2").some)
         //            ),
         //            previousCall = routes.UndertakingController.getAboutUndertaking.url,
         //            inputValue = "2".some
@@ -572,7 +571,7 @@ class UndertakingControllerSpec
 
         def test(undertakingJourney: UndertakingJourney, nextCall: String): Unit = {
 
-          val newSector = UndertakingSectorFormPage(Sector(3).some)
+          val newSector = UndertakingSectorFormPage(Sector.fromCode("3").some)
 
           val updatedUndertaking = undertakingJourney.copy(sector = newSector)
           inSequence {
@@ -633,7 +632,7 @@ class UndertakingControllerSpec
         "User has verified email in CDS" in {
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),
-            sector = UndertakingSectorFormPage(Sector(2).some),
+            sector = UndertakingSectorFormPage(Sector.fromCode("2").some),
             hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
           )
           val email = "joebloggs@something.com"
@@ -678,7 +677,7 @@ class UndertakingControllerSpec
         //        "User has verified email in CDS" in {
         //          val undertakingJourney = UndertakingJourney(
         //            about = AboutUndertakingFormPage("TestUndertaking1".some),
-        //            sector = UndertakingSectorFormPage(Sector(2).some)
+        //            sector = UndertakingSectorFormPage(Sector.fromCode("2").some)
         //          )
         //          val previousCall = routes.UndertakingController.getSector.url
         //
@@ -718,7 +717,7 @@ class UndertakingControllerSpec
         //        "User does not have verified email in CDS" in {
         //          val undertakingJourney = UndertakingJourney(
         //            about = AboutUndertakingFormPage("TestUndertaking1".some),
-        //            sector = UndertakingSectorFormPage(Sector(2).some)
+        //            sector = UndertakingSectorFormPage(Sector.fromCode("2").some)
         //          )
         //          val previousCall = routes.UndertakingController.getSector.url
         //          val email = "email@t.com"
@@ -887,7 +886,7 @@ class UndertakingControllerSpec
         "When Change of undertaking business is available in" in {
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),
-            sector = UndertakingSectorFormPage(Sector(2).some),
+            sector = UndertakingSectorFormPage(Sector.fromCode("2").some),
             hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
           )
 
@@ -912,7 +911,7 @@ class UndertakingControllerSpec
         "addBusiness page has an intent" in {
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),
-            sector = UndertakingSectorFormPage(Sector(2).some),
+            sector = UndertakingSectorFormPage(Sector.fromCode("2").some),
             hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
           )
           val previousCall = routes.UndertakingController.getConfirmEmail.url
@@ -929,7 +928,7 @@ class UndertakingControllerSpec
         "when question has not been answered" in {
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),
-            sector = UndertakingSectorFormPage(Sector(2).some),
+            sector = UndertakingSectorFormPage(Sector.fromCode("2").some),
             hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
           )
           val previousCall = routes.UndertakingController.getConfirmEmail.url
@@ -955,7 +954,7 @@ class UndertakingControllerSpec
         "when question has been answered" in {
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),
-            sector = UndertakingSectorFormPage(Sector(2).some),
+            sector = UndertakingSectorFormPage(Sector.fromCode("2").some),
             hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
             addBusiness = UndertakingAddBusinessFormPage(true.some)
           )
@@ -999,7 +998,7 @@ class UndertakingControllerSpec
               Right(
                 UndertakingJourney(
                   about = AboutUndertakingFormPage("TestUndertaking".some),
-                  sector = UndertakingSectorFormPage(Sector(1).some)
+                  sector = UndertakingSectorFormPage(Sector.fromCode("1").some)
                 ).some
               )
             )
@@ -1298,7 +1297,7 @@ class UndertakingControllerSpec
           }
           checkIsRedirect(
             result = performAction("cya" -> "true"),
-            expectedRedirectLocation = routes.UndertakingController.getConfirmation(undertakingRef).url
+            expectedRedirectLocation = routes.UndertakingController.getConfirmation(undertakingRef.value).url
           )
         }
 
@@ -1321,8 +1320,8 @@ class UndertakingControllerSpec
 
     "handling request to get confirmation" must {
 
-      def performAction() = controller.getConfirmation(undertakingRef)(
-        FakeRequest(GET, routes.UndertakingController.getConfirmation(undertakingRef).url)
+      def performAction() = controller.getConfirmation(undertakingRef.value)(
+        FakeRequest(GET, routes.UndertakingController.getConfirmation(undertakingRef.value).url)
       )
 
       "display the page" in {
@@ -1586,7 +1585,7 @@ class UndertakingControllerSpec
 
         //        "call to update undertaking fails" in {
         //          val updatedUndertaking =
-        //            undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))
+        //            undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector.fromCode("1"))
         //          inSequence {
         //            mockAuthWithEnrolmentAndValidEmail()
         //            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -1603,7 +1602,7 @@ class UndertakingControllerSpec
 
       //      "redirect to next page" in {
       //        val updatedUndertaking =
-      //          undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))
+      //          undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector.fromCode("1"))
       //        inSequence {
       //          mockAuthWithEnrolmentAndValidEmail()
       //          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -2084,7 +2083,7 @@ class UndertakingControllerSpec
       viewModel.naceLevel3Code shouldBe "47.1"
       viewModel.naceLevel2Code shouldBe "47"
       viewModel.naceLevel1Code shouldBe "G"
-      viewModel.sector shouldBe Sector.other
+      viewModel.sector shouldBe Sector.Other
     }
 
     "set showLevel1 to true for non-agriculture sectors" in {
@@ -2207,7 +2206,7 @@ class UndertakingControllerSpec
       "previous answer equals form value and isNaceCYA is true" in {
         val journey = UndertakingJourney(
           about = AboutUndertakingFormPage("TestUndertaking".some),
-          sector = UndertakingSectorFormPage(Sector.generalTrade.some),
+          sector = UndertakingSectorFormPage(Sector.GeneralTrade.some),
           isNaceCYA = true,
           mode = appConfig.NewRegMode
         )
@@ -2226,7 +2225,7 @@ class UndertakingControllerSpec
       "previous answer equals form value and mode is AmendNaceMode" in {
         val journey = UndertakingJourney(
           about = AboutUndertakingFormPage("TestUndertaking".some),
-          sector = UndertakingSectorFormPage(Sector.generalTrade.some),
+          sector = UndertakingSectorFormPage(Sector.GeneralTrade.some),
           mode = appConfig.AmendNaceMode
         )
         inSequence {
@@ -2244,7 +2243,7 @@ class UndertakingControllerSpec
       "previous answer equals form value in normal mode" in {
         val journey = UndertakingJourney(
           about = AboutUndertakingFormPage("TestUndertaking".some),
-          sector = UndertakingSectorFormPage(Sector.generalTrade.some),
+          sector = UndertakingSectorFormPage(Sector.GeneralTrade.some),
           mode = appConfig.NewRegMode
         )
         inSequence {
@@ -2262,7 +2261,7 @@ class UndertakingControllerSpec
       "answer has changed from agriculture code 01" in {
         val journey = UndertakingJourney(
           about = AboutUndertakingFormPage("TestUndertaking".some),
-          sector = UndertakingSectorFormPage(Sector.cropAnimalProduction.some),
+          sector = UndertakingSectorFormPage(Sector.CropAnimalProduction.some),
           mode = appConfig.NewRegMode
         )
         inSequence {
@@ -2280,7 +2279,7 @@ class UndertakingControllerSpec
       "answer has changed from aquaculture code 03" in {
         val journey = UndertakingJourney(
           about = AboutUndertakingFormPage("TestUndertaking".some),
-          sector = UndertakingSectorFormPage(Sector.fishingAndAquaculture.some),
+          sector = UndertakingSectorFormPage(Sector.FishingAndAquaculture.some),
           mode = appConfig.NewRegMode
         )
         inSequence {
@@ -2298,7 +2297,7 @@ class UndertakingControllerSpec
       "answer has changed from general trade to agriculture" in {
         val journey = UndertakingJourney(
           about = AboutUndertakingFormPage("TestUndertaking".some),
-          sector = UndertakingSectorFormPage(Sector.generalTrade.some),
+          sector = UndertakingSectorFormPage(Sector.GeneralTrade.some),
           mode = appConfig.NewRegMode
         )
         inSequence {
@@ -2316,7 +2315,7 @@ class UndertakingControllerSpec
       "answer has changed from other to general trade" in {
         val journey = UndertakingJourney(
           about = AboutUndertakingFormPage("TestUndertaking".some),
-          sector = UndertakingSectorFormPage(Sector.other.some),
+          sector = UndertakingSectorFormPage(Sector.Other.some),
           mode = appConfig.NewRegMode
         )
         inSequence {
@@ -2391,7 +2390,7 @@ class UndertakingControllerSpec
 
         "sector code is 01 (agriculture - level 1 code A)" in {
           val journey = undertakingJourneyComplete.copy(
-            sector = UndertakingSectorFormPage(Sector.cerealsLeguminousCrops.some)
+            sector = UndertakingSectorFormPage(Sector.CerealsLeguminousCrops.some)
           )
           inSequence {
             mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
@@ -2421,7 +2420,7 @@ class UndertakingControllerSpec
 
         "sector code is 10 (manufacturing - level 1 code C)" in {
           val journey = undertakingJourneyComplete.copy(
-            sector = UndertakingSectorFormPage(Sector.meatProcessing.some)
+            sector = UndertakingSectorFormPage(Sector.MeatProcessing.some)
           )
           inSequence {
             mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
@@ -2438,7 +2437,7 @@ class UndertakingControllerSpec
 
         "sector code is 01 (agriculture)" in {
           val journey = undertakingJourneyComplete.copy(
-            sector = UndertakingSectorFormPage(Sector.cerealsLeguminousCrops.some)
+            sector = UndertakingSectorFormPage(Sector.CerealsLeguminousCrops.some)
           )
           inSequence {
             mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
@@ -2452,7 +2451,7 @@ class UndertakingControllerSpec
 
         "sector code is 03 (fishery and aquaculture)" in {
           val journey = undertakingJourneyComplete.copy(
-            sector = UndertakingSectorFormPage(Sector.marineAquaculture.some)
+            sector = UndertakingSectorFormPage(Sector.MarineAquaculture.some)
           )
           inSequence {
             mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
@@ -2703,7 +2702,7 @@ class UndertakingControllerSpec
 
     "transform sector code '01' to display value '01' in UpdateNaceMode" in {
       val journey = UndertakingJourney(
-        sector = UndertakingSectorFormPage(Sector.cropAnimalProduction.some),
+        sector = UndertakingSectorFormPage(Sector.CropAnimalProduction.some),
         about = AboutUndertakingFormPage("Test Undertaking".some),
         mode = appConfig.UpdateNaceMode
       )
@@ -2720,7 +2719,7 @@ class UndertakingControllerSpec
 
     "transform sector code '01.11' to display value '01' in UpdateNaceMode" in {
       val journey = UndertakingJourney(
-        sector = UndertakingSectorFormPage(Sector.cerealsLeguminousCrops.some),
+        sector = UndertakingSectorFormPage(Sector.CerealsLeguminousCrops.some),
         about = AboutUndertakingFormPage("Test Undertaking".some),
         mode = appConfig.UpdateNaceMode
       )
@@ -2737,7 +2736,7 @@ class UndertakingControllerSpec
 
     "transform sector code '03' to display value '03' in UpdateNaceMode" in {
       val journey = UndertakingJourney(
-        sector = UndertakingSectorFormPage(Sector.fishingAndAquaculture.some),
+        sector = UndertakingSectorFormPage(Sector.FishingAndAquaculture.some),
         about = AboutUndertakingFormPage("Test Undertaking".some),
         mode = appConfig.UpdateNaceMode
       )
@@ -2754,7 +2753,7 @@ class UndertakingControllerSpec
 
     "transform sector code '03.21' to display value '03' in UpdateNaceMode" in {
       val journey = UndertakingJourney(
-        sector = UndertakingSectorFormPage(Sector.marineAquaculture.some),
+        sector = UndertakingSectorFormPage(Sector.MarineAquaculture.some),
         about = AboutUndertakingFormPage("Test Undertaking".some),
         mode = appConfig.UpdateNaceMode
       )
@@ -2788,7 +2787,7 @@ class UndertakingControllerSpec
 
     "render sector page correctly with complete journey in UpdateNaceMode" in {
       val journey = UndertakingJourney(
-        sector = UndertakingSectorFormPage(Sector.cropAnimalProduction.some),
+        sector = UndertakingSectorFormPage(Sector.CropAnimalProduction.some),
         about = AboutUndertakingFormPage("My Test Undertaking Ltd".some),
         mode = appConfig.UpdateNaceMode
       )
@@ -2811,7 +2810,7 @@ class UndertakingControllerSpec
 
     "execute getSectorPage logic when mode is not UpdateNaceMode" in {
       val journey = UndertakingJourney(
-        sector = UndertakingSectorFormPage(Sector.cropAnimalProduction.some),
+        sector = UndertakingSectorFormPage(Sector.CropAnimalProduction.some),
         about = AboutUndertakingFormPage("Test Undertaking".some),
         mode = appConfig.NewRegMode
       )
@@ -2827,7 +2826,7 @@ class UndertakingControllerSpec
 
     "redirect to about undertaking page when about is not answered" in {
       val journey = UndertakingJourney(
-        sector = UndertakingSectorFormPage(Sector.cropAnimalProduction.some),
+        sector = UndertakingSectorFormPage(Sector.CropAnimalProduction.some),
         about = AboutUndertakingFormPage(None),
         mode = appConfig.NewRegMode
       )

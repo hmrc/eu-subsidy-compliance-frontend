@@ -25,6 +25,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
@@ -87,7 +88,7 @@ class NACECheckDetailsControllerSpec
 
         "sector value is too short (less than 5 characters)" in {
           val journey = UndertakingJourney(
-            sector = UndertakingJourney.Forms.UndertakingSectorFormPage(Sector.cropAnimalProduction.some)
+            sector = UndertakingJourney.Forms.UndertakingSectorFormPage(Sector.CropAnimalProduction.some)
           )
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -99,7 +100,7 @@ class NACECheckDetailsControllerSpec
 
         "sector value has exactly 4 characters" in {
           val journey = UndertakingJourney(
-            sector = UndertakingJourney.Forms.UndertakingSectorFormPage(Sector.meat.some)
+            sector = UndertakingJourney.Forms.UndertakingSectorFormPage(Sector.Meat.some)
           )
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -261,7 +262,7 @@ class NACECheckDetailsControllerSpec
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGetOrCreate[UndertakingJourney](eori1)(Right(journey))
             mockUpdate[UndertakingJourney](eori1)(
-              Right(journey.copy(sector = UndertakingJourney.Forms.UndertakingSectorFormPage(Sector.other.some)))
+              Right(journey.copy(sector = UndertakingJourney.Forms.UndertakingSectorFormPage(Sector.Other.some)))
             )
             mockUpdate[UndertakingJourney](eori1)(
               Right(journey.copy(internalNaceCode = "", isNaceCYA = false))
@@ -283,7 +284,7 @@ class NACECheckDetailsControllerSpec
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGetOrCreate[UndertakingJourney](eori1)(Right(journey))
             mockUpdate[UndertakingJourney](eori1)(
-              Right(journey.copy(sector = UndertakingJourney.Forms.UndertakingSectorFormPage(Sector.other.some)))
+              Right(journey.copy(sector = UndertakingJourney.Forms.UndertakingSectorFormPage(Sector.Other.some)))
             )
             mockUpdate[UndertakingJourney](eori1)(
               Right(journey.copy(internalNaceCode = "", isNaceCYA = false))
@@ -463,7 +464,7 @@ class NACECheckDetailsControllerSpec
         viewModel.naceLevel3Code shouldBe "47.1"
         viewModel.naceLevel2Code shouldBe "47"
         viewModel.naceLevel1Code shouldBe "G"
-        viewModel.sector shouldBe Sector.other
+        viewModel.sector shouldBe Sector.Other
       }
 
       "set showLevel1 to true for non-agriculture sectors" in {
