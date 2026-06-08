@@ -66,7 +66,7 @@ class PositiveSubsidyAmountSpec extends AnyWordSpec with Matchers {
         PositiveSubsidyAmount(BigDecimal("-1"))
       }
 
-      exception.getMessage should include ("not a valid PositiveSubsidyAmount")
+      exception.getMessage should include("not a valid PositiveSubsidyAmount")
     }
   }
 }

@@ -20,7 +20,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TaxType
 
-class TaxTypeSpec extends AnyWordSpec with Matchers{
+class TaxTypeSpec extends AnyWordSpec with Matchers {
 
   "TaxType.of" should {
 

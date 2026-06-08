@@ -20,12 +20,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef
 
-
 class TraderRefSpec extends AnyWordSpec with Matchers {
 
   "TraderRef.of" should {
 
-   "accept an empty string" in {
+    "accept an empty string" in {
       TraderRef.of("") shouldBe None
     }
 
