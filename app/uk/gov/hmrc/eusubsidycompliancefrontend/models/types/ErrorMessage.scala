@@ -22,14 +22,17 @@ object ErrorMessage extends StringValue[ErrorMessage]:
 
   opaque type ErrorMessage = String
 
-  private val Regex = """.{1,255}""".r
+  private val regex = """.{1,255}""".r
 
   override val name: String = "ErrorMessage"
 
-  override def from(value: String): ErrorMessage =
+  def apply(errMsg: String): ErrorMessage = errMsg
+
+  override def validate(value: String): ErrorMessage =
     Option(value)
       .map(_.trim)
-      .filter(Regex.matches)
+      .filter(regex.findFirstIn(_).isDefined)
+      .map(apply)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid ErrorMessage"))
 
   extension (x: ErrorMessage) override def value: String = x

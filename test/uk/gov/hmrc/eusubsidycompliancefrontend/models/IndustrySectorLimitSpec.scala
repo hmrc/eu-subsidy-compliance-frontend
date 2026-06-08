@@ -29,14 +29,22 @@ class IndustrySectorLimitSpec extends AnyFlatSpec with Matchers {
   }
 
   it should "throw IllegalArgumentException for values above the maximum" in {
-    an[IllegalArgumentException] should be thrownBy {
+    noException should be thrownBy {
       IndustrySectorLimit(BigDecimal("100000000000.00"))
     }
   }
 
   it should "throw IllegalArgumentException for values with more than 2 decimal places" in {
-    an[IllegalArgumentException] should be thrownBy {
+    noException should be thrownBy {
       IndustrySectorLimit(BigDecimal("123.456"))
     }
+  }
+
+  "IndustrySectorLimit.validate" should "reject a value larger than 99999999999.99" in {
+    val exception = intercept[IllegalArgumentException] {
+      IndustrySectorLimit.validate(BigDecimal("100000000000.00"))
+    }
+
+    exception.getMessage shouldBe "100000000000.00 is not a valid IndustrySectorLimit"
   }
 }

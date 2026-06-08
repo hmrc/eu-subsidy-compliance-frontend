@@ -16,13 +16,17 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
-import play.api.libs.json.Format
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyAmount.SubsidyAmount
 
-object SubsidyAmount:
+object SubsidyAmount extends BigDecimalCodec[SubsidyAmount]:
 
   opaque type SubsidyAmount = BigDecimal
 
-  def from(in: BigDecimal): SubsidyAmount =
+  override val name = "SubsidyAmount"
+
+  def apply(subsidyAmount: BigDecimal): SubsidyAmount = subsidyAmount
+
+  override def validate(in: BigDecimal): SubsidyAmount =
     Option(in)
       .filter(x =>
         x >= -MaxInputValue &&
@@ -32,10 +36,3 @@ object SubsidyAmount:
       .getOrElse(throw new IllegalArgumentException(s"$in is not a valid SubsidyAmount"))
 
   extension (a: SubsidyAmount) def value: BigDecimal = a
-
-  given Format[SubsidyAmount] =
-    BigDecimalCodec.format(
-      "SubsidyAmount",
-      from,
-      _.value
-    )

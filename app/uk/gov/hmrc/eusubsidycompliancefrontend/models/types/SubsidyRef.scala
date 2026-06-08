@@ -22,14 +22,16 @@ object SubsidyRef extends StringValue[SubsidyRef]:
 
   opaque type SubsidyRef = String
 
-  private val Regex = """^[A-Za-z0-9]{1,10}$""".r
+  private val regex = """^[A-Za-z0-9]{1,10}$""".r
 
   override val name: String = "SubsidyRef"
 
-  override def from(value: String): SubsidyRef =
+  def apply(subsidyRef: String): SubsidyRef = subsidyRef
+
+  override def validate(value: String): SubsidyRef =
     Option(value)
       .map(_.trim)
-      .filter(Regex.matches)
+      .filter(regex.findFirstIn(_).isDefined)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid SubsidyRef"))
 
   extension (x: SubsidyRef)

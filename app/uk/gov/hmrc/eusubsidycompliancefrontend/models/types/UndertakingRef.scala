@@ -26,10 +26,13 @@ object UndertakingRef extends StringValue[UndertakingRef]:
 
   override val name: String = "UndertakingRef"
 
-  override def from(value: String): UndertakingRef =
+  def apply(undertakingRef: String): UndertakingRef = undertakingRef
+
+  override def validate(value: String): UndertakingRef =
     Option(value)
       .map(_.trim)
-      .filter(Regex.matches)
+      .filter(Regex.findFirstIn(_).isDefined)
+      .map(apply)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid UndertakingRef"))
 
   extension (x: UndertakingRef) override def value: String = x

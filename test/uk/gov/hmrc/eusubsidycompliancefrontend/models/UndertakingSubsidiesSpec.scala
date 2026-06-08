@@ -87,9 +87,9 @@ class UndertakingSubsidiesSpec extends BaseSpec with Matchers {
 
     "findNonHmrcSubsidy" must {
 
-      val subsidy1 = nonHmrcSubsidy.copy(subsidyUsageTransactionId = SubsidyRef.from("12").some)
-      val subsidy2 = nonHmrcSubsidy.copy(subsidyUsageTransactionId = SubsidyRef.from("34").some)
-      val subsidy3 = nonHmrcSubsidy.copy(subsidyUsageTransactionId = SubsidyRef.from("56").some, removed = true.some)
+      val subsidy1 = nonHmrcSubsidy.copy(subsidyUsageTransactionId = SubsidyRef("12").some)
+      val subsidy2 = nonHmrcSubsidy.copy(subsidyUsageTransactionId = SubsidyRef("34").some)
+      val subsidy3 = nonHmrcSubsidy.copy(subsidyUsageTransactionId = SubsidyRef("56").some, removed = true.some)
 
       val underTest = undertakingSubsidies.copy(nonHMRCSubsidyUsage =
         List(

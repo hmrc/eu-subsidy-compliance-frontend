@@ -16,27 +16,24 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
-import play.api.libs.json.Format
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.PositiveSubsidyAmount.PositiveSubsidyAmount
 
-object PositiveSubsidyAmount:
+object PositiveSubsidyAmount extends BigDecimalCodec[PositiveSubsidyAmount]:
 
   opaque type PositiveSubsidyAmount = BigDecimal
 
-  def from(value: BigDecimal): PositiveSubsidyAmount =
+  override val name = "PositiveSubsidyAmount"
+
+  def apply(positiveSubsidyAmount: BigDecimal): PositiveSubsidyAmount = positiveSubsidyAmount
+
+  def validate(value: BigDecimal): PositiveSubsidyAmount =
     Option(value)
       .filter { x =>
         (x >= 0) &&
         (x <= MaxInputValue) &&
         (x.scale <= 2)
       }
+      .map(apply)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid PositiveSubsidyAmount"))
 
   extension (x: PositiveSubsidyAmount) def value: BigDecimal = x
-
-  given Format[PositiveSubsidyAmount] =
-    BigDecimalCodec.format(
-      "PositiveSubsidyAmount",
-      from,
-      _.value
-    )

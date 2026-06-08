@@ -24,15 +24,17 @@ object TraderRef extends StringValue[TraderRef]:
 
   opaque type TraderRef = String
 
-  val regex: Regex = """.{0,3}""".r
+  val regex: Regex = """[A-Za-z0-9\W_ ]{1,400}""".r
 
-  override val name: String =
-    "TraderRef"
+  override val name: String = "TraderRef"
 
-  override def from(value: String): TraderRef =
+  def apply(ref: String): TraderRef = ref
+
+  override def validate(value: String): TraderRef =
     Option(value)
       .map(_.trim)
-      .filter(regex.matches)
+      .filter(regex.findFirstIn(_).isDefined)
+      .map(apply)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid trader reference"))
 
   extension (x: TraderRef) override def value: String = x

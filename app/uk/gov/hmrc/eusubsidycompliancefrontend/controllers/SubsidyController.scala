@@ -575,7 +575,7 @@ class SubsidyController @Inject() (
         optionalEori <- journey.addClaimEori.value.toContext
         authority <- journey.publicAuthority.value.toContext
         optionalTraderRef <- journey.traderRef.value.toContext
-        traderRef = optionalTraderRef.value.map(TraderRef.from)
+        traderRef = optionalTraderRef.value.map(TraderRef(_))
         claimEori = optionalEori.value.map(EORI(_))
         previous = journey.previous
       } yield Ok(cyaPage(claimDate, euroAmount, claimEori, authority, traderRef, previous))
@@ -756,19 +756,18 @@ object SubsidyController {
             submissionDate = currentDate,
             // this shouldn't be optional, is required in create API but not retrieve
             publicAuthority = Some(journey.publicAuthority.value.get),
-            traderReference =
-              journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef.from)),
+            traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
             nonHMRCSubsidyAmtEUR =
               if (journey.claimAmountIsInEuros)
-                SubsidyAmount.from(journey.getClaimAmount.getOrElse(sys.error("Claim amount Missing")))
+                SubsidyAmount(journey.getClaimAmount.getOrElse(sys.error("Claim amount Missing")))
               else
-                SubsidyAmount.from(
+                SubsidyAmount(
                   journey.getConvertedClaimAmount.getOrElse(sys.error("Converted claim amount Missing"))
                 ),
             businessEntityIdentifier = journey.addClaimEori.value
               .fold(sys.error("eori value missing"))(oprionalEORI => oprionalEORI.value.map(EORI(_))),
             amendmentType = journey.existingTransactionId
-              .fold(Some(EisSubsidyAmendmentType.from("1")))(_ => Some(EisSubsidyAmendmentType.from("2")))
+              .fold(Some(EisSubsidyAmendmentType("1")))(_ => Some(EisSubsidyAmendmentType("2")))
           )
         )
       )

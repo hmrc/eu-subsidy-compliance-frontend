@@ -230,9 +230,9 @@ object AuditEvent {
         submissionDate = currentDate,
         publicAuthority = subsidyJourney.publicAuthority.value.fold(sys.error("public Authority missing"))(Some(_)),
         traderReference =
-          subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef.from(_))),
+          subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
         nonHMRCSubsidyAmtEUR =
-          SubsidyAmount.from(subsidyJourney.getClaimAmount.getOrElse(sys.error("claimAmount is missing"))),
+          SubsidyAmount(subsidyJourney.getClaimAmount.getOrElse(sys.error("claimAmount is missing"))),
         businessEntityIdentifier =
           subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
             optionalEORI.value.map(EORI(_))

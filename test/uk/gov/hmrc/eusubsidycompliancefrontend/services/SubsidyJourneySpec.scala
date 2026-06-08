@@ -115,7 +115,7 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getAddClaimEori.url)
         val result = SubsidyJourney(
-          existingTransactionId = SubsidyRef.from("SomeRef").some,
+          existingTransactionId = SubsidyRef("SomeRef").some,
           claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
           addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("true", eori1.value.some, addToUndertaking = true).some)
         ).next
@@ -127,7 +127,7 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getAddClaimEori.url)
         val result = SubsidyJourney(
-          existingTransactionId = SubsidyRef.from("SomeRef").some,
+          existingTransactionId = SubsidyRef("SomeRef").some,
           claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
           addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("false", Option.empty).some)
         ).next

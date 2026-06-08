@@ -483,7 +483,7 @@ class UndertakingController @Inject() (
             undertakingName <- updatedJourney.about.value.toContext
             undertakingSector <- updatedJourney.sector.value.toContext
             undertaking = UndertakingCreate(
-              name = UndertakingName.from(undertakingName),
+              name = UndertakingName(undertakingName),
               industrySector = undertakingSector,
               List(BusinessEntity(eori, leadEORI = true))
             )
@@ -532,7 +532,7 @@ class UndertakingController @Inject() (
       case Some(journey) =>
         val result: OptionT[Future, Result] = for {
           addBusiness <- journey.addBusiness.value.toContext
-        } yield Ok(confirmationPage(UndertakingRef.from(ref), eori, addBusiness))
+        } yield Ok(confirmationPage(UndertakingRef(ref), eori, addBusiness))
         result.fold(Redirect(journey.previous))(identity)
       case _ => Redirect(routes.UndertakingController.getAboutUndertaking).toFuture
     }

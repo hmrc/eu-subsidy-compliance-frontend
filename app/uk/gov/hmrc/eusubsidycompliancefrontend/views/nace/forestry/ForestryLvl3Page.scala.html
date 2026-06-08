@@ -85,7 +85,7 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(messages("undertakingSector.Error.required.nace")+ " forestry" )
+content = Text(messages("undertakingSector.error.required.nace")+ " forestry" )
 )
 ),
 title = Text(messages("common.error.summary.title"))
@@ -108,7 +108,7 @@ title = Text(messages("common.error.summary.title"))
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.Error.required.nace")+ " forestry" )
+content = Text(messages("undertakingSector.error.required.nace")+ " forestry" )
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(

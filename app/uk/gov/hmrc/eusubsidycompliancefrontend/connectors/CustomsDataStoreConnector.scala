@@ -59,7 +59,10 @@ class CustomsDataStoreConnector @Inject() (override protected val http: HttpClie
       .map { res =>
         res.status match {
           case Status.NO_CONTENT => ()
-          case _ => sys.error(s"Error updating email address for eori: $eori, new email address: $emailAddress")
+          case _ =>
+            throw new RuntimeException(
+              s"Error updating email address for eori: $eori, new email address: $emailAddress"
+            )
         }
       }
 }

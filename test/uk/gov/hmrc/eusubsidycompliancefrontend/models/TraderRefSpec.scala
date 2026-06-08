@@ -22,24 +22,27 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef
 
 class TraderRefSpec extends AnyWordSpec with Matchers {
 
-  "TraderRef.of" should {
+  "TraderRef.validate" should {
 
     "accept an empty string" in {
-      TraderRef.of("") shouldBe None
+      val exception = intercept[IllegalArgumentException] {
+        TraderRef.validate("")
+      }
+
+      exception.getMessage shouldBe " is not a valid trader reference"
     }
 
     "accept a single character" in {
-      TraderRef.of("A") shouldBe defined
+      TraderRef.validate("A") shouldBe TraderRef("A")
     }
 
     "accept 400 characters" in {
-      TraderRef.of("A" * 400) shouldBe defined
+      TraderRef.validate("A" * 400) shouldBe TraderRef("A" * 400)
     }
 
     "accept more than 400 characters" in {
-      TraderRef.of("A" * 401) shouldBe defined
+      TraderRef.validate("A" * 401) shouldBe TraderRef("A" * 401)
     }
-
   }
 
 }

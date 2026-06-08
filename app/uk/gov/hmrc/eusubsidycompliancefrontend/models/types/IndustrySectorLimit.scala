@@ -17,25 +17,22 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import IndustrySectorLimit.IndustrySectorLimit
-import play.api.libs.json.Format
 
-object IndustrySectorLimit:
+object IndustrySectorLimit extends BigDecimalCodec[IndustrySectorLimit]:
 
   opaque type IndustrySectorLimit = BigDecimal
 
-  def from(value: BigDecimal): IndustrySectorLimit =
+  override val name = "IndustrySectorLimit"
+
+  def apply(industrySectorLimit: BigDecimal): IndustrySectorLimit = industrySectorLimit
+
+  override def validate(value: BigDecimal): IndustrySectorLimit =
     Option(value)
       .filter { x =>
         x <= MaxInputValue &&
         x.scale <= 2
       }
+      .map(apply)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid IndustrySectorLimit"))
 
   extension (x: IndustrySectorLimit) def value: BigDecimal = x
-
-  given Format[IndustrySectorLimit] =
-    BigDecimalCodec.format(
-      "IndustrySectorLimit",
-      from,
-      _.value
-    )

@@ -68,6 +68,7 @@ class FinancialDashboardControllerSpec
 
   override def buildFakeApplication(): Application = {
     new GuiceApplicationBuilder()
+      .configure("metrics.enabled" -> false)
       .configure(additionalConfig)
       .overrides(overrideBindings: _*)
       .build()

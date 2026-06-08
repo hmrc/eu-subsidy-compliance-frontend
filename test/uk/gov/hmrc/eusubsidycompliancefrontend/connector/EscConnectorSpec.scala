@@ -84,14 +84,14 @@ class EscConnectorSpec
     "handling request to add member in Business Entity Undertaking" must {
       behave like connectorBehaviour(
         mockPost(url"$baseUrl/undertaking/member/UR123456", businessEntity3)(_),
-        () => connector.addMember(UndertakingRef.from("UR123456"), businessEntity3)
+        () => connector.addMember(UndertakingRef("UR123456"), businessEntity3)
       )
     }
 
     "handling request to remove member from Business Entity Undertaking" must {
       behave like connectorBehaviour(
         mockPost(url"$baseUrl/undertaking/member/remove/UR123456", businessEntity3)(_),
-        () => connector.removeMember(UndertakingRef.from("UR123456"), businessEntity3)
+        () => connector.removeMember(UndertakingRef("UR123456"), businessEntity3)
       )
     }
 
@@ -117,7 +117,8 @@ class EscConnectorSpec
     }
 
     "handling request to get undertaking balance" in {
-      val response = HttpResponse(status = 200, body = Json.toJson(undertakingBalance).toString())
+      val value1 = Json.toJson(undertakingBalance)
+      val response = HttpResponse(status = 200, body = value1.toString())
 
       mockGet(url"$baseUrl/undertaking/balance/$eori1")(Some(response))
       val actual = connector.getUndertakingBalance(eori1).futureValue

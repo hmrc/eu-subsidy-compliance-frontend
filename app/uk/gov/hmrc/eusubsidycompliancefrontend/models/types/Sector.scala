@@ -2944,16 +2944,16 @@ object Sector:
     val code = "88.99"
 
   case object ArtsSportsRecreation extends Sector:
-    val code = "90"
+    val code = "S"
 
   case object LiteraryMusical extends Sector:
     val code = "90.11"
 
   case object ArtsCreationPerforming extends Sector:
-    val code = "90.1"
+    val code = "90"
 
   case object ArtsCreation extends Sector:
-    val code = "90.11"
+    val code = "90.1"
 
   case object VisualArtsCreation extends Sector:
     val code = "90.12"

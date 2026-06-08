@@ -22,7 +22,7 @@ trait StringValue[A]:
 
   def name: String
 
-  def from(value: String): A
+  def validate(value: String): A
 
   extension (a: A) def value: String
 
@@ -30,19 +30,16 @@ trait StringValue[A]:
 
     override def reads(json: JsValue): JsResult[A] =
       json match
-
         case JsString(value) =>
-          from(value) match
-            case Some(v: A) => JsSuccess(v)
-
-            case None => JsError(s"Expected a valid $name, got '$value' instead.")
+          try JsSuccess(validate(value))
+          catch
+            case _: IllegalArgumentException =>
+              JsError(s"Expected a valid $name, got '$value' instead.")
 
         case xs =>
           JsError(
             JsPath ->
-              JsonValidationError(
-                s"Expected a valid $name, got $xs instead."
-              )
+              JsonValidationError(s"Expected a valid $name, got $xs instead.")
           )
 
     override def writes(o: A): JsValue =

@@ -18,19 +18,20 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.test
 
 import cats.implicits.catsSyntaxOptionId
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys._
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{Agriculture, CerealsLeguminousCrops, Other, Transport}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{DeclarationID, EORI, EisSubsidyAmendmentType, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TaxType, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.IndustrySectorLimit.IndustrySectorLimit
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.zero
 
@@ -51,17 +52,17 @@ object CommonTestData {
   val businessEntity4 = BusinessEntity(eori4, leadEORI = false)
   val businessEntity5 = BusinessEntity(eori1, leadEORI = true)
 
-  val optionalTraderRef = OptionalTraderRef("true", TraderRef.from("ABC123").value.some)
+  val optionalTraderRef = OptionalTraderRef("true", TraderRef("ABC123").value.some)
   val optionalEORI = OptionalClaimEori("true", eori1.value.some)
 
-  val undertakingRef = UndertakingRef.from("UR123456")
+  val undertakingRef: UndertakingRef = UndertakingRef("UR123456")
 
-  val subsidyAmount = SubsidyAmount.from(BigDecimal(123.45))
-  val nonHmrcSubsidyAmount = SubsidyAmount.from(BigDecimal(543.21))
+  val subsidyAmount = SubsidyAmount(BigDecimal(123.45))
+  val nonHmrcSubsidyAmount = SubsidyAmount(BigDecimal(543.21))
 
-  val declarationId = DeclarationID.from("12345")
+  val declarationId = DeclarationID("12345")
 
-  val traderRef = TraderRef.from("SomeTraderReference")
+  val traderRef = TraderRef("SomeTraderReference")
 
   val hmrcSubsidy = HmrcSubsidy(
     declarationID = declarationId,
@@ -69,26 +70,26 @@ object CommonTestData {
     acceptanceDate = fixedDate,
     declarantEORI = eori1,
     consigneeEORI = eori3,
-    taxType = Some(TaxType.from("1")),
+    taxType = Some(TaxType("1")),
     hmrcSubsidyAmtGBP = Some(subsidyAmount),
     hmrcSubsidyAmtEUR = Some(subsidyAmount),
     tradersOwnRefUCR = Some(traderRef)
   )
 
   val nonHmrcSubsidy = NonHmrcSubsidy(
-    subsidyUsageTransactionId = Some(SubsidyRef.from("AB12345")),
+    subsidyUsageTransactionId = Some(SubsidyRef("AB12345")),
     allocationDate = LocalDate.of(2022, 1, 1),
     submissionDate = fixedDate,
     publicAuthority = "Local Authority".some,
-    traderReference = TraderRef.from("ABC123").some,
+    traderReference = TraderRef("ABC123").some,
     nonHMRCSubsidyAmtEUR = nonHmrcSubsidyAmount,
     businessEntityIdentifier = eori1.some,
-    amendmentType = EisSubsidyAmendmentType.from("1").some
+    amendmentType = EisSubsidyAmendmentType("1").some
   )
 
   val nonHmrcSubsidyList = List(nonHmrcSubsidy)
 
-  val nonHmrcSubsidyList1 = nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionId = SubsidyRef.from("TID1234").some))
+  val nonHmrcSubsidyList1 = nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionId = SubsidyRef("TID1234").some))
 
   val undertakingSubsidies = UndertakingSubsidies(
     undertakingIdentifier = undertakingRef,
@@ -101,10 +102,10 @@ object CommonTestData {
   )
 
   val emptyUndertakingSubsidies = undertakingSubsidies.copy(
-    nonHMRCSubsidyTotalEUR = SubsidyAmount.from(zero),
-    nonHMRCSubsidyTotalGBP = SubsidyAmount.from(zero),
-    hmrcSubsidyTotalEUR = SubsidyAmount.from(zero),
-    hmrcSubsidyTotalGBP = SubsidyAmount.from(zero),
+    nonHMRCSubsidyTotalEUR = SubsidyAmount(zero),
+    nonHMRCSubsidyTotalGBP = SubsidyAmount(zero),
+    hmrcSubsidyTotalEUR = SubsidyAmount(zero),
+    hmrcSubsidyTotalGBP = SubsidyAmount(zero),
     nonHMRCSubsidyUsage = List.empty,
     hmrcSubsidyUsage = List.empty
   )
@@ -130,9 +131,9 @@ object CommonTestData {
 
   val undertaking = Undertaking(
     undertakingRef,
-    UndertakingName.from("TestUndertaking"),
+    UndertakingName("TestUndertaking"),
     CerealsLeguminousCrops,
-    IndustrySectorLimit.from(12.34),
+    IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
     Some(Active),
     List(businessEntity1, businessEntity2)
@@ -140,9 +141,9 @@ object CommonTestData {
 
   val manuallySuspendedUndertaking = Undertaking(
     undertakingRef,
-    UndertakingName.from("TestUndertaking"),
+    UndertakingName("TestUndertaking"),
     CerealsLeguminousCrops,
-    IndustrySectorLimit.from(12.34),
+    IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
     Some(SuspendedManual),
     List(businessEntity1, businessEntity2)
@@ -150,25 +151,25 @@ object CommonTestData {
 
   val inactiveUndertaking = Undertaking(
     undertakingRef,
-    UndertakingName.from("TestUndertaking"),
+    UndertakingName("TestUndertaking"),
     Other,
-    IndustrySectorLimit.from(12.34),
+    IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
     Some(Inactive),
     List(businessEntity1, businessEntity4)
   )
 
   val writeableUndertaking = UndertakingCreate(
-    UndertakingName.from("TestUndertaking"),
+    UndertakingName("TestUndertaking"),
     Transport,
     List(businessEntity1)
   )
 
   val undertaking1 = Undertaking(
     undertakingRef,
-    UndertakingName.from("TestUndertaking"),
+    UndertakingName("TestUndertaking"),
     CerealsLeguminousCrops,
-    IndustrySectorLimit.from(12.34),
+    IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
     Some(Active),
     List(businessEntity1, businessEntity4)
@@ -176,9 +177,9 @@ object CommonTestData {
 
   val undertaking2 = Undertaking(
     undertakingRef,
-    UndertakingName.from("TestUndertaking"),
+    UndertakingName("TestUndertaking"),
     CerealsLeguminousCrops,
-    IndustrySectorLimit.from(12.34),
+    IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
     Some(Active),
     List(businessEntity4)
@@ -186,9 +187,9 @@ object CommonTestData {
 
   val undertaking3 = Undertaking(
     undertakingRef,
-    UndertakingName.from("TestUndertaking"),
+    UndertakingName("TestUndertaking"),
     CerealsLeguminousCrops,
-    IndustrySectorLimit.from(32.34),
+    IndustrySectorLimit(32.34),
     Some(LocalDate.of(2021, 1, 18)),
     Some(Active),
     List(businessEntity1, businessEntity2)
@@ -196,9 +197,9 @@ object CommonTestData {
 
   val undertaking4 = Undertaking(
     undertakingRef,
-    UndertakingName.from("TestUndertaking"),
+    UndertakingName("TestUndertaking"),
     CerealsLeguminousCrops,
-    IndustrySectorLimit.from(32.34),
+    IndustrySectorLimit(32.34),
     Some(LocalDate.of(2025, 11, 11)),
     Some(Active),
     List(businessEntity2)
@@ -293,7 +294,7 @@ object CommonTestData {
   val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, Some(Undeliverable("foo")))
 
   val undertakingCreated =
-    UndertakingCreate(UndertakingName.from("TestUndertaking"), Transport, List(businessEntity5))
+    UndertakingCreate(UndertakingName("TestUndertaking"), Transport, List(businessEntity5))
 
   val singleEoriEmailParameters = EmailParameters(eori1, None, undertaking.name, None)
   val singleEoriWithDateEmailParameters = EmailParameters(eori1, None, undertaking.name, dateTime.toString.some)
@@ -341,16 +342,16 @@ object CommonTestData {
     None
   )
 
-  val industrySectorLimit = IndustrySectorLimit.from(50000)
+  val industrySectorLimit = IndustrySectorLimit(50000)
 
   val undertakingBalance = UndertakingBalance(
-    undertakingIdentifier = UndertakingRef.from("some-ref"),
+    undertakingIdentifier = UndertakingRef("some-ref"),
     nonHMRCSubsidyAllocationEUR = None,
     hmrcSubsidyAllocationEUR = None,
     industrySectorLimit = industrySectorLimit,
     availableBalanceEUR = subsidyAmount,
     availableBalanceGBP = subsidyAmount,
-    conversionRate = SubsidyAmount.from(1.2),
+    conversionRate = SubsidyAmount(1.2),
     nationalCapBalanceEUR = industrySectorLimit
   )
 

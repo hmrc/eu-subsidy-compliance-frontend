@@ -18,20 +18,31 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import play.api.libs.json.*
 
-object BigDecimalCodec:
+trait BigDecimalCodec[A]:
 
-  def format[A](name: String, from: BigDecimal => A, to: A => BigDecimal): Format[A] =
-    new Format[A]:
+  def name: String
 
-      override def reads(json: JsValue): JsResult[A] =
-        json match
-          case JsNumber(v) =>
-            from(v) match
-              case Some(a: A) => JsSuccess(a)
-              case None => JsError(s"Expected a valid $name, got $v instead.")
+  def validate(value: BigDecimal): A
 
-          case other =>
-            JsError(JsPath -> JsonValidationError(Seq(s"""Expected a valid $name, got $other instead""")))
+  extension (a: A) def value: BigDecimal
 
-      override def writes(o: A): JsValue =
-        JsNumber(to(o))
+  given Format[A] = new Format[A]:
+
+    override def reads(json: JsValue): JsResult[A] =
+      json match
+        case JsNumber(value) =>
+          try JsSuccess(validate(value))
+          catch
+            case _: IllegalArgumentException =>
+              JsError(s"Expected a valid $name, got $value instead.")
+
+        case xs =>
+          JsError(
+            JsPath ->
+              JsonValidationError(
+                s"Expected a valid $name, got $xs instead."
+              )
+          )
+
+    override def writes(o: A): JsValue =
+      JsNumber(o.value)

@@ -22,14 +22,17 @@ object UndertakingName extends StringValue[UndertakingName]:
 
   opaque type UndertakingName = String
 
-  private val Regex = """.{1,105}""".r
+  private val regex = """.{1,105}""".r
 
   override val name: String = "UndertakingName"
 
-  override def from(value: String): UndertakingName =
+  def apply(undertakingName: String): UndertakingName = undertakingName
+
+  override def validate(value: String): UndertakingName =
     Option(value)
       .map(_.trim)
-      .filter(Regex.matches)
+      .filter(regex.findFirstIn(_).isDefined)
+      .map(apply)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid UndertakingName"))
 
   extension (x: UndertakingName) override def value: String = x

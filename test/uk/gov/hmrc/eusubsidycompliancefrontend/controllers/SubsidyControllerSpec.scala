@@ -155,7 +155,7 @@ class SubsidyControllerSpec
         }
 
         "user has reported at least one payment" in {
-          test(nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionId = SubsidyRef.from("Z12345").some)))
+          test(nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionId = SubsidyRef("Z12345").some)))
           checkPageIsDisplayed(
             performAction,
             messageFromMessageKey("reportedPayments.title"),

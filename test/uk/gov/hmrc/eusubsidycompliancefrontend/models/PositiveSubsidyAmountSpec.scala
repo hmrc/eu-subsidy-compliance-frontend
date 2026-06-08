@@ -22,34 +22,46 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{MaxInputValue, Posi
 
 class PositiveSubsidyAmountSpec extends AnyWordSpec with Matchers {
 
-  "PositiveSubsidyAmount.of" should {
+  "PositiveSubsidyAmount.validate" should {
 
     "accept zero" in {
-      PositiveSubsidyAmount.of(BigDecimal("0")) shouldBe defined
+      PositiveSubsidyAmount.validate(BigDecimal("0")) shouldBe PositiveSubsidyAmount(BigDecimal(0))
     }
 
     "accept a positive value" in {
-      PositiveSubsidyAmount.of(BigDecimal("123.45")) shouldBe defined
+      PositiveSubsidyAmount.validate(BigDecimal("123.45")) shouldBe PositiveSubsidyAmount(BigDecimal(123.45))
     }
 
     "accept the maximum value" in {
-      PositiveSubsidyAmount.of(MaxInputValue) shouldBe defined
+      PositiveSubsidyAmount.validate(MaxInputValue) shouldBe PositiveSubsidyAmount(BigDecimal(MaxInputValue))
     }
 
     "reject negative values" in {
-      PositiveSubsidyAmount.of(BigDecimal("-0.01")) shouldBe None
+      val exception = intercept[IllegalArgumentException] {
+        PositiveSubsidyAmount.validate(BigDecimal("-0.01"))
+      }
+
+      exception.getMessage shouldBe "-0.01 is not a valid PositiveSubsidyAmount"
     }
 
     "reject values greater than the maximum" in {
-      PositiveSubsidyAmount.of(MaxInputValue + 1) shouldBe None
+      val exception = intercept[IllegalArgumentException] {
+        PositiveSubsidyAmount.validate(MaxInputValue + 1)
+      }
+
+      exception.getMessage shouldBe "100000000000.99 is not a valid PositiveSubsidyAmount"
     }
 
     "accept values with exactly 2 decimal places" in {
-      PositiveSubsidyAmount.of(BigDecimal("123.45")) shouldBe defined
+      PositiveSubsidyAmount.validate(BigDecimal("123.45")) shouldBe PositiveSubsidyAmount(BigDecimal(123.45))
     }
 
     "reject values with more than 2 decimal places" in {
-      PositiveSubsidyAmount.of(BigDecimal("123.456")) shouldBe None
+      val exception = intercept[IllegalArgumentException] {
+        PositiveSubsidyAmount.validate(BigDecimal("123.456"))
+      }
+
+      exception.getMessage shouldBe "123.456 is not a valid PositiveSubsidyAmount"
     }
   }
 
@@ -61,12 +73,9 @@ class PositiveSubsidyAmountSpec extends AnyWordSpec with Matchers {
       }
     }
 
-    "throw IllegalArgumentException for invalid input" in {
-      val exception = intercept[IllegalArgumentException] {
-        PositiveSubsidyAmount(BigDecimal("-1"))
-      }
+    "accept invalid input" in {
+      PositiveSubsidyAmount(BigDecimal("-1")).value shouldBe BigDecimal(-1)
 
-      exception.getMessage should include("not a valid PositiveSubsidyAmount")
     }
   }
 }

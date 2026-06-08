@@ -22,22 +22,22 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TaxType
 
 class TaxTypeSpec extends AnyWordSpec with Matchers {
 
-  "TaxType.of" should {
+  "TaxType.validate" should {
 
     "accept an empty string" in {
-      TaxType.of("") shouldBe defined
+      TaxType.validate("") shouldBe TaxType("")
     }
 
     "accept a 3 character string" in {
-      TaxType.of("ABC") shouldBe defined
+      TaxType.validate("ABC") shouldBe TaxType("ABC")
     }
 
     "accept a string longer than 3 characters" in {
-      TaxType.of("ABCD") shouldBe defined
+      TaxType.validate("ABCD") shouldBe TaxType("ABCD")
     }
 
     "accept a much longer string" in {
-      TaxType.of("abcdefghijklmnopqrstuvwxyz") shouldBe defined
+      TaxType.validate("abcdefghijklmnopqrstuvwxyz") shouldBe TaxType("abcdefghijklmnopqrstuvwxyz")
     }
   }
 }

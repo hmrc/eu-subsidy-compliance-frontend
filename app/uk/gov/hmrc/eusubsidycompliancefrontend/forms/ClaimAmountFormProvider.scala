@@ -56,7 +56,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
-      amount => Try(PositiveSubsidyAmount.from(amount)).fold(_ => Invalid(TooBig), _ => Valid)
+      amount => Try(PositiveSubsidyAmount.validate(amount)).fold(_ => Invalid(TooBig), _ => Valid)
     )
   }
 

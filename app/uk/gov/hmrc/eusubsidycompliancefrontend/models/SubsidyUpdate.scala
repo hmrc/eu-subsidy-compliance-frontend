@@ -77,7 +77,7 @@ object SubsidyUpdate {
       undertakingIdentifier,
       UndertakingSubsidyAmendment(
         List(
-          nonHmrcSubsidy.copy(amendmentType = Some(EisSubsidyAmendmentType.from("3")))
+          nonHmrcSubsidy.copy(amendmentType = Some(EisSubsidyAmendmentType("3")))
         )
       )
     )

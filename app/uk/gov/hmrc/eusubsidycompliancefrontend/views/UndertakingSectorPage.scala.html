@@ -110,7 +110,7 @@ title = Text(messages("common.error.summary.title", undertakingName))
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.Error.required"))
+content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
@@ -120,7 +120,7 @@ isPageHeading = true
 ))
 )),
 hint = Some(Hint(
-content = Text(messages("undertakingSector.P1"))
+content = Text(messages("undertakingSector.p1"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

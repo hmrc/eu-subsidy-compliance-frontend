@@ -22,33 +22,32 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.DeclarationID
 
 class DeclarationIDSpec extends AnyWordSpec with Matchers {
 
-  "DeclarationID.of" should {
+  "DeclarationID.validate" should {
 
     "accept a single character" in {
-      DeclarationID.of("A") shouldBe defined
+      DeclarationID.validate("A") shouldBe DeclarationID("A")
     }
 
     "accept 18 characters" in {
-      DeclarationID.of("123456789012345678") shouldBe defined
+      DeclarationID.validate("123456789012345678") shouldBe DeclarationID("123456789012345678")
     }
 
     "reject an empty string" in {
-      DeclarationID.of("") shouldBe None
+      val exception = intercept[IllegalArgumentException] {
+        DeclarationID.validate("")
+      }
+
+      exception.getMessage shouldBe " is not a valid DeclarationID"
     }
 
-    /**
-      * Not quite sure about this behaviour
+    /** Not quite sure about this behaviour
       */
     "reject more than 18 characters" in {
-      DeclarationID.of("1234567890123456789") shouldBe defined
-    }
-
-    "reject empty strings" in {
-      DeclarationID.of("") shouldBe None
+      DeclarationID.validate("1234567890123456789") shouldBe DeclarationID("1234567890123456789")
     }
 
     "accept more than 18 characters" in {
-      DeclarationID.of("1234567890123456789") shouldBe defined
+      DeclarationID.validate("1234567890123456789") shouldBe DeclarationID("1234567890123456789")
     }
   }
 
@@ -60,10 +59,8 @@ class DeclarationIDSpec extends AnyWordSpec with Matchers {
       }
     }
 
-    "throw IllegalArgumentException for invalid input" in {
-      intercept[IllegalArgumentException] {
-        DeclarationID("")
-      }
+    "allow any input" in {
+      DeclarationID("").value shouldBe ""
     }
   }
 }

@@ -17,21 +17,24 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import play.api.libs.json.*
-
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TaxType.TaxType
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.Regex
 
 object TaxType extends StringValue[TaxType]:
 
   opaque type TaxType = String
 
-  private val Regex = """.{0,3}""".r
+  private val regex = """.{0,3}""".r
 
   override val name: String = "TaxType"
 
-  override def from(value: String): TaxType =
+  def apply(taxType: String): TaxType = taxType
+
+  override def validate(value: String): TaxType =
     Option(value)
       .map(_.trim)
-      .filter(Regex.matches)
+      .filter(regex.findFirstIn(_).isDefined)
+      .map(apply)
       .getOrElse(throw new IllegalArgumentException(s"$value is not a valid TaxType"))
 
   extension (x: TaxType) override def value: String = x

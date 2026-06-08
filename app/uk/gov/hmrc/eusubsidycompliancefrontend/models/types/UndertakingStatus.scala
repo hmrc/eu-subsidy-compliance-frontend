@@ -18,8 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import play.api.libs.json.*
 
-import scala.util.{Failure, Success, Try}
-
 enum UndertakingStatus(val code: Int):
   case Active extends UndertakingStatus(0)
   case SuspendedAutomated extends UndertakingStatus(1)
@@ -30,22 +28,38 @@ enum UndertakingStatus(val code: Int):
 
 object UndertakingStatus:
 
+  private val byName: Map[String, UndertakingStatus] =
+    Map(
+      "active" -> Active,
+      "suspendedAutomated" -> SuspendedAutomated,
+      "suspendedBen" -> SuspendedBen,
+      "suspendedManual" -> SuspendedManual,
+      "suspendedUndertaking" -> SuspendedUndertaking,
+      "inactive" -> Inactive
+    )
   private val byCode: Map[Int, UndertakingStatus] =
     values.map(s => s.code -> s).toMap
 
   def fromCode(code: Int): UndertakingStatus =
     byCode(code)
 
-  given Format[UndertakingStatus] = new Format[UndertakingStatus]:
+  given Format[UndertakingStatus] = Format(
+    Reads {
+      case JsString(name) =>
+        byName
+          .get(name)
+          .map(JsSuccess(_))
+          .getOrElse(JsError(s"Unknown UndertakingStatus: $name"))
 
-    override def reads(json: JsValue): JsResult[UndertakingStatus] =
-      json match
-        case JsNumber(n) =>
-          Try(UndertakingStatus.fromCode(n.toIntExact)) match
-            case Success(v) => JsSuccess(v)
-            case Failure(_) => JsError(s"Unknown UndertakingStatus code: $n")
-
-        case other => JsError("Expected numeric UndertakingStatus")
-
-    override def writes(o: UndertakingStatus): JsValue =
-      JsNumber(o.code)
+      case _ =>
+        JsError("Expected UndertakingStatus as a string")
+    },
+    Writes {
+      case Active => JsString("active")
+      case SuspendedAutomated => JsString("suspendedAutomated")
+      case SuspendedBen => JsString("suspendedBen")
+      case SuspendedManual => JsString("suspendedManual")
+      case SuspendedUndertaking => JsString("suspendedUndertaking")
+      case Inactive => JsString("inactive")
+    }
+  )
