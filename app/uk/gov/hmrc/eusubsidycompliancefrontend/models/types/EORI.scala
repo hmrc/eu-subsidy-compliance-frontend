@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import play.api.libs.json.*
-import uk.gov.hmrc.mongo.cache.CacheIdType
 
 import scala.util.matching.Regex
 

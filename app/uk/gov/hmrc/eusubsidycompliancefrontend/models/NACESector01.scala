@@ -70,7 +70,7 @@ object NACESector01 {
 
   case object Households extends WithName("households") with NACESector01
 
-  final object ActivitiesExtraterritorial extends WithName("activitiesExtraterritorial") with NACESector01
+  object ActivitiesExtraterritorial extends WithName("activitiesExtraterritorial") with NACESector01
 
   val enumerableValues: List[NACESector01] = List(
     Agriculture,

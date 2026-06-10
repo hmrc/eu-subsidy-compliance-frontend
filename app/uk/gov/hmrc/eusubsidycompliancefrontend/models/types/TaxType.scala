@@ -16,9 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
-import play.api.libs.json.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TaxType.TaxType
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.Regex
 
 object TaxType extends StringValue[TaxType]:
 

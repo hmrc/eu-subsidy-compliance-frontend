@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef.SubsidyRe
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef.TraderRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName.UndertakingName
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
 
 import java.time.{LocalDate, LocalDateTime}
 

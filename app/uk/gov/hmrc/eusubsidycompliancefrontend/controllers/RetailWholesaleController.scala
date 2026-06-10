@@ -25,13 +25,13 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleM
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.retailwholesale.RetailWholesaleLvl2Page
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.retailwholesale.retail.{CulturalLvl4Page, FoodLvl4Page, HouseholdLvl4Page, IntermediationLvl4Page, MotorVehiclesLvl4Page, NonSpecialisedLvl4Page, OtherGoodsLvl4Page, RetailLvl3Page}
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.retailwholesale.wholesale.{AgriculturalLvl4Page, ContractBasisLvl4Page, FoodWholesaleLvl4Page, HouseholdWholesaleLvl4Page, MachineryLvl4Page, MotorVehiclesWholesaleLvl4Page, SpecialisedLvl4Page, WholesaleLvl3Page}
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.retailwholesale.retail.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.retailwholesale.wholesale.*
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -61,7 +61,7 @@ class RetailWholesaleController @Inject() (
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
   override val messagesApi: MessagesApi = mcc.messagesApi
   private val retailWholesaleLvl2PageForm: Form[FormValues] = formWithSingleMandatoryField("retail2")
   private val retailLvl3PageForm: Form[FormValues] = formWithSingleMandatoryField("retail3")

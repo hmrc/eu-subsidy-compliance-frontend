@@ -22,14 +22,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.other.{HairdressingLvl4Page, HouseholdRepairLvl4Page, MembershipOrgActivitiesLvl3Page, MembershipOrgsLvl4Page, MotorVehiclesRepairLvl4Page, OtherLvl2Page, OtherMembershipOrgsLvl4Page, OtherPersonalServicesLvl4Page, PersonalServicesLvl3Page, RepairsLvl3Page}
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.other.*
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -52,7 +52,7 @@ class OtherServicesController @Inject() (
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
   override val messagesApi: MessagesApi = mcc.messagesApi
   private val otherLvl2PageForm: Form[FormValues] = formWithSingleMandatoryField("other2")
   private val membershipOrgActivitiesLvl3PageForm: Form[FormValues] = formWithSingleMandatoryField("membership3")

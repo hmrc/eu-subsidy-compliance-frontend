@@ -23,7 +23,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyAmount
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyAmount.SubsidyAmount
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.*
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.zero
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 
