@@ -29,6 +29,7 @@
     layout: Layout,
     formHelper: FormWithCSRF,
     button: Button,
+    govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
     govukSummaryList: GovukSummaryList
 )
@@ -43,10 +44,22 @@
 
 @layout(
     pageTitle = Some(messages(s"$key.title")),
-    backLinkEnabled = false
+    backLinkEnabled = false,
+    hasErrors = form.hasErrors
 ) {
 
     @H1(messages(s"$key.title"))
+
+@form.errors.map { err =>
+@govukErrorSummary(ErrorSummary(
+errorList = Seq(
+ErrorLink(
+href = Some(s"#${err.key}"),
+content = Text(messages(s"$key.error"))
+)
+),
+title = Text(messages("common.error.summary.title"))))
+}
 
     <h2 class="govuk-heading-m">@messages(s"$key.your-answers")</h2>
 
@@ -192,13 +205,15 @@
         <input type="hidden" name="naceCode" value="@viewModel.naceLevel4Code" />
 
         @govukRadios(Radios(
+        errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+        content = Text(messages(s"$key.error"))
+        ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages(s"$key.radio-legend")),
                     classes = "govuk-fieldset__legend--s"
                 ))
             )),
-            errorMessage = form.error("confirmDetails").map(err => ErrorMessage(content = Text(messages(s"$key.error")))),
             items = Seq(
                 RadioItem(
                     content = Text(messages(s"$key.radio-yes")),

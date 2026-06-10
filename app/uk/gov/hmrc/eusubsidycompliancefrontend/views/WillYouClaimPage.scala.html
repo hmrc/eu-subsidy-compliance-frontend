@@ -27,12 +27,12 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("willyouclaim.title")),
     backLinkEnabled = true,
-    backLink = Some(previous),
+    backLink = Some(controllers.routes.EligibilityDoYouClaimController.getDoYouClaim.url),
     hasErrors = form.hasErrors
 ) {
 

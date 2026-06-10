@@ -52,7 +52,7 @@ class EligibilityWillYouClaimController @Inject() (
 
   def getWillYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
     logger.info("EligibilityWillYouClaimController.getWillYouClaim")
-    Ok(willYouClaimPage(willYouClaimForm, doYouClaimUrl)).toFuture
+    Ok(willYouClaimPage(willYouClaimForm)).toFuture
   }
 
   def postWillYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
@@ -60,7 +60,7 @@ class EligibilityWillYouClaimController @Inject() (
     willYouClaimForm
       .bindFromRequest()
       .fold(
-        errors => BadRequest(willYouClaimPage(errors, doYouClaimUrl)).toFuture,
+        errors => BadRequest(willYouClaimPage(errors)).toFuture,
         form =>
           if (form.value.isTrue) {
             logger.info("EligibilityWillYouClaimController.getNotEligible, form was true so checkEnrolment")
