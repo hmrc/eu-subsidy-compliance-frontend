@@ -50,11 +50,11 @@
 
     @H1(messages(s"$key.title"))
 
-@form.errors.map { err =>
-@govukErrorSummary(ErrorSummary(
-errorList = Seq(
-ErrorLink(
-href = Some(s"#${err.key}"),
+    @form.errors.map { err =>
+        @govukErrorSummary(ErrorSummary(
+            errorList = Seq(
+            ErrorLink(
+                href = Some(s"#${err.key}"),
 content = Text(messages(s"$key.error"))
 )
 ),
