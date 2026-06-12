@@ -47,7 +47,7 @@ class ArtsController @Inject() (
   BotanicalZoologicalReservesLvl4Page: BotanicalZoologicalReservesLvl4Page,
   LibrariesArchivesCulturalLvl3Page: LibrariesArchivesCulturalLvl3Page,
   LibrariesArchivesLvl4Page: LibrariesArchivesLvl4Page,
-  MuseumsCollectionsMomumentsLvl4Page: MuseumsCollectionsMomumentsLvl4Page,
+  MuseumsCollectionsMonumentsLvl4Page: MuseumsCollectionsMonumentsLvl4Page,
   SportsAmusementRecreationLvl3Page: SportsAmusementRecreationLvl3Page,
   SportsLvl4Page: SportsLvl4Page
 )(implicit
@@ -68,7 +68,7 @@ class ArtsController @Inject() (
   private val BotanicalZoologicalReservesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("zoo4")
   private val LibrariesArchivesCulturalLvl3Form: Form[FormValues] = formWithSingleMandatoryField("libraries3")
   private val LibrariesArchivesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("libraries4")
-  private val MuseumsCollectionsMomumentsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("museums4")
+  private val MuseumsCollectionsMonumentsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("museums4")
   private val SportsAmusementRecreationLvl3Form: Form[FormValues] = formWithSingleMandatoryField("sports3")
   private val SportsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("sports4")
 
@@ -353,7 +353,7 @@ class ArtsController @Inject() (
       )
   }
 
-  def loadMuseumsCollectionsMomumentsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def loadMuseumsCollectionsMonumentsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val sector = journey.sector.value match {
@@ -361,17 +361,17 @@ class ArtsController @Inject() (
         case None => ""
       }
       Ok(
-        MuseumsCollectionsMomumentsLvl4Page(MuseumsCollectionsMomumentsLvl4Form.fill(FormValues(sector)), journey.mode)
+        MuseumsCollectionsMonumentsLvl4Page(MuseumsCollectionsMonumentsLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
 
-  def submitMuseumsCollectionsMomumentsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitMuseumsCollectionsMonumentsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    MuseumsCollectionsMomumentsLvl4Form
+    MuseumsCollectionsMonumentsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MuseumsCollectionsMomumentsLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(MuseumsCollectionsMonumentsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture

@@ -246,7 +246,7 @@ class ArtsControllerSpec
           ("formValue", "expectedUrl"),
           (botanicalGardensNatureReserves, routes.ArtsController.loadBotanicalZoologicalReservesLvl4Page().url),
           (libraryArchives, routes.ArtsController.loadLibrariesArchivesLvl4Page().url),
-          (museumCollectionsMonuments, routes.ArtsController.loadMuseumsCollectionsMomumentsLvl4Page().url)
+          (museumCollectionsMonuments, routes.ArtsController.loadMuseumsCollectionsMonumentsLvl4Page().url)
         )
         forAll(radioButtons) { (value: String, expectedUrl: String) =>
           inSequence {
@@ -510,14 +510,14 @@ class ArtsControllerSpec
       }
     }
 
-    "loadMuseumsCollectionsMomumentsLvl4Page" should {
+    "loadMuseumsCollectionsMonumentsLvl4Page" should {
       "return OK and render expected radio options" in {
         inSequence {
           mockAuthWithEnrolment()
         }
         val result =
-          controller.loadMuseumsCollectionsMomumentsLvl4Page()(
-            FakeRequest(GET, routes.ArtsController.loadMuseumsCollectionsMomumentsLvl4Page().url)
+          controller.loadMuseumsCollectionsMonumentsLvl4Page()(
+            FakeRequest(GET, routes.ArtsController.loadMuseumsCollectionsMonumentsLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -526,7 +526,7 @@ class ArtsControllerSpec
       }
     }
 
-    "submitMuseumsCollectionsMomumentsLvl4Page" should {
+    "submitMuseumsCollectionsMonumentsLvl4Page" should {
       "redirect to confirm details page on valid form submission" in {
         val radioButtons = Seq(historicalSitesMonuments, museumsCollections)
         radioButtons.foreach { value =>
@@ -534,10 +534,10 @@ class ArtsControllerSpec
             mockAuthWithEnrolment()
           }
           val result =
-            controller.submitMuseumsCollectionsMomumentsLvl4Page()(
+            controller.submitMuseumsCollectionsMonumentsLvl4Page()(
               FakeRequest(
                 POST,
-                routes.ArtsController.submitMuseumsCollectionsMomumentsLvl4Page().url
+                routes.ArtsController.submitMuseumsCollectionsMonumentsLvl4Page().url
               )
                 .withFormUrlEncodedBody("museums4" -> value)
             )
@@ -550,8 +550,8 @@ class ArtsControllerSpec
           mockAuthWithEnrolment()
         }
         val result =
-          controller.submitMuseumsCollectionsMomumentsLvl4Page()(
-            FakeRequest(POST, routes.ArtsController.submitMuseumsCollectionsMomumentsLvl4Page().url)
+          controller.submitMuseumsCollectionsMonumentsLvl4Page()(
+            FakeRequest(POST, routes.ArtsController.submitMuseumsCollectionsMonumentsLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))

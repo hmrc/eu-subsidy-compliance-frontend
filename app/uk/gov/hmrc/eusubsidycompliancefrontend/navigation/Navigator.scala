@@ -287,7 +287,7 @@ class Navigator @Inject() (implicit appConfig: AppConfig) {
     case ("90.3") => routes.ArtsController.loadArtsPerformingSupportActivitiesLvl4Page()
     case ("91") => routes.ArtsController.loadLibrariesArchivesCulturalLvl3Page()
     case ("91.1") => routes.ArtsController.loadLibrariesArchivesLvl4Page()
-    case ("91.2") => routes.ArtsController.loadMuseumsCollectionsMomumentsLvl4Page()
+    case ("91.2") => routes.ArtsController.loadMuseumsCollectionsMonumentsLvl4Page()
     case ("91.4") => routes.ArtsController.loadBotanicalZoologicalReservesLvl4Page()
     case ("93") => routes.ArtsController.loadSportsAmusementRecreationLvl3Page()
     case ("93.1") => routes.ArtsController.loadSportsLvl4Page()

@@ -765,7 +765,7 @@ object SubsidyController {
                   journey.getConvertedClaimAmount.getOrElse(sys.error("Converted claim amount Missing"))
                 ),
             businessEntityIdentifier = journey.addClaimEori.value
-              .fold(sys.error("eori value missing"))(oprionalEORI => oprionalEORI.value.map(EORI(_))),
+              .fold(sys.error("eori value missing"))(optionalClaimEori => optionalClaimEori.value.map(EORI(_))),
             amendmentType = journey.existingTransactionId
               .fold(Some(EisSubsidyAmendmentType("1")))(_ => Some(EisSubsidyAmendmentType("2")))
           )
