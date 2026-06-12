@@ -120,7 +120,7 @@
                 ) else Seq.empty) ++
                 (if (viewModel.showLevel2) Seq(
                     SummaryListRow(
-                        key = Key(content = Text(messages("NACE.radio."+viewModel.naceLevel1Code+".title"))),
+                        key = Key(content = Text(messages(viewModel.level2TitleKey))),
                         value = Value(content = Text(viewModel.naceLevel2Display)),
                         actions = Some(Actions(
                             items = Seq(

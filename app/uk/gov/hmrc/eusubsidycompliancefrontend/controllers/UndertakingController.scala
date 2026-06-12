@@ -590,6 +590,18 @@ class UndertakingController @Inject() (
     case _ => ""
   }
 
+  private def getLevel2TitleKey(naceLevel1Code: String, level2Code: String): String =
+    if (naceLevel1Code == "C") level2Code match {
+      case "13" | "14" | "15" | "16" | "31" => "NACE.Manufacturing.Lvl2.2.Clothes.title"
+      case "26" | "27" | "28" | "33" => "NACE.Manufacturing.Lvl2.2.Computers.title"
+      case "10" | "11" | "12" => "NACE.Manufacturing.Lvl2.2.Food.title"
+      case "19" | "20" | "22" | "23" | "24" | "25" => "NACE.Manufacturing.Lvl2.2.Metals.title"
+      case "17" | "18" => "NACE.Manufacturing.Lvl2.2.Paper.title"
+      case "29" | "30" => "NACE.Manufacturing.Lvl2.2.Vehicles.title"
+      case _ => s"NACE.radio.${naceLevel1Code}.title"
+    }
+    else s"NACE.radio.${naceLevel1Code}.title"
+
   def deriveLevel1Code(level2Code: String): String = level2Code match {
     case "01" | "02" | "03" => "A"
     case "05" | "06" | "07" | "08" | "09" => "B"
@@ -716,6 +728,7 @@ class UndertakingController @Inject() (
       naceLevel4Display = level4Display,
       naceLevel1Code = naceLevel1Code,
       naceLevel2Code = naceLevel2Code,
+      level2TitleKey = getLevel2TitleKey(naceLevel1Code, naceLevel2Code),
       naceLevel3Code = naceLevel3Code,
       naceLevel4Code = naceLevel4Code,
       sector = sector,
