@@ -17,18 +17,19 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import org.scalatest.AppendedClues.convertToClueful
+import org.scalatest.EitherValues
 import org.scalatest.matchers.must.Matchers
 import play.api.data.FormError
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Errors._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Errors.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Fields.{Day, Month, Year}
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 
 import java.time.LocalDate
 
-class ClaimDateFormProviderSpec extends BaseSpec with Matchers {
+class ClaimDateFormProviderSpec extends BaseSpec with Matchers with EitherValues {
 
   private val day = 2
   private val month = 2
@@ -137,7 +138,7 @@ class ClaimDateFormProviderSpec extends BaseSpec with Matchers {
     }
 
     foundExpectedErrorMessage mustBe true withClue
-      s"could not locate error message ending '$errorMessage' in list of errors: ${result.leftSide.left.get}"
+      s"could not locate error message ending '$errorMessage' in list of errors: ${result.left.value}"
   }
 
 }
