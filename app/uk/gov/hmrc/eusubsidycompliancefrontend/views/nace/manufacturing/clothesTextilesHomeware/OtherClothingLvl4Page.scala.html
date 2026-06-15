@@ -51,28 +51,28 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-leather-fur", messages("NACE.radio.14.24"))),
-            value = Some(Sector.leatherAndFurClothing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.leatherAndFurClothing.toString)
+            value = Some(Sector.LeatherAndFurClothing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.LeatherAndFurClothing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-outerwear", messages("NACE.radio.14.21"))),
-            value = Some(Sector.outerwear.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.outerwear.toString)
+            value = Some(Sector.Outerwear.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Outerwear.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-underwear", messages("NACE.radio.14.22"))),
-            value = Some(Sector.underwear.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.underwear.toString)
+            value = Some(Sector.Underwear.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Underwear.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-workwear", messages("NACE.radio.14.23"))),
-            value = Some(Sector.workwear.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.workwear.toString)
+            value = Some(Sector.Workwear.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Workwear.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.14.29"))),
-            value = Some(Sector.otherClothing4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherClothing4.toString)
+            value = Some(Sector.OtherClothing4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherClothing4.toString)
         )
     )
 }

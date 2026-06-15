@@ -22,42 +22,54 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{MaxInputValue, Subs
 
 class SubsidyAmountSpec extends AnyWordSpec with Matchers {
 
-  "SubsidyAmount.of" should {
+  "SubsidyAmount.validate" should {
 
     "accept zero" in {
-      SubsidyAmount.of(BigDecimal("0")) shouldBe defined
+      SubsidyAmount.validate(BigDecimal("0")) shouldBe SubsidyAmount(BigDecimal(0))
     }
 
     "accept positive values" in {
-      SubsidyAmount.of(BigDecimal("123.45")) shouldBe defined
+      SubsidyAmount.validate(BigDecimal("123.45")) shouldBe SubsidyAmount(BigDecimal(123.45))
     }
 
     "accept negative values" in {
-      SubsidyAmount.of(BigDecimal("-123.45")) shouldBe defined
+      SubsidyAmount.validate(BigDecimal("-123.45")) shouldBe SubsidyAmount(BigDecimal(-123.45))
     }
 
     "accept the maximum value" in {
-      SubsidyAmount.of(MaxInputValue) shouldBe defined
+      SubsidyAmount.validate(MaxInputValue) shouldBe SubsidyAmount(BigDecimal(MaxInputValue))
     }
 
     "accept the minimum value" in {
-      SubsidyAmount.of(-MaxInputValue) shouldBe defined
+      SubsidyAmount.validate(-MaxInputValue) shouldBe SubsidyAmount(BigDecimal(-MaxInputValue))
     }
 
     "reject values greater than the maximum" in {
-      SubsidyAmount.of(MaxInputValue + 1) shouldBe None
+      val exception = intercept[IllegalArgumentException] {
+        SubsidyAmount.validate(MaxInputValue + 1)
+      }
+
+      exception.getMessage shouldBe "100000000000.99 is not a valid SubsidyAmount"
     }
 
     "reject values less than the minimum" in {
-      SubsidyAmount.of(-MaxInputValue - 1) shouldBe None
+      val exception = intercept[IllegalArgumentException] {
+        SubsidyAmount.validate(-MaxInputValue - 1)
+      }
+
+      exception.getMessage shouldBe "-100000000000.99 is not a valid SubsidyAmount"
     }
 
     "accept values with 2 decimal places" in {
-      SubsidyAmount.of(BigDecimal("123.45")) shouldBe defined
+      SubsidyAmount.validate(BigDecimal("123.45")) shouldBe SubsidyAmount(BigDecimal(123.45))
     }
 
     "reject values with more than 2 decimal places" in {
-      SubsidyAmount.of(BigDecimal("123.456")) shouldBe None
+      val exception = intercept[IllegalArgumentException] {
+        SubsidyAmount.validate(BigDecimal("123.456"))
+      }
+
+      exception.getMessage shouldBe "123.456 is not a valid SubsidyAmount"
     }
   }
 
@@ -69,17 +81,8 @@ class SubsidyAmountSpec extends AnyWordSpec with Matchers {
       }
     }
 
-    "throw IllegalArgumentException for invalid input" in {
-      intercept[IllegalArgumentException] {
-        SubsidyAmount(MaxInputValue + 1)
-      }
-    }
-  }
-
-  "SubsidyAmount.Zero" should {
-
-    "be a valid zero-valued SubsidyAmount" in {
-      SubsidyAmount.Zero shouldBe SubsidyAmount(BigDecimal(0))
+    "allow invalid input" in {
+      SubsidyAmount(MaxInputValue + 1).value shouldBe 100000000000.99
     }
   }
 }

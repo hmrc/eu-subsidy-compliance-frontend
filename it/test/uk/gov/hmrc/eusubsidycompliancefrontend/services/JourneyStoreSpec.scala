@@ -21,9 +21,8 @@ import org.scalatest.matchers.should.Matchers
 import play.api.Configuration
 import play.api.libs.json.{Json, OFormat}
 import play.api.test.DefaultAwaitTimeout
-import shapeless.tag.@@
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.JourneyStore
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.IntegrationBaseSpec
 import uk.gov.hmrc.mongo.cache.CacheItem
@@ -47,10 +46,10 @@ class JourneyStoreSpec
   private implicit val thingFormat: OFormat[Thing] = Json.format[Thing]
   private implicit val anotherThingFormat: OFormat[AnotherThing] = Json.format[AnotherThing]
 
-  private implicit val eori: String @@ types.EORI.Tag = EORI("GB123456789012")
+  private implicit val eori: EORI = EORI("GB123456789012")
   private val anotherEori = EORI("GB098765432109")
 
-  override protected val repository = new JourneyStore(mongoComponent, Configuration.empty)
+  override protected val repository: JourneyStore = new JourneyStore(mongoComponent, Configuration.empty)
 
   "JourneyStore" when {
 

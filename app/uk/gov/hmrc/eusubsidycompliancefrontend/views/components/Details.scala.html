@@ -15,12 +15,13 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details as GDetails
 
 @this(govukDetails : GovukDetails)
 @(linkText: String, content: String)(implicit messages: Messages)
 
 @govukDetails(
-    Details(
+    GDetails(
         summary = Text(linkText),
         content = HtmlContent(content)
     )

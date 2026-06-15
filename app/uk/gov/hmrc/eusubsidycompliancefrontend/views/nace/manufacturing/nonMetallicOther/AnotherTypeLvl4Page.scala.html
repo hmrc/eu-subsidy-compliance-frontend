@@ -50,13 +50,13 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-abrasive", messages("NACE.radio.23.91"))),
-            value = Some(Sector.abrasiveProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.abrasiveProducts.toString)
+            value = Some(Sector.AbrasiveProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.AbrasiveProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.23.99"))),
-            value = Some(Sector.otherNonMetallicMineral.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNonMetallicMineral.toString)
+            value = Some(Sector.OtherNonMetallicMineral.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherNonMetallicMineral.toString)
         )
     )
 }

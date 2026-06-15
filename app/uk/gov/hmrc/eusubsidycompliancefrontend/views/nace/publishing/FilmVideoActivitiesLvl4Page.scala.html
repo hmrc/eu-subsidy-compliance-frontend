@@ -51,23 +51,23 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-videoProductionDistribution", messages("NACE.radio.59.13"))),
-            value = Some(Sector.videoProductionDistribution.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.videoProductionDistribution.toString)
+            value = Some(Sector.VideoProductionDistribution.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.VideoProductionDistribution.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-videoPostProduction", messages("NACE.radio.59.12"))),
-            value = Some(Sector.videoPostProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.videoPostProduction.toString)
+            value = Some(Sector.VideoPostProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.VideoPostProduction.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-videoProduction", messages("NACE.radio.59.11"))),
-            value = Some(Sector.videoProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.videoProduction.toString)
+            value = Some(Sector.VideoProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.VideoProduction.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-projection", messages("NACE.radio.59.14"))),
-            value = Some(Sector.projection.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.projection.toString)
+            value = Some(Sector.Projection.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Projection.toString)
         )
     )
 }

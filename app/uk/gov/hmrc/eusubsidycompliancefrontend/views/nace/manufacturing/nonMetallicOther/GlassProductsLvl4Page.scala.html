@@ -47,34 +47,34 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-flatglass", messages("NACE.radio.23.11"))),
-            value = Some(Sector.flatGlass.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.flatGlass.toString)
+            value = Some(Sector.FlatGlass.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FlatGlass.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-glassfibres", messages("NACE.radio.23.14"))),
-            value = Some(Sector.glassFibres.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.glassFibres.toString)
+            value = Some(Sector.GlassFibres.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.GlassFibres.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-hollow", messages("NACE.radio.23.13"))),
-            value = Some(Sector.hollowGlass.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.hollowGlass.toString)
+            value = Some(Sector.HollowGlass.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.HollowGlass.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.23.15"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherGlass.hint")))
             )),
-            value = Some(Sector.otherGlassProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherGlassProducts.toString)
+            value = Some(Sector.OtherGlassProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherGlassProducts.toString)
         ),
         RadioItem(
             divider = Some(messages("common.radioItem.or"))
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-shaping", messages("NACE.radio.23.12"))),
-            value = Some(Sector.shapingFlatGlass.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.shapingFlatGlass.toString)
+            value = Some(Sector.ShapingFlatGlass.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ShapingFlatGlass.toString)
         )
     )
 }

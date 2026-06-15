@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 
 class EORISpec extends AnyWordSpec with Matchers {
 
@@ -26,56 +27,60 @@ class EORISpec extends AnyWordSpec with Matchers {
   // VALIDATION TESTS
   // -------------------------
 
-  "EORI.of" should {
+  "EORI.from" should {
+
+    "accept a valid GB EORI" in {
+      EORI.from("GB100823993327") shouldBe defined
+    }
 
     "accept valid GB EORI with uppercase prefix and 12 digits" in {
-      EORI.of("GB123456789012") shouldBe defined
+      EORI.from("GB123456789012") shouldBe defined
     }
 
     "accept valid GB EORI with 15 digits" in {
-      EORI.of("GB123456789012345") shouldBe defined
+      EORI.from("GB123456789012345") shouldBe defined
     }
 
     "accept valid XI EORI with 12 digits" in {
-      EORI.of("XI123456789012") shouldBe defined
+      EORI.from("XI123456789012") shouldBe defined
     }
 
     "accept lowercase gb prefix due to regex" in {
-      EORI.of("gb123456789012") shouldBe defined
+      EORI.from("gb123456789012") shouldBe defined
     }
 
     "accept mixed-case prefix due to regex" in {
-      EORI.of("gB123456789012") shouldBe defined
+      EORI.from("gB123456789012") shouldBe defined
     }
 
     "reject missing prefix" in {
-      EORI.of("123456789012") shouldBe None
+      EORI.from("123456789012") shouldBe None
     }
 
     "reject invalid prefix" in {
-      EORI.of("US123456789012") shouldBe None
+      EORI.from("US123456789012") shouldBe None
     }
 
     "reject too few digits" in {
-      EORI.of("GB1234567890") shouldBe None
+      EORI.from("GB1234567890") shouldBe None
     }
 
     "reject too many digits" in {
-      EORI.of("GB1234567890123456") shouldBe None
+      EORI.from("GB1234567890123456") shouldBe None
     }
 
     "reject letters in numeric section" in {
-      EORI.of("GB12345ABC9012") shouldBe None
+      EORI.from("GB12345ABC9012") shouldBe None
     }
 
     "reject empty string" in {
-      EORI.of("") shouldBe None
+      EORI.from("") shouldBe None
     }
 
     // IMPORTANT: catches findFirstIn bug behaviour
     "reject string containing a valid EORI as substring (critical)" in {
       val input = "XXXGB123456789012YYY"
-      EORI.of(input) shouldBe None
+      EORI.from(input) shouldBe None
     }
   }
 
@@ -155,19 +160,19 @@ class EORISpec extends AnyWordSpec with Matchers {
   "EORI validation boundaries" should {
 
     "accept minimum valid GB length (14 chars)" in {
-      EORI.of("GB" + "1" * 12) shouldBe defined
+      EORI.from("GB" + "1" * 12) shouldBe defined
     }
 
     "accept maximum valid GB length (17 chars)" in {
-      EORI.of("GB" + "1" * 15) shouldBe defined
+      EORI.from("GB" + "1" * 15) shouldBe defined
     }
 
     "reject 13-digit numeric part" in {
-      EORI.of("GB" + "1" * 11) shouldBe None
+      EORI.from("GB" + "1" * 11) shouldBe None
     }
 
     "reject 16-digit numeric part" in {
-      EORI.of("GB" + "1" * 16) shouldBe None
+      EORI.from("GB" + "1" * 16) shouldBe None
     }
   }
 
@@ -181,7 +186,7 @@ class EORISpec extends AnyWordSpec with Matchers {
       val input = "randomGB123456789012random"
 
       // This SHOULD be None in correct implementation
-      EORI.of(input) shouldBe None
+      EORI.from(input) shouldBe None
     }
   }
 }

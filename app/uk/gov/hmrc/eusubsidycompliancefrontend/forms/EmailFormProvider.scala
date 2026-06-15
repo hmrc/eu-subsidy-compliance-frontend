@@ -15,6 +15,7 @@
  */
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
+
 import play.api.data.Forms.nonEmptyText
 import play.api.data.{Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.{EmailAddressFieldMapping, Fields}
@@ -24,7 +25,7 @@ case class EmailFormProvider() extends FormProvider[FormValues] {
 
   override protected def mapping: Mapping[FormValues] = Forms.mapping(
     Fields.Email -> EmailAddressFieldMapping
-  )(FormValues.apply)(FormValues.unapply)
+  )(FormValues.apply)(fv => Some(fv.value))
 
 }
 

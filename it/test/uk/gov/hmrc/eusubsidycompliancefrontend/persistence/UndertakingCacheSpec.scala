@@ -17,8 +17,8 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import cats.implicits.catsSyntaxOptionId
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus.active
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Transport
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus.Active
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, SubsidyAmount, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.IntegrationBaseSpec
@@ -30,23 +30,23 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class UndertakingCacheSpec extends IntegrationBaseSpec with DefaultPlayMongoRepositorySupport[CacheItem] {
 
-  override protected val repository = new UndertakingCache(mongoComponent)
+  override protected val repository: UndertakingCache = new UndertakingCache(mongoComponent)
 
   private val eori1 = EORI("GB123456789012")
   private val eori2 = EORI("GB123456789013")
 
   private val undertakingRef = UndertakingRef("UR123456")
 
-  private val businessEntity1 = BusinessEntity(EORI(eori1), leadEORI = true)
-  private val businessEntity2 = BusinessEntity(EORI(eori2), leadEORI = false)
+  private val businessEntity1 = BusinessEntity(eori1, leadEORI = true)
+  private val businessEntity2 = BusinessEntity(eori2, leadEORI = false)
 
   private val undertaking = Undertaking(
     undertakingRef,
     UndertakingName("TestUndertaking"),
-    transport,
+    Transport,
     IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
-    active.some,
+    Active.some,
     List(businessEntity1, businessEntity2)
   )
 

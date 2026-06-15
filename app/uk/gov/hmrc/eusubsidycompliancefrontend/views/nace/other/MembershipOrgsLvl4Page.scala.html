@@ -50,13 +50,13 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-businessEmployersMembership", messages("NACE.radio.94.11"))),
-value = Some(Sector.businessEmployersMembership.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.businessEmployersMembership.toString)
+value = Some(Sector.BusinessEmployersMembership.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.BusinessEmployersMembership.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-professionalMembership", messages("NACE.radio.94.12"))),
-value = Some(Sector.professionalMembership.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.professionalMembership.toString)
+value = Some(Sector.ProfessionalMembership.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ProfessionalMembership.toString)
 )
 )
 }

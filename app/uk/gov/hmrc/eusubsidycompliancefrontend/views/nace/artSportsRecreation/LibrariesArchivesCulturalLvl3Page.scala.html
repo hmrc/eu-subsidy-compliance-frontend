@@ -51,23 +51,23 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.91.4"))),
-                value = Some(Sector.botanicalGardensAndNatureReserves.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.botanicalGardensAndNatureReserves.toString)
+                value = Some(Sector.BotanicalGardensAndNatureReserves.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.BotanicalGardensAndNatureReserves.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.91.3"))),
-                value = Some(Sector.culturalHeritageConservation4.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.culturalHeritageConservation.toString)
+                value = Some(Sector.CulturalHeritageConservation4.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.CulturalHeritageConservation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.91.1"))),
-                value = Some(Sector.libraryArchives.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.libraryArchives.toString)
+                value = Some(Sector.LibraryArchives.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.LibraryArchives.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.91.2"))),
-                value = Some(Sector.museumCollectionsMonuments.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.museumCollectionsMonuments.toString)
+                value = Some(Sector.MuseumCollectionsMonuments.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.MuseumCollectionsMonuments.toString)
         )
     )
 }

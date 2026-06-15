@@ -32,7 +32,7 @@ object FormHelpers {
   }
 
   def formWithSingleMandatoryField(fieldName: String): Form[FormValues] = Form(
-    mapping(fieldName -> mandatory(fieldName))(FormValues.apply)(FormValues.unapply)
+    mapping(fieldName -> mandatory(fieldName))(FormValues.apply)(fv => Some(fv.value))
   )
 
 }

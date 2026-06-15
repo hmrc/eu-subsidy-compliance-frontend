@@ -49,21 +49,21 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-humanHealthActivities", messages("NACE.radio.86"))),
-value = Some(Sector.humanHealthActivities.toString),
+value = Some(Sector.HumanHealthActivities.toString),
 hint = Some(Hint(
 content = Text(messages("NACE.humanHealth.Lvl2.humanHealth.hint"))
 )),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.humanHealthActivities.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.HumanHealthActivities.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-residentialCareActivities", messages("NACE.radio.87"))),
-value = Some(Sector.residentialCareActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialCareActivities.toString)
+value = Some(Sector.ResidentialCareActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialCareActivities.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherSocialWork", messages("NACE.radio.88"))),
-value = Some(Sector.otherSocialWork.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSocialWork.toString)
+value = Some(Sector.OtherSocialWork.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSocialWork.toString)
 )
 )
 }

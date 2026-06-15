@@ -17,10 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.email
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 
 import java.time.LocalDateTime
 
-case class UpdateEmailRequest(eori: String, address: String, timestamp: LocalDateTime = LocalDateTime.now())
+case class UpdateEmailRequest(eori: EORI, address: String, timestamp: LocalDateTime = LocalDateTime.now())
 
 object UpdateEmailRequest {
   implicit val format: OFormat[UpdateEmailRequest] = Json.format

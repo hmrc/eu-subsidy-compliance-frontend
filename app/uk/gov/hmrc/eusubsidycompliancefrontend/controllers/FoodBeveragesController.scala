@@ -24,11 +24,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.foodBeverages._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.foodBeverages.*
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -53,7 +54,7 @@ class FoodBeveragesController @Inject() (
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
   override val messagesApi: MessagesApi = mcc.messagesApi
 
   private val foodLvl3Form: Form[FormValues] = formWithSingleMandatoryField("food3")
@@ -107,7 +108,7 @@ class FoodBeveragesController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -135,9 +136,9 @@ class FoodBeveragesController @Inject() (
       .fold(
         formWithErrors => BadRequest(animalFeedsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -162,9 +163,9 @@ class FoodBeveragesController @Inject() (
       .fold(
         formWithErrors => BadRequest(bakeryAndFarinaceousLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -189,9 +190,9 @@ class FoodBeveragesController @Inject() (
       .fold(
         formWithErrors => BadRequest(dairyProductsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -216,9 +217,9 @@ class FoodBeveragesController @Inject() (
       .fold(
         formWithErrors => BadRequest(fruitAndVegLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -243,9 +244,9 @@ class FoodBeveragesController @Inject() (
       .fold(
         formWithErrors => BadRequest(grainAndStarchLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -270,9 +271,9 @@ class FoodBeveragesController @Inject() (
       .fold(
         formWithErrors => BadRequest(meatLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -297,9 +298,9 @@ class FoodBeveragesController @Inject() (
       .fold(
         formWithErrors => BadRequest(oilsAndFatsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -324,9 +325,9 @@ class FoodBeveragesController @Inject() (
       .fold(
         formWithErrors => BadRequest(otherFoodProductsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )
@@ -351,9 +352,9 @@ class FoodBeveragesController @Inject() (
       .fold(
         formWithErrors => BadRequest(beveragesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          val sectorEnum = Sector.withName(form.value)
+          val sectorEnum = Sector.fromCode(form.value)
           store
-            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum.id))
+            .update[UndertakingJourney](_.setUndertakingSector(sectorEnum))
             .flatMap(_ => Redirect(navigator.nextPage(form.value, "")).toFuture)
         }
       )

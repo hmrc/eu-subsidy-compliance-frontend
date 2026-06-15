@@ -50,18 +50,18 @@
   Seq(
     RadioItem(
       content = HtmlContent(radioText("sector-label-incineration-without-energy", messages("NACE.radio.38.31"))),
-      value = Some(Sector.incineration.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.incineration.toString)
+      value = Some(Sector.Incineration.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.Incineration.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-landfilling", messages("NACE.radio.38.32"))),
-      value = Some(Sector.landFilling.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.landFilling.toString)
+      value = Some(Sector.LandFilling.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.LandFilling.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-other-waste-disposal", messages("NACE.radio.38.33"))),
-       value = Some(Sector.otherWasteDisposal.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherWasteDisposal.toString)
+       value = Some(Sector.OtherWasteDisposal.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherWasteDisposal.toString)
     )
   )
 }

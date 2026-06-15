@@ -20,7 +20,7 @@ import com.google.inject.{Inject, Singleton}
 import play.api.http.Status
 import play.api.libs.json.Json
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{RetrieveEmail, UpdateEmailRequest}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
@@ -28,6 +28,8 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDateTime
 import scala.concurrent.{ExecutionContext, Future}
+
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
 @Singleton
 class CustomsDataStoreConnector @Inject() (override protected val http: HttpClientV2, servicesConfig: ServicesConfig)(
@@ -56,7 +58,10 @@ class CustomsDataStoreConnector @Inject() (override protected val http: HttpClie
       .map { res =>
         res.status match {
           case Status.NO_CONTENT => ()
-          case _ => sys.error(s"Error updating email address for eori: $eori, new email address: $emailAddress")
+          case _ =>
+            throw new RuntimeException(
+              s"Error updating email address for eori: $eori, new email address: $emailAddress"
+            )
         }
       }
 }

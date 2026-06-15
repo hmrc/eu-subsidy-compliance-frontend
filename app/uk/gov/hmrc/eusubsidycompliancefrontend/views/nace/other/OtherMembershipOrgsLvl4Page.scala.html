@@ -51,18 +51,18 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-politicalOrganisations", messages("NACE.radio.94.92"))),
-value = Some(Sector.politicalOrganisations.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.politicalOrganisations.toString)
+value = Some(Sector.PoliticalOrganisations.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.PoliticalOrganisations.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-religiousOrganisations", messages("NACE.radio.94.91"))),
-value = Some(Sector.religiousOrganisations.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.religiousOrganisations.toString)
+value = Some(Sector.ReligiousOrganisations.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ReligiousOrganisations.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherMembershipOrganisations", messages("NACE.radio.94.99"))),
-value = Some(Sector.otherMembershipOrganisations.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMembershipOrganisations.toString)
+value = Some(Sector.OtherMembershipOrganisations.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherMembershipOrganisations.toString)
 )
 )
 }

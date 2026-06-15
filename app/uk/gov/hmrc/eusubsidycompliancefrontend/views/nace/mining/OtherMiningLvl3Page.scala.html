@@ -50,14 +50,14 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-stoneQuarrying", messages("NACE.radio.08.1"))),
-value = Some(Sector.stoneQuarrying.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.stoneQuarrying.toString)
+value = Some(Sector.StoneQuarrying.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.StoneQuarrying.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-miningAndQuarryingNEC", messages("NACE.radio.08.9"))),
 hint = Some(Hint(content = Text(messages("NACE.mining.Lvl3.miningAndQuarryingNEC.hint")))),
-value = Some(Sector.miningAndQuarryingNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningAndQuarryingNEC.toString)
+value = Some(Sector.MiningAndQuarryingNEC.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.MiningAndQuarryingNEC.toString)
 )
 )
 }

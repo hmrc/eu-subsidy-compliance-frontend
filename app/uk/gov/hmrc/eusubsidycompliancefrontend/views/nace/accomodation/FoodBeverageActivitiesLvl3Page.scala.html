@@ -50,23 +50,23 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-beverageServing", messages("NACE.radio.56.3"))),
-                value = Some(Sector.beverageServing4.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.beverageServing.toString)
+                value = Some(Sector.BeverageServing4.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.BeverageServing.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-eventAndContractCatering", messages("NACE.radio.56.2"))),
-                value = Some(Sector.eventAndContractCatering.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.eventAndContractCatering.toString)
+                value = Some(Sector.EventAndContractCatering.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.EventAndContractCatering.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-foodBeverageServiceIntermediationActivities", messages("NACE.radio.56.4"))),
-                value = Some(Sector.foodBeverageServiceIntermediationActivities4.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.foodBeverageServiceIntermediationActivities.toString)
+                value = Some(Sector.FoodBeverageServiceIntermediationActivities4.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.FoodBeverageServiceIntermediationActivities.toString)
         ),
        RadioItem(
             content = HtmlContent(radioText("sector-label-restaurantsMobile", messages("NACE.radio.56.1"))),
-            value = Some(Sector.restaurantsMobile.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.restaurantsMobile.toString)
+            value = Some(Sector.RestaurantsMobile.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.RestaurantsMobile.toString)
         )
     )
 }

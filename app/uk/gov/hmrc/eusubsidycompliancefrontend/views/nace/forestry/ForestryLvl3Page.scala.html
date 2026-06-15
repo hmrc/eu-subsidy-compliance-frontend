@@ -51,23 +51,23 @@ controllers.routes.AgricultureController.submitForestryLvl3Page()
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-gatheringOfWildGrowth", messages("NACE.radio.02.3"))),
-value = Some(Sector.gatheringOfWildGrowth4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.gatheringOfWildGrowth.toString)
+value = Some(Sector.GatheringOfWildGrowth4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.GatheringOfWildGrowth.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-logging", messages("NACE.radio.02.2"))),
-value = Some(Sector.logging4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.logging.toString)
+value = Some(Sector.Logging4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Logging.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-silviculture", messages("NACE.radio.02.1"))),
-value = Some(Sector.silviculture4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.silviculture.toString)
+value = Some(Sector.Silviculture4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Silviculture.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-forestrySupportServices", messages("NACE.radio.02.4"))),
-value = Some(Sector.forestrySupportServices4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.forestrySupportServices.toString)
+value = Some(Sector.ForestrySupportServices4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ForestrySupportServices.toString)
 )
 )
 }

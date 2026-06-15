@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityAddee
 
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 
 final case class BusinessDetailsAdded(eori: EORI)
 object BusinessDetailsAdded {

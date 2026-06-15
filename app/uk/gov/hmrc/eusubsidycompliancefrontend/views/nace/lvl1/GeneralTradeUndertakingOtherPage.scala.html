@@ -49,69 +49,69 @@
     Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-financialInsuranceActivities", messages("NACE.radio.L"))),
-value = Some(Sector.financialInsuranceActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.financialInsuranceActivities.toString)
+value = Some(Sector.FinancialInsuranceActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.FinancialInsuranceActivities.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-waterSupply", messages("NACE.radio.E"))),
-value = Some(Sector.waterSupply.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.waterSupply.toString)
+value = Some(Sector.WaterSupply.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.WaterSupply.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-electricityGas", messages("NACE.radio.D"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.electricityGas.hint")))),
-value = Some(Sector.electricityGas.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityGas.toString)
+value = Some(Sector.ElectricityGas.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricityGas.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-mining", messages("NACE.radio.B"))),
-value = Some(Sector.miningQuarrying.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningQuarrying.toString)
+value = Some(Sector.MiningQuarrying.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.MiningQuarrying.toString)
 ),
  RadioItem(
    content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.radio.I"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.accommodationAndFoodService.hint")))),
-value = Some(Sector.accommodationAndFoodService.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.accommodationAndFoodService.toString)
+value = Some(Sector.AccommodationAndFoodService.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.AccommodationAndFoodService.toString)
  ),
 
  RadioItem(
  content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.S"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.artsSportsRecreation.hint")))),
- value = Some(Sector.artsSportsRecreation.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.artsSportsRecreation.toString)
+ value = Some(Sector.ArtsSportsRecreation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ArtsSportsRecreation.toString)
  ),
  RadioItem(
  content = HtmlContent(radioText("sector-label-education", messages("NACE.radio.Q"))),
- value = Some(Sector.education2.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.education2.toString)
+ value = Some(Sector.Education2.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Education2.toString)
  ),
  RadioItem(
  content = HtmlContent(radioText("sector-label-humanHealthSocialWork", messages("NACE.radio.R"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.humanHealthSocialWork.hint")))),
- value = Some(Sector.humanHealthSocialWork.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.humanHealthSocialWork.toString)
+ value = Some(Sector.HumanHealthSocialWork.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.HumanHealthSocialWork.toString)
  ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-publicAdministration", messages("NACE.radio.P"))),
-value = Some(Sector.publicAdministrationSocialSecurity.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.publicAdministrationSocialSecurity.toString)
+value = Some(Sector.PublicAdministrationSocialSecurity.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.PublicAdministrationSocialSecurity.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherService", messages("NACE.radio.T"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.otherService.hint")))),
-value = Some(Sector.otherService.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherService.toString)
+value = Some(Sector.OtherService.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherService.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-households", messages("NACE.radio.U"))),
-value = Some(Sector.households.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.households.toString)
+value = Some(Sector.Households.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Households.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-activitiesExtraterritorial", messages("NACE.radio.V"))),
-value = Some(Sector.extraterritorialOrganisationsActivities4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.activitiesExtraterritorial.toString)
+value = Some(Sector.ExtraterritorialOrganisationsActivities4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ActivitiesExtraterritorial.toString)
 )
     )
 }

@@ -49,23 +49,23 @@
   Seq(
     RadioItem(
       content = HtmlContent(radioText("sector-label-electric-power", messages("NACE.radio.35.1"))),
-      value = Some(Sector.electricPowerGenerationAndDistribution.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricPowerGenerationAndDistribution.toString)
+      value = Some(Sector.ElectricPowerGenerationAndDistribution.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricPowerGenerationAndDistribution.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-gas-distribution", messages("NACE.radio.35.2"))),
-      value = Some(Sector.gaseousFuelsManufacture.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelsManufacture.toString)
+      value = Some(Sector.GaseousFuelsManufacture.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.GaseousFuelsManufacture.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.radio.35.3"))),
-      value = Some(Sector.steamAndAirConditioningSupply4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.steamAndAirConditioningSupply.toString)
+      value = Some(Sector.SteamAndAirConditioningSupply4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.SteamAndAirConditioningSupply.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-brokers-agents-power-gas", messages("NACE.radio.35.4"))),
-      value = Some(Sector.electricPowerAndGasBrokers4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricPowerAndGasBrokers.toString)
+      value = Some(Sector.ElectricPowerAndGasBrokers4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricPowerAndGasBrokers.toString)
     )
   )
 }

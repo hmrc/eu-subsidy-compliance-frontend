@@ -22,6 +22,7 @@ import play.api.data.{Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.{fromOptionalClaimEori, toOptionalClaimEori}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{OptionalClaimEori, Undertaking}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -33,7 +34,7 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
     EoriNumber -> mandatoryIfEqual(YesNoRadioButton, "true", eoriNumberMapping)
   )(toOptionalClaimEori)(fromOptionalClaimEori)
 
-  private val isEoriLengthValid = Constraint[String] { eori: String =>
+  private val isEoriLengthValid = Constraint[String] { (eori: String) =>
     if (EORI.ValidLengthsWithPrefix.contains(removeSpaces(eori).length)) Valid
     else Invalid(IncorrectLength)
   }
@@ -42,13 +43,13 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
     eori.replaceAll(" ", "")
   }
 
-  private val eoriEntered = Constraint[String] { eori: String =>
+  private val eoriEntered = Constraint[String] { (eori: String) =>
     if (eori.isEmpty) Invalid(Required)
     else Valid
   }
 
-  private val enteredEoriIsValid = Constraint[String] { eori: String =>
-    if (removeSpaces(eori).matches(EORI.regex)) Valid
+  private val enteredEoriIsValid = Constraint[String] { (eori: String) =>
+    if (removeSpaces(eori).matches(EORI.Regex.regex)) Valid
     else Invalid(IncorrectFormat)
   }
 
@@ -75,6 +76,6 @@ object ClaimEoriFormProvider {
   def toOptionalClaimEori(s: String, v: Option[String]) = OptionalClaimEori(s, v)
 
   def fromOptionalClaimEori(oe: OptionalClaimEori): Option[(String, Option[String])] =
-    OptionalClaimEori.unapply(oe).map(result => (result._1, result._2))
+    Some((oe.setValue, oe.value))
 
 }

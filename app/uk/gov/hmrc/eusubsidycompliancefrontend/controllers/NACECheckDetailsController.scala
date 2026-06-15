@@ -24,7 +24,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -143,9 +144,9 @@ class NACECheckDetailsController @Inject() (
     val level4Display = messages(s"NACE.radio.$naceLevel4Code")
 
     val sector = naceLevel2Code match {
-      case "01" => Sector.agriculture
-      case "03" => Sector.aquaculture
-      case _ => Sector.other
+      case "01" => Sector.Agriculture
+      case "03" => Sector.Aquaculture
+      case _ => Sector.Other
     }
 
     val showLevel1 = naceLevel1Code match {
@@ -311,7 +312,7 @@ class NACECheckDetailsController @Inject() (
               }
             } else {
               for {
-                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.other.id))
+                updatedSector <- store.update[UndertakingJourney](_.setUndertakingSector(Sector.Other))
                 resetInternalNaceCode <- store
                   .update[UndertakingJourney](_.copy(internalNaceCode = "", isNaceCYA = false))
               } yield Redirect(routes.UndertakingController.getSector)

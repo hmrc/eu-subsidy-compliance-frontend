@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.matchers.should.Matchers
 import play.api.Configuration
 import play.api.http.Status.OK
@@ -91,11 +92,14 @@ class CustomsDataStoreConnectorSpec
       mockPost(updateVerifiedEmailUrl, UpdateEmailRequest(eori1, email, now))(
         Some(HttpResponse(500, "{}"))
       )
-      connector
+
+      val exception = connector
         .updateEmailForEori(eori1, email, now)
-        .map(
-          _ shouldBe new RuntimeException(s"Error updating email address for eori: $eori1, new email address: $email")
-        )
+        .failed
+        .futureValue
+
+      exception shouldBe a[RuntimeException]
+      exception.getMessage shouldBe s"Error updating email address for eori: $eori1, new email address: $email"
     }
 
   }

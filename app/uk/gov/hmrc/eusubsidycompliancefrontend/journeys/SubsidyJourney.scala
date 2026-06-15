@@ -26,6 +26,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.CheckYourAnswersHelper
 
 import scala.concurrent.Future

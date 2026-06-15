@@ -51,46 +51,46 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-cement-plaster", messages("NACE.radio.23.6"))),
-            value = Some(Sector.cementPlasterArticles.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.cementPlasterArticles.toString)
+            value = Some(Sector.CementPlasterArticles.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CementPlasterArticles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-cement-lime", messages("NACE.radio.23.5"))),
-            value = Some(Sector.cementLimePlaster.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.cementLimePlaster.toString)
+            value = Some(Sector.CementLimePlaster.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CementLimePlaster.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-clay", messages("NACE.radio.23.3"))),
-            value = Some(Sector.clayBuildingMaterials.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.clayBuildingMaterials.toString)
+            value = Some(Sector.ClayBuildingMaterials.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ClayBuildingMaterials.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-stone", messages("NACE.radio.23.7"))),
-            value = Some(Sector.stoneCuttingFinishing4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.stoneCuttingFinishing.toString)
+            value = Some(Sector.StoneCuttingFinishing4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.StoneCuttingFinishing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-glass", messages("NACE.radio.23.1"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-glass", messages("NACE.Manufacturing.Lvl3.GlassProducts.hint")))
             )),
-            value = Some(Sector.glassProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.glassProducts.toString)
+            value = Some(Sector.GlassProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.GlassProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-refractory", messages("NACE.radio.23.2"))),
-            value = Some(Sector.refractoryProductsManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.refractoryProducts.toString)
+            value = Some(Sector.RefractoryProductsManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.RefractoryProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-porcelain", messages("NACE.radio.23.4"))),
-            value = Some(Sector.otherCeramicProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherCeramicProducts.toString)
+            value = Some(Sector.OtherCeramicProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherCeramicProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-abrasive", messages("NACE.radio.23.9"))),
-            value = Some(Sector.otherAbrasiveProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherAbrasiveProducts.toString)
+            value = Some(Sector.OtherAbrasiveProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherAbrasiveProducts.toString)
         )
     )
 }

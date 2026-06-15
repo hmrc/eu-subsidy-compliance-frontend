@@ -117,7 +117,8 @@ class EscConnectorSpec
     }
 
     "handling request to get undertaking balance" in {
-      val response = HttpResponse(status = 200, body = Json.toJson(undertakingBalance).toString())
+      val value1 = Json.toJson(undertakingBalance)
+      val response = HttpResponse(status = 200, body = value1.toString())
 
       mockGet(url"$baseUrl/undertaking/balance/$eori1")(Some(response))
       val actual = connector.getUndertakingBalance(eori1).futureValue

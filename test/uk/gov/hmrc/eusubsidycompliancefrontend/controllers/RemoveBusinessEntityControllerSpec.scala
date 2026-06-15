@@ -15,6 +15,7 @@
  */
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+
 import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import org.jsoup.nodes.Document
@@ -30,6 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -104,7 +106,7 @@ class RemoveBusinessEntityControllerSpec
       document.title shouldBe s"${titlePrefix}Businesses in your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
       document
         .getElementsByAttributeValue("action", routes.AddBusinessEntityController.postAddBusinessEntity.url)
-        .size() shouldBe 1 //verify form is on the page
+        .size() shouldBe 1 // verify form is on the page
       document.getElementById("continue").text() shouldBe "Save and continue"
     }
 
@@ -115,7 +117,7 @@ class RemoveBusinessEntityControllerSpec
   "RemoveBusinessEntityControllerSpec" when {
 
     "handling request to get remove Business entity by Lead" must {
-      def performAction = controller.getRemoveBusinessEntity(eori4)(FakeRequest())
+      def performAction = controller.getRemoveBusinessEntity(eori4.value)(FakeRequest())
 
       "throw technical error" when {
 
@@ -146,9 +148,10 @@ class RemoveBusinessEntityControllerSpec
                 case None => selectedOptions.isEmpty shouldBe true
               }
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.RemoveBusinessEntityController.postRemoveBusinessEntity(eori4).url
+              button
+                .attr("action") shouldBe routes.RemoveBusinessEntityController.postRemoveBusinessEntity(eori4.value).url
 
-              doc.select(".govuk-body").text() should include(CommonTestData.eori4)
+              doc.select(".govuk-body").text() should include(CommonTestData.eori4.value)
 
             }
           )
@@ -172,8 +175,8 @@ class RemoveBusinessEntityControllerSpec
     "handling request to post remove business entity" must {
 
       def performAction(data: (String, String)*)(eori: EORI) = controller
-        .postRemoveBusinessEntity(eori)(
-          FakeRequest(POST, routes.RemoveBusinessEntityController.postRemoveBusinessEntity(eori4).url)
+        .postRemoveBusinessEntity(eori.value)(
+          FakeRequest(POST, routes.RemoveBusinessEntityController.postRemoveBusinessEntity(eori4.value).url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -260,7 +263,7 @@ class RemoveBusinessEntityControllerSpec
           checkIsRedirect(
             performAction("removeBusiness" -> "true")(eori2),
             routes.AddBusinessEntityController
-              .startJourney(businessRemoved = Some(true), removedAddedEoriOpt = Some(eori2))
+              .startJourney(businessRemoved = Some(true), removedAddedEoriOpt = Some(eori2.value))
               .url
           )
         }

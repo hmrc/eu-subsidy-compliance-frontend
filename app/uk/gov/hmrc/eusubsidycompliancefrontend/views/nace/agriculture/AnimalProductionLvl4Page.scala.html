@@ -50,43 +50,43 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-dairyCattle", messages("NACE.radio.01.41"))),
-value = Some(Sector.dairyCattle.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.dairyCattle.toString)
+value = Some(Sector.DairyCattle.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.DairyCattle.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherCattle", messages("NACE.radio.01.42"))),
-value = Some(Sector.otherCattle.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherCattle.toString)
+value = Some(Sector.OtherCattle.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherCattle.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-camels", messages("NACE.radio.01.44"))),
-value = Some(Sector.camels.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.camels.toString)
+value = Some(Sector.Camels.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Camels.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-horses", messages("NACE.radio.01.43"))),
-value = Some(Sector.horses.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.horses.toString)
+value = Some(Sector.Horses.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Horses.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-poultry", messages("NACE.radio.01.47"))),
-value = Some(Sector.poultry.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.poultry.toString)
+value = Some(Sector.Poultry.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Poultry.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-sheep", messages("NACE.radio.01.45"))),
-value = Some(Sector.sheep.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.sheep.toString)
+value = Some(Sector.Sheep.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Sheep.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-swine", messages("NACE.radio.01.46"))),
-value = Some(Sector.swine.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.swine.toString)
+value = Some(Sector.Swine.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.Swine.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherAnimals", messages("NACE.radio.01.48"))),
-value = Some(Sector.otherAnimals.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherAnimals.toString)
+value = Some(Sector.OtherAnimals.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherAnimals.toString)
 )
 )
 }

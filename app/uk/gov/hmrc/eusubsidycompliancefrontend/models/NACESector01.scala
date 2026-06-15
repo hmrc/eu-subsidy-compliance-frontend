@@ -20,7 +20,7 @@ import play.api.libs.json._
 
 sealed trait NACESector01
 
-object NACESector01 extends {
+object NACESector01 {
 
   case object Agriculture extends WithName("agriculture") with NACESector01
 
@@ -70,7 +70,7 @@ object NACESector01 extends {
 
   case object Households extends WithName("households") with NACESector01
 
-  final object ActivitiesExtraterritorial extends WithName("activitiesExtraterritorial") with NACESector01
+  object ActivitiesExtraterritorial extends WithName("activitiesExtraterritorial") with NACESector01
 
   val enumerableValues: List[NACESector01] = List(
     Agriculture,

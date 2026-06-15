@@ -51,28 +51,28 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-funeralActivities", messages("NACE.radio.96.3"))),
-value = Some(Sector.funeralActivities4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.funeralActivities.toString)
+value = Some(Sector.FuneralActivities4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.FuneralActivities.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-beautyTreatment", messages("NACE.radio.96.2"))),
-value = Some(Sector.beautyTreatment.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.beautyTreatment.toString)
+value = Some(Sector.BeautyTreatment.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.BeautyTreatment.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-textileFurCleaning", messages("NACE.radio.96.1"))),
-value = Some(Sector.cleaningTextileProducts4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.textileFurCleaning.toString)
+value = Some(Sector.CleaningTextileProducts4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.TextileFurCleaning.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-personalServicesIntermediation", messages("NACE.radio.96.4"))),
-value = Some(Sector.personalServicesIntermediation4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.personalServicesIntermediation.toString)
+value = Some(Sector.PersonalServicesIntermediation4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.PersonalServicesIntermediation.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherPersonalServices", messages("NACE.radio.96.9"))),
-value = Some(Sector.otherPersonalServices.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPersonalServices.toString)
+value = Some(Sector.OtherPersonalServices.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPersonalServices.toString)
 )
 )
 }

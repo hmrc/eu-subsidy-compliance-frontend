@@ -51,38 +51,38 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-carpets-rugs", messages("NACE.radio.13.93"))),
-            value = Some(Sector.carpets.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.carpets.toString)
+            value = Some(Sector.Carpets.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Carpets.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-corgage", messages("NACE.radio.13.94"))),
-            value = Some(Sector.cordage.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.cordage.toString)
+            value = Some(Sector.Cordage.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Cordage.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-household", messages("NACE.radio.13.92"))),
-            value = Some(Sector.householdTextiles.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.householdTextiles.toString)
+            value = Some(Sector.HouseholdTextiles.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.HouseholdTextiles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-knitted", messages("NACE.radio.13.91"))),
-            value = Some(Sector.knittedFabrics.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.knittedFabrics.toString)
+            value = Some(Sector.KnittedFabrics.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.KnittedFabrics.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-nonwoven", messages("NACE.radio.13.95"))),
-            value = Some(Sector.nonWoven.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonWoven.toString)
+            value = Some(Sector.NonWoven.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonWoven.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-industrial", messages("NACE.radio.13.96"))),
-            value = Some(Sector.otherTechnicalTextiles.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTechnicalTextiles.toString)
+            value = Some(Sector.OtherTechnicalTextiles.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTechnicalTextiles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.radio.13.99"))),
-            value = Some(Sector.otherTextile.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTextile.toString)
+            value = Some(Sector.OtherTextile.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTextile.toString)
         )
     )
 }

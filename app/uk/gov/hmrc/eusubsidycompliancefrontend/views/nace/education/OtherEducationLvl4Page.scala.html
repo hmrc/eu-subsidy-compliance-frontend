@@ -50,23 +50,23 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-culturalEducation", messages("NACE.radio.85.52"))),
-value = Some(Sector.culturalEducation.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.culturalEducation.toString)
+value = Some(Sector.CulturalEducation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.CulturalEducation.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-drivingSchool", messages("NACE.radio.85.53"))),
-value = Some(Sector.drivingSchool.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.drivingSchool.toString)
+value = Some(Sector.DrivingSchool.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.DrivingSchool.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-sportsRecreationEducation", messages("NACE.radio.85.51"))),
-value = Some(Sector.sportsRecreationEducation.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsRecreationEducation.toString)
+value = Some(Sector.SportsRecreationEducation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.SportsRecreationEducation.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherEducationNEC", messages("NACE.radio.85.59"))),
-value = Some(Sector.otherEducationNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherEducationNEC.toString)
+value = Some(Sector.OtherEducationNEC.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherEducationNEC.toString)
 )
 )
 }

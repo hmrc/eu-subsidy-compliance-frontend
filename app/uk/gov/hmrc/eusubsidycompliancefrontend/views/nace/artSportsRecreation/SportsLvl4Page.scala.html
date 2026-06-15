@@ -51,23 +51,23 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.93.13"))),
-                value = Some(Sector.fitnessCentresActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.fitnessCentresActivities.toString)
+                value = Some(Sector.FitnessCentresActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.FitnessCentresActivities.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.93.12"))),
-                value = Some(Sector.sportsClubsActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsClubsActivities.toString)
+                value = Some(Sector.SportsClubsActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SportsClubsActivities.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.93.11"))),
-                value = Some(Sector.sportsFacilitiesOperation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsFacilitiesOperation.toString)
+                value = Some(Sector.SportsFacilitiesOperation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SportsFacilitiesOperation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.93.19"))),
-                value = Some(Sector.otherSportsActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSportsActivities.toString)
+                value = Some(Sector.OtherSportsActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSportsActivities.toString)
         )
     )
 }

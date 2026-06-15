@@ -34,18 +34,19 @@ object BigDecimalFormatter {
     cf
   }
 
+  val zero: BigDecimal = BigDecimal(0)
+
   private def roundingMode = RoundingMode.DOWN
 
-  def toRoundedAmount(amount: BigDecimal): BigDecimal = amount.setScale(2, roundingMode)
-  def toEuros(amount: BigDecimal): String = eurFormatter.format(toRoundedAmount(amount))
-  def toPounds(amount: BigDecimal): String = gbpFormatter.format(toRoundedAmount(amount))
+  object Syntax:
+    extension (b: BigDecimal)
 
-  object Syntax {
-    implicit class BigDecimalOps(val b: BigDecimal) extends AnyVal {
-      def toRoundedAmount: BigDecimal = BigDecimalFormatter.toRoundedAmount(b)
-      def toEuros: String = BigDecimalFormatter.toEuros(b)
-      def toPounds: String = BigDecimalFormatter.toPounds(b)
-    }
-  }
+      def toEuros: String =
+        eurFormatter.format(b.toRoundedAmount)
 
+      def toPounds: String =
+        gbpFormatter.format(b.toRoundedAmount)
+
+      def toRoundedAmount: BigDecimal =
+        b.setScale(2, roundingMode)
 }

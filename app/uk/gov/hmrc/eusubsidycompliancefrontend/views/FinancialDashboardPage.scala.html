@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearHelpers
 @import java.time.LocalDate
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingBalance
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.toEuros
 
 @this(
   layout: Layout,
@@ -81,7 +82,7 @@
                     content = Text(messages(s"$key.customs.duty.heading"))
                 ),
                 value = Value(
-                    content = Text(summary.overall.hmrcSubsidyTotal.toEuros)
+                    content = Text(summary.overall.hmrcSubsidyTotal.value.toEuros)
                 )
             ),
             SummaryListRow(
@@ -89,7 +90,7 @@
                     content = Text(messages(s"$key.de.minimis.aid.heading"))
                 ),
                 value = Value(
-                    content = Text(summary.overall.nonHmrcSubsidyTotal.toEuros)
+                    content = Text(summary.overall.nonHmrcSubsidyTotal.value.toEuros)
                 )
             ),
             SummaryListRow(
@@ -97,7 +98,7 @@
                     content = Text(messages(s"$key.total.claimed.heading"))
                 ),
                 value = Value(
-                    content = Text(summary.overall.total.toEuros)
+                    content = Text(summary.overall.total.value.toEuros)
                 )
             ),
             SummaryListRow(
@@ -105,7 +106,7 @@
                     content = HtmlContent(s"""<span id="SectorCapId">${messages(s"$key.sector.cap.heading", messages(s"sector.label.$industrySectorKey"))}</span>""")
                 ),
                 value = Value(
-                    content = Text(summary.overall.sectorCap.toEuros)
+                    content = Text(summary.overall.sectorCap.value.toEuros)
                 )
             )
         )
@@ -116,7 +117,7 @@
                 content = HtmlContent(s"""<span id="undertaking-balance-heading">${messages(s"$key.undertaking.balance.heading", previousDate, summary.currentDate)}</span>""")
             ),
             value = Value(
-                content = HtmlContent(s"""<span id="undertaking-balance-value">${summary.undertakingBalanceEUR.toEuros}</span>""")
+                content = HtmlContent(s"""<span id="undertaking-balance-value">${summary.undertakingBalanceEUR.value.toEuros}</span>""")
             )
         )
     ) ++ mainPart

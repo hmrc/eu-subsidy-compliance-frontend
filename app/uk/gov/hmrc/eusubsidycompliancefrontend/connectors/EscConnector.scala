@@ -21,7 +21,8 @@ import play.api.Logging
 import play.api.libs.json.Json
 import play.mvc.Http.Status
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -30,6 +31,8 @@ import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 
 import java.time.LocalDate
+
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
 @Singleton
 class EscConnector @Inject() (
@@ -129,7 +132,7 @@ class EscConnector @Inject() (
     http
       .get(url"$getUndertakingBalanceUrl/$eori")
       .execute[HttpResponse]
-      .map { response: HttpResponse =>
+      .map { (response: HttpResponse) =>
         response.status match {
           case Status.OK => response.json.asOpt[UndertakingBalance]
           case _ => None
@@ -146,7 +149,7 @@ class EscConnector @Inject() (
     http
       .get(url"$getExchangeRateUrl/$dateAsString")
       .execute[HttpResponse]
-      .map { response: HttpResponse =>
+      .map { (response: HttpResponse) =>
         response.status match {
           case Status.OK => response.json.asOpt[MonthlyExchangeRate]
           case _ => None

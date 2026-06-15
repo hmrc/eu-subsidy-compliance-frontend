@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import cats.implicits._
 import play.api.libs.json._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EisSubsidyAmendmentType, UndertakingRef}
 
 import java.time.LocalDate

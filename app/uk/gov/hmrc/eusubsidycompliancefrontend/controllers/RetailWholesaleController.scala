@@ -24,13 +24,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.retailwholesale.RetailWholesaleLvl2Page
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.retailwholesale.retail.{CulturalLvl4Page, FoodLvl4Page, HouseholdLvl4Page, IntermediationLvl4Page, MotorVehiclesLvl4Page, NonSpecialisedLvl4Page, OtherGoodsLvl4Page, RetailLvl3Page}
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.retailwholesale.wholesale.{AgriculturalLvl4Page, ContractBasisLvl4Page, FoodWholesaleLvl4Page, HouseholdWholesaleLvl4Page, MachineryLvl4Page, MotorVehiclesWholesaleLvl4Page, SpecialisedLvl4Page, WholesaleLvl3Page}
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.retailwholesale.retail.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.retailwholesale.wholesale.*
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -60,7 +61,7 @@ class RetailWholesaleController @Inject() (
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
   override val messagesApi: MessagesApi = mcc.messagesApi
   private val retailWholesaleLvl2PageForm: Form[FormValues] = formWithSingleMandatoryField("retail2")
   private val retailLvl3PageForm: Form[FormValues] = formWithSingleMandatoryField("retail3")
@@ -82,7 +83,7 @@ class RetailWholesaleController @Inject() (
   )
   private val specialisedLvl4PageForm: Form[FormValues] = formWithSingleMandatoryField("specialWholesale4")
 
-  //retailWholesaleLvl2PageForm
+  // retailWholesaleLvl2PageForm
   def loadRetailWholesaleLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -122,7 +123,7 @@ class RetailWholesaleController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -130,7 +131,7 @@ class RetailWholesaleController @Inject() (
         }
       )
   }
-  //retailLvl3PageForm
+  // retailLvl3PageForm
   def loadRetailLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -170,7 +171,7 @@ class RetailWholesaleController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -178,7 +179,7 @@ class RetailWholesaleController @Inject() (
         }
       )
   }
-  //culturalLvl4PageForm
+  // culturalLvl4PageForm
   def loadCulturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -197,13 +198,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(culturalLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //foodLvl4PageForm
+  // foodLvl4PageForm
   def loadFoodLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -222,13 +223,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(foodLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //householdLvl4PageForm
+  // householdLvl4PageForm
   def loadHouseholdLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -247,13 +248,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(householdLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //intermediationLvl4PageForm
+  // intermediationLvl4PageForm
   def loadIntermediationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -272,13 +273,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(intermediationLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //motorVehiclesLvl4PageForm
+  // motorVehiclesLvl4PageForm
   def loadMotorVehiclesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -297,13 +298,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(motorVehiclesLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //nonSpecialisedLvl4PageForm
+  // nonSpecialisedLvl4PageForm
   def loadNonSpecialisedLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -322,13 +323,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(nonSpecialisedLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //otherGoodsLvl4PageForm
+  // otherGoodsLvl4PageForm
   def loadOtherGoodsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -347,13 +348,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(otherGoodsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //wholesaleLvl3PageForm
+  // wholesaleLvl3PageForm
   def loadWholesaleLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -393,7 +394,7 @@ class RetailWholesaleController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -402,7 +403,7 @@ class RetailWholesaleController @Inject() (
       )
   }
 
-  //agriculturalLvl4PageForm
+  // agriculturalLvl4PageForm
   def loadAgriculturalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -421,13 +422,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(agriculturalLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //contractBasisLvl4PageForm
+  // contractBasisLvl4PageForm
   def loadContractBasisLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -446,13 +447,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(contractBasisLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //foodWholesaleLvl4PageForm
+  // foodWholesaleLvl4PageForm
   def loadFoodWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -471,13 +472,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(foodWholesaleLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //householdWholesaleLvl4PageForm
+  // householdWholesaleLvl4PageForm
   def loadHouseholdWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -496,13 +497,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(householdWholesaleLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //machineryLvl4PageForm
+  // machineryLvl4PageForm
   def loadMachineryLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -521,13 +522,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(machineryLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //motorVehiclesWholesaleLvl4PageForm
+  // motorVehiclesWholesaleLvl4PageForm
   def loadMotorVehiclesWholesaleLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -548,13 +549,13 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(motorVehiclesWholesaleLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //specialisedLvl4PageForm
+  // specialisedLvl4PageForm
   def loadSpecialisedLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -573,7 +574,7 @@ class RetailWholesaleController @Inject() (
       .fold(
         formWithErrors => BadRequest(specialisedLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )

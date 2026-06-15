@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnr
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.ErrorHandler
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
@@ -33,11 +33,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * Action builder that runs the supplied block only if the user
-  *   o is authenticated with GG
-  *   o is enrolled for this service in ECC
-  *   o has a verified email address
+/** Action builder that runs the supplied block only if the user o is authenticated with GG o is enrolled for this
+  * service in ECC o has a verified email address
   *
   * The first two conditions are checked by delegating to the EnrolledAction builder.
   *
@@ -73,7 +70,7 @@ class UndertakingJourneyWithVerifiedEmailActionBuilder @Inject() (
   override def invokeBlock[A](r: Request[A], f: AuthenticatedEnrolledRequest[A] => Future[Result]): Future[Result] =
     enrolledActionBuilder.invokeBlock(
       r,
-      { enrolledRequest: AuthenticatedEnrolledRequest[A] =>
+      { (enrolledRequest: AuthenticatedEnrolledRequest[A]) =>
         emailService
           .hasVerifiedEmail(enrolledRequest.eoriNumber)(hc(enrolledRequest), executionContext)
           .toContext

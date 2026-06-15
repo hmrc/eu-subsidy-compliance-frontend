@@ -51,13 +51,13 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-naturalScientificResearchAndDevelopment", messages("NACE.radio.72.1"))),
-value = Some(Sector.naturalScientificResearchAndDevelopment4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.naturalScientificResearchAndDevelopment.toString)
+value = Some(Sector.NaturalScientificResearchAndDevelopment4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.NaturalScientificResearchAndDevelopment.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-socialScientificResearchAndDevelopment", messages("NACE.radio.72.2"))),
-value = Some(Sector.socialScientificResearchAndDevelopment4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.socialScientificResearchAndDevelopment.toString)
+value = Some(Sector.SocialScientificResearchAndDevelopment4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.SocialScientificResearchAndDevelopment.toString)
 )
 )
 }

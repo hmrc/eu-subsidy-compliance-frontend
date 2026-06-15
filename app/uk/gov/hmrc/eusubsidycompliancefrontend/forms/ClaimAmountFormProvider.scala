@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import play.api.data.Forms.text
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
@@ -51,15 +51,15 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
 
   private val allowedCurrencySymbols = CurrencyCode.values.map(_.symbol)
 
-  private val claimAmountIsBelowMaximumAllowedValueEUR = Constraint[String] { claimAmount: String =>
+  private val claimAmountIsBelowMaximumAllowedValueEUR = Constraint[String] { (claimAmount: String) =>
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
-      amount => PositiveSubsidyAmount.validateAndTransform(amount).fold[ValidationResult](Invalid(TooBig))(_ => Valid)
+      amount => Try(PositiveSubsidyAmount.validate(amount)).fold(_ => Invalid(TooBig), _ => Valid)
     )
   }
 
-  private val claimAmountIsBelowMaximumAllowedValueGBP = Constraint[String] { claimAmount: String =>
+  private val claimAmountIsBelowMaximumAllowedValueGBP = Constraint[String] { (claimAmount: String) =>
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
@@ -71,7 +71,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
     )
   }
 
-  private val claimAmountFormatIsValid = Constraint[String] { claimAmount: String =>
+  private val claimAmountFormatIsValid = Constraint[String] { (claimAmount: String) =>
     val amount = cleanAmount(claimAmount)
     if (claimAmount.isEmpty) {
       Invalid(Required)
@@ -83,7 +83,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
     }
   }
 
-  private val claimAmountAboveZero = Constraint[String] { claimAmount: String =>
+  private val claimAmountAboveZero = Constraint[String] { (claimAmount: String) =>
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
@@ -92,7 +92,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
   }
 
   // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
-  private val claimAmountCurrencyMatchesSelection = Constraint[ClaimAmount] { claimAmount: ClaimAmount =>
+  private val claimAmountCurrencyMatchesSelection = Constraint[ClaimAmount] { (claimAmount: ClaimAmount) =>
     claimAmount.amount.head match {
       case GBP.symbol if claimAmount.currencyCode != GBP => Invalid(IncorrectFormat)
       case EUR.symbol if claimAmount.currencyCode != EUR => Invalid(IncorrectFormat)
@@ -101,7 +101,7 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
     }
   }
 
-  private val currencyCodeIsValid = Constraint[String] { currencyCode: String =>
+  private val currencyCodeIsValid = Constraint[String] { (currencyCode: String) =>
     if (currencyCode.isEmpty || !CurrencyCode.namesToValuesMap.contains(currencyCode)) Invalid(IncorrectFormat)
     else Valid
   }

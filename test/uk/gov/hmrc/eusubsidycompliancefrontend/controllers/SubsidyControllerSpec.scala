@@ -45,6 +45,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{TaxYearHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.toEuros
 
 import java.time.LocalDate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -1232,7 +1233,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
           }
           checkFormErrorIsDisplayed(
-            performAction("should-claim-eori" -> "true", "claim-eori" -> eori3),
+            performAction("should-claim-eori" -> "true", "claim-eori" -> eori3.value),
             messageFromMessageKey("add-claim-eori.title"),
             messageFromMessageKey("claim-eori." + ClaimEoriFormProvider.Errors.InAnotherUndertaking)
           )
@@ -1276,7 +1277,7 @@ class SubsidyControllerSpec
         }
 
         "user selected yes and entered a valid EORI that is not part of the existing or any other undertaking" in {
-          val optionalEORI = OptionalClaimEori("true", eori3.some)
+          val optionalEORI = OptionalClaimEori("true", eori3.value.some)
 
           val updatedSubsidyJourney = update(journey, optionalEORI.copy(addToUndertaking = true).some)
 
@@ -1289,7 +1290,7 @@ class SubsidyControllerSpec
           }
 
           checkIsRedirect(
-            performAction("should-claim-eori" -> optionalEORI.setValue, "claim-eori" -> eori3),
+            performAction("should-claim-eori" -> optionalEORI.setValue, "claim-eori" -> eori3.value),
             routes.SubsidyController.getAddClaimBusiness.url
           )
         }
@@ -1717,11 +1718,11 @@ class SubsidyControllerSpec
           ),
           RemoveSubsidyRow(
             messageFromMessageKey("subsidy.cya.summary-list.amount.key"),
-            nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toEuros
+            nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.value.toEuros
           ),
           RemoveSubsidyRow(
             messageFromMessageKey("subsidy.cya.summary-list.claim.key"),
-            nonHmrcSubsidy.businessEntityIdentifier.getOrElse("")
+            nonHmrcSubsidy.businessEntityIdentifier.map(_.value).getOrElse("")
           ),
           RemoveSubsidyRow(
             messageFromMessageKey("subsidy.cya.summary-list.authority.key"),
@@ -1729,7 +1730,7 @@ class SubsidyControllerSpec
           ),
           RemoveSubsidyRow(
             messageFromMessageKey("subsidy.cya.summary-list.traderRef.key"),
-            nonHmrcSubsidy.traderReference.getOrElse("")
+            nonHmrcSubsidy.traderReference.map(_.value).getOrElse("")
           )
         )
 
@@ -1744,13 +1745,14 @@ class SubsidyControllerSpec
           performAction(transactionId),
           messageFromMessageKey("subsidy.remove.title"),
           { doc =>
-            val rows =
+            val rows: Seq[RemoveSubsidyRow] =
               doc.select(".govuk-summary-list__row").asScala.toList.map { element =>
                 val question = element.select(".govuk-summary-list__key").text()
                 val answer = element.select(".govuk-summary-list__value").text()
                 RemoveSubsidyRow(question, answer)
               }
-            rows shouldBe expectedRows(nonHmrcSubsidyList1.head)
+            val xpectedRows: Seq[RemoveSubsidyRow] = expectedRows(nonHmrcSubsidyList1.head)
+            rows shouldBe xpectedRows
             val button = doc.select("form")
             button.attr("action") shouldBe routes.SubsidyController.postRemoveSubsidyClaim(transactionId).url
 
@@ -2162,7 +2164,7 @@ class SubsidyControllerSpec
       "redirect to next page" when {
 
         val journeyWithEoriToAdd = subsidyJourney
-          .setClaimEori(OptionalClaimEori("true", eori3.some, addToUndertaking = true))
+          .setClaimEori(OptionalClaimEori("true", eori3.value.some, addToUndertaking = true))
           .setAddBusiness(true)
           .copy(traderRef = TraderRefFormPage())
 

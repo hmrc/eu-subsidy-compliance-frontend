@@ -26,7 +26,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class VerifiedEoriCacheISpec extends IntegrationBaseSpec with DefaultPlayMongoRepositorySupport[VerifiedEori] {
 
-  override protected val repository = new VerifiedEoriCache(mongoComponent)
+  override protected val repository: VerifiedEoriCache = new VerifiedEoriCache(mongoComponent)
 
   private val eori = EORI("GB922456789077")
 

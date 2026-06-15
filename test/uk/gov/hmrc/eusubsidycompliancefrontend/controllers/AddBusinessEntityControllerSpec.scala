@@ -31,6 +31,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney.FormPages.AddBusinessFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -103,7 +104,7 @@ class AddBusinessEntityControllerSpec
       document.title shouldBe s"${titlePrefix}Businesses in your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
       document
         .getElementsByAttributeValue("action", routes.AddBusinessEntityController.postAddBusinessEntity.url)
-        .size() shouldBe 1 //verify form is on the page
+        .size() shouldBe 1 // verify form is on the page
       document.getElementById("continue").text() shouldBe "Save and continue"
     }
 
@@ -131,7 +132,7 @@ class AddBusinessEntityControllerSpec
 
       "display the page" when {
 
-        //You only need to add businesses that have received customs subsidies (Customs Duty waivers) or non-customs subsidies.
+        // You only need to add businesses that have received customs subsidies (Customs Duty waivers) or non-customs subsidies.
         "addBusiness page should display Business Hint" in new AddBusinessPageSetup(
           theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1)),
           theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
@@ -146,7 +147,7 @@ class AddBusinessEntityControllerSpec
           hintElement.text() shouldBe messageFromMessageKey("addBusiness.hint")
         }
 
-        //replacing want with need in the "Do you want to add another business?"
+        // replacing want with need in the "Do you want to add another business?"
         "addBusiness has legend tag message" in new AddBusinessPageSetup(
           theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1)),
           theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
@@ -195,7 +196,7 @@ class AddBusinessEntityControllerSpec
           document.getElementsByClass("govuk-summary-list__row").size() shouldBe 1
           document
             .getElementById(s"business-entity-${businessEntity4.businessEntityIdentifier}")
-            .text shouldBe businessEntity4.businessEntityIdentifier
+            .text shouldBe businessEntity4.businessEntityIdentifier.value
           document
             .getElementById(s"remove-link-${businessEntity4.businessEntityIdentifier}")
             .attr(

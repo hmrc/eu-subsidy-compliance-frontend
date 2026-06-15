@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService}
@@ -96,7 +96,7 @@ class NoClaimNotificationController @Inject() (
 
     logger.info("NoBusinessPresentController.postNoClaimNotification")
 
-    withLeadUndertaking { undertaking: Undertaking =>
+    withLeadUndertaking { (undertaking: Undertaking) =>
       escService
         .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
         .toContext

@@ -24,7 +24,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnr
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.DoYouClaimFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -33,7 +34,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.toEuros
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
@@ -103,7 +104,7 @@ class AccountController @Inject() (
     for {
       result <- undertaking.undertakingStatus match {
 
-        case Some(UndertakingStatus.suspendedUndertaking) =>
+        case Some(UndertakingStatus.SuspendedUndertaking) =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)
           } else {
@@ -115,7 +116,7 @@ class AccountController @Inject() (
             )
           }
 
-        case Some(UndertakingStatus.inactive) =>
+        case Some(UndertakingStatus.Inactive) =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)
           } else {
@@ -127,7 +128,7 @@ class AccountController @Inject() (
             )
           }
 
-        case Some(UndertakingStatus.suspendedAutomated) =>
+        case Some(UndertakingStatus.SuspendedAutomated) =>
           if (suspendedPageFlag) {
             proceedToAccountPage(undertaking)
           } else {
@@ -216,7 +217,7 @@ class AccountController @Inject() (
         else n.toFuture
       }
       var agriOtherFlag: Boolean = true
-      if (undertaking.industrySector.toString.take(2).equals(Sector.fishingAndAquaculture.toString)) {
+      if (undertaking.industrySector.toString.take(2).equals(Sector.FishingAndAquaculture.toString)) {
         agriOtherFlag = false
       }
       if (undertaking.isLeadEORI(eori)) {
@@ -236,8 +237,8 @@ class AccountController @Inject() (
             lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
             neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
             allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-            totalSubsidies = summary.overall.total.toEuros,
-            remainingAmount = summary.undertakingBalanceEUR.toEuros,
+            totalSubsidies = summary.overall.total.value.toEuros,
+            remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
             currentPeriodStart = startDate.toDisplayFormat,
             isOverAllowance = summary.overall.allowanceExceeded,
             isSuspended = isSuspended,
@@ -258,8 +259,8 @@ class AccountController @Inject() (
             lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
             neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
             allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-            totalSubsidies = summary.overall.total.toEuros,
-            remainingAmount = summary.undertakingBalanceEUR.toEuros,
+            totalSubsidies = summary.overall.total.value.toEuros,
+            remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
             currentPeriodStart = startDate.toDisplayFormat,
             isSuspended = isSuspended,
             scp08IssuesExist = summary.scp08IssuesExist,

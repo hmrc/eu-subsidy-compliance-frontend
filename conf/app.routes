@@ -489,8 +489,8 @@ POST       /nace-level-three/sports                                             
 GET        /nace-level-four/sports                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadSportsLvl4Page()
 POST       /nace-level-four/sports                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitSportsLvl4Page()
 
-GET        /nace-level-four/museums                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadMuseumsCollectionsMomumentsLvl4Page()
-POST       /nace-level-four/museums                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitMuseumsCollectionsMomumentsLvl4Page()
+GET        /nace-level-four/museums                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadMuseumsCollectionsMonumentsLvl4Page()
+POST       /nace-level-four/museums                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitMuseumsCollectionsMonumentsLvl4Page()
 
 GET        /nace-level-four/libraries                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadLibrariesArchivesLvl4Page()
 POST       /nace-level-four/libraries                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitLibrariesArchivesLvl4Page()
@@ -892,5 +892,5 @@ GET        /access-denied-for-agents                                            
 GET        /confirm-undertaking-details                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.getCheckDetails()
 POST       /confirm-undertaking-details                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACECheckDetailsController.postCheckDetails
 
-GET        /confirm-business-details                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmBusinessDetailsController.showPage
+GET        /confirm-business-details                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmBusinessDetailsController.showPage()
 POST       /confirm-business-details                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmBusinessDetailsController.submitPage()

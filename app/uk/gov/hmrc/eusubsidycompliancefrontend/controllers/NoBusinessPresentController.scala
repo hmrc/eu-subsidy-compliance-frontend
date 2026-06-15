@@ -21,7 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -58,7 +58,7 @@ class NoBusinessPresentController @Inject() (
     withLeadUndertaking { _ =>
       store
         .update[BusinessEntityJourney](_.copy(isLeadSelectJourney = true.some))
-        .map { businessEntityJourney: BusinessEntityJourney =>
+        .map { (businessEntityJourney: BusinessEntityJourney) =>
           logger.info(
             s"NoBusinessPresentController.postNoBusinessPresent redirecting to businessEntityJourney eori:${businessEntityJourney.eori}"
           )

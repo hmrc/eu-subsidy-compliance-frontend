@@ -51,31 +51,31 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-aircraft", messages("NACE.radio.30.3"))),
-            value = Some(Sector.aircraft.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.aircraft.toString)
+            value = Some(Sector.Aircraft.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Aircraft.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-military", messages("NACE.radio.30.4"))),
-            value = Some(Sector.militaryFightingVehiclesManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.militaryFightingVehicles.toString)
+            value = Some(Sector.MilitaryFightingVehiclesManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MilitaryFightingVehicles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-railway", messages("NACE.radio.30.2"))),
-            value = Some(Sector.railwayManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.railway.toString)
+            value = Some(Sector.RailwayManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Railway.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-ships", messages("NACE.radio.30.1"))),
-            value = Some(Sector.ships.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ships.toString)
+            value = Some(Sector.Ships.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Ships.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-parts-other", messages("NACE.radio.30.9"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.OtherTransportEquipment.hint")))
             )),
-            value = Some(Sector.otherTransportEquipment3.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTransportEquipment3.toString)
+            value = Some(Sector.OtherTransportEquipment3.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTransportEquipment3.toString)
         )
     )
 }

@@ -37,11 +37,11 @@ class ClaimEoriFormProviderSpec extends BaseSpec with Matchers {
     }
 
     "return no errors for a submission where an EORI was entered" in {
-      validateAndCheckSuccess("true", Some(eori1))
+      validateAndCheckSuccess("true", Some(eori1.value))
     }
 
     "return no errors for a submission where an EORI was entered with prefix GB" in {
-      validateAndCheckSuccess("true", Some(eori1))
+      validateAndCheckSuccess("true", Some(eori1.value))
     }
 
     "return an error if the yes radio button is selected and no eori number is entered" in {
@@ -73,7 +73,7 @@ class ClaimEoriFormProviderSpec extends BaseSpec with Matchers {
   )(errorField: String, errorMessage: String, args: String*) = {
     val result = processForm(radioButton, eoriNumber)
 
-    val foundExpectedErrorMessage = result.leftSideValue match {
+    val foundExpectedErrorMessage = result match {
       case Left(errors) => errors.contains(FormError(errorField, errorMessage, args))
       case _ => false
     }

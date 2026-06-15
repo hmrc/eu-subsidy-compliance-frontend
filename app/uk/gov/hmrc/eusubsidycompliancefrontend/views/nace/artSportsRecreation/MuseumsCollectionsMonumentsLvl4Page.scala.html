@@ -39,7 +39,7 @@
 
 @actionUrl = @{
 
-        controllers.routes.ArtsController.submitMuseumsCollectionsMomumentsLvl4Page()
+        controllers.routes.ArtsController.submitMuseumsCollectionsMonumentsLvl4Page()
 }
 
 
@@ -51,13 +51,13 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.91.22"))),
-                value = Some(Sector.historicalSitesMonuments.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.historicalSitesMonuments.toString)
+                value = Some(Sector.HistoricalSitesMonuments.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.HistoricalSitesMonuments.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.91.21"))),
-                value = Some(Sector.museumsCollections.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.museumsCollections.toString)
+                value = Some(Sector.MuseumsCollections.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.MuseumsCollections.toString)
         )
     )
 }

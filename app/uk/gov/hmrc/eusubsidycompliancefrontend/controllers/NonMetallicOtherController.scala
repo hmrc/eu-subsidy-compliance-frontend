@@ -23,11 +23,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.nonMetallicOther._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.nonMetallicOther.*
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -52,7 +53,7 @@ class NonMetallicOtherController @Inject() (
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   private val nonMetallicMineralLvl3Form: Form[FormValues] = formWithSingleMandatoryField("mineral3")
   private val otherManufacturingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("otherManufacturing")
@@ -65,7 +66,7 @@ class NonMetallicOtherController @Inject() (
   private val otherPorcelainAndCeramicsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("porcelain4")
   private val otherProductsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("otherProducts4")
 
-  //nonMetallicMineralLvl3Page
+  // nonMetallicMineralLvl3Page
   def loadNonMetallicMineralLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -105,7 +106,7 @@ class NonMetallicOtherController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -114,7 +115,7 @@ class NonMetallicOtherController @Inject() (
       )
   }
 
-  //OtherManufacturingLvl3Page
+  // OtherManufacturingLvl3Page
   def loadOtherManufacturingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -154,7 +155,7 @@ class NonMetallicOtherController @Inject() (
             else {
               for {
                 updatedSector <- store
-                  .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+                  .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
                 updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
@@ -163,7 +164,7 @@ class NonMetallicOtherController @Inject() (
       )
   }
 
-  //AnotherTypeLvl4Page
+  // AnotherTypeLvl4Page
   def loadAnotherTypeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -182,13 +183,13 @@ class NonMetallicOtherController @Inject() (
       .fold(
         formWithErrors => BadRequest(anotherTypeLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //CementLimePlasterLvl4Page
+  // CementLimePlasterLvl4Page
   def loadCementLimePlasterLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -207,13 +208,13 @@ class NonMetallicOtherController @Inject() (
       .fold(
         formWithErrors => BadRequest(cementLimePlasterLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //ClayBuildingMaterialsLvl4Page
+  // ClayBuildingMaterialsLvl4Page
   def loadClayBuildingMaterialsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -232,13 +233,13 @@ class NonMetallicOtherController @Inject() (
       .fold(
         formWithErrors => BadRequest(clayBuildingMaterialsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //ConcreteCementPlasterLvl4Page
+  // ConcreteCementPlasterLvl4Page
   def loadConcreteCementPlasterLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -257,13 +258,13 @@ class NonMetallicOtherController @Inject() (
       .fold(
         formWithErrors => BadRequest(concreteCementPlasterLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //GlassProductsLvl4Page
+  // GlassProductsLvl4Page
   def loadGlassProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -282,13 +283,13 @@ class NonMetallicOtherController @Inject() (
       .fold(
         formWithErrors => BadRequest(glassProductsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //JewelleryCoinsLvl4Page
+  // JewelleryCoinsLvl4Page
   def loadJewelleryCoinsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -307,13 +308,13 @@ class NonMetallicOtherController @Inject() (
       .fold(
         formWithErrors => BadRequest(jewelleryCoinsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //OtherPorcelainAndCeramicsLvl4Page
+  // OtherPorcelainAndCeramicsLvl4Page
   def loadOtherPorcelainAndCeramicsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -334,13 +335,13 @@ class NonMetallicOtherController @Inject() (
       .fold(
         formWithErrors => BadRequest(otherPorcelainAndCeramicsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )
   }
 
-  //OtherProductsLvl4Page
+  // OtherProductsLvl4Page
   def loadOtherProductsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
@@ -359,7 +360,7 @@ class NonMetallicOtherController @Inject() (
       .fold(
         formWithErrors => BadRequest(otherProductsLvl4Page(formWithErrors, "")).toFuture,
         form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
+          store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
         }
       )

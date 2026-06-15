@@ -50,31 +50,31 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-petroleumNaturalGasExtraction", messages("NACE.radio.06"))),
-value = Some(Sector.petroleumNaturalGasExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.petroleumNaturalGasExtraction.toString)
+value = Some(Sector.PetroleumNaturalGasExtraction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.PetroleumNaturalGasExtraction.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-coalAndLigniteMining", messages("NACE.radio.05"))),
-value = Some(Sector.coalAndLigniteMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.coalAndLigniteMining.toString)
+value = Some(Sector.CoalAndLigniteMining.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.CoalAndLigniteMining.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-metalOresMining", messages("NACE.radio.07"))),
-value = Some(Sector.metalOresMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalOresMining.toString)
+value = Some(Sector.MetalOresMining.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.MetalOresMining.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherMiningQuarrying", messages("NACE.radio.08"))),
 hint = Some(Hint(
 content = Text(messages("NACE.mining.Lvl2.otherMiningQuarrying.hint"))
 )),
-value = Some(Sector.otherMiningQuarrying.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMiningQuarrying.toString)
+value = Some(Sector.OtherMiningQuarrying.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherMiningQuarrying.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-miningSupportServices", messages("NACE.radio.09"))),
-value = Some(Sector.miningSupportServices.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningSupportServices.toString)
+value = Some(Sector.MiningSupportServices.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.MiningSupportServices.toString)
 )
 )
 }

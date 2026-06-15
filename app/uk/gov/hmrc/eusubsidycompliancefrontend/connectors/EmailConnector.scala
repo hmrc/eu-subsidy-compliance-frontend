@@ -28,7 +28,7 @@ trait EmailConnector extends Connector {
   override protected def makeRequest(
     request: HttpClientV2 => Future[HttpResponse]
   )(implicit ec: ExecutionContext): ConnectorResult =
-    request(http) map { r: HttpResponse =>
+    request(http) map { (r: HttpResponse) =>
       if (r.status.isSuccess) Right(r)
       // Allow 404s to be handled by the caller on the happy path.
       else if (r.status == NOT_FOUND) Right(r)

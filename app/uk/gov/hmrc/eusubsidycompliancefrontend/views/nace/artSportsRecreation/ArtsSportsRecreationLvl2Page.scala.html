@@ -51,23 +51,23 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.90"))),
-                value = Some(Sector.artsCreationPerforming.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.artsCreationPerforming.toString)
+                value = Some(Sector.ArtsCreationPerforming.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.ArtsCreationPerforming.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.92"))),
-                value = Some(Sector.gamblingActivities4.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.gamblingBetting.toString)
+                value = Some(Sector.GamblingActivities4.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.GamblingBetting.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.91"))),
-                value = Some(Sector.librariesArchivesMuseums.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.librariesArchivesMuseums.toString)
+                value = Some(Sector.LibrariesArchivesMuseums.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.LibrariesArchivesMuseums.toString)
         ),
        RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.radio.93"))),
-                value = Some(Sector.sportsAndRecreation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsAndRecreation.toString)
+                value = Some(Sector.SportsAndRecreation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SportsAndRecreation.toString)
         )
     )
 }

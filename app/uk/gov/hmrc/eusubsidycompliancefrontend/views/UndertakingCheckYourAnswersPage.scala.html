@@ -17,7 +17,8 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import views.html.helper.CSPNonce
@@ -54,7 +55,7 @@
                 rows = Seq(
                     SummaryListRow(
                         key = Key(content = Text(messages(s"$key.summary-list.eori.key"))),
-                        value = Value(content = Text(eori))
+                        value = Value(content = Text(eori.value))
                     ),
                     SummaryListRow(
                         key = Key(content = Text(messages(s"$key.summary-list.sector.key"))),

@@ -26,8 +26,8 @@ case class DateFormValues(day: String, month: String, year: String) {
 
   def govDisplayFormat()(implicit messages: Messages): String =
     s"""$day ${messages(
-      s"date.$month"
-    )} $year"""
+        s"date.$month"
+      )} $year"""
 
   def toLocalDate: LocalDate = LocalDate.of(year.toInt, month.toInt, day.toInt)
 }

@@ -51,16 +51,16 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-pulp-paper", messages("NACE.radio.17.1"))),
-            value = Some(Sector.pulp.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.pulp.toString)
+            value = Some(Sector.Pulp.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Pulp.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-paper-board", messages("NACE.radio.17.2"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-paper-board", messages("NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard.hint")))
             )),
-            value = Some(Sector.articlesPaperBoard.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.articlesPaperBoard.toString)
+            value = Some(Sector.ArticlesPaperBoard.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ArticlesPaperBoard.toString)
         )
     )
 }

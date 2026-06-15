@@ -17,9 +17,13 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus.UndertakingStatus
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.IndustrySectorLimit.IndustrySectorLimit
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName.UndertakingName
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus
 
 import java.time.LocalDate
 
@@ -33,7 +37,7 @@ case class Undertaking(
   undertakingBusinessEntity: List[BusinessEntity]
 ) {
 
-  def isAutoSuspended: Boolean = undertakingStatus == Some(UndertakingStatus.suspendedAutomated)
+  def isAutoSuspended: Boolean = undertakingStatus.contains(UndertakingStatus.SuspendedAutomated)
 
   def isLeadEORI(eori: EORI): Boolean = {
     val leadEORI: BusinessEntity = undertakingBusinessEntity
@@ -44,7 +48,7 @@ case class Undertaking(
   }
   def isManuallySuspended: Boolean = {
     undertakingStatus match {
-      case Some(UndertakingStatus.suspendedManual) => true
+      case Some(UndertakingStatus.SuspendedManual) => true
       case Some(_) => false
       case None => false
     }

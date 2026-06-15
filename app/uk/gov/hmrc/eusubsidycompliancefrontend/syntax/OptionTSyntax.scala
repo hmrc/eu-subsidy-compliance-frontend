@@ -22,8 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * Much of our code operates with Future[Option[_]] types which can benefit from using OptionT to simplify unpacking
+/** Much of our code operates with Future[Option[_]] types which can benefit from using OptionT to simplify unpacking
   * the results.
   *
   * This syntax provides some convenience extension methods to clean up OptionT related boilerplate when values need to

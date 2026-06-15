@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking
 
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 
 case class ResponseDetail(undertakingReference: UndertakingRef)
 

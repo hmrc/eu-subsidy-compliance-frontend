@@ -103,7 +103,7 @@ class BusinessEntityEoriControllerSpec
       document.title shouldBe s"${titlePrefix}Businesses in your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
       document
         .getElementsByAttributeValue("action", routes.AddBusinessEntityController.postAddBusinessEntity.url)
-        .size() shouldBe 1 //verify form is on the page
+        .size() shouldBe 1 // verify form is on the page
       document.getElementById("continue").text() shouldBe "Save and continue"
     }
 
@@ -332,7 +332,7 @@ class BusinessEntityEoriControllerSpec
               checkIsRedirect(
                 performAction("businessEntityEori" -> eoriEntered),
                 routes.AddBusinessEntityController
-                  .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(validEori))
+                  .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(validEori.value))
                   .url
               )
             }
@@ -364,7 +364,7 @@ class BusinessEntityEoriControllerSpec
           checkIsRedirect(
             performAction("businessEntityEori" -> "GB123456789010"),
             routes.AddBusinessEntityController
-              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(newEori))
+              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(newEori.value))
               .url
           )
         }

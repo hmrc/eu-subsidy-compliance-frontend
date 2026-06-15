@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.toEuros
 
 @import java.time.LocalDate
 
@@ -89,10 +90,10 @@
                     rows = subsidies.nonHMRCSubsidyUsage.map { sub =>
                         Seq(
                             TableRow(content = Text(sub.allocationDate.toDisplayFormat)),
-                            TableRow(content = Text(sub.nonHMRCSubsidyAmtEUR.toEuros)),
-                            TableRow(content = sub.businessEntityIdentifier.fold[Content](HtmlContent("&nbsp;"))(Text)),
-                            TableRow(content = sub.publicAuthority.fold[Content](HtmlContent("&nbsp;"))(Text)),
-                            TableRow(content = sub.traderReference.fold[Content](HtmlContent("&nbsp;"))(Text)),
+                            TableRow(content = Text(sub.nonHMRCSubsidyAmtEUR.value.toEuros)),
+                            TableRow(content = sub.businessEntityIdentifier.fold[Content](HtmlContent("&nbsp;"))(eori => Text(eori.value))),
+                            TableRow(content = sub.publicAuthority.fold[Content](HtmlContent("&nbsp;"))(pubAuthority => Text(pubAuthority))),
+                            TableRow(content = sub.traderReference.fold[Content](HtmlContent("&nbsp;"))(ref => Text(ref.value))),
                             TableRow(
                                 content =
                                     if (sub.isRemoved) {
@@ -105,7 +106,7 @@
                                     }
                                     else {
                                         HtmlContent(
-                                            s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
+                                            s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get.value).url}>
                                                     ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportedPayments.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}, ${sub.businessEntityIdentifier.map(messages("reportedPayments.eori")+ " " + _).mkString}</span>
                                             </a>""".stripMargin
                                         )

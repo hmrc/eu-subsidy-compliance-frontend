@@ -117,7 +117,7 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
         val result = SubsidyJourney(
           existingTransactionId = SubsidyRef("SomeRef").some,
           claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
-          addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("true", eori1.some, addToUndertaking = true).some)
+          addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("true", eori1.value.some, addToUndertaking = true).some)
         ).next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getAddClaimBusiness.url)
@@ -280,7 +280,7 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
     }
 
     "getClaimEori returns the EORI when one has been entered" in {
-      val eoriString = eori1
+      val eoriString = eori1.value
       val optionalClaimEori = OptionalClaimEori("true", Some(eoriString))
       val journey = SubsidyJourney(
         addClaimEori = AddClaimEoriFormPage(optionalClaimEori.some)

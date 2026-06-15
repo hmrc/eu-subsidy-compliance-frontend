@@ -20,10 +20,11 @@ import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.{EccEnrolmentIdentifier, EccEnrolmentKey}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{SubsidyJourney, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, VerifiedStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 
@@ -41,7 +42,7 @@ trait AuthAndSessionDataBehaviour extends ControllerSpec with AuthSupport with E
   private lazy val expectedSignInUrl: String =
     s"$ggSignInUrl?continue=" + URLEncoder.encode("http://localhost/", "UTF-8") + s"&origin=$appName"
 
-  private def identifiers(eori: EORI) = Seq(EnrolmentIdentifier(EccEnrolmentIdentifier, eori))
+  private def identifiers(eori: EORI) = Seq(EnrolmentIdentifier(EccEnrolmentIdentifier, eori.value))
   private def eccEnrolments(eori: EORI) = Enrolment(key = EccEnrolmentKey, identifiers = identifiers(eori), state = "")
   private def enrolmentSets(eori: EORI) = Set(eccEnrolments(eori))
 

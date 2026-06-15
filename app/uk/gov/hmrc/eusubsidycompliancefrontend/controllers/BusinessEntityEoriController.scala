@@ -23,20 +23,21 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.{mandatory}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.mandatory
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.formatEori
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,7 +48,6 @@ class BusinessEntityEoriController @Inject() (
   actionBuilders: ActionBuilders,
   override val store: Store,
   override val escService: EscService,
-  timeProvider: TimeProvider,
   emailService: EmailService,
   auditService: AuditService,
   eoriPage: BusinessEntityEoriPage
@@ -60,12 +60,12 @@ class BusinessEntityEoriController @Inject() (
 
   import actionBuilders._
 
-  private val isEoriLengthValid = Constraint[String] { eori: String =>
+  private val isEoriLengthValid = Constraint[String] { (eori: String) =>
     if (EORI.ValidLengthsWithPrefix.contains(eori.replaceAll(" ", "").length)) Valid
     else Invalid("businessEntityEori.error.incorrect-length")
   }
 
-  private val isEoriValid = Constraint[String] { eori: String =>
+  private val isEoriValid = Constraint[String] { (eori: String) =>
     if (eori.replaceAll(" ", "").matches("""^(gb|Gb|gB|GB)[0-9]{12,15}$""")) Valid
     else Invalid("businessEntityEori.regex.error")
   }
@@ -87,7 +87,7 @@ class BusinessEntityEoriController @Inject() (
         .toContext
         .foldF(Redirect(routes.AddBusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
           runStepIfEligible(journey) {
-            val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
+            val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori.value)))
             Ok(eoriPage(form, journey.previous)).toFuture
           }
         }
@@ -130,7 +130,7 @@ class BusinessEntityEoriController @Inject() (
             _ = sendAuditEvent(businessEntityJourney, undertakingRef, businessEori)
           } yield Redirect(
             routes.AddBusinessEntityController
-              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(businessEori))
+              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(businessEori.value))
           )
 
           result.fold(handleMissingSessionData("BusinessEntity Data"))(identity)

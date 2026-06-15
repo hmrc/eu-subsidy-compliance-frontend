@@ -50,16 +50,16 @@ govukRadios : GovukRadios
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-socialWorkDisabilities", messages("NACE.radio.88.1"))),
-value = Some(Sector.socialWorkDisabilities4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.socialWorkDisabilities.toString)
+value = Some(Sector.SocialWorkDisabilities4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.SocialWorkDisabilities.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherSocialWorkWithoutAccommodation", messages("NACE.radio.88.9"))),
-value = Some(Sector.otherSocialWorkWithoutAccommodation.toString),
+value = Some(Sector.OtherSocialWorkWithoutAccommodation.toString),
 hint = Some(Hint(
 content = Text(messages("NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation.hint"))
 )),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSocialWorkWithoutAccommodation.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSocialWorkWithoutAccommodation.toString)
 )
 )
 }

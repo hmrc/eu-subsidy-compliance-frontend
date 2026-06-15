@@ -50,31 +50,31 @@
   Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-airTransport", messages("NACE.radio.51"))),
-value = Some(Sector.airTransport.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.airTransport.toString)
+value = Some(Sector.AirTransport.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.AirTransport.toString)
 ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-landTransport", messages("NACE.radio.49"))),
-      value = Some(Sector.landTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.landTransport.toString)
+      value = Some(Sector.LandTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.LandTransport.toString)
     ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-postalAndCourierActivities", messages("NACE.radio.53"))),
-value = Some(Sector.postalAndCourierActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.postalAndCourierActivities.toString)
+value = Some(Sector.PostalAndCourierActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.PostalAndCourierActivities.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-warehousingStorageTransportSupportActivities", messages("NACE.radio.52"))),
-value = Some(Sector.warehousingStorageTransportSupportActivities.toString),
+value = Some(Sector.WarehousingStorageTransportSupportActivities.toString),
 hint = Some(Hint(
 content = Text(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint"))
 )),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.warehousingStorageTransportSupportActivities.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.WarehousingStorageTransportSupportActivities.toString)
 ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-waterTransport", messages("NACE.radio.50"))),
-      value = Some(Sector.waterTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.waterTransport.toString)
+      value = Some(Sector.WaterTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WaterTransport.toString)
     )
   )
 }

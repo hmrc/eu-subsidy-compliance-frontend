@@ -24,8 +24,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromot
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoted.LeadPromoteDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityUpdated.BusinessDetailsUpdated
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.IndustrySectorLimit.IndustrySectorLimit
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyAmount.SubsidyAmount
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef.SubsidyRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef.TraderRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName.UndertakingName
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -75,7 +81,7 @@ object AuditEvent {
         )
       )
       AuditEvent.CreateUndertaking(ggCredId, UndertakingCreateWithSectorLimit(undertaking, sectorCap), eisResponse)
-    } //Do not delete
+    } // Do not delete
     implicit val writes: Writes[CreateUndertaking] = Json.writes
   }
 

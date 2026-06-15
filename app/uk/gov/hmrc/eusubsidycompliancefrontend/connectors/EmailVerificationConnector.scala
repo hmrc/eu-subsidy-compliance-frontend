@@ -27,6 +27,8 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+
 @Singleton
 class EmailVerificationConnector @Inject() (
   override protected val http: HttpClientV2,

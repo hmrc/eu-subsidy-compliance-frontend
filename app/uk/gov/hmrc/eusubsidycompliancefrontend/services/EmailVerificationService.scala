@@ -63,7 +63,7 @@ class EmailVerificationService @Inject() (
   ): Future[Result] = for {
     verificationResponse <- verifyEmail(
       continueUrl = nextPageUrl(
-        UUID.randomUUID().toString //verificationId
+        UUID.randomUUID().toString // verificationId
       ),
       backUrl = previousPage,
       reEnterEmailUrl = reEnterEmailUrl
