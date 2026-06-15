@@ -76,7 +76,9 @@ class GeneralTradeGroupsController @Inject() (
         case None => ""
       }
       val previousLevel1Code =
-        if (
+        if (journey.internalNaceCode == Sector.wholesaleAndRetailTrade.toString)
+          Sector.wholesaleAndRetailTrade.toString
+        else if (
           sector.equals("L") || sector.equals("E") || sector.equals("D") || sector.equals("B") || sector
             .equals("I") || sector.equals("S") || sector.equals("85") || sector.equals("R") || sector
             .equals("84") || sector.equals("T") || sector.equals("U") || sector.equals("99.00")
@@ -120,7 +122,8 @@ class GeneralTradeGroupsController @Inject() (
               for {
                 updatedSector <- store
                   .update[UndertakingJourney](_.setUndertakingSector(Sector.withName(form.value).id))
-                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+                updatedStoreFlags <- store
+                  .update[UndertakingJourney](_.copy(internalNaceCode = form.value, isNaceCYA = false))
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
