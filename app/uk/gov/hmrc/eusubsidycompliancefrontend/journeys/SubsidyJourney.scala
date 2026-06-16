@@ -63,21 +63,21 @@ case class SubsidyJourney(
   override def next(implicit r: Request[_]): Future[Result] = {
     val cyaVisited = this.cya.value.getOrElse(false)
     val defaultContinueUri = r.uri match {
-      case url if url == routes.SubsidyController.postClaimDate.url => claimAmount.uri
-      case url if url == routes.SubsidyController.postAddClaimAmount.url =>
+      case url if url == routes.ClaimDateController.postClaimDate.url => claimAmount.uri
+      case url if url == routes.ClaimAmountController.postAddClaimAmount.url =>
         if (shouldSkipCurrencyConversion) addClaimEori.uri else convertedClaimAmountConfirmation.uri
-      case url if url == routes.SubsidyController.postConfirmClaimAmount.url => addClaimEori.uri
-      case url if url == routes.SubsidyController.postAddClaimEori.url =>
+      case url if url == routes.ConfirmClaimAmountController.postConfirmClaimAmount.url => addClaimEori.uri
+      case url if url == routes.AddClaimEoriController.postAddClaimEori.url =>
         if (shouldAddNewBusiness) addClaimBusiness.uri else publicAuthority.uri
-      case url if url == routes.SubsidyController.postAddClaimPublicAuthority.url => traderRef.uri
-      case url if url == routes.SubsidyController.postAddClaimReference.url => cya.uri
-      case url if url == routes.SubsidyController.postAddClaimBusiness.url =>
+      case url if url == routes.AddClaimPublicAuthorityController.postAddClaimPublicAuthority.url => traderRef.uri
+      case url if url == routes.AddClaimReferenceController.postAddClaimReference.url => cya.uri
+      case url if url == routes.AddClaimBusinessController.postAddClaimBusiness.url =>
         if (addClaimBusiness.value.contains(true)) publicAuthority.uri else addClaimEori.uri
 
     }
     val useDefaultContinueUri: Boolean =
-      (r.uri == routes.SubsidyController.postAddClaimAmount.url && !claimAmountIsInEuros) ||
-        (r.uri == routes.SubsidyController.postAddClaimEori.url && shouldAddNewBusiness)
+      (r.uri == routes.ClaimAmountController.postAddClaimAmount.url && !claimAmountIsInEuros) ||
+        (r.uri == routes.AddClaimEoriController.postAddClaimEori.url && shouldAddNewBusiness)
 
     Future.successful(
       Redirect(CheckYourAnswersHelper.calculateContinueLink(cyaVisited, defaultContinueUri, useDefaultContinueUri))
@@ -87,7 +87,7 @@ case class SubsidyJourney(
   override def previous(implicit request: Request[_]): Journey.Uri = {
     val cyaVisited = this.cya.value.getOrElse(false)
     val backLinkUrl = request.uri match {
-      case url if url == cya.uri => routes.SubsidyController.backFromCheckYourAnswers.url
+      case url if url == cya.uri => routes.ClaimCheckAnswersController.backFromCheckYourAnswers.url
       case url if url == traderRef.uri => publicAuthority.uri
       case url if url == publicAuthority.uri => addClaimEori.uri
       case url if url == addClaimEori.uri =>
@@ -149,39 +149,37 @@ object SubsidyJourney {
 
   object Forms {
 
-    private val controller = routes.SubsidyController
-
     case class ReportPaymentFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getReportPayment.url
+      def uri = routes.ReportPaymentController.getReportPayment.url
     }
 
     case class ReportedNonCustomSubsidyFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getReportedNoCustomSubsidyPage.url
+      def uri = routes.ReportedNoCustomSubsidyController.getReportedNoCustomSubsidyPage.url
     }
 
     case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] {
-      def uri = controller.getClaimDate.url
+      def uri = routes.ClaimDateController.getClaimDate.url
     }
     case class ClaimAmountFormPage(value: Form[ClaimAmount] = None) extends FormPage[ClaimAmount] {
-      def uri = controller.getClaimAmount.url
+      def uri = routes.ClaimAmountController.getClaimAmount.url
     }
     case class ConvertedClaimAmountConfirmationPage(value: Form[ClaimAmount] = None) extends FormPage[ClaimAmount] {
-      def uri = controller.getConfirmClaimAmount.url
+      def uri = routes.ConfirmClaimAmountController.getConfirmClaimAmount.url
     }
     case class AddClaimEoriFormPage(value: Form[OptionalClaimEori] = None) extends FormPage[OptionalClaimEori] {
-      def uri = controller.getAddClaimEori.url
+      def uri = routes.AddClaimEoriController.getAddClaimEori.url
     }
     case class AddClaimBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getAddClaimBusiness.url
+      def uri = routes.AddClaimBusinessController.getAddClaimBusiness.url
     }
     case class PublicAuthorityFormPage(value: Form[String] = None) extends FormPage[String] {
-      def uri = controller.getAddClaimPublicAuthority.url
+      def uri = routes.AddClaimPublicAuthorityController.getAddClaimPublicAuthority.url
     }
     case class TraderRefFormPage(value: Form[OptionalTraderRef] = None) extends FormPage[OptionalTraderRef] {
-      def uri = controller.getAddClaimReference.url
+      def uri = routes.AddClaimReferenceController.getAddClaimReference.url
     }
     case class CyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getCheckAnswers.url
+      def uri = routes.ClaimCheckAnswersController.getCheckAnswers.url
     }
 
     object ReportedNonCustomSubsidyFormPage {

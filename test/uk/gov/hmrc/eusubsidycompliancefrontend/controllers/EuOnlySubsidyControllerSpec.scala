@@ -58,7 +58,7 @@ class EuOnlySubsidyControllerSpec
     bind[TimeProvider].toInstance(mockTimeProvider)
   )
 
-  private val controller = instanceOf[SubsidyController]
+  private val controller = instanceOf[ClaimAmountController]
 
   override def additionalConfig: Configuration = Configuration(
     ConfigFactory.parseString(
@@ -75,7 +75,7 @@ class EuOnlySubsidyControllerSpec
     "handling request to get claim amount" must {
 
       def performAction = controller
-        .getClaimAmount(FakeRequest(GET, routes.SubsidyController.getClaimAmount.url))
+        .getClaimAmount(FakeRequest(GET, routes.ClaimAmountController.getClaimAmount.url))
 
       "throw technical error" when {
 
@@ -98,7 +98,7 @@ class EuOnlySubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
           }
-          redirectLocation(performAction) shouldBe Some(routes.SubsidyController.getClaimDate.url)
+          redirectLocation(performAction) shouldBe Some(routes.ClaimDateController.getClaimDate.url)
         }
       }
 
@@ -166,7 +166,7 @@ class EuOnlySubsidyControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postAddClaimAmount(
-          FakeRequest(POST, routes.SubsidyController.getClaimAmount.url)
+          FakeRequest(POST, routes.ClaimAmountController.getClaimAmount.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -288,7 +288,7 @@ class EuOnlySubsidyControllerSpec
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountEUR -> claimAmount
           ),
-          routes.SubsidyController.getAddClaimEori.url
+          routes.AddClaimEoriController.getAddClaimEori.url
         )
       }
 

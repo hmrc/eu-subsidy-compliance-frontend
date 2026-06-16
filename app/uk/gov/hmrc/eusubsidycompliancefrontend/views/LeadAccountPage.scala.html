@@ -52,7 +52,7 @@
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"lead-account-homepage"}
 
-@continueUrl = @{routes.SubsidyController.startReportPaymentJourney.url}
+@continueUrl = @{routes.ReportPaymentController.startReportPaymentJourney.url}
 
 @balanceHeading = @{
     messages("lead-account-homepage.h2.undertakingBalance")
@@ -127,7 +127,7 @@
     @button(msg = "common.submit-report",href = Some(continueUrl))
     @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-4"))
     <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
-        <li><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments">@messages("lead-account-homepage.ul2-li1")</a></li>
+        <li><a class="govuk-link" href="@routes.ReportedPaymentsController.getReportedPayments">@messages("lead-account-homepage.ul2-li1")</a></li>
     </ul>
     @H2(balanceHeading, Some("govuk-heading-m govuk-!-margin-top-4"), id = Some("undertaking-balance-section-heading"))
     @possibleMiscalculationContent

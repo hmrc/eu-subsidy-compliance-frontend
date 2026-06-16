@@ -180,7 +180,7 @@
             )
         ))
     @if(summary.leadEORI == eori){
-    <div><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments">@messages("dashboard.urltext")</a></div><br>
+    <div><a class="govuk-link" href="@routes.ReportedPaymentsController.getReportedPayments">@messages("dashboard.urltext")</a></div><br>
 
     <div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("dashboard.url2text")</a></div>
     } else {

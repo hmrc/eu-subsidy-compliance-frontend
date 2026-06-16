@@ -21,12 +21,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 object CheckYourAnswersHelper {
 
   def calculateBackLink(cyaVisited: Boolean, defaultBackLink: String, useDefault: Boolean = false): String = {
-    if (cyaVisited && !useDefault) routes.SubsidyController.getCheckAnswers.url
+    if (cyaVisited && !useDefault) routes.ClaimCheckAnswersController.getCheckAnswers.url
     else defaultBackLink
   }
 
   def calculateContinueLink(cyaVisited: Boolean, defaultContinueLink: String, useDefault: Boolean = false): String = {
-    if (cyaVisited && !useDefault) routes.SubsidyController.getCheckAnswers.url
+    if (cyaVisited && !useDefault) routes.ClaimCheckAnswersController.getCheckAnswers.url
     else defaultContinueLink
   }
 

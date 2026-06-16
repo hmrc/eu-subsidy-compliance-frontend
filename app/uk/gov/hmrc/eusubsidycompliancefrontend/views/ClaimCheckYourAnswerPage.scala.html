@@ -42,7 +42,7 @@
     backLink = Some(previous)
 ) {
 
-    @formHelper(action = routes.SubsidyController.postCheckAnswers) {
+    @formHelper(action = routes.ClaimCheckAnswersController.postCheckAnswers) {
         <input type=hidden name=cya value=true>
 
         @H1(messages("subsidy.cya.title"))
@@ -59,7 +59,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = routes.SubsidyController.getClaimDate.url,
+                                href = routes.ClaimDateController.getClaimDate.url,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.payment-date"))
                             )
@@ -76,7 +76,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = routes.SubsidyController.getClaimAmount.url,
+                                href = routes.ClaimAmountController.getClaimAmount.url,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.payment-amount"))
                             )
@@ -93,7 +93,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = routes.SubsidyController.getAddClaimEori.url,
+                                href = routes.AddClaimEoriController.getAddClaimEori.url,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.eori-number"))
                             )
@@ -110,7 +110,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = routes.SubsidyController.getAddClaimPublicAuthority.url,
+                                href = routes.AddClaimPublicAuthorityController.getAddClaimPublicAuthority.url,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.public-authority"))
                             )
@@ -127,7 +127,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = routes.SubsidyController.getAddClaimReference.url,
+                                href = routes.AddClaimReferenceController.getAddClaimReference.url,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.your-reference"))
                             )

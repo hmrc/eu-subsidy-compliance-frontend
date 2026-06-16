@@ -51,6 +51,6 @@ today1095Back: String)(implicit request: Request[_], messages: Messages, appConf
     @{P(messages(s"reportNonCustomSubsidy.p2") +" "+today+ messages(s"reportNonCustomSubsidy.p2Cont") +" "+today1095Back +" "+ messages("reportNonCustomSubsidy.p2ContFurther"))}
 
 
-    @button("common.continue.only", href = Some(controllers.routes.SubsidyController.getClaimDate.url))
+    @button("common.continue.only", href = Some(controllers.routes.ClaimDateController.getClaimDate.url))
 }
 
