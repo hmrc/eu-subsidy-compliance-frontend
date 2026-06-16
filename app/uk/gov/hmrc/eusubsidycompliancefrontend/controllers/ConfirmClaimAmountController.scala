@@ -38,12 +38,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmClaimAmountController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  val store: Store,
-  val escService: EscService,
+  override val store: Store,
+  override val escService: EscService,
   confirmConvertedAmountPage: ConfirmClaimAmountConversionToEuros
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BaseController(mcc)
-    with LeadOnlyUndertakingSupport {
+    with LeadOnlyUndertakingSupport
+    with ControllerFormHelpers {
 
   import actionBuilders._
 

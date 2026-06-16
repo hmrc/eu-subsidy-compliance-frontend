@@ -35,13 +35,14 @@ import scala.concurrent.ExecutionContext
 class ReportedPaymentsController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  val store: Store,
-  val escService: EscService,
+  override val store: Store,
+  override val escService: EscService,
   reportedPaymentsPage: ReportedPaymentsPage,
   timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BaseController(mcc)
-    with LeadOnlyUndertakingSupport {
+    with LeadOnlyUndertakingSupport
+    with ControllerFormHelpers {
 
   import actionBuilders._
 
