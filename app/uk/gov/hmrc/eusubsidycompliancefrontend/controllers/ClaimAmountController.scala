@@ -26,7 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.{Er
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._

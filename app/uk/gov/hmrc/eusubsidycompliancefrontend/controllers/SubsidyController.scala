@@ -18,7 +18,15 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.*
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EisSubsidyAmendmentType.EisSubsidyAmendmentType
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EisSubsidyAmendmentType
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyAmount.SubsidyAmount
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyAmount
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef.TraderRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 
 import java.time.LocalDate
 

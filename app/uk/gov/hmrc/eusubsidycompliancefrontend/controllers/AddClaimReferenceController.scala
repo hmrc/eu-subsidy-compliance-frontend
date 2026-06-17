@@ -26,7 +26,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.mandatory
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.IncorrectFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalTraderRef
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef.TraderRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -51,8 +54,8 @@ class AddClaimReferenceController @Inject() (
 
   import actionBuilders._
 
-  private val enteredTradingRefIsValid = Constraint[String] { traderRef: String =>
-    if (traderRef.matches(TraderRef.regex)) Valid
+  private val enteredTradingRefIsValid = Constraint[String] { (traderRef: String) =>
+    if (traderRef.matches(TraderRef.regex.regex)) Valid
     else Invalid(IncorrectFormat)
   }
 
@@ -64,7 +67,7 @@ class AddClaimReferenceController @Inject() (
         "true",
         text.verifying(enteredTradingRefIsValid)
       )
-    )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
+    )(OptionalTraderRef.apply)(optTraderRef => Some((optTraderRef.setValue, optTraderRef.value)))
   )
 
   def getAddClaimReference: Action[AnyContent] = subsidyJourney.async { implicit request =>
