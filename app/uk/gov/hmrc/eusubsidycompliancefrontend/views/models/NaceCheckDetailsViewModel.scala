@@ -28,6 +28,7 @@ case class NaceCheckDetailsViewModel(
   naceLevel2Code: String,
   naceLevel3Code: String,
   naceLevel4Code: String,
+  level2TitleKey: String,
   sector: Sector,
   changeSectorUrl: String,
   changeLevel1Url: String,

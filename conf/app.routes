@@ -808,44 +808,44 @@ POST       /lead-undertaking-remove-business-entity/:eori                       
 GET        /business-enterprise-remove-yourself-from-undertaking                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RemoveYourselfBusinessEntityController.getRemoveYourselfBusinessEntity
 POST       /business-enterprise-remove-yourself-from-undertaking                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RemoveYourselfBusinessEntityController.postRemoveYourselfBusinessEntity
 
-GET        /lead-undertaking-view-non-customs-subsidy-payments                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportedPayments
+GET        /lead-undertaking-view-non-customs-subsidy-payments                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ReportedPaymentsController.getReportedPayments
 
-GET        /lead-undertaking-add-claim-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimEori
-POST       /lead-undertaking-add-claim-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimEori
+GET        /lead-undertaking-add-claim-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AddClaimEoriController.getAddClaimEori
+POST       /lead-undertaking-add-claim-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AddClaimEoriController.postAddClaimEori
 
-GET        /lead-undertaking-add-claim-business                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimBusiness
-POST       /lead-undertaking-add-claim-business                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimBusiness
+GET        /lead-undertaking-add-claim-business                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AddClaimBusinessController.getAddClaimBusiness
+POST       /lead-undertaking-add-claim-business                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AddClaimBusinessController.postAddClaimBusiness
 
-GET        /lead-undertaking-add-payment-amount                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimAmount
-POST       /lead-undertaking-add-payment-amount                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimAmount
+GET        /lead-undertaking-add-payment-amount                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClaimAmountController.getClaimAmount
+POST       /lead-undertaking-add-payment-amount                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClaimAmountController.postAddClaimAmount
 
-GET        /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getConfirmClaimAmount
-POST       /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postConfirmClaimAmount
+GET        /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmClaimAmountController.getConfirmClaimAmount
+POST       /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmClaimAmountController.postConfirmClaimAmount
 
-GET        /lead-undertaking-report-payment/start                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.startReportPaymentJourney
-GET        /lead-undertaking-report-payment                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
-POST       /lead-undertaking-report-payment                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
+GET        /lead-undertaking-report-payment/start                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ReportPaymentController.startReportPaymentJourney
+GET        /lead-undertaking-report-payment                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ReportPaymentController.getReportPayment
+POST       /lead-undertaking-report-payment                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ReportPaymentController.postReportPayment
 
-GET        /lead-undertaking-no-custom-subsidy                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportedNoCustomSubsidyPage
+GET        /lead-undertaking-no-custom-subsidy                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ReportedNoCustomSubsidyController.getReportedNoCustomSubsidyPage
 
-GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimDate
-POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postClaimDate
+GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClaimDateController.getClaimDate
+POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClaimDateController.postClaimDate
 
-GET        /lead-undertaking-add-public-authority                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimPublicAuthority
-POST       /lead-undertaking-add-public-authority                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimPublicAuthority
+GET        /lead-undertaking-add-public-authority                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AddClaimPublicAuthorityController.getAddClaimPublicAuthority
+POST       /lead-undertaking-add-public-authority                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AddClaimPublicAuthorityController.postAddClaimPublicAuthority
 
-GET        /lead-undertaking-add-reference                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimReference
-POST       /lead-undertaking-add-reference                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimReference
+GET        /lead-undertaking-add-reference                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AddClaimReferenceController.getAddClaimReference
+POST       /lead-undertaking-add-reference                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AddClaimReferenceController.postAddClaimReference
 
-GET        /lead-undertaking-check-your-answers-subsidy                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getCheckAnswers
-POST       /lead-undertaking-check-your-answers-subsidy                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postCheckAnswers
+GET        /lead-undertaking-check-your-answers-subsidy                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClaimCheckAnswersController.getCheckAnswers
+POST       /lead-undertaking-check-your-answers-subsidy                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClaimCheckAnswersController.postCheckAnswers
 
-GET        /lead-undertaking-check-your-answers-subsidy/back                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.backFromCheckYourAnswers
+GET        /lead-undertaking-check-your-answers-subsidy/back                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClaimCheckAnswersController.backFromCheckYourAnswers
 
-GET        /lead-undertaking-claim-created                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimConfirmationPage(isSuspended: Boolean ?= false)
+GET        /lead-undertaking-claim-created                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClaimConfirmationController.getClaimConfirmationPage(isSuspended: Boolean ?= false)
 
-GET        /lead-undertaking-remove-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getRemoveSubsidyClaim(transactionId)
-POST       /lead-undertaking-remove-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)
+GET        /lead-undertaking-remove-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RemoveSubsidyClaimController.getRemoveSubsidyClaim(transactionId)
+POST       /lead-undertaking-remove-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RemoveSubsidyClaimController.postRemoveSubsidyClaim(transactionId)
 
 GET        /business-enterprise-become-lead-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getBecomeLeadEori()
 POST       /business-enterprise-become-lead-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postBecomeLeadEori()

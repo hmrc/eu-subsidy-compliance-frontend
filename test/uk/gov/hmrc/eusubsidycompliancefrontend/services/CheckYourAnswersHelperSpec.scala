@@ -33,7 +33,10 @@ class CheckYourAnswersHelperSpec extends BaseSpec with Matchers {
 
       "return cya page url when cya is visited" in {
         val url = "/some-url"
-        CheckYourAnswersHelper.calculateBackLink(true, url) shouldBe routes.SubsidyController.getCheckAnswers.url
+        CheckYourAnswersHelper.calculateBackLink(
+          true,
+          url
+        ) shouldBe routes.ClaimCheckAnswersController.getCheckAnswers.url
       }
 
       "return default back link when cya is visited and use default is true" in {
@@ -54,7 +57,10 @@ class CheckYourAnswersHelperSpec extends BaseSpec with Matchers {
 
       "return cya page url when cya is visited" in {
         val url = "/some-url"
-        CheckYourAnswersHelper.calculateContinueLink(true, url) shouldBe routes.SubsidyController.getCheckAnswers.url
+        CheckYourAnswersHelper.calculateContinueLink(
+          true,
+          url
+        ) shouldBe routes.ClaimCheckAnswersController.getCheckAnswers.url
       }
 
       "return default continue link when cya is visited and use default is true" in {

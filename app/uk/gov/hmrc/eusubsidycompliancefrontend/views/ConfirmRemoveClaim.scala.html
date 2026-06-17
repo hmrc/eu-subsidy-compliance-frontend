@@ -36,7 +36,7 @@
 @layout(
     pageTitle = Some(messages("subsidy.remove.title")),
     backLinkEnabled = true,
-    backLink = Some(controllers.routes.SubsidyController.getReportedPayments.url),
+    backLink = Some(controllers.routes.ReportedPaymentsController.getReportedPayments.url),
     hasErrors = form.hasErrors
 ) {
     @form.errors.map { err =>
@@ -98,7 +98,7 @@
 
     @P(messages("subsidy.remove.p1"))
 
-    @formHelper(action = controllers.routes.SubsidyController.postRemoveSubsidyClaim(nonHmrcSubsidy.subsidyUsageTransactionId.get.value)) {
+    @formHelper(action = controllers.routes.RemoveSubsidyClaimController.postRemoveSubsidyClaim(nonHmrcSubsidy.subsidyUsageTransactionId.get.value)) {
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(

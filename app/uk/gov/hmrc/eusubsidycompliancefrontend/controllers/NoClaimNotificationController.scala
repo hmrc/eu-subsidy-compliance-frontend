@@ -66,7 +66,7 @@ class NoClaimNotificationController @Inject() (
         .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
         .toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
-          val previous = routes.SubsidyController.getReportPayment.url
+          val previous = routes.ReportPaymentController.getReportPayment.url
           val today = timeProvider.today
           val today1095Back = (timeProvider.today).minusDays(1095).toDisplayFormat
           val startDate = today.toEarliestTaxYearStart
@@ -101,7 +101,7 @@ class NoClaimNotificationController @Inject() (
         .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
         .toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies")) { undertakingSubsidies =>
-          val previous = routes.SubsidyController.getReportPayment.url
+          val previous = routes.ReportPaymentController.getReportPayment.url
           val today = timeProvider.today
           val startDate = today.toEarliestTaxYearStart
           val today1095Back = (timeProvider.today).minusDays(1095).toDisplayFormat

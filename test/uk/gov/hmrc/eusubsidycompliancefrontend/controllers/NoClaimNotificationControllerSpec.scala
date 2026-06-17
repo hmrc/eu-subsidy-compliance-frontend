@@ -111,7 +111,7 @@ class NoClaimNotificationControllerSpec
           { doc =>
             doc
               .select(".govuk-back-link")
-              .attr("href") shouldBe routes.SubsidyController.getReportPayment.url
+              .attr("href") shouldBe routes.ReportPaymentController.getReportPayment.url
             val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
             selectedOptions.isEmpty shouldBe true
 
@@ -250,7 +250,7 @@ class NoClaimNotificationControllerSpec
             result = performAction(),
             expectedTitle = messageFromMessageKey("noClaimNotification.title", "20 January 2021"),
             formError = messageFromMessageKey("noClaimNotification.error.required"),
-            backLinkOpt = Some(routes.SubsidyController.getReportPayment.url)
+            backLinkOpt = Some(routes.ReportPaymentController.getReportPayment.url)
           )
         }
       }
