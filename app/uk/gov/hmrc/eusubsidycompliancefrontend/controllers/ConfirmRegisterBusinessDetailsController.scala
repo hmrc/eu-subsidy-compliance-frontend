@@ -52,7 +52,7 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(confirmRegisterBusinessDetailsPage(formWithErrors)).toFuture,
-        _ => Redirect(routes.ConfirmRegisterBusinessDetailsController.showPage).toFuture
+        _ => Redirect(routes.ConfirmRegisterBusinessDetailsController.showPage()).toFuture
       )
   }
 }
