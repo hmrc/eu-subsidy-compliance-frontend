@@ -806,6 +806,24 @@ confirmBusinessDetails.typeOfId = Type of ID
 confirmBusinessDetails.idNumber = ID number
 confirmBusinessDetails.error.required= Select yes if these details are correct
 
+confirmAddBusinessDetails.title = Confirm business details
+confirmAddBusinessDetails.h1 = Confirm business details
+confirmAddBusinessDetails.p1 = We found these details for this EORI number.
+confirmAddBusinessDetails.radio.heading = Are these details correct?
+confirmAddBusinessDetails.eoriNumber = EORI number
+confirmAddBusinessDetails.typeOfId = Type of ID
+confirmAddBusinessDetails.idNumber = ID number
+confirmAddBusinessDetails.error.required = Select yes if these details are correct
+
+confirmRegisterBusinessDetails.title = Confirm your business details
+confirmRegisterBusinessDetails.h1 = Confirm your business details
+confirmRegisterBusinessDetails.p1 = We found these details for your EORI number.
+confirmRegisterBusinessDetails.radio.heading = Are these details correct?
+confirmRegisterBusinessDetails.eoriNumber = EORI number
+confirmRegisterBusinessDetails.typeOfId = Type of ID
+confirmRegisterBusinessDetails.idNumber = ID number
+confirmRegisterBusinessDetails.error.required = Select yes if these details are correct
+
 confirmMultipleBusinessDetails.title = Confirm details for all EORI numbers in your undertaking
 confirmMultipleBusinessDetails.h1 = Confirm details for all EORI numbers in your undertaking
 confirmMultipleBusinessDetails.noSuspend.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page before DATE PLACEHOLDER
@@ -817,6 +835,14 @@ confirmMultipleBusinessDetails.eoriNumber = EORI number
 confirmMultipleBusinessDetails.typeOfId = Type of ID
 confirmMultipleBusinessDetails.idNumber = ID number
 confirmMultipleBusinessDetails.error.required= Select yes if all these details are correct
+
+confirmedMemberBusinessDetails.title = Your business details
+confirmedMemberBusinessDetails.h1 = Your business details
+confirmedMemberBusinessDetails.p1 = Your undertaking administrator confirmed these details for your business on DATE PLACEHOLDER.
+confirmedMemberBusinessDetails.p2 = If any of your details are wrong, contact your administrator.
+confirmedMemberBusinessDetails.eoriNumber = EORI number
+confirmedMemberBusinessDetails.typeOfId = Type of ID
+confirmedMemberBusinessDetails.idNumber = ID number
 
 ############################################## NACE #################################################################################################################
 
