@@ -705,7 +705,9 @@ undertakingSuspendedBen.p2=You may want to contact your administrator and ask th
 undertakingSuspendedBen.p3=When this is done, you will be able to sign in to your account.
 
 beneficiaryNotification.title = Notification of changes to how we use your data
-beneficiaryNotification.p1 = From 1 January 2026, Commission Regulation (EU) 2023/2831 requires all de minimis state aid granted to undertakings to be recorded in a central, publicly accessible register. This includes de minimis aid granted under the Customs Duty Waiver Scheme.
+beneficiaryNotification.title.alt = How we use your data
+beneficiaryNotification.p1.start = From 1 January 2026,
+beneficiaryNotification.p1.main =Commission Regulation (EU) 2023/2831 requires all de minimis state aid granted to undertakings to be recorded in a central, publicly accessible register. This includes de minimis aid granted under the Customs Duty Waiver Scheme.
 beneficiaryNotification.p2 = To meet this requirement, HMRC must publish some information about de minimis aid awards on <a class="govuk-link" target="_blank" href="https://aid-register.ec.europa.eu/home">the EU eAidRegister (opens in new tab)</a>.
 beneficiaryNotification.h1 =The information we will publish
 beneficiaryNotification.p3 =We will publish the:
@@ -727,16 +729,26 @@ beneficiaryNotification.p9 =HMRC processes personal data in accordance with the 
 beneficiaryNotification.p10 =You can find more information about how HMRC uses personal data, including details of how to exercise your data protection rights, in <a class="govuk-link" target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/about/personal-information-charter">HMRC’s personal information charter (opens in new tab)</a>.
 beneficiaryNotification.p11 =By continuing you confirm you understand all the information on this page.
 
-emailHMRC.title = Email HMRC to update your business details
-emailHMRC.p1 = You have told us your business details are wrong.
+emailHMRC.title.new = Email HMRC to update your business details
+emailHMRC.title.existing = Email HMRC to update business details
+emailHMRC.p1.new = You have told us your business details are wrong.
+emailHMRC.p1.existing = You have told us the business details are wrong.
 emailHMRC.p2 = To update them, email <a href="mailto:customs.duty-waivers@hmrc.gov.uk"> customs.duty-waivers@hmrc.gov.uk </a> and include:
-emailHMRC.p2.ul1 = your EORI number
-emailHMRC.p2.ul2 = the company registration number (CRN) for the business connected to your EORI number
+emailHMRC.p2.ul1.new = your EORI number
+emailHMRC.p2.ul2.new = the company registration number (CRN) for the business connected to your EORI number
+emailHMRC.p2.ul1.existing = your undertaking’s EORI number
+emailHMRC.p2.ul2.existing = the EORI number of the business you want to add to your undertaking
+emailHMRC.p2.ul3.existing = the company registration number (CRN) for the business you want to add to your undertaking
 emailHMRC.p3 = If the business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
 emailHMRC.h1 = After we get your email
-emailHMRC.p4 = A caseworker will contact you within 5 working days. They will help update your details.
-emailHMRC.p5 = Once this is complete, we’ll email you a confirmation. You can then sign in and continue registering for this online service.<br> <br>
-emailHMRC.url = Back to confirm your details
+emailHMRC.p4 = A caseworker will contact you within 5 working days. They will help update
+emailHMRC.p4.ending.new = your details.
+emailHMRC.p4.ending.existing = the business details.
+emailHMRC.p5 = Once this is complete, we’ll email you a confirmation. You can then sign in and
+emailHMRC.p5.ending.new =continue registering for this online service.<br> <br>
+emailHMRC.p5.ending.existing =add this business to your undertaking.<br> <br>
+emailHMRC.url.new = Back to confirm your details
+emailHMRC.url.existing = Back to confirm your business details
 
 #Undertaking suspended page
 NACE.undertakingSuspended.title=You cannot use this service until you update your undertaking information
