@@ -903,3 +903,5 @@ POST       /confirm-business-details-register                                   
 
 GET        /member-business-details                                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MemberBusinessDetailsController.showPage()
 POST       /member-business-details                                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MemberBusinessDetailsController.submitPage()
+
+GET        /cannot-use-service-contact-administrator                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.CannotUseServiceContactAdministratorController.show()
