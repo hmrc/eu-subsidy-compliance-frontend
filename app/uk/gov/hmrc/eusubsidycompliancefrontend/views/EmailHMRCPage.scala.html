@@ -27,12 +27,11 @@ govukErrorSummary: GovukErrorSummary,
 govukInput : GovukInput
 )
 
-@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(previous: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @layout(
-pageTitle = Some(messages("emailHMRC.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
-hasErrors = form.hasErrors
+  pageTitle = Some(messages("emailHMRC.title")),
+  backLinkEnabled = true,
+  backLink = Some(previous.url)
 ) {
 
 @H1(messages("emailHMRC.title"))
