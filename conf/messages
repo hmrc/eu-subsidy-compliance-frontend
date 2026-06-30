@@ -8501,3 +8501,38 @@ emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p1=A caseworker will contact 
 emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation.
 emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p3=Until your details are updated, you will not be able to use this online service to report and manage your allowance for Customs Duty waiver claims.
 emailHMRCUpdateBusinessDetails.backToConfirm=Back to confirm your details
+
+needRegistrationNumberReportPayment.title=We need a registration number for this business
+needRegistrationNumberReportPayment.eoriNumber=EORI number: {0}
+needRegistrationNumberReportPayment.p1=We could not find a registration number for the business linked to this EORI number.
+needRegistrationNumberReportPayment.p2=You need to email HMRC to update the business details before you can add it to your undertaking.
+needRegistrationNumberReportPayment.whatYouNeedToDo.heading=What you need to do
+needRegistrationNumberReportPayment.whatYouNeedToDo.p1=Email <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a> and include:
+needRegistrationNumberReportPayment.whatYouNeedToDo.bullet1=your undertaking''s EORI number
+needRegistrationNumberReportPayment.whatYouNeedToDo.bullet2=the EORI number of the business you want to add to your undertaking
+needRegistrationNumberReportPayment.whatYouNeedToDo.bullet3=the company registration number (CRN) for the business you want to add to your undertaking
+needRegistrationNumberReportPayment.whatYouNeedToDo.p2=If the business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
+needRegistrationNumberReportPayment.afterWeGetYourEmail.heading=After we get your email
+needRegistrationNumberReportPayment.afterWeGetYourEmail.p1=A caseworker will contact you within 5 working days. They will help update the details.
+needRegistrationNumberReportPayment.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation. You can then sign in and add this business to your undertaking.
+needRegistrationNumberReportPayment.backToManage=Back to manage your undertaking
+
+emailHMRCUpdateAddBusiness.title=Email HMRC to update business details
+emailHMRCUpdateAddBusiness.p1=You have told us the business details are wrong.
+emailHMRCUpdateAddBusiness.p2=To update them, email <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a> and include:
+emailHMRCUpdateAddBusiness.bullet1=your undertaking''s EORI number
+emailHMRCUpdateAddBusiness.bullet2=the EORI number of the business you want to add to your undertaking
+emailHMRCUpdateAddBusiness.bullet3=the company registration number (CRN) for the business you want to add to your undertaking
+emailHMRCUpdateAddBusiness.p3=If the business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
+emailHMRCUpdateAddBusiness.afterWeGetYourEmail.heading=After we get your email
+emailHMRCUpdateAddBusiness.afterWeGetYourEmail.p1=A caseworker will contact you within 5 working days. They will help update the business details.
+emailHMRCUpdateAddBusiness.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation. You can then sign in and add this business to your undertaking.
+emailHMRCUpdateAddBusiness.backToConfirm=Back to confirm business details
+
+confirmDetailsAddBusiness.title=Confirm business details
+confirmDetailsAddBusiness.p1=We found these details for this EORI number.
+confirmDetailsAddBusiness.radio.heading=Are these details correct?
+confirmDetailsAddBusiness.eoriNumber=EORI number
+confirmDetailsAddBusiness.typeOfId=Type of ID
+confirmDetailsAddBusiness.idNumber=ID number
+confirmDetailsAddBusiness.error.required=Select yes if these details are correct
