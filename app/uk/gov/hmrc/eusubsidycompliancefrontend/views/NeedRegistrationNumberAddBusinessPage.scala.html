@@ -1,0 +1,53 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
+
+@this(layout: Layout)
+@(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@layout(pageTitle = Some(messages("needRegistrationNumberAddBusiness.title")), backLinkEnabled = true) {
+
+    @H1(messages("needRegistrationNumberAddBusiness.title"), Some("govuk-heading-xl"))
+
+    <p class="govuk-body govuk-!-font-weight-bold">@messages("needRegistrationNumberAddBusiness.eoriNumber", eori)</p>
+
+    @P(messages("needRegistrationNumberAddBusiness.p1"))
+
+    @P(messages("needRegistrationNumberAddBusiness.p2"))
+
+    @H2(messages("needRegistrationNumberAddBusiness.whatYouNeedToDo.heading"))
+
+    <p class="govuk-body">@Html(messages("needRegistrationNumberAddBusiness.whatYouNeedToDo.p1"))</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("needRegistrationNumberAddBusiness.whatYouNeedToDo.bullet1")</li>
+        <li>@messages("needRegistrationNumberAddBusiness.whatYouNeedToDo.bullet2")</li>
+        <li>@messages("needRegistrationNumberAddBusiness.whatYouNeedToDo.bullet3")</li>
+    </ul>
+
+    @P(messages("needRegistrationNumberAddBusiness.whatYouNeedToDo.p2"))
+
+    @H2(messages("needRegistrationNumberAddBusiness.afterWeGetYourEmail.heading"))
+
+    @P(messages("needRegistrationNumberAddBusiness.afterWeGetYourEmail.p1"))
+
+    @P(messages("needRegistrationNumberAddBusiness.afterWeGetYourEmail.p2"))
+
+    <div><a href="@controllers.routes.AddBusinessEntityController.getAddBusinessEntity()" class="govuk-link">@messages("needRegistrationNumberAddBusiness.backToBusinesses")</a></div>
+}

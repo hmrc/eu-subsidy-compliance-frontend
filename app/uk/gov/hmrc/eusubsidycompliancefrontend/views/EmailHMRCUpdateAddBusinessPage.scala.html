@@ -1,0 +1,45 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
+
+@this(layout: Layout)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@layout(pageTitle = Some(messages("emailHMRCUpdateAddBusiness.title")), backLinkEnabled = true) {
+
+    @H1(messages("emailHMRCUpdateAddBusiness.title"), Some("govuk-heading-xl"))
+
+    @P(messages("emailHMRCUpdateAddBusiness.p1"))
+
+    <p class="govuk-body">@Html(messages("emailHMRCUpdateAddBusiness.p2"))</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("emailHMRCUpdateAddBusiness.bullet1")</li>
+        <li>@messages("emailHMRCUpdateAddBusiness.bullet2")</li>
+        <li>@messages("emailHMRCUpdateAddBusiness.bullet3")</li>
+    </ul>
+
+    @P(messages("emailHMRCUpdateAddBusiness.p3"))
+
+    @H2(messages("emailHMRCUpdateAddBusiness.afterWeGetYourEmail.heading"))
+
+    @P(messages("emailHMRCUpdateAddBusiness.afterWeGetYourEmail.p1"))
+
+    @P(messages("emailHMRCUpdateAddBusiness.afterWeGetYourEmail.p2"))
+
+    <div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("emailHMRCUpdateAddBusiness.backToConfirm")</a></div>
+}
