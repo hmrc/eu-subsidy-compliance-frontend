@@ -55,9 +55,11 @@ class ConfirmAddBusinessDetailsController @Inject() (
         formValues =>
           formValues.value match {
             case "yes" =>
-              Redirect(routes.AddBusinessEntityController.getAddBusinessEntity(
-                businessAdded = Some(true)
-              )).toFuture
+              Redirect(
+                routes.AddBusinessEntityController.getAddBusinessEntity(
+                  businessAdded = Some(true)
+                )
+              ).toFuture
 
             case "no" =>
               Redirect(routes.HMRCEmailController.showPage()).toFuture

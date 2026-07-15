@@ -27,13 +27,13 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class CannotUseServiceContactAdministratorController @Inject() (
-                                                                 mcc: MessagesControllerComponents,
-                                                                 actionBuilders: ActionBuilders,
-                                                                 cannotUseServiceContactAdministratorPage: cannotUseServiceContactAdministratorPage
-                                                               )(implicit
-                                                                 val appConfig: AppConfig,
-                                                                 val executionContext: ExecutionContext
-                                                               ) extends BaseController(mcc) {
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  cannotUseServiceContactAdministratorPage: cannotUseServiceContactAdministratorPage
+)(implicit
+  val appConfig: AppConfig,
+  val executionContext: ExecutionContext
+) extends BaseController(mcc) {
 
   import actionBuilders._
 
