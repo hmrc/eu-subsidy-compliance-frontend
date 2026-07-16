@@ -20,16 +20,16 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmedMemberBusinessDetailsPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.cannotUseServiceContactAdministratorPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class MemberBusinessDetailsController @Inject() (
+class CannotUseServiceContactAdministratorController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  memberBusinessDetailsPage: ConfirmedMemberBusinessDetailsPage
+  cannotUseServiceContactAdministratorPage: cannotUseServiceContactAdministratorPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -37,11 +37,7 @@ class MemberBusinessDetailsController @Inject() (
 
   import actionBuilders._
 
-  def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(memberBusinessDetailsPage()).toFuture
-  }
-
-  def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Redirect(routes.BeneficiaryNotificationController.showPage()).toFuture
+  def show(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(cannotUseServiceContactAdministratorPage()).toFuture
   }
 }

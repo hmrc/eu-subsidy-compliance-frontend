@@ -856,6 +856,12 @@ confirmedMemberBusinessDetails.eoriNumber = EORI number
 confirmedMemberBusinessDetails.typeOfId = Type of ID
 confirmedMemberBusinessDetails.idNumber = ID number
 
+cannotUseServiceContactAdministrator.title = You cannot use this service at the moment
+cannotUseServiceContactAdministrator.h1 = You cannot use this service at the moment
+cannotUseServiceContactAdministrator.p1 = Your undertaking administrator needs to approve some business details.
+cannotUseServiceContactAdministrator.p2 = You may want to contact your administrator and ask them to sign in and complete the approval.
+cannotUseServiceContactAdministrator.p3 = When this is done, you will be able to sign in to your account.
+
 ############################################## NACE #################################################################################################################
 
 Other = Other
