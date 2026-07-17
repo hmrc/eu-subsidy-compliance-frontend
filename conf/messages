@@ -818,6 +818,24 @@ confirmBusinessDetails.typeOfId = Type of ID
 confirmBusinessDetails.idNumber = ID number
 confirmBusinessDetails.error.required= Select yes if these details are correct
 
+confirmAddBusinessDetails.title = Confirm business details
+confirmAddBusinessDetails.h1 = Confirm business details
+confirmAddBusinessDetails.p1 = We found these details for this EORI number.
+confirmAddBusinessDetails.radio.heading = Are these details correct?
+confirmAddBusinessDetails.eoriNumber = EORI number
+confirmAddBusinessDetails.typeOfId = Type of ID
+confirmAddBusinessDetails.idNumber = ID number
+confirmAddBusinessDetails.error.required = Select yes if these details are correct
+
+confirmRegisterBusinessDetails.title = Confirm your business details
+confirmRegisterBusinessDetails.h1 = Confirm your business details
+confirmRegisterBusinessDetails.p1 = We found these details for your EORI number.
+confirmRegisterBusinessDetails.radio.heading = Are these details correct?
+confirmRegisterBusinessDetails.eoriNumber = EORI number
+confirmRegisterBusinessDetails.typeOfId = Type of ID
+confirmRegisterBusinessDetails.idNumber = ID number
+confirmRegisterBusinessDetails.error.required = Select yes if these details are correct
+
 confirmMultipleBusinessDetails.title = Confirm details for all EORI numbers in your undertaking
 confirmMultipleBusinessDetails.h1 = Confirm details for all EORI numbers in your undertaking
 confirmMultipleBusinessDetails.noSuspend.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page before DATE PLACEHOLDER
@@ -829,6 +847,20 @@ confirmMultipleBusinessDetails.eoriNumber = EORI number
 confirmMultipleBusinessDetails.typeOfId = Type of ID
 confirmMultipleBusinessDetails.idNumber = ID number
 confirmMultipleBusinessDetails.error.required= Select yes if all these details are correct
+
+confirmedMemberBusinessDetails.title = Your business details
+confirmedMemberBusinessDetails.h1 = Your business details
+confirmedMemberBusinessDetails.p1 = Your undertaking administrator confirmed these details for your business on DATE PLACEHOLDER.
+confirmedMemberBusinessDetails.p2 = If any of your details are wrong, contact your administrator.
+confirmedMemberBusinessDetails.eoriNumber = EORI number
+confirmedMemberBusinessDetails.typeOfId = Type of ID
+confirmedMemberBusinessDetails.idNumber = ID number
+
+cannotUseServiceContactAdministrator.title = You cannot use this service at the moment
+cannotUseServiceContactAdministrator.h1 = You cannot use this service at the moment
+cannotUseServiceContactAdministrator.p1 = Your undertaking administrator needs to approve some business details.
+cannotUseServiceContactAdministrator.p2 = You may want to contact your administrator and ask them to sign in and complete the approval.
+cannotUseServiceContactAdministrator.p3 = When this is done, you will be able to sign in to your account.
 
 ############################################## NACE #################################################################################################################
 
@@ -8487,3 +8519,53 @@ emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p1=A caseworker will contact 
 emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation.
 emailHMRCUpdateBusinessDetails.afterWeGetYourEmail.p3=Until your details are updated, you will not be able to use this online service to report and manage your allowance for Customs Duty waiver claims.
 emailHMRCUpdateBusinessDetails.backToConfirm=Back to confirm your details
+
+needRegistrationNumberReportPayment.title=We need a registration number for this business
+needRegistrationNumberReportPayment.eoriNumber=EORI number: {0}
+needRegistrationNumberReportPayment.p1=We could not find a registration number for the business linked to this EORI number.
+needRegistrationNumberReportPayment.p2=You need to email HMRC to update the business details before you can add it to your undertaking.
+needRegistrationNumberReportPayment.whatYouNeedToDo.heading=What you need to do
+needRegistrationNumberReportPayment.whatYouNeedToDo.p1=Email <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a> and include:
+needRegistrationNumberReportPayment.whatYouNeedToDo.bullet1=your undertaking''s EORI number
+needRegistrationNumberReportPayment.whatYouNeedToDo.bullet2=the EORI number of the business you want to add to your undertaking
+needRegistrationNumberReportPayment.whatYouNeedToDo.bullet3=the company registration number (CRN) for the business you want to add to your undertaking
+needRegistrationNumberReportPayment.whatYouNeedToDo.p2=If the business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
+needRegistrationNumberReportPayment.afterWeGetYourEmail.heading=After we get your email
+needRegistrationNumberReportPayment.afterWeGetYourEmail.p1=A caseworker will contact you within 5 working days. They will help update the details.
+needRegistrationNumberReportPayment.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation. You can then sign in and add this business to your undertaking.
+needRegistrationNumberReportPayment.backToManage=Back to manage your undertaking
+
+emailHMRCUpdateAddBusiness.title=Email HMRC to update business details
+emailHMRCUpdateAddBusiness.p1=You have told us the business details are wrong.
+emailHMRCUpdateAddBusiness.p2=To update them, email <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a> and include:
+emailHMRCUpdateAddBusiness.bullet1=your undertaking''s EORI number
+emailHMRCUpdateAddBusiness.bullet2=the EORI number of the business you want to add to your undertaking
+emailHMRCUpdateAddBusiness.bullet3=the company registration number (CRN) for the business you want to add to your undertaking
+emailHMRCUpdateAddBusiness.p3=If the business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
+emailHMRCUpdateAddBusiness.afterWeGetYourEmail.heading=After we get your email
+emailHMRCUpdateAddBusiness.afterWeGetYourEmail.p1=A caseworker will contact you within 5 working days. They will help update the business details.
+emailHMRCUpdateAddBusiness.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation. You can then sign in and add this business to your undertaking.
+emailHMRCUpdateAddBusiness.backToConfirm=Back to confirm business details
+
+confirmDetailsAddBusiness.title=Confirm business details
+confirmDetailsAddBusiness.p1=We found these details for this EORI number.
+confirmDetailsAddBusiness.radio.heading=Are these details correct?
+confirmDetailsAddBusiness.eoriNumber=EORI number
+confirmDetailsAddBusiness.typeOfId=Type of ID
+confirmDetailsAddBusiness.idNumber=ID number
+confirmDetailsAddBusiness.error.required=Select yes if these details are correct
+
+needRegistrationNumberAddBusiness.title=We need a registration number for this business
+needRegistrationNumberAddBusiness.eoriNumber=EORI number: {0}
+needRegistrationNumberAddBusiness.p1=We could not find a registration number for the business linked to this EORI number.
+needRegistrationNumberAddBusiness.p2=You need to email HMRC to update the business details before you can add it to your undertaking.
+needRegistrationNumberAddBusiness.whatYouNeedToDo.heading=What you need to do
+needRegistrationNumberAddBusiness.whatYouNeedToDo.p1=Email <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a> and include:
+needRegistrationNumberAddBusiness.whatYouNeedToDo.bullet1=your undertaking''s EORI number
+needRegistrationNumberAddBusiness.whatYouNeedToDo.bullet2=the EORI number of the business you want to add to your undertaking
+needRegistrationNumberAddBusiness.whatYouNeedToDo.bullet3=the company registration number (CRN) for the business you want to add to your undertaking
+needRegistrationNumberAddBusiness.whatYouNeedToDo.p2=If the business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
+needRegistrationNumberAddBusiness.afterWeGetYourEmail.heading=After we get your email
+needRegistrationNumberAddBusiness.afterWeGetYourEmail.p1=A caseworker will contact you within 5 working days. They will help update the details.
+needRegistrationNumberAddBusiness.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation. You can then sign in and add this business to your undertaking.
+needRegistrationNumberAddBusiness.backToBusinesses=Back to businesses in your undertaking

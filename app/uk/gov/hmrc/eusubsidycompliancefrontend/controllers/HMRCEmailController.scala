@@ -21,20 +21,18 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmBusinessDetailsPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmMultipleBusinessDetailsPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.EmailHMRCPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmBusinessDetailsController @Inject() (
+class HMRCEmailController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  confirmBusinessDetailsPage: ConfirmBusinessDetailsPage,
-  confirmMultipleBusinessDetailsPage: ConfirmMultipleBusinessDetailsPage
+  emailHMRCPage: EmailHMRCPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -42,31 +40,7 @@ class ConfirmBusinessDetailsController @Inject() (
 
   import actionBuilders._
 
-  private val confirmBusinessDetailsForm: Form[FormValues] =
-    formWithSingleMandatoryField("confirmBusinessDetails")
-
-  private def multipleEoris: Boolean = true // placeholder
-  private def isSuspended: Boolean = true // placeholder
-
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    if (multipleEoris) {
-      Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended)).toFuture
-    } else {
-      Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended)).toFuture
-    }
-  }
-
-  def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    confirmBusinessDetailsForm
-      .bindFromRequest()
-      .fold(
-        formWithErrors =>
-          if (multipleEoris) {
-            BadRequest(confirmMultipleBusinessDetailsPage(formWithErrors, isSuspended)).toFuture
-          } else {
-            BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended)).toFuture
-          },
-        _ => Redirect(routes.ConfirmBusinessDetailsController.showPage()).toFuture
-      )
+    Ok(emailHMRCPage(routes.ConfirmAddBusinessDetailsController.showPage())).toFuture
   }
 }

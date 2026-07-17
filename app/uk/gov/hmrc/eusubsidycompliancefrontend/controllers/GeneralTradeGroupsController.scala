@@ -68,6 +68,20 @@ class GeneralTradeGroupsController @Inject() (
   private val paperPrintedProductsForm: Form[FormValues] = formWithSingleMandatoryField("manu-g6")
   private val vehiclesTransportForm: Form[FormValues] = formWithSingleMandatoryField("manu-g7")
 
+  private val generalTradeLevelOneCodes: Set[String] = Set(
+    Sector.WholesaleAndRetailTrade.toString,
+    Sector.Manufacturing.toString,
+    Sector.ProfessionalScientificAndTechnicalActivities.toString,
+    Sector.Construction.toString,
+    Sector.Telecommunications.toString,
+    Sector.PublishingBroadcasting.toString,
+    Sector.Administration.toString,
+    Sector.TransportStorage.toString,
+    Sector.Forestry.toString,
+    Sector.RealEstate.toString,
+    Sector.OtherGeneralTrade.toString
+  )
+
   // GeneralTradeUndertakingPage
   def loadGeneralTradeUndertakingPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -77,13 +91,15 @@ class GeneralTradeGroupsController @Inject() (
         case None => ""
       }
       val previousLevel1Code =
-        if (
-          sector.equals("L") || sector.equals("E") || sector.equals("D") || sector.equals("B") || sector
-            .equals("I") || sector.equals("S") || sector.equals("85") || sector.equals("R") || sector
-            .equals("84") || sector.equals("T") || sector.equals("U") || sector.equals("99.00")
+        if (generalTradeLevelOneCodes.contains(journey.internalNaceCode))
+          journey.internalNaceCode
+        else if (
+          sector.equals("L") || sector.equals("E") || sector.equals("D") || sector.equals("B") ||
+          sector.equals("I") || sector.equals("S") || sector.equals("85") || sector.equals("R") ||
+          sector.equals("84") || sector.equals("T") || sector.equals("U") || sector.equals("99.00")
         ) "INT00"
         else {
-          if (sector.equals(Sector.GeneralTrade.code) || sector.length < 2) sector
+          if (sector.equals(Sector.GeneralTrade.toString) || sector.length < 2) sector
           else naceCheckDetailsController.deriveLevel1Code(sector)
         }
       Ok(
@@ -121,7 +137,13 @@ class GeneralTradeGroupsController @Inject() (
               for {
                 updatedSector <- store
                   .update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
-                updatedStoreFlags <- store.update[UndertakingJourney](_.copy(isNaceCYA = false))
+                updatedStoreFlags <- store
+                  .update[UndertakingJourney](
+                    _.copy(
+                      internalNaceCode = form.value,
+                      isNaceCYA = false
+                    )
+                  )
               } yield Redirect(navigator.nextPage(form.value, journey.mode))
             }
           }
