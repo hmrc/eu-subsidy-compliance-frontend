@@ -29,26 +29,38 @@ govukInput : GovukInput
 
 @(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @layout(
-pageTitle = Some(messages("emailHMRC.title")),
+
+pageTitle = Some(messages("emailHMRC.title.new")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
-) {
 
-@H1(messages("emailHMRC.title"))
-@P(messages("emailHMRC.p1"))
+) {
+<!--or "emailHMRC.title.existing -->
+<!--@H1(messages("emailHMRC.title.existing"))-->
+@H1(messages("emailHMRC.title.new"))
+
+<!--@P(messages("emailHMRC.p1.existing"))-->
+
+@P(messages("emailHMRC.p1.new"))
 
 @P(messages("emailHMRC.p2"),Some("govuk-body tight-paragraph"))
 <ul class="govuk-list govuk-list--bullet tight-bullet-list">
- <li>@messages("emailHMRC.p2.ul1")</li>
- <li>@messages("emailHMRC.p2.ul2")</li>
+ <li>@messages("emailHMRC.p2.ul1.new")</li>
+ <li>@messages("emailHMRC.p2.ul2.new")</li>
+
+ <!--<li>@messages("emailHMRC.p2.ul1.existing")</li>
+ <li>@messages("emailHMRC.p2.ul2.existing")</li>
+ <li>@messages("emailHMRC.p2.ul3.existing")</li>-->
+
 </ul>
 @P(messages("emailHMRC.p3"))
 
 @H1(messages("emailHMRC.h1"), Some("govuk-heading-m" ), id = Some("email-HMRC-subheading"))
-@P(messages("emailHMRC.p4"))
-@P(messages("emailHMRC.p5"))
+@P(messages("emailHMRC.p4")+ " " + messages("emailHMRC.p4.ending.new"))<!-- messages("emailHMRC.p4.ending.existing")) OR-->
 
-<div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("emailHMRC.url")</a></div>
+@P(messages("emailHMRC.p5")+ " " + messages("emailHMRC.p5.ending.new"))<!-- messages("emailHMRC.p5.ending.existing")) OR-->
 
+<div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("emailHMRC.url.new")</a></div>
+<!--@messages("emailHMRC.url.existing") -->
 }

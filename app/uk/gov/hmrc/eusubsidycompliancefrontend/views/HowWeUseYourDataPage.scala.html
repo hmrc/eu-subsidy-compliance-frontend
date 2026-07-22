@@ -29,26 +29,48 @@ govukInput : GovukInput
 
 @(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @layout(
-pageTitle = Some(messages("emailHMRC.title")),
+pageTitle = Some(messages("beneficiaryNotification.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
 ) {
 
-@H1(messages("emailHMRC.title"))
-@P(messages("emailHMRC.p1"))
 
-@P(messages("emailHMRC.p2"),Some("govuk-body tight-paragraph"))
+<!-- If statement on whether create route or existing user-->
+@H1(messages("beneficiaryNotification.title.alt"))
+
+<!-- @H1(messages("beneficiaryNotification.title")) -->
+<!-- If statement on whether create route or existing user
+@H1(messages("beneficiaryNotification.p1.start")) -->
+@P(messages("beneficiaryNotification.p1.main"))
+@P(messages("beneficiaryNotification.p2"))
+
+@H1(messages("beneficiaryNotification.h1"), Some("govuk-heading-m" ), id = Some("undertaking-suspended-banner-title"))
+&nbsp;
+@P(messages("beneficiaryNotification.p3"),Some("govuk-body tight-paragraph"))
 <ul class="govuk-list govuk-list--bullet tight-bullet-list">
- <li>@messages("emailHMRC.p2.ul1")</li>
- <li>@messages("emailHMRC.p2.ul2")</li>
+ <li>@messages("beneficiaryNotification.p3.ul1")</li>
+ <li>@messages("beneficiaryNotification.p3.ul2")</li>
+ <li>@messages("beneficiaryNotification.p3.ul3")</li>
+ <li>@messages("beneficiaryNotification.p3.ul4")</li>
+ <li>@messages("beneficiaryNotification.p3.ul5")</li>
+ <li>@messages("beneficiaryNotification.p3.ul6")</li>
+
 </ul>
-@P(messages("emailHMRC.p3"))
+@P(messages("beneficiaryNotification.p4"))
+@P(messages("beneficiaryNotification.p5"))
+@P(messages("beneficiaryNotification.p6"))
 
-@H1(messages("emailHMRC.h1"), Some("govuk-heading-m" ), id = Some("email-HMRC-subheading"))
-@P(messages("emailHMRC.p4"))
-@P(messages("emailHMRC.p5"))
+@H1(messages("beneficiaryNotification.h2"), Some("govuk-heading-m" ), id = Some("undertaking-suspended-banner-title"))
+@P(messages("beneficiaryNotification.p7"))
 
-<div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("emailHMRC.url")</a></div>
+@H1(messages("beneficiaryNotification.h3"), Some("govuk-heading-m"), id = Some("undertaking-suspended-banner-title"))
+@P(messages("beneficiaryNotification.p8"))
 
+@H1(messages("beneficiaryNotification.h4"), Some("govuk-heading-m"), id = Some("undertaking-suspended-banner-title"))
+@P(messages("beneficiaryNotification.p9"))
+@P(messages("beneficiaryNotification.p10"))
+@P(messages("beneficiaryNotification.p11"))
+
+@button("common.continue.only")
 }
