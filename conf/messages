@@ -708,6 +708,7 @@ beneficiaryNotification.title = Notification of changes to how we use your data
 beneficiaryNotification.title.alt = How we use your data
 beneficiaryNotification.p1.start = From 1 January 2026,
 beneficiaryNotification.p1.main =Commission Regulation (EU) 2023/2831 requires all de minimis state aid granted to undertakings to be recorded in a central, publicly accessible register. This includes de minimis aid granted under the Customs Duty Waiver Scheme.
+beneficiaryNotification.p1 = From 1 January 2026, Commission Regulation (EU) 2023/2831 requires all de minimis state aid granted to undertakings to be recorded in a central, publicly accessible register. This includes de minimis aid granted under the Customs Duty Waiver Scheme.
 beneficiaryNotification.p2 = To meet this requirement, HMRC must publish some information about de minimis aid awards on <a class="govuk-link" target="_blank" href="https://aid-register.ec.europa.eu/home">the EU eAidRegister (opens in new tab)</a>.
 beneficiaryNotification.h1 =The information we will publish
 beneficiaryNotification.p3 =We will publish the:

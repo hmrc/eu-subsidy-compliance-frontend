@@ -44,7 +44,7 @@ class BenNotificationController @Inject() (
     formWithSingleMandatoryField("benNotification")
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(benNotificationPage(benNotificationForm, routes.ConfirmBusinessDetailsController.showPage().url)).toFuture
+    Ok(benNotificationPage(routes.ConfirmBusinessDetailsController.showPage())).toFuture
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
