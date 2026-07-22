@@ -21,7 +21,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmBusinessDetailsPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmMultipleBusinessDetailsPage
@@ -33,6 +34,7 @@ import scala.concurrent.ExecutionContext
 class ConfirmBusinessDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
+  escService: EscService,
   confirmBusinessDetailsPage: ConfirmBusinessDetailsPage,
   confirmMultipleBusinessDetailsPage: ConfirmMultipleBusinessDetailsPage
 )(implicit
@@ -45,28 +47,39 @@ class ConfirmBusinessDetailsController @Inject() (
   private val confirmBusinessDetailsForm: Form[FormValues] =
     formWithSingleMandatoryField("confirmBusinessDetails")
 
-  private def multipleEoris: Boolean = true // placeholder
-  private def isSuspended: Boolean = true // placeholder
+  private def multipleEoris(undertaking: Undertaking): Boolean =
+    undertaking.getAllNonLeadEORIs.nonEmpty
+
+  private def isSuspended(undertaking: Undertaking): Boolean =
+    undertaking.isAutoSuspended
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    if (multipleEoris) {
-      Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended)).toFuture
-    } else {
-      Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended)).toFuture
+    escService.getUndertaking(request.eoriNumber).map { undertaking =>
+      if (multipleEoris(undertaking)) {
+        Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking)))
+      } else {
+        Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking)))
+      }
     }
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    confirmBusinessDetailsForm
-      .bindFromRequest()
-      .fold(
-        formWithErrors =>
-          if (multipleEoris) {
-            BadRequest(confirmMultipleBusinessDetailsPage(formWithErrors, isSuspended)).toFuture
-          } else {
-            BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended)).toFuture
-          },
-        _ => Redirect(routes.ConfirmBusinessDetailsController.showPage()).toFuture
-      )
+    escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
+      confirmBusinessDetailsForm
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            if (multipleEoris(undertaking)) {
+              BadRequest(confirmMultipleBusinessDetailsPage(formWithErrors, isSuspended(undertaking))).toFuture
+            } else {
+              BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended(undertaking))).toFuture
+            },
+          form =>
+            if (form.value == "yes")
+              Redirect(routes.BenNotificationController.showPage()).toFuture
+            else
+              Redirect(routes.EmailHMRCUpdateBusinessDetailsController.showPage()).toFuture
+        )
+    }
   }
 }

@@ -903,3 +903,8 @@ POST       /confirm-business-details-register                                   
 
 GET        /member-business-details                                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MemberBusinessDetailsController.showPage()
 POST       /member-business-details                                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MemberBusinessDetailsController.submitPage()
+GET        /need-registration-number-business                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NeedRegistrationNumberBusinessController.showPage()
+GET        /need-registration-number-businesses                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NeedRegistrationNumberBusinessesController.showPage()
+GET        /email-hmrc-update-business-details                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EmailHMRCUpdateBusinessDetailsController.showPage()
+GET        /notification-changes-data                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BenNotificationController.showPage()
+POST       /notification-changes-data                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BenNotificationController.submitPage()
