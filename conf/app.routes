@@ -914,3 +914,7 @@ GET        /cannot-use-service-contact-administrator                            
 
 GET        /how-we-use-your-data                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BeneficiaryNotificationController.showPage()
 POST       /how-we-use-your-data                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BeneficiaryNotificationController.submitPage()
+
+GET        /email-hmrc-update-business-details                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EmailHMRCUpdateBusinessDetailsController.showPage()
+
+GET        /need-registration-number-business                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NeedRegistrationNumberBusinessController.showPage()

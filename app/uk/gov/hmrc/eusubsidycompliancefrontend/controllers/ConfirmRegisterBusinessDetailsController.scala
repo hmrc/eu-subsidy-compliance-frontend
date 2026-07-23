@@ -52,7 +52,18 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(confirmRegisterBusinessDetailsPage(formWithErrors)).toFuture,
-        _ => Redirect(routes.ConfirmRegisterBusinessDetailsController.showPage()).toFuture
+        formValues =>
+          formValues.value match {
+            case "yes" =>
+              Redirect(
+                routes.AddBusinessEntityController.getAddBusinessEntity(
+                  businessAdded = Some(true)
+                )
+              ).toFuture
+
+            case "no" =>
+              Redirect(routes.HMRCEmailController.showPage()).toFuture
+          }
       )
   }
 }
