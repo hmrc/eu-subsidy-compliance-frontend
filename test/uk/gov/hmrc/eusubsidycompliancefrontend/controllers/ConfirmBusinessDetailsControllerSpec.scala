@@ -47,7 +47,7 @@ class ConfirmBusinessDetailsControllerSpec
       def performAction = controller.showPage()(FakeRequest())
 
       behave like authBehaviour(() => performAction)
-      
+
       "display the single business details page for a lead-only undertaking" in {
         inSequence {
           mockAuthWithEnrolment()

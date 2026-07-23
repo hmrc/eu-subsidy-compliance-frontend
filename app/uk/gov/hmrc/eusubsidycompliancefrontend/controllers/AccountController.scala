@@ -206,7 +206,7 @@ class AccountController @Inject() (
       if (undertaking.isLeadEORI(eori) && hasNoBeneficiaryId) {
         if (undertaking.getAllNonLeadEORIs.nonEmpty)
           Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
-        else  
+        else
           Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage()))
       } else {
         val today = timeProvider.today
