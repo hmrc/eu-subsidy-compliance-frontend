@@ -20,31 +20,24 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.NeedRegistrationNumberBusinessPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.EmailHMRCPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class NeedRegistrationNumberBusinessController @Inject() (
-  mcc: MessagesControllerComponents,
-  actionBuilders: ActionBuilders,
-  needRegistrationNumberBusinessPage: NeedRegistrationNumberBusinessPage
-)(implicit
-  val appConfig: AppConfig,
-  val executionContext: ExecutionContext
-) extends BaseController(mcc) {
+class HMRCEmailController @Inject() (
+                                      mcc: MessagesControllerComponents,
+                                      actionBuilders: ActionBuilders,
+                                      emailHMRCPage: EmailHMRCPage
+                                    )(implicit
+                                      val appConfig: AppConfig,
+                                      val executionContext: ExecutionContext
+                                    ) extends BaseController(mcc) {
 
   import actionBuilders._
 
-  def showPage(previous: String): Action[AnyContent] = verifiedEori.async { implicit request =>
-    val eori = request.eoriNumber
-
-    Ok(
-      needRegistrationNumberBusinessPage(
-        eori.value,
-        previous
-      )
-    ).toFuture
+  def showPage(previous: String): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(emailHMRCPage(previous)).toFuture
   }
 }

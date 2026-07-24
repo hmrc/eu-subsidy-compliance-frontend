@@ -23,51 +23,52 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmRegisterBusinessDetailsPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ExistingAdminConfirmAddBusinessDetailsPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmRegisterBusinessDetailsController @Inject() (
+class ExistingAdminConfirmAddBusinessDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  confirmRegisterBusinessDetailsPage: ConfirmRegisterBusinessDetailsPage
+  existingAdminConfirmAddBusinessDetailsPage: ExistingAdminConfirmAddBusinessDetailsPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
-  private val confirmRegisterBusinessDetailsForm: Form[FormValues] =
-    formWithSingleMandatoryField("confirmRegisterBusinessDetails")
+  private val existingAdminConfirmAddBusinessDetailsForm: Form[FormValues] =
+    formWithSingleMandatoryField("existingAdminConfirmAddBusinessDetails")
 
+  // Should i make a new page for existing admin even tho its identical? Also back to confirm details link on email page sends to the other confirm details url???
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm)).toFuture
+    Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm)).toFuture
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    confirmRegisterBusinessDetailsForm
+    existingAdminConfirmAddBusinessDetailsForm
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(confirmRegisterBusinessDetailsPage(formWithErrors)).toFuture,
-        formValues =>
-          formValues.value match {
-            case "yes" =>
-              Redirect(
-                routes.AddBusinessEntityController.getAddBusinessEntity(
-                  businessAdded = Some(true)
-                )
-              ).toFuture
+        formWithErrors =>
+          BadRequest(
+            existingAdminConfirmAddBusinessDetailsPage(formWithErrors)
+          ).toFuture,
+        {
+          case FormValues("yes") =>
+            Redirect(
+              routes.AddClaimPublicAuthorityController.getAddClaimPublicAuthority
+            ).toFuture
 
-            case "no" =>
-              Redirect(
-                routes.HMRCEmailController.showPage(
-                  routes.ConfirmRegisterBusinessDetailsController.showPage().url
-                )
-              ).toFuture
-          }
+          case FormValues("no") =>
+            Redirect(
+              routes.HMRCEmailController.showPage(
+                routes.ExistingAdminConfirmAddBusinessDetailsController.showPage().url
+              )
+            ).toFuture
+        }
       )
   }
 }

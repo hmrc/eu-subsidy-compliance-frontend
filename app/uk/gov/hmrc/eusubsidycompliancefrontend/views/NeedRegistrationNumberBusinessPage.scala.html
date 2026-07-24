@@ -18,10 +18,21 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 
 @this(layout: Layout)
-@(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(pageTitle = Some(messages("needRegistrationNumberBusiness.title")), backLinkEnabled = true) {
+@(eori: String, previous: String)(implicit
+    request: RequestHeader,
+    messages: Messages,
+    appConfig: AppConfig
+)
+
+@layout(
+    pageTitle = Some(messages("needRegistrationNumberBusiness.title")),
+    backLinkEnabled = true,
+    backLink = Some(previous)
+) {
 
     @H1(messages("needRegistrationNumberBusiness.title"), Some("govuk-heading-xl"))
 

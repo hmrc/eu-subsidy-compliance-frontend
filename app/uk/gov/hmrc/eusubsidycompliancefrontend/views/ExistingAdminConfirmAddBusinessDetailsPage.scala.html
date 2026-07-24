@@ -33,18 +33,18 @@
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"confirmAddBusinessDetails"}
+@fieldName = @{"existingAdminConfirmAddBusinessDetails"}
 
 @layout(
     pageTitle = Some(messages("confirmAddBusinessDetails.title")),
     hasErrors = form.hasErrors,
     backLinkEnabled = true,
     backLink = Some(
-        routes.BusinessEntityEoriController.getEori.url
+        routes.AddClaimBusinessController.getAddClaimBusiness.url
     )
 ) {
 
-    @formHelper(action = routes.ConfirmAddBusinessDetailsController.submitPage()) {
+    @formHelper(action = routes.ExistingAdminConfirmAddBusinessDetailsController.submitPage()) {
 
         @if(form.hasErrors) {
             @govukErrorSummary(ErrorSummary(

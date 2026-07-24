@@ -898,12 +898,17 @@ POST       /confirm-business-details                                            
 GET        /confirm-details-add-business                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmAddBusinessDetailsController.showPage()
 POST       /confirm-details-add-business                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmAddBusinessDetailsController.submitPage()
 
+GET        /existing-admin-confirm-details-add-business                                  @uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ExistingAdminConfirmAddBusinessDetailsController.showPage()
+POST       /existing-admin-confirm-details-add-business                                  @uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ExistingAdminConfirmAddBusinessDetailsController.submitPage()
+
+GET        /email-hmrc-update-business-details                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HMRCEmailController.showPage(previous: String)
+
 GET        /confirm-business-details-register                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmRegisterBusinessDetailsController.showPage()
 POST       /confirm-business-details-register                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmRegisterBusinessDetailsController.submitPage()
 
 GET        /member-business-details                                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MemberBusinessDetailsController.showPage()
 POST       /member-business-details                                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MemberBusinessDetailsController.submitPage()
-GET        /need-registration-number-business                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NeedRegistrationNumberBusinessController.showPage()
+GET        /need-registration-number-business                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NeedRegistrationNumberBusinessController.showPage(previous: String)
 GET        /need-registration-number-businesses                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NeedRegistrationNumberBusinessesController.showPage()
 GET        /email-hmrc-update-business-details                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EmailHMRCUpdateBusinessDetailsController.showPage()
 GET        /notification-changes-data                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BenNotificationController.showPage()
@@ -916,5 +921,3 @@ GET        /how-we-use-your-data                                                
 POST       /how-we-use-your-data                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BeneficiaryNotificationController.submitPage()
 
 GET        /email-hmrc-update-business-details                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EmailHMRCUpdateBusinessDetailsController.showPage()
-
-GET        /need-registration-number-business                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NeedRegistrationNumberBusinessController.showPage()

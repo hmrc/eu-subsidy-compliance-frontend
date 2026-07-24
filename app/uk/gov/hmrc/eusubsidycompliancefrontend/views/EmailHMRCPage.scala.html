@@ -16,26 +16,20 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
-@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1,P}
 
 @this(
-layout: Layout,
-formHelper: FormWithCSRF,
-button: components.Button,
-govukErrorSummary: GovukErrorSummary,
-govukInput : GovukInput
+layout: Layout
 )
 
-@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(previous: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
 @layout(
-
-pageTitle = Some(messages("emailHMRC.title.new")),
-backLinkEnabled = true,
-backLink = Some(previous),
-hasErrors = form.hasErrors
-
+    pageTitle = Some(messages("emailHMRCUpdateBusinessDetails.title")),
+    backLinkEnabled = true,
+    backLink = Some(previous)
 ) {
+
 <!--or "emailHMRC.title.existing -->
 <!--@H1(messages("emailHMRC.title.existing"))-->
 @H1(messages("emailHMRC.title.new"))

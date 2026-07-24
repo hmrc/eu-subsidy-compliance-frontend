@@ -204,10 +204,21 @@ class AccountController @Inject() (
       // Currently only accessible by directly using the URLs - /confirm-business-details
 
       if (undertaking.isLeadEORI(eori) && hasNoBeneficiaryId) {
-        if (undertaking.getAllNonLeadEORIs.nonEmpty)
-          Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
-        else
-          Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage()))
+        if (undertaking.getAllNonLeadEORIs.nonEmpty) {
+          Future.successful(
+            Redirect(
+              routes.NeedRegistrationNumberBusinessesController.showPage()
+            )
+          )
+        } else {
+          Future.successful(
+            Redirect(
+              routes.NeedRegistrationNumberBusinessController.showPage(
+                r.uri
+              )
+            )
+          )
+        }
       } else {
         val today = timeProvider.today
 
