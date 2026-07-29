@@ -152,8 +152,8 @@ class AccountController @Inject() (
   }
 
   private def proceedToAccountPage(
-    undertaking: Undertaking
-  )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
+                                    undertaking: Undertaking
+                                  )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     val result = for {
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
       subsidies <- escService
@@ -172,8 +172,8 @@ class AccountController @Inject() (
   }
 
   private def getOrCreateJourneys(
-    undertakingJourney: UndertakingJourney = UndertakingJourney()
-  )(implicit e: EORI): OptionT[Future, (EligibilityJourney, UndertakingJourney)] = {
+                                   undertakingJourney: UndertakingJourney = UndertakingJourney()
+                                 )(implicit e: EORI): OptionT[Future, (EligibilityJourney, UndertakingJourney)] = {
     logger.info("getOrCreateJourneys")
     for {
       eligibilityJourney <- store
@@ -184,12 +184,12 @@ class AccountController @Inject() (
   }
 
   private def renderAccountPage(
-    undertaking: Undertaking,
-    undertakingSubsidies: UndertakingSubsidies,
-    balance: Option[UndertakingBalance]
-  )(implicit
-    r: AuthenticatedEnrolledRequest[AnyContent]
-  ) = {
+                                 undertaking: Undertaking,
+                                 undertakingSubsidies: UndertakingSubsidies,
+                                 balance: Option[UndertakingBalance]
+                               )(implicit
+                                 r: AuthenticatedEnrolledRequest[AnyContent]
+                               ) = {
     implicit val eori: EORI = r.eoriNumber
 
     if (undertaking.isManuallySuspended)
@@ -235,10 +235,12 @@ class AccountController @Inject() (
           balance,
           today
         )
+
         def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] = {
           if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
           else n.toFuture
         }
+
         var agriOtherFlag: Boolean = true
         if (undertaking.industrySector.toString.take(2).equals(Sector.FishingAndAquaculture.toString)) {
           agriOtherFlag = false
@@ -271,28 +273,36 @@ class AccountController @Inject() (
           )
           result.getOrElse(handleMissingSessionData("Nil Return Journey"))
         } else {
-          logger.info("showing nonLeadAccountPage for non lead")
-          Ok(
-            nonLeadAccountPage(
-              undertaking = undertaking,
-              eori = undertaking.getLeadEORI,
-              isLead = false,
-              dueDate = dueDate,
-              isOverdue = isOverdue,
-              lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
-              neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
-              allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-              totalSubsidies = summary.overall.total.value.toEuros,
-              remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
-              currentPeriodStart = startDate.toDisplayFormat,
-              isSuspended = isSuspended,
-              scp08IssuesExist = summary.scp08IssuesExist,
-              agriOtherFlag = agriOtherFlag
-            )
-          ).toFuture
+          val hasAdminValidatedBen: Boolean  = false
+          // bool defines whether user sees notification page, then account or cannotUse servicePage for a member
+          // awaiting to see if it should be account page straight away or whether we need to add in notification every time user is routing to account page.
+
+          if (hasAdminValidatedBen) {
+            logger.info("showing nonLeadAccountPage for non lead")
+            Ok(
+              nonLeadAccountPage(
+                undertaking = undertaking,
+                eori = undertaking.getLeadEORI,
+                isLead = false,
+                dueDate = dueDate,
+                isOverdue = isOverdue,
+                lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
+                neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
+                allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+                totalSubsidies = summary.overall.total.value.toEuros,
+                remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
+                currentPeriodStart = startDate.toDisplayFormat,
+                isSuspended = isSuspended,
+                scp08IssuesExist = summary.scp08IssuesExist,
+                agriOtherFlag = agriOtherFlag
+              )
+            ).toFuture
+          } else {
+            Future.successful(Redirect(routes.CannotUseServiceContactAdministratorController.show()))
+          }
         }
       }
-    }
 
+    }
   }
 }
