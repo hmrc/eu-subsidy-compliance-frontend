@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ExistingAdminConfirmAddBusinessDetailsController @Inject()(
+class ExistingAdminConfirmAddBusinessDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
   existingAdminConfirmAddBusinessDetailsPage: ExistingAdminConfirmAddBusinessDetailsPage

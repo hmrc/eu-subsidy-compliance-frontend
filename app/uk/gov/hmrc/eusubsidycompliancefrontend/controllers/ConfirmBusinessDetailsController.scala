@@ -21,7 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmBusinessDetailsPage
@@ -76,10 +76,19 @@ class ConfirmBusinessDetailsController @Inject() (
             },
           form =>
             if (form.value == "yes")
+              escService.beneficiaryIDValidate(beneficiaryIDRequest())
               Redirect(routes.BenNotificationController.showPage()).toFuture
-            else
-              Redirect(routes.EmailHMRCUpdateBusinessDetailsController.showPage()).toFuture
+            else Redirect(routes.EmailHMRCUpdateBusinessDetailsController.showPage()).toFuture
         )
     }
+  }
+
+  def beneficiaryIDRequest(): BeneficiaryIDRequest = {
+    BeneficiaryIDRequest(
+      idType = "UTID",
+      idValue = "GB123009872453",
+      requestType = "R",
+      beneficiaryInfo = None
+    )
   }
 }

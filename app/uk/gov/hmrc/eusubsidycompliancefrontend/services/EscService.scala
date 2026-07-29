@@ -288,20 +288,21 @@ class EscService @Inject() (
         errorMessage = s"removeSubsidy failed UndertakingRef:$undertakingRef, NonHmrcSubsidy:$nonHmrcSubsidy"
       )
 
-    /*def beneficiaryIDValidate(
-      beneficiaryIDRequest: BeneficiaryIDRequest
-    )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]] = {
-      escConnector.beneficiaryIDValidation(beneficiaryIDRequest).map {
-        case Left(error) => Left(error)
-        case Right(response) if response.status == OK => Right(response.parseJSON[BeneficiaryIDResponse])
-        case Right(response) =>
-          Left(
-            ConnectorError(
-              s"Beneficiary ID validation failed. Response status: ${response.status}"
-            )
-          )
-      }
-    }*/
+  def beneficiaryIDValidate(
+    beneficiaryIDRequest: BeneficiaryIDRequest
+  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]] = {
+    escConnector.beneficiaryIDValidation(beneficiaryIDRequest).map {
+      case Left(error) => Left(error)
+      case Right(response) if response.status == OK =>
+        response.parseJSON[BeneficiaryIDResponse] match {
+          case Right(beneficiaryIDResponse) => Right(Some(beneficiaryIDResponse))
+          case Left(parseError) =>
+            Left(ConnectorError(s"Error parsing Beneficiary ID validation response: $parseError"))
+        }
+      case Right(response) =>
+        Left(ConnectorError(s"Beneficiary ID validation failed. Response status: ${response.status}"))
+    }
+  }
 
   def clearUndertakingCache(ref: UndertakingRef): Future[Unit] =
     for {

@@ -140,10 +140,10 @@ class BusinessEntityEoriController @Inject() (
 //      }
 //    }
     def handleValidEori(
-                         form: FormValues,
-                         previous: Uri,
-                         undertaking: Undertaking
-                       ): Future[Result] =
+      form: FormValues,
+      previous: Uri,
+      undertaking: Undertaking
+    ): Future[Result] =
       if (businessIdFound) {
         Redirect(
           routes.ConfirmAddBusinessDetailsController.showPage()

@@ -51,8 +51,7 @@ class ConfirmAddBusinessDetailsController @Inject() (
     confirmAddBusinessDetailsForm
       .bindFromRequest()
       .fold(
-        formWithErrors =>
-          BadRequest(confirmAddBusinessDetailsPage(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(confirmAddBusinessDetailsPage(formWithErrors)).toFuture,
         {
           case FormValues("yes") =>
             Redirect(
