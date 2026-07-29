@@ -202,8 +202,6 @@ class AccountController @Inject() (
       // no entry route to the confirm pages yet. Blocked on
       // beneficiaryId, and on where "already confirmed" is recorded.
       // Currently only accessible by directly using the URLs - /confirm-business-details
-      def hasAdminValidatedBen: Boolean = false
-      // bool defines whether user sees notification page, then account or cannotUse servicePage for a member
 
       if (undertaking.isLeadEORI(eori) && hasNoBeneficiaryId) {
         if (undertaking.getAllNonLeadEORIs.nonEmpty) {
@@ -277,6 +275,7 @@ class AccountController @Inject() (
         } else {
           val hasAdminValidatedBen: Boolean  = false
           // bool defines whether user sees notification page, then account or cannotUse servicePage for a member
+          // awaiting to see if it should be account page straight away or whether we need to add in notification every time user is routing to account page.
 
           if (hasAdminValidatedBen) {
             logger.info("showing nonLeadAccountPage for non lead")

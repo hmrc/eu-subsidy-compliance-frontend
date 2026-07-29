@@ -118,43 +118,43 @@ class BusinessEntityEoriController @Inject() (
         auditService.sendEvent(AuditEvent.BusinessEntityUpdated(ref, request.authorityId, eori, businessEori))
       else auditService.sendEvent(AuditEvent.BusinessEntityAdded(ref, request.authorityId, eori, businessEori))
 
-//    def handleValidEori(form: FormValues, previous: Uri, undertaking: Undertaking): Future[Result] = {
-//      val businessEori = EORI(formatEori(form.value))
-//      escService.retrieveUndertakingAndHandleErrors(businessEori).flatMap {
-//        case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
-//        case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
-//        case Right(None) =>
-//          val result = for {
-//            businessEntityJourney <- store.get[BusinessEntityJourney].toContext
-//            undertakingRef <- undertaking.reference.toContext
-//            _ <- updateOrCreateBusinessEntity(businessEntityJourney, undertakingRef, businessEori).toContext
-//            _ <- emailService.sendEmail(businessEori, AddMemberToBusinessEntity, undertaking).toContext
-//            _ <- emailService.sendEmail(eori, businessEori, AddMemberToLead, undertaking).toContext
-//            _ = sendAuditEvent(businessEntityJourney, undertakingRef, businessEori)
-//          } yield Redirect(
-//            routes.AddBusinessEntityController
-//              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(businessEori.value))
-//          )
-//
-//          result.fold(handleMissingSessionData("BusinessEntity Data"))(identity)
-//      }
-//    }
-    def handleValidEori(
-      form: FormValues,
-      previous: Uri,
-      undertaking: Undertaking
-    ): Future[Result] =
-      if (businessIdFound) {
-        Redirect(
-          routes.ConfirmAddBusinessDetailsController.showPage()
-        ).toFuture
-      } else {
-        Redirect(
-          routes.NeedRegistrationNumberBusinessController.showPage(
-            routes.BusinessEntityEoriController.getEori.url
+    def handleValidEori(form: FormValues, previous: Uri, undertaking: Undertaking): Future[Result] = {
+      val businessEori = EORI(formatEori(form.value))
+      escService.retrieveUndertakingAndHandleErrors(businessEori).flatMap {
+        case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
+        case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
+        case Right(None) =>
+          val result = for {
+            businessEntityJourney <- store.get[BusinessEntityJourney].toContext
+            undertakingRef <- undertaking.reference.toContext
+            _ <- updateOrCreateBusinessEntity(businessEntityJourney, undertakingRef, businessEori).toContext
+            _ <- emailService.sendEmail(businessEori, AddMemberToBusinessEntity, undertaking).toContext
+            _ <- emailService.sendEmail(eori, businessEori, AddMemberToLead, undertaking).toContext
+            _ = sendAuditEvent(businessEntityJourney, undertakingRef, businessEori)
+          } yield Redirect(
+            routes.AddBusinessEntityController
+              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(businessEori.value))
           )
-        ).toFuture
+
+          result.fold(handleMissingSessionData("BusinessEntity Data"))(identity)
       }
+    }
+//    def handleValidEori(
+//      form: FormValues,
+//      previous: Uri,
+//      undertaking: Undertaking
+//    ): Future[Result] =
+//      if (businessIdFound) {
+//        Redirect(
+//          routes.ConfirmAddBusinessDetailsController.showPage()
+//        ).toFuture
+//      } else {
+//        Redirect(
+//          routes.NeedRegistrationNumberBusinessController.showPage(
+//            routes.BusinessEntityEoriController.getEori.url
+//          )
+//        ).toFuture
+//      }
 
     withLeadUndertaking { undertaking =>
       store
