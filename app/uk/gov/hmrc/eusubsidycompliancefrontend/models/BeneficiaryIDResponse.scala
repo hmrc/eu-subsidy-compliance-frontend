@@ -19,12 +19,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
 
-case class BeneficiaryIDResponse(processingDate: Option[String], beneficiaryInfoResp: Option[Seq[BeneficiaryInfoResp]])
+case class BeneficiaryIDResponse(processingDate: Option[String], beneficiaryInfo: Option[Seq[BeneficiaryInfoResp]])
 
 object BeneficiaryIDResponse {
   implicit val reads: Reads[BeneficiaryIDResponse] = (
-    (JsPath \ "success" \ "processingDate").readNullable[String] and
-      (JsPath \ "success" \ "beneficiaryInfo").readNullable[Seq[BeneficiaryInfoResp]]
+    (JsPath \ "processingDate").readNullable[String] and
+      (JsPath \ "beneficiaryInfo").readNullable[Seq[BeneficiaryInfoResp]]
   )(BeneficiaryIDResponse.apply _)
   implicit val writes: OWrites[BeneficiaryIDResponse] = Json.writes[BeneficiaryIDResponse]
 }

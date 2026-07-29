@@ -20,9 +20,9 @@ import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
-import play.api.libs.json.{JsPath, JsonValidationError, Reads}
+import play.api.libs.json.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.UndertakingCache
@@ -294,9 +294,14 @@ class EscService @Inject() (
     escConnector.beneficiaryIDValidation(beneficiaryIDRequest).map {
       case Left(error) => Left(error)
       case Right(response) if response.status == OK =>
-        response.parseJSON[BeneficiaryIDResponse] match {
-          case Right(beneficiaryIDResponse) => Right(Some(beneficiaryIDResponse))
-          case Left(parseError) =>
+        println(s"HTTP Status: ${response.status}")
+        println(s"Response Body: ${response.body}")
+        val json = Json.parse(response.body)
+        json.validate[BeneficiaryIDResponse] match {
+          case JsSuccess(value, _) =>
+            println(s"Parsed BeneficiaryIDResponse: $value")
+            Right(Some(value))
+          case JsError(parseError) =>
             Left(ConnectorError(s"Error parsing Beneficiary ID validation response: $parseError"))
         }
       case Right(response) =>

@@ -21,6 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -76,17 +77,24 @@ class ConfirmBusinessDetailsController @Inject() (
             },
           form =>
             if (form.value == "yes")
-              escService.beneficiaryIDValidate(beneficiaryIDRequest())
+              escService.beneficiaryIDValidate(beneficiaryIDRequest(request.eoriNumber)).map {
+                case Right(Some(resp)) =>
+                  logger.info(s"Beneficiary ID Response = $resp")
+                case Right(None) =>
+                  logger.info("No Beneficiary ID Response.")
+                case Left(error) =>
+                  logger.error(s"Error = $error")
+              }
               Redirect(routes.BenNotificationController.showPage()).toFuture
             else Redirect(routes.EmailHMRCUpdateBusinessDetailsController.showPage()).toFuture
         )
     }
   }
 
-  def beneficiaryIDRequest(): BeneficiaryIDRequest = {
+  def beneficiaryIDRequest(eori: EORI): BeneficiaryIDRequest = {
     BeneficiaryIDRequest(
       idType = "UTID",
-      idValue = "GB123009872453",
+      idValue = s"$eori",
       requestType = "R",
       beneficiaryInfo = None
     )
