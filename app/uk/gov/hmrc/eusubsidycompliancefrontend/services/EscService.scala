@@ -292,15 +292,11 @@ class EscService @Inject() (
     beneficiaryIDRequest: BeneficiaryIDRequest
   )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]] = {
     escConnector.beneficiaryIDValidation(beneficiaryIDRequest).map {
+      case Left(ConnectorError(_, WithStatusCode(NOT_FOUND))) => Right(None)
       case Left(error) => Left(error)
       case Right(response) if response.status == OK =>
-        println(s"HTTP Status: ${response.status}")
-        println(s"Response Body: ${response.body}")
-        val json = Json.parse(response.body)
-        json.validate[BeneficiaryIDResponse] match {
-          case JsSuccess(value, _) =>
-            println(s"Parsed BeneficiaryIDResponse: $value")
-            Right(Some(value))
+        Json.parse(response.body).validate[BeneficiaryIDResponse] match {
+          case JsSuccess(value, _) => Right(Some(value))
           case JsError(parseError) =>
             Left(ConnectorError(s"Error parsing Beneficiary ID validation response: $parseError"))
         }
