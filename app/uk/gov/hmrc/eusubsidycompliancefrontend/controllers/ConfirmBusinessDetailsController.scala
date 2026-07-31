@@ -27,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmBusinessDetailsPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmMultipleBusinessDetailsPage
+import scala.concurrent.Future
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -55,12 +56,19 @@ class ConfirmBusinessDetailsController @Inject() (
     undertaking.isAutoSuspended
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    escService.getUndertaking(request.eoriNumber).map { undertaking =>
-      if (multipleEoris(undertaking)) {
-        Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking)))
-      } else {
-        Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking)))
-      }
+
+    escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
+        escService.beneficiaryIDValidate(beneficiaryIDRequest(request.eoriNumber)).map {
+          case Right(Some(resp)) =>
+            logger.info(s"Beneficiary ID Response = $resp")
+            Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), resp))
+          case Right(None) =>
+            logger.info("No Beneficiary ID Response.")
+            InternalServerError("No Beneficiary ID Response")
+          case Left(error) =>
+            logger.error(s"Error = $error")
+            InternalServerError(error.message)
+        }
     }
   }
 
@@ -71,20 +79,12 @@ class ConfirmBusinessDetailsController @Inject() (
         .fold(
           formWithErrors =>
             if (multipleEoris(undertaking)) {
-              BadRequest(confirmMultipleBusinessDetailsPage(formWithErrors, isSuspended(undertaking))).toFuture
+              BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended(undertaking))).toFuture
             } else {
               BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended(undertaking))).toFuture
             },
           form =>
             if (form.value == "yes")
-              escService.beneficiaryIDValidate(beneficiaryIDRequest(request.eoriNumber)).map {
-                case Right(Some(resp)) =>
-                  logger.info(s"Beneficiary ID Response = $resp")
-                case Right(None) =>
-                  logger.info("No Beneficiary ID Response.")
-                case Left(error) =>
-                  logger.error(s"Error = $error")
-              }
               Redirect(routes.BenNotificationController.showPage()).toFuture
             else Redirect(routes.EmailHMRCUpdateBusinessDetailsController.showPage()).toFuture
         )
