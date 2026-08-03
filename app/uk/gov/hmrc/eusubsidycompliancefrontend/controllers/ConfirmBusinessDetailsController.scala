@@ -86,7 +86,7 @@ class ConfirmBusinessDetailsController @Inject() (
           form =>
             if (form.value == "yes")
               Redirect(routes.BenNotificationController.showPage()).toFuture
-            else Redirect(routes.EmailHMRCUpdateBusinessDetailsController.showPage()).toFuture
+            else Redirect(routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)).toFuture
         )
     }
   }
