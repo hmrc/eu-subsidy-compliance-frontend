@@ -21,11 +21,13 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmBusinessDetailsPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmMultipleBusinessDetailsPage
+import scala.concurrent.Future
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -54,12 +56,19 @@ class ConfirmBusinessDetailsController @Inject() (
     undertaking.isAutoSuspended
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    escService.getUndertaking(request.eoriNumber).map { undertaking =>
-      if (multipleEoris(undertaking)) {
-        Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking)))
-      } else {
-        Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking)))
-      }
+
+    escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
+        escService.beneficiaryIDValidate(beneficiaryIDRequest(request.eoriNumber)).map {
+          case Right(Some(resp)) =>
+            logger.info(s"Beneficiary ID Response = $resp")
+            Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), resp))
+          case Right(None) =>
+            logger.info("No Beneficiary ID Response.")
+            InternalServerError("No Beneficiary ID Response")
+          case Left(error) =>
+            logger.error(s"Error = $error")
+            InternalServerError(error.message)
+        }
     }
   }
 
@@ -70,23 +79,22 @@ class ConfirmBusinessDetailsController @Inject() (
         .fold(
           formWithErrors =>
             if (multipleEoris(undertaking)) {
-              BadRequest(confirmMultipleBusinessDetailsPage(formWithErrors, isSuspended(undertaking))).toFuture
+              BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended(undertaking))).toFuture
             } else {
               BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended(undertaking))).toFuture
             },
           form =>
             if (form.value == "yes")
-              escService.beneficiaryIDValidate(beneficiaryIDRequest())
               Redirect(routes.BenNotificationController.showPage()).toFuture
-            else Redirect(routes.EmailHMRCUpdateBusinessDetailsController.showPage()).toFuture
+            else Redirect(routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)).toFuture
         )
     }
   }
 
-  def beneficiaryIDRequest(): BeneficiaryIDRequest = {
+  def beneficiaryIDRequest(eori: EORI): BeneficiaryIDRequest = {
     BeneficiaryIDRequest(
       idType = "UTID",
-      idValue = "GB123009872453",
+      idValue = s"$eori",
       requestType = "R",
       beneficiaryInfo = None
     )

@@ -38,6 +38,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.BeneficiaryIDRequest
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -195,31 +196,13 @@ class AccountController @Inject() (
     if (undertaking.isManuallySuspended)
       Future.successful(Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url))
     else {
-      // NEED has no beneficiaryId field yet.
-      // Change to `true` to click-test the no-ID nav locally.
-      def hasNoBeneficiaryId: Boolean = false
+      def needRegistrationRedirect: Future[Result] =
+        if (undertaking.getAllNonLeadEORIs.nonEmpty)
+          Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
+        else
+          Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage(r.uri)))
 
-      // no entry route to the confirm pages yet. Blocked on
-      // beneficiaryId, and on where "already confirmed" is recorded.
-      // Currently only accessible by directly using the URLs - /confirm-business-details
-
-      if (undertaking.isLeadEORI(eori) && hasNoBeneficiaryId) {
-        if (undertaking.getAllNonLeadEORIs.nonEmpty) {
-          Future.successful(
-            Redirect(
-              routes.NeedRegistrationNumberBusinessesController.showPage()
-            )
-          )
-        } else {
-          Future.successful(
-            Redirect(
-              routes.NeedRegistrationNumberBusinessController.showPage(
-                r.uri
-              )
-            )
-          )
-        }
-      } else {
+      def dashboard: Future[Result] = {
         val today = timeProvider.today
 
         val lastSubmitted = undertaking.lastSubsidyUsageUpdt.orElse(undertakingSubsidies.lastSubmitted)
@@ -302,6 +285,15 @@ class AccountController @Inject() (
           }
         }
       }
+
+      if (undertaking.isLeadEORI(eori))
+        escService
+          .beneficiaryIDValidate(BeneficiaryIDRequest(idType = "UTID", idValue = s"$eori", requestType = "R", beneficiaryInfo = None))
+          .flatMap {
+            case Right(None) => needRegistrationRedirect
+            case _ => dashboard
+          }
+      else dashboard
 
     }
   }
