@@ -290,7 +290,10 @@ class AccountController @Inject() (
         escService
           .beneficiaryIDValidate(BeneficiaryIDRequest(idType = "UTID", idValue = s"$eori", requestType = "R", beneficiaryInfo = None))
           .flatMap {
+            // SCP22: if any EORI with a known ID has validated=false, route to confirm page. EORIs without an ID (benIDType undefined) are excluded — they are need-registration cases, not confirm cases.
             case Right(None) => needRegistrationRedirect
+            case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(bi => bi.benIDType.isDefined && bi.validated.contains(false))) =>
+              Future.successful(Redirect(routes.ConfirmBusinessDetailsController.showPage()))
             case _ => dashboard
           }
       else dashboard

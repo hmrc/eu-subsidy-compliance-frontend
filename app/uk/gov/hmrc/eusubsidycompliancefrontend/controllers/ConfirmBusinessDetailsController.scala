@@ -85,7 +85,10 @@ class ConfirmBusinessDetailsController @Inject() (
             },
           form =>
             if (form.value == "yes")
-              Redirect(routes.BenNotificationController.showPage()).toFuture
+              // SCP22: send a V (validate) request to mark the undertaking as validated in ETMP before proceeding to notification
+              escService.beneficiaryIDValidate(beneficiaryIDRequest(request.eoriNumber).copy(requestType = "V")).flatMap(_ =>
+                Redirect(routes.BenNotificationController.showPage()).toFuture
+              )
             else Redirect(routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)).toFuture
         )
     }
