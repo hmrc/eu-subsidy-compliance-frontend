@@ -60,9 +60,7 @@ class ConfirmBusinessDetailsController @Inject() (
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
 
     escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
-      println("undertaking.reference-->" + undertaking.reference)
-      println("undertaking.reference.toString-->" + undertaking.reference.toString)
-      escService.getBeneficiaryIDValidation("GB123009872453", "U", None).map {
+      escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
         case Right(Some(resp)) =>
           logger.info(s"Beneficiary ID Response = $resp")
           Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), resp))
@@ -89,7 +87,7 @@ class ConfirmBusinessDetailsController @Inject() (
             },
           form =>
             if (form.value == "yes") {
-              escService.getBeneficiaryIDValidation("GB123009872453", "U", None)
+              escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None)
                 .flatMap {
                   case Right(Some(resp)) =>
                     logger.info(s"Beneficiary ID Response = $resp")
@@ -102,7 +100,7 @@ class ConfirmBusinessDetailsController @Inject() (
                     Redirect(routes.BenNotificationController.showPage()).toFuture // need to update
                 }
               Redirect(routes.BenNotificationController.showPage()).toFuture
-            } else Redirect(routes.EmailHMRCUpdateBusinessDetailsController.showPage()).toFuture
+            } else Redirect(routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)).toFuture
         )
     }
   }
