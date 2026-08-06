@@ -34,6 +34,7 @@ case class UndertakingJourney(
   sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
   hasVerifiedEmail: Option[UndertakingConfirmEmailFormPage] = Some(UndertakingConfirmEmailFormPage()),
   addBusiness: UndertakingAddBusinessFormPage = UndertakingAddBusinessFormPage(),
+  howWeUseData: UndertakingHowWeUseDataFormPage = UndertakingHowWeUseDataFormPage(),
   cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
   confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
   submitted: Option[Boolean] = None,
@@ -48,6 +49,7 @@ case class UndertakingJourney(
     sector,
     hasVerifiedEmail.getOrElse(UndertakingConfirmEmailFormPage()),
     addBusiness,
+    howWeUseData,
     cya,
     confirmation
   )
@@ -82,6 +84,7 @@ case class UndertakingJourney(
     this.copy(hasVerifiedEmail = hasVerifiedEmail.map(_.copy(value = Some(e))))
 
   def setAddBusiness(b: Boolean): UndertakingJourney = this.copy(addBusiness = addBusiness.copy(value = b.some))
+  def setHowWeUseData(b: Boolean): UndertakingJourney = this.copy(howWeUseData = howWeUseData.copy(value = b.some))
 
   def setUndertakingConfirmation(b: Boolean): UndertakingJourney =
     this.copy(confirmation = confirmation.copy(value = Some(b)))
@@ -119,6 +122,11 @@ object UndertakingJourney {
     case class UndertakingAddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getAddBusiness.url
     }
+
+    case class UndertakingHowWeUseDataFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
+      def uri = routes.BeneficiaryNotificationController.showPage().url
+    }
+
     case class UndertakingCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getCheckAnswers.url
     }
@@ -138,7 +146,13 @@ object UndertakingJourney {
     object UndertakingAddBusinessFormPage {
       implicit val confirmEmailFormPageFormat: OFormat[UndertakingAddBusinessFormPage] = Json.format
     }
+
+    object UndertakingHowWeUseDataFormPage {
+      implicit val howWeUseDataFormPageFormat: OFormat[UndertakingHowWeUseDataFormPage] = Json.format
+    }
+
     object UndertakingCyaFormPage { implicit val undertakingCyaFormPage: OFormat[UndertakingCyaFormPage] = Json.format }
+
     object UndertakingConfirmationFormPage {
       implicit val undertakingConfirmationFormPage: OFormat[UndertakingConfirmationFormPage] = Json.format
     }

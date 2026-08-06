@@ -402,7 +402,7 @@ class UndertakingController @Inject() (
     store
       .update[UndertakingJourney](_.setUndertakingCYA(false))
       .map { _ =>
-        Redirect(routes.UndertakingController.getAddBusiness)
+        Redirect(routes.BeneficiaryNotificationController.showPage())
       }
   }
 
