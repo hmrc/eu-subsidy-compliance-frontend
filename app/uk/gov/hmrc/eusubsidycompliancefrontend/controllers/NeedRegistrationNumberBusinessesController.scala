@@ -22,6 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.NeedRegistrationNumberBusinessesPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -40,8 +41,13 @@ class NeedRegistrationNumberBusinessesController @Inject() (
   import actionBuilders._
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    escService.getUndertaking(request.eoriNumber).map { undertaking =>
-      Ok(needRegistrationNumberBusinessesPage(undertaking.undertakingBusinessEntity, request.eoriNumber))
+    escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
+      escService.beneficiaryIDValidate(BeneficiaryIDRequest(idType = "UTID", idValue = request.eoriNumber.toString, requestType = "R", beneficiaryInfo = None)).map {
+        case Right(Some(resp)) =>
+          Ok(needRegistrationNumberBusinessesPage(undertaking.undertakingBusinessEntity, request.eoriNumber, Some(resp)))
+        case _ =>
+          Ok(needRegistrationNumberBusinessesPage(undertaking.undertakingBusinessEntity, request.eoriNumber, None))
+      }
     }
   }
 }
