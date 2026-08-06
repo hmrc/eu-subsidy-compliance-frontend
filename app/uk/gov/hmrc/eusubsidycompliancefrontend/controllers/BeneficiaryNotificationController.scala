@@ -19,8 +19,11 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.BenNotificationPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HowWeUseYourDataPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -29,7 +32,8 @@ import scala.concurrent.ExecutionContext
 class BeneficiaryNotificationController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  beneficiaryNotificationPage: BenNotificationPage
+  howWeUseYourDataPage: HowWeUseYourDataPage,
+  store: Store
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -37,11 +41,21 @@ class BeneficiaryNotificationController @Inject() (
 
   import actionBuilders._
 
+  private val howWeUseForm = play.api.data.Form(play.api.data.Forms.single("continue" -> play.api.data.Forms.text))
+
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(beneficiaryNotificationPage(routes.MemberBusinessDetailsController.showPage())).toFuture
+    Ok(howWeUseYourDataPage(howWeUseForm, routes.UndertakingController.getAddBusiness.url)).toFuture
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Redirect(routes.AccountController.getAccountPage).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.get[UndertakingJourney].flatMap {
+      case Some(journey) if !journey.isSubmitted =>
+        store.update[UndertakingJourney](_.setHowWeUseData(true)).map { _ =>
+          Redirect(routes.UndertakingController.getCheckAnswers)
+        }
+      case _ =>
+        Redirect(routes.AccountController.getAccountPage).toFuture
+    }
   }
 }

@@ -60,16 +60,8 @@
             id = Some("undertaking-inactive-banner-title")
         )
 
-        @if(isSuspended) {
             @P(messages("confirmBusinessDetails.suspended.p1"))
             @P(messages("confirmBusinessDetails.suspended.p2"))
-
-        } else {
-
-            @P(messages("confirmBusinessDetails.noSuspend.p1"))
-            @P(messages("confirmBusinessDetails.noSuspend.p2"))
-
-        }
 
         @govukTable(Table(
             head = Some(Seq(

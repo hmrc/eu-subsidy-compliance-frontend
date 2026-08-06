@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmMultipleBusines
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
@@ -57,6 +58,7 @@ class ConfirmBusinessDetailsController @Inject() (
     undertaking.isAutoSuspended
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
+
     escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
       println("undertaking.reference-->" + undertaking.reference)
       println("undertaking.reference.toString-->" + undertaking.reference.toString)

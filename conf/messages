@@ -326,6 +326,8 @@ lead-account-homepage-never-submitted-overdue=You have created an undertaking, b
 lead-account-homepage.under-taking.p1= Your balance is calculated over a rolling 3-year period. For more information,
 account-homepage.scp08Issues.text=Your undertaking balance may show a temporary difference to your own records, which will be amended here within 24 hours.
 
+
+
 non-lead-account-homepage.title = Your undertaking
 non-lead-account-homepage.p1 = Your undertaking’s next report is due by <strong>{0}</strong>.
 non-lead-account-homepage.p1.is-overdue = Your undertaking’s report was due by {0}.
@@ -342,6 +344,9 @@ non-lead-account-homepage.ul1-li1 = View summary of your allowance (customs and 
 non-lead-account-homepage.h2-4 = Undertaking administration
 non-lead-account-homepage.ul2-li1 = Become the undertaking administrator
 non-lead-account-homepage.ul2-li2 = Leave the undertaking
+non-lead-account-homepage.h2-5 = Your details
+non-lead-account-homepage.ul3-li1 = Your business details
+non-lead-account-homepage.ul3-li2 = How we use your data
 
 non-lead-account-homepage.link2 = View financial dashboard for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
@@ -809,8 +814,6 @@ industrySectorResearchBanner.visually.hidden = Hide message. I do not want to ta
 
 confirmBusinessDetails.title = Confirm your business details
 confirmBusinessDetails.h1 = Confirm your business details
-confirmBusinessDetails.noSuspend.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page before DATE PLACEHOLDER
-confirmBusinessDetails.noSuspend.p2 = If you do not, your undertaking will not be able to claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty
 confirmBusinessDetails.suspended.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page.
 confirmBusinessDetails.suspended.p2 = Until you do this, your undertaking cannot claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
 confirmBusinessDetails.radio.heading = Are these details correct?
@@ -839,8 +842,6 @@ confirmRegisterBusinessDetails.error.required = Select yes if these details are 
 
 confirmMultipleBusinessDetails.title = Confirm details for all EORI numbers in your undertaking
 confirmMultipleBusinessDetails.h1 = Confirm details for all EORI numbers in your undertaking
-confirmMultipleBusinessDetails.noSuspend.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page before DATE PLACEHOLDER
-confirmMultipleBusinessDetails.noSuspend.p2 = If you do not, your undertaking will not be able to claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
 confirmMultipleBusinessDetails.suspended.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page.
 confirmMultipleBusinessDetails.suspended.p2 = Until you do this, your undertaking cannot claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
 confirmMultipleBusinessDetails.radio.heading = Are all these details correct?
@@ -851,7 +852,7 @@ confirmMultipleBusinessDetails.error.required= Select yes if all these details a
 
 confirmedMemberBusinessDetails.title = Your business details
 confirmedMemberBusinessDetails.h1 = Your business details
-confirmedMemberBusinessDetails.p1 = Your undertaking administrator confirmed these details for your business on DATE PLACEHOLDER.
+confirmedMemberBusinessDetails.p1 = Your undertaking administrator confirmed these details for your business.
 confirmedMemberBusinessDetails.p2 = If any of your details are wrong, contact your administrator.
 confirmedMemberBusinessDetails.eoriNumber = EORI number
 confirmedMemberBusinessDetails.typeOfId = Type of ID

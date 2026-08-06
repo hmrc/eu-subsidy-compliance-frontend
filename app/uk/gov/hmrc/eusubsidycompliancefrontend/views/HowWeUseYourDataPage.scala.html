@@ -70,7 +70,10 @@ hasErrors = form.hasErrors
 @H1(messages("beneficiaryNotification.h4"), Some("govuk-heading-m"), id = Some("undertaking-suspended-banner-title"))
 @P(messages("beneficiaryNotification.p9"))
 @P(messages("beneficiaryNotification.p10"))
+
 @P(messages("beneficiaryNotification.p11"))
 
+@formHelper(action = controllers.routes.BeneficiaryNotificationController.submitPage()) {
 @button("common.continue.only")
+}
 }
