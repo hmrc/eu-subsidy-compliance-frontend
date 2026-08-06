@@ -305,6 +305,36 @@ class EscService @Inject() (
     }
   }
 
+  def getBeneficiaryIDValidation(id: String, idType: String, beneficiaryInfo: Option[BeneficiaryInfo])(implicit
+                                  hc: HeaderCarrier
+                                ): Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]] = {
+    beneficiaryIDValidate(beneficiaryIDRequest(id, idType, beneficiaryInfo)).map{
+      case Right(Some(resp)) =>
+        Right(Some(resp))
+      case Right(None) =>
+        Left(ConnectorError("No Beneficiary ID Response"))
+      case Left(error) =>
+        Left(error)
+    }
+  }
+
+  def beneficiaryIDRequest(id: String, idType: String, beneficiaryInfo: Option[BeneficiaryInfo]): BeneficiaryIDRequest = {
+    BeneficiaryIDRequest(
+      idType = idType match {
+        case "U" => "UTID"
+        case "E" => "EORI"
+      },
+      idValue = s"$id",
+      requestType = idType match {
+        case "U" => "R"
+        case "E" => "V"
+      },
+      beneficiaryInfo = if (idType == "E") {
+        beneficiaryInfo
+      } else None
+    )
+  }
+
   def clearUndertakingCache(ref: UndertakingRef): Future[Unit] =
     for {
       _ <- undertakingCache.deleteUndertaking(ref)

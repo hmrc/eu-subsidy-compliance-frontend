@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class BeneficiaryInfo(benName: String, benIDType: String, benIDValue: String)
+case class BeneficiaryInfo(benName: Option[String], benIDType: Option[String], benIDValue: Option[String])
 
 object BeneficiaryInfo {
   implicit val format: OFormat[BeneficiaryInfo] = Json.format[BeneficiaryInfo]

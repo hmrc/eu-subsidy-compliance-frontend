@@ -17,18 +17,19 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, FormValues, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse, BeneficiaryInfo, BeneficiaryInfoResp, ConnectorError, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmBusinessDetailsPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmMultipleBusinessDetailsPage
-import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
+import scala.concurrent.Future
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
@@ -56,19 +57,20 @@ class ConfirmBusinessDetailsController @Inject() (
     undertaking.isAutoSuspended
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-
     escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
-        escService.beneficiaryIDValidate(beneficiaryIDRequest(request.eoriNumber)).map {
-          case Right(Some(resp)) =>
-            logger.info(s"Beneficiary ID Response = $resp")
-            Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), resp))
-          case Right(None) =>
-            logger.info("No Beneficiary ID Response.")
-            InternalServerError("No Beneficiary ID Response")
-          case Left(error) =>
-            logger.error(s"Error = $error")
-            InternalServerError(error.message)
-        }
+      println("undertaking.reference-->" + undertaking.reference)
+      println("undertaking.reference.toString-->" + undertaking.reference.toString)
+      escService.getBeneficiaryIDValidation("GB123009872453", "U", None).map {
+        case Right(Some(resp)) =>
+          logger.info(s"Beneficiary ID Response = $resp")
+          Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), resp))
+        case Right(None) =>
+          logger.info("No Beneficiary ID Response.")
+          InternalServerError("No Beneficiary ID Response") // need to ask what need to do??
+        case Left(error) =>
+          logger.error(s"Error = $error")
+          InternalServerError(error.message)
+      }
     }
   }
 
@@ -84,19 +86,80 @@ class ConfirmBusinessDetailsController @Inject() (
               BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended(undertaking))).toFuture
             },
           form =>
-            if (form.value == "yes")
+            if (form.value == "yes") {
+              escService.getBeneficiaryIDValidation("GB123009872453", "U", None)
+                .flatMap {
+                  case Right(Some(resp)) =>
+                    logger.info(s"Beneficiary ID Response = $resp")
+                    validateBeneficiaries(resp)
+                  case Right(None) =>
+                    logger.info("No Beneficiary ID Response from UTID validation.")
+                    Redirect(routes.BenNotificationController.showPage()).toFuture // need to update
+                  case Left(error) =>
+                    logger.error(s"Error while calling Beneficiary ID validation = $error")
+                    Redirect(routes.BenNotificationController.showPage()).toFuture // need to update
+                }
               Redirect(routes.BenNotificationController.showPage()).toFuture
-            else Redirect(routes.EmailHMRCUpdateBusinessDetailsController.showPage()).toFuture
+            } else Redirect(routes.EmailHMRCUpdateBusinessDetailsController.showPage()).toFuture
         )
     }
   }
 
-  def beneficiaryIDRequest(eori: EORI): BeneficiaryIDRequest = {
-    BeneficiaryIDRequest(
-      idType = "UTID",
-      idValue = s"$eori",
-      requestType = "R",
-      beneficiaryInfo = None
-    )
+  private def validateBeneficiaries(resp: BeneficiaryIDResponse)(implicit hc: HeaderCarrier): Future[Result] = {
+    val beneficiaries: Seq[BeneficiaryInfoResp] = resp.beneficiaryInfo.getOrElse(Seq.empty)
+    beneficiaries.foreach { beneficiary =>
+      logger.info(s"Beneficiary record: eori=${beneficiary.eori}, validated=${beneficiary.validated}, benName=${beneficiary.benName}, benIDType=${beneficiary.benIDType}, benIDValue=${beneficiary.benIDValue}")
+    }
+    val beneficiariesToValidate: Seq[(String, BeneficiaryInfoResp)] =
+      beneficiaries.flatMap { beneficiary =>
+        beneficiary.eori.collect {
+          case eori if beneficiary.validated.contains(false) =>
+            eori -> beneficiary
+        }
+      }
+    logger.info(s"Beneficiaries requiring validation count = ${beneficiariesToValidate.size}")
+
+    if (beneficiariesToValidate.isEmpty) {
+      logger.info("No unvalidated beneficiaries found. Redirecting to notification page.")
+      Redirect(routes.BenNotificationController.showPage()).toFuture
+    } else {
+      val validationCalls: Seq[Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]]] =
+        beneficiariesToValidate.map { case (eori, beneficiary) =>
+          logger.info(s"Calling EORI validation service for eori = $eori")
+          escService.getBeneficiaryIDValidation(
+            id = eori,
+            idType = "E",
+            beneficiaryInfo = Some(
+              BeneficiaryInfo(
+                benName = beneficiary.benName,
+                benIDType = beneficiary.benIDType,
+                benIDValue = beneficiary.benIDValue
+              )
+            )
+          )
+        }
+
+      Future.sequence(validationCalls).map { results =>
+        logger.info(s"EORI validation results = $results")
+        val allCallsSuccessful: Boolean =
+          results.forall {
+            case Right(Some(_)) =>
+              true
+            case Right(None) =>
+              false
+            case Left(error) =>
+              logger.error(s"EORI validation failed with error = $error")
+              false
+          }
+        if (allCallsSuccessful) {
+          logger.info("All EORI validation calls completed successfully.")
+          Redirect(routes.BenNotificationController.showPage())
+        } else {
+          logger.error("One or more EORI validation calls failed. Redirecting to contact page.")
+          Redirect(routes.BenNotificationController.showPage()) // need to update
+        }
+      }
+    }
   }
+
 }
