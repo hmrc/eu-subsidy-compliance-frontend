@@ -256,7 +256,7 @@ class AccountController @Inject() (
           )
           result.getOrElse(handleMissingSessionData("Nil Return Journey"))
         } else {
-          val hasAdminValidatedBen: Boolean  = false
+          val hasAdminValidatedBen: Boolean  = true
           // bool defines whether user sees notification page, then account or cannotUse servicePage for a member
           // awaiting to see if it should be account page straight away or whether we need to add in notification every time user is routing to account page.
 
