@@ -62,7 +62,6 @@ class AccountController @Inject() (
 
   var suspendedPageFlag = false
 
-
   def getAccountPage: Action[AnyContent] = {
     enrolled.async { implicit request =>
       implicit val eori: EORI = request.eoriNumber
