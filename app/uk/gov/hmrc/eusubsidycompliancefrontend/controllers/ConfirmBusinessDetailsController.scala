@@ -66,7 +66,10 @@ class ConfirmBusinessDetailsController @Inject() (
       escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
         case Right(Some(resp)) =>
           logger.info(s"Beneficiary ID Response = $resp")
-          Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), resp))
+          if (multipleEoris(undertaking))
+            Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), resp))
+          else
+            Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), Some(resp)))
         case Right(None) =>
           logger.info("No Beneficiary ID Response.")
           InternalServerError("No Beneficiary ID Response") // need to ask what need to do??
@@ -95,7 +98,6 @@ class ConfirmBusinessDetailsController @Inject() (
 
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    logger.info("----- completing submit page normal -----------")
     escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
       confirmBusinessDetailsForm
         .bindFromRequest()
@@ -108,7 +110,8 @@ class ConfirmBusinessDetailsController @Inject() (
             },
           form =>
             if (form.value == "yes") {
-              escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None)
+              escService
+                .getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None)
                 .flatMap {
                   case Right(Some(resp)) =>
                     logger.info(s"Beneficiary ID Response = $resp")
@@ -121,7 +124,10 @@ class ConfirmBusinessDetailsController @Inject() (
                     Redirect(routes.BenNotificationController.showPage()).toFuture // need to update
                 }
               Redirect(routes.BenNotificationController.showPage()).toFuture
-            } else Redirect(routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)).toFuture
+            } else
+              Redirect(
+                routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
+              ).toFuture
         )
     }
   }
@@ -129,7 +135,9 @@ class ConfirmBusinessDetailsController @Inject() (
   private def validateBeneficiaries(resp: BeneficiaryIDResponse)(implicit hc: HeaderCarrier): Future[Result] = {
     val beneficiaries: Seq[BeneficiaryInfoResp] = resp.beneficiaryInfo.getOrElse(Seq.empty)
     beneficiaries.foreach { beneficiary =>
-      logger.info(s"Beneficiary record: eori=${beneficiary.eori}, validated=${beneficiary.validated}, benName=${beneficiary.benName}, benIDType=${beneficiary.benIDType}, benIDValue=${beneficiary.benIDValue}")
+      logger.info(
+        s"Beneficiary record: eori=${beneficiary.eori}, validated=${beneficiary.validated}, benName=${beneficiary.benName}, benIDType=${beneficiary.benIDType}, benIDValue=${beneficiary.benIDValue}"
+      )
     }
     val beneficiariesToValidate: Seq[(String, BeneficiaryInfoResp)] =
       beneficiaries.flatMap { beneficiary =>

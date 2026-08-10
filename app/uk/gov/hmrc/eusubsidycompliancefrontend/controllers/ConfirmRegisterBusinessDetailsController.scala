@@ -24,6 +24,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleM
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmRegisterBusinessDetailsPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -32,6 +34,7 @@ import scala.concurrent.ExecutionContext
 class ConfirmRegisterBusinessDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
+  escService: EscService,
   confirmRegisterBusinessDetailsPage: ConfirmRegisterBusinessDetailsPage
 )(implicit
   val appConfig: AppConfig,
@@ -44,9 +47,27 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
     formWithSingleMandatoryField("confirmRegisterBusinessDetails")
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm)).toFuture
+    escService
+      .beneficiaryIDValidate(
+        BeneficiaryIDRequest(
+          idType = "UTID",
+          idValue = request.eoriNumber.toString,
+          requestType = "R",
+          beneficiaryInfo = None
+        )
+      )
+      .map {
+        case Right(Some(resp)) =>
+          Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm, Some(resp)))
+        case Right(None) =>
+          Redirect(
+            routes.NeedRegistrationNumberBusinessController
+              .showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
+          )
+        case _ =>
+          Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm, None))
+      }
   }
-
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
     confirmRegisterBusinessDetailsForm
       .bindFromRequest()
@@ -55,11 +76,7 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
         formValues =>
           formValues.value match {
             case "yes" =>
-              Redirect(
-                routes.AddBusinessEntityController.getAddBusinessEntity(
-                  businessAdded = Some(true)
-                )
-              ).toFuture
+              Redirect(routes.UndertakingController.getAboutUndertaking).toFuture
 
             case "no" =>
               Redirect(

@@ -42,12 +42,27 @@ class NeedRegistrationNumberBusinessesController @Inject() (
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
     escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
-      escService.beneficiaryIDValidate(BeneficiaryIDRequest(idType = "UTID", idValue = request.eoriNumber.toString, requestType = "R", beneficiaryInfo = None)).map {
-        case Right(Some(resp)) =>
-          Ok(needRegistrationNumberBusinessesPage(undertaking.undertakingBusinessEntity, request.eoriNumber, Some(resp)))
-        case _ =>
-          Ok(needRegistrationNumberBusinessesPage(undertaking.undertakingBusinessEntity, request.eoriNumber, None))
-      }
+      escService
+        .beneficiaryIDValidate(
+          BeneficiaryIDRequest(
+            idType = "UTID",
+            idValue = request.eoriNumber.toString,
+            requestType = "R",
+            beneficiaryInfo = None
+          )
+        )
+        .map {
+          case Right(Some(resp)) =>
+            Ok(
+              needRegistrationNumberBusinessesPage(
+                undertaking.undertakingBusinessEntity,
+                request.eoriNumber,
+                Some(resp)
+              )
+            )
+          case _ =>
+            Ok(needRegistrationNumberBusinessesPage(undertaking.undertakingBusinessEntity, request.eoriNumber, None))
+        }
     }
   }
 }

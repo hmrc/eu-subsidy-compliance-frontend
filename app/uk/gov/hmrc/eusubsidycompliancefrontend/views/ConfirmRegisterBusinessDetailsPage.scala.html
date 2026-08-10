@@ -20,7 +20,9 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.BeneficiaryIDResponse
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+
 
 @this(
     layout: Layout,
@@ -31,7 +33,7 @@
     govukErrorSummary: GovukErrorSummary
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], beneficiaryData: Option[BeneficiaryIDResponse] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"confirmRegisterBusinessDetails"}
 
@@ -68,13 +70,13 @@
                 HeadCell(content = Text(messages("confirmRegisterBusinessDetails.typeOfId"))),
                 HeadCell(content = Text(messages("confirmRegisterBusinessDetails.idNumber")))
             )),
-            rows = Seq(
-                Seq(
-                    TableRow(content = Text("GB123456789001")),
-                    TableRow(content = Text("Company registration number")),
-                    TableRow(content = Text("01234567"))
-                )
-            )
+            rows = beneficiaryData.flatMap(_.beneficiaryInfo).getOrElse(Seq.empty).map { info =>
+                    Seq(
+                        TableRow(content = Text(info.eori.getOrElse(""))),
+                        TableRow(content = Text(info.benIDType.getOrElse(messages("needRegistrationNumberBusinesses.table.noneFound")))),
+                        TableRow(content = Text(info.benIDValue.getOrElse(messages("needRegistrationNumberBusinesses.table.noneFound"))))
+                    )
+                }
         ))
 
         @govukRadios(Radios(

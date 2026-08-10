@@ -156,8 +156,8 @@ class AccountController @Inject() (
   }
 
   private def proceedToAccountPage(
-                                    undertaking: Undertaking
-                                  )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
+    undertaking: Undertaking
+  )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     val result = for {
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
       subsidies <- escService
@@ -176,8 +176,8 @@ class AccountController @Inject() (
   }
 
   private def getOrCreateJourneys(
-                                   undertakingJourney: UndertakingJourney = UndertakingJourney()
-                                 )(implicit e: EORI): OptionT[Future, (EligibilityJourney, UndertakingJourney)] = {
+    undertakingJourney: UndertakingJourney = UndertakingJourney()
+  )(implicit e: EORI): OptionT[Future, (EligibilityJourney, UndertakingJourney)] = {
     logger.info("getOrCreateJourneys")
     for {
       eligibilityJourney <- store
@@ -188,12 +188,12 @@ class AccountController @Inject() (
   }
 
   private def renderAccountPage(
-                                 undertaking: Undertaking,
-                                 undertakingSubsidies: UndertakingSubsidies,
-                                 balance: Option[UndertakingBalance]
-                               )(implicit
-                                 r: AuthenticatedEnrolledRequest[AnyContent]
-                               ) = {
+    undertaking: Undertaking,
+    undertakingSubsidies: UndertakingSubsidies,
+    balance: Option[UndertakingBalance]
+  )(implicit
+    r: AuthenticatedEnrolledRequest[AnyContent]
+  ) = {
     implicit val eori: EORI = r.eoriNumber
 
     if (undertaking.isManuallySuspended)
@@ -259,45 +259,60 @@ class AccountController @Inject() (
           )
           result.getOrElse(handleMissingSessionData("Nil Return Journey"))
         } else {
-          val hasAdminValidatedBen: Boolean  = true
-          // bool defines whether user sees notification page, then account or cannotUse servicePage for a member
-          // awaiting to see if it should be account page straight away or whether we need to add in notification every time user is routing to account page.
-
-          if (hasAdminValidatedBen) {
-            logger.info("showing nonLeadAccountPage for non lead")
-            Ok(
-              nonLeadAccountPage(
-                undertaking = undertaking,
-                eori = undertaking.getLeadEORI,
-                isLead = false,
-                dueDate = dueDate,
-                isOverdue = isOverdue,
-                lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
-                neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
-                allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-                totalSubsidies = summary.overall.total.value.toEuros,
-                remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
-                currentPeriodStart = startDate.toDisplayFormat,
-                isSuspended = isSuspended,
-                scp08IssuesExist = summary.scp08IssuesExist,
-                agriOtherFlag = agriOtherFlag
+          // SCP22: check if admin has validated all beneficiary IDs for the undertaking
+          escService
+            .beneficiaryIDValidate(
+              BeneficiaryIDRequest(
+                idType = "UTID",
+                idValue = s"${undertaking.getLeadEORI}",
+                requestType = "R",
+                beneficiaryInfo = None
               )
-            ).toFuture
-          } else {
-            Future.successful(Redirect(routes.CannotUseServiceContactAdministratorController.show()))
-          }
+            )
+            .flatMap {
+              case Right(Some(resp))
+                  if resp.beneficiaryInfo.exists(
+                    _.forall(bi => !bi.benIDType.isDefined || bi.validated.contains(true))
+                  ) =>
+                logger.info("showing nonLeadAccountPage for non lead — admin has validated")
+                Ok(
+                  nonLeadAccountPage(
+                    undertaking = undertaking,
+                    eori = undertaking.getLeadEORI,
+                    isLead = false,
+                    dueDate = dueDate,
+                    isOverdue = isOverdue,
+                    lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
+                    neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
+                    allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+                    totalSubsidies = summary.overall.total.value.toEuros,
+                    remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
+                    currentPeriodStart = startDate.toDisplayFormat,
+                    isSuspended = isSuspended,
+                    scp08IssuesExist = summary.scp08IssuesExist,
+                    agriOtherFlag = agriOtherFlag
+                  )
+                ).toFuture
+              case _ =>
+                Future.successful(Redirect(routes.CannotUseServiceContactAdministratorController.show()))
+            }
         }
       }
 
       if (undertaking.isLeadEORI(eori))
         escService
-          .beneficiaryIDValidate(BeneficiaryIDRequest(idType = "UTID", idValue = s"$eori", requestType = "R", beneficiaryInfo = None))
+          .beneficiaryIDValidate(
+            BeneficiaryIDRequest(idType = "UTID", idValue = s"$eori", requestType = "R", beneficiaryInfo = None)
+          )
           .flatMap {
             // SCP22: if any EORI with a known ID has validated=false, route to confirm page. EORIs without an ID (benIDType undefined) are excluded — they are need-registration cases, not confirm cases.
             case Right(None) => needRegistrationRedirect
             case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(bi => !bi.benIDType.isDefined)) =>
               needRegistrationRedirect
-            case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(bi => bi.benIDType.isDefined && bi.validated.contains(false))) =>
+            case Right(Some(resp))
+                if resp.beneficiaryInfo.exists(
+                  _.exists(bi => bi.benIDType.isDefined && bi.validated.contains(false))
+                ) =>
               Future.successful(Redirect(routes.ConfirmBusinessDetailsController.showPage()))
             case _ => dashboard
           }

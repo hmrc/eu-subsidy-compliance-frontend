@@ -24,6 +24,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleM
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmAddBusinessDetailsPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -32,6 +34,7 @@ import scala.concurrent.ExecutionContext
 class ConfirmAddBusinessDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
+  escService: EscService,
   confirmAddBusinessDetailsPage: ConfirmAddBusinessDetailsPage
 )(implicit
   val appConfig: AppConfig,
@@ -44,7 +47,21 @@ class ConfirmAddBusinessDetailsController @Inject() (
     formWithSingleMandatoryField("confirmAddBusinessDetails")
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm)).toFuture
+    escService
+      .beneficiaryIDValidate(
+        BeneficiaryIDRequest(
+          idType = "UTID",
+          idValue = request.eoriNumber.toString,
+          requestType = "R",
+          beneficiaryInfo = None
+        )
+      )
+      .map {
+        case Right(Some(resp)) =>
+          Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm, Some(resp)))
+        case _ =>
+          Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm, None))
+      }
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>

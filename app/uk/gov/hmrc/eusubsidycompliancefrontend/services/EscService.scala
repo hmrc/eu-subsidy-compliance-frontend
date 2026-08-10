@@ -306,9 +306,9 @@ class EscService @Inject() (
   }
 
   def getBeneficiaryIDValidation(id: String, idType: String, beneficiaryInfo: Option[BeneficiaryInfo])(implicit
-                                  hc: HeaderCarrier
-                                ): Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]] = {
-    beneficiaryIDValidate(beneficiaryIDRequest(id, idType, beneficiaryInfo)).map{
+    hc: HeaderCarrier
+  ): Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]] = {
+    beneficiaryIDValidate(beneficiaryIDRequest(id, idType, beneficiaryInfo)).map {
       case Right(Some(resp)) =>
         Right(Some(resp))
       case Right(None) =>
@@ -318,7 +318,11 @@ class EscService @Inject() (
     }
   }
 
-  def beneficiaryIDRequest(id: String, idType: String, beneficiaryInfo: Option[BeneficiaryInfo]): BeneficiaryIDRequest = {
+  def beneficiaryIDRequest(
+    id: String,
+    idType: String,
+    beneficiaryInfo: Option[BeneficiaryInfo]
+  ): BeneficiaryIDRequest = {
     BeneficiaryIDRequest(
       idType = idType match {
         case "U" => "UTID"
