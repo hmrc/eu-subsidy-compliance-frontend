@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.FlatMap.nonInheritedOps.toFlatMapOps
 import cats.data.OptionT
 import cats.implicits.catsSyntaxOptionId
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -29,14 +30,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.toEuros
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.BeneficiaryIDRequest
 
@@ -61,6 +62,7 @@ class AccountController @Inject() (
 
   var suspendedPageFlag = false
 
+
   def getAccountPage: Action[AnyContent] = {
     enrolled.async { implicit request =>
       implicit val eori: EORI = request.eoriNumber
@@ -71,19 +73,20 @@ class AccountController @Inject() (
         .foldF(handleUndertakingNotCreated)(handleExistingUndertaking)
     }
   }
-
+  
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
-    logger.info("handleUndertakingNotCreated")
+    logger.info("-------------------------------------------------handleUndertakingNotCreated")
     suspendedPageFlag = false
+
     val result = getOrCreateJourneys().map {
       case (eligibilityJourney, undertakingJourney) if !eligibilityJourney.isComplete && undertakingJourney.isEmpty =>
         logger.info(
-          "Eligibility journey is not complete but and undertakingJourney is empty so redirecting to Eligibility first empty page"
+          "Eligibility journey is not complete and undertakingJourney is empty so redirecting to Eligibility first empty page"
         )
         Redirect(routes.EligibilityFirstEmptyPageController.firstEmptyPage)
       case (_, undertakingJourney) if !undertakingJourney.isComplete =>
         logger.info(
-          "Eligibility journey is not complete but and undertakingJourney is not empty so redirecting to Undertaking first empty page"
+          "Eligibility journey is not complete but undertakingJourney is not empty so redirecting to Undertaking first empty page"
         )
         Redirect(routes.UndertakingController.firstEmptyPage)
       case _ =>

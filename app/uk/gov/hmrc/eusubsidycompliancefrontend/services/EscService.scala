@@ -181,7 +181,7 @@ class EscService @Inject() (
       .getOrElse(throw new IllegalStateException("Expected undertaking not found"))
       .logResult(
         successCall = (undertaking: Undertaking) => s"getUndertaking $undertaking for EORI '$eori'",
-        errorMessage = s"Failed getUndertaking for EORI '$eori'"
+        errorMessage = s"12121212121212121212Failed getUndertaking for EORI '$eori'"
       )
 
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit

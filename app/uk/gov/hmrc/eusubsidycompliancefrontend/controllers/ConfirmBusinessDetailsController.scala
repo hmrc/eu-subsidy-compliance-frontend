@@ -57,8 +57,11 @@ class ConfirmBusinessDetailsController @Inject() (
   private def isSuspended(undertaking: Undertaking): Boolean =
     undertaking.isAutoSuspended
 
-  def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
+  def showPageNew(): Action[AnyContent] = enrolled.async { implicit request =>
+      Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, false)).toFuture
+    }
 
+  def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
     escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
       escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
         case Right(Some(resp)) =>
@@ -74,7 +77,25 @@ class ConfirmBusinessDetailsController @Inject() (
     }
   }
 
+  def submitPageNew(): Action[AnyContent] = enrolled.async { implicit request =>
+    logger.info("----- completing submit page new -----------")
+    confirmBusinessDetailsForm
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+              BadRequest(confirmBusinessDetailsPage(formWithErrors, false)).toFuture
+          ,
+          form =>
+            if (form.value == "yes") {
+              Redirect(routes.UndertakingController.getAboutUndertaking.url).toFuture
+            }
+              else Redirect(routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPageNew().url)).toFuture
+        )
+      }
+
+
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
+    logger.info("----- completing submit page normal -----------")
     escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
       confirmBusinessDetailsForm
         .bindFromRequest()

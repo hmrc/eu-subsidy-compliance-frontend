@@ -82,7 +82,7 @@ class EligibilityEoriCheckController @Inject() (
       .toContext
       .foldF(renderPage) { _ =>
         logger.info(s"Redirecting to AccountController.getAccountPage for eori:$eori")
-        Redirect(routes.AccountController.getAccountPage.url).toFuture
+        Redirect(routes.ConfirmBusinessDetailsController.showPageNew().url).toFuture
       }
 
   }
@@ -104,7 +104,7 @@ class EligibilityEoriCheckController @Inject() (
           store
             .update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean))
             .flatMap { _ =>
-              if (form.value.toBoolean) Redirect(routes.UndertakingController.getAboutUndertaking.url).toFuture
+              if (form.value.toBoolean) Redirect(routes.ConfirmBusinessDetailsController.showPageNew().url).toFuture
               else Redirect(routes.EligibilityEoriCheckController.getIncorrectEori.url).toFuture
             }
       )
