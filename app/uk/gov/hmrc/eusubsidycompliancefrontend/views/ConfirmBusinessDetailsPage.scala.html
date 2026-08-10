@@ -40,7 +40,7 @@
     hasErrors = form.hasErrors
 ) {
 
-    @formHelper(action = routes.ConfirmBusinessDetailsController.submitPageNew()) {
+    @formHelper(action = routes.ConfirmBusinessDetailsController.submitPage()) {
 
         @if(form.hasErrors) {
             @govukErrorSummary(ErrorSummary(
