@@ -73,9 +73,9 @@ class AccountController @Inject() (
         .foldF(handleUndertakingNotCreated)(handleExistingUndertaking)
     }
   }
-  
+
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
-    logger.info("-------------------------------------------------handleUndertakingNotCreated")
+    logger.info("handleUndertakingNotCreated")
     suspendedPageFlag = false
 
     val result = getOrCreateJourneys().map {
