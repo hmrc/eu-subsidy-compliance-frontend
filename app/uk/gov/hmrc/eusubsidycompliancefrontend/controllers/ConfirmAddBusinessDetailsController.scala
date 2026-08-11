@@ -21,12 +21,13 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, BeneficiaryIDRequest}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmAddBusinessDetailsPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
@@ -35,47 +36,50 @@ class ConfirmAddBusinessDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
   escService: EscService,
+  store: Store,
   confirmAddBusinessDetailsPage: ConfirmAddBusinessDetailsPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
-
   import actionBuilders._
 
   private val confirmAddBusinessDetailsForm: Form[FormValues] =
     formWithSingleMandatoryField("confirmAddBusinessDetails")
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    escService
-      .beneficiaryIDValidate(
-        BeneficiaryIDRequest(
-          idType = "UTID",
-          idValue = request.eoriNumber.toString,
-          requestType = "R",
-          beneficiaryInfo = None
-        )
-      )
-      .map {
-        case Right(Some(resp)) =>
-          Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm, Some(resp)))
-        case _ =>
-          Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm, None))
-      }
+    escService.beneficiaryIDValidate(BeneficiaryIDRequest(idType = "UTID", idValue = request.eoriNumber.toString, requestType = "R", beneficiaryInfo = None)).map {
+      case Right(Some(resp)) =>
+        Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm, Some(resp)))
+      case _ =>
+        Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm, None))
+    }
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI.EORI = request.eoriNumber
     confirmAddBusinessDetailsForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(confirmAddBusinessDetailsPage(formWithErrors)).toFuture,
         {
           case FormValues("yes") =>
-            Redirect(
-              routes.AddBusinessEntityController.getAddBusinessEntity(
-                businessAdded = Some(true)
-              )
-            ).toFuture
+            store.get[BusinessEntityJourney].flatMap {
+              case Some(journey) =>
+                journey.eori.value match {
+                  case Some(businessEori) =>
+                    escService.getUndertaking(eori).flatMap { undertaking =>
+                      val businessEntity = BusinessEntity(businessEori, leadEORI = false)
+                      escService.addMember(undertaking.reference, businessEntity).map { _ =>
+                        Redirect(routes.AddBusinessEntityController.getAddBusinessEntity(businessAdded = Some(true)))
+                      }
+                    }
+                  case None =>
+                    Redirect(routes.AddBusinessEntityController.getAddBusinessEntity(businessAdded = Some(true))).toFuture
+                }
+              case None =>
+                Redirect(routes.AddBusinessEntityController.getAddBusinessEntity(businessAdded = Some(true))).toFuture
+            }
 
           case FormValues("no") =>
             Redirect(

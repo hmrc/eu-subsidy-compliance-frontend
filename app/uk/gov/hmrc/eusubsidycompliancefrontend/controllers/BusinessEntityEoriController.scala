@@ -32,7 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.formatEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking, BeneficiaryIDRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -79,7 +79,7 @@ class BusinessEntityEoriController @Inject() (
   )
 
   // Temporary until the business ID lookup API is available
-  private val businessIdFound: Boolean = true
+  
 
   def getEori: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { _ =>
@@ -139,22 +139,23 @@ class BusinessEntityEoriController @Inject() (
 //          result.fold(handleMissingSessionData("BusinessEntity Data"))(identity)
 //      }
 //    }
-    def handleValidEori(
+
+
+def handleValidEori(
       form: FormValues,
       previous: Uri,
       undertaking: Undertaking
-    ): Future[Result] =
-      if (businessIdFound) {
-        Redirect(
-          routes.ConfirmAddBusinessDetailsController.showPage()
-        ).toFuture
-      } else {
-        Redirect(
-          routes.NeedRegistrationNumberBusinessController.showPage(
-            routes.BusinessEntityEoriController.getEori.url
-          )
-        ).toFuture
+    ): Future[Result] = {
+      val businessEori = EORI(formatEori(form.value))
+      store.update[BusinessEntityJourney](_.setEori(businessEori)).flatMap { _ =>
+        escService.beneficiaryIDValidate(BeneficiaryIDRequest(idType = "EORI", idValue = businessEori.toString, requestType = "R", beneficiaryInfo = None)).flatMap {
+          case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(_.benIDType.isDefined)) =>
+            Redirect(routes.ConfirmAddBusinessDetailsController.showPage()).toFuture
+          case _ =>
+            Redirect(routes.NeedRegistrationNumberBusinessController.showPage(routes.BusinessEntityEoriController.getEori.url)).toFuture
+        }
       }
+    }
 
     withLeadUndertaking { undertaking =>
       store
