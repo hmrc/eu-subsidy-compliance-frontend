@@ -48,11 +48,18 @@ class ConfirmAddBusinessDetailsController @Inject() (
     formWithSingleMandatoryField("confirmAddBusinessDetails")
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    escService.beneficiaryIDValidate(BeneficiaryIDRequest(idType = "UTID", idValue = request.eoriNumber.toString, requestType = "R", beneficiaryInfo = None)).map {
-      case Right(Some(resp)) =>
-        Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm, Some(resp)))
+    implicit val eori: EORI.EORI = request.eoriNumber
+    store.get[BusinessEntityJourney].flatMap {
+      case Some(journey) if journey.eori.value.isDefined =>
+        val businessEori = journey.eori.value.get
+        escService.beneficiaryIDValidate(BeneficiaryIDRequest(idType = "EORI", idValue = businessEori.toString, requestType = "R", beneficiaryInfo = None)).map {
+          case Right(Some(resp)) =>
+            Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm, Some(resp)))
+          case _ =>
+            Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm, None))
+        }
       case _ =>
-        Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm, None))
+        Ok(confirmAddBusinessDetailsPage(confirmAddBusinessDetailsForm, None)).toFuture
     }
   }
 
