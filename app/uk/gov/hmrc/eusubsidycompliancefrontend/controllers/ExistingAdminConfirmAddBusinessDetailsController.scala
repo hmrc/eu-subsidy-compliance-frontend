@@ -26,6 +26,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ExistingAdminConfirmAddBusinessDetailsPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -35,6 +38,7 @@ class ExistingAdminConfirmAddBusinessDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
   escService: EscService,
+  store: Store,
   existingAdminConfirmAddBusinessDetailsPage: ExistingAdminConfirmAddBusinessDetailsPage
 )(implicit
   val appConfig: AppConfig,
@@ -48,21 +52,19 @@ class ExistingAdminConfirmAddBusinessDetailsController @Inject() (
 
   // Should i make a new page for existing admin even tho its identical? Also back to confirm details link on email page sends to the other confirm details url???
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    escService
-      .beneficiaryIDValidate(
-        BeneficiaryIDRequest(
-          idType = "UTID",
-          idValue = request.eoriNumber.toString,
-          requestType = "R",
-          beneficiaryInfo = None
-        )
-      )
-      .map {
-        case Right(Some(resp)) =>
-          Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, Some(resp)))
-        case _ =>
-          Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, None))
-      }
+    implicit val eori: EORI.EORI = request.eoriNumber
+    store.get[SubsidyJourney].flatMap {
+      case Some(journey) if journey.addClaimEori.value.flatMap(_.value).isDefined =>
+        val claimEori = journey.addClaimEori.value.flatMap(_.value).get
+        escService.beneficiaryIDValidate(BeneficiaryIDRequest(idType = "EORI", idValue = claimEori, requestType = "R", beneficiaryInfo = None)).map {
+          case Right(Some(resp)) =>
+            Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, Some(resp)))
+          case _ =>
+            Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, None))
+        }
+      case _ =>
+        Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, None)).toFuture
+    }
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
