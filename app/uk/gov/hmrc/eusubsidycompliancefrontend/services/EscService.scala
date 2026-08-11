@@ -339,6 +339,45 @@ class EscService @Inject() (
     )
   }
 
+  def validateBeneficiaries(resp: BeneficiaryIDResponse)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val beneficiaries: Seq[BeneficiaryInfoResp] = resp.beneficiaryInfo.getOrElse(Seq.empty)
+    beneficiaries.foreach { beneficiary =>
+      logger.info(s"Beneficiary record: eori=${beneficiary.eori}, validated=${beneficiary.validated}")
+    }
+    val beneficiariesToValidate: Seq[(String, BeneficiaryInfoResp)] = beneficiaries.flatMap { beneficiary =>
+      beneficiary.eori.collect {
+        case eori if beneficiary.validated.contains(false) => eori -> beneficiary
+      }
+    }
+    logger.info(s"Beneficiaries requiring validation count = ${beneficiariesToValidate.size}")
+    if (beneficiariesToValidate.isEmpty) {
+      Future.successful(true)
+    } else {
+      val validationCalls = beneficiariesToValidate.map { case (eori, beneficiary) =>
+        getBeneficiaryIDValidation(
+          id = eori,
+          idType = "E",
+          beneficiaryInfo = Some(
+            BeneficiaryInfo(
+              benName = beneficiary.benName,
+              benIDType = beneficiary.benIDType,
+              benIDValue = beneficiary.benIDValue
+            )
+          )
+        )
+      }
+      Future.sequence(validationCalls).map { results =>
+        results.forall {
+          case Right(Some(_)) => true
+          case Right(None) => false
+          case Left(error) =>
+            logger.error(s"EORI validation failed: $error")
+            false
+        }
+      }
+    }
+  }
+
   def clearUndertakingCache(ref: UndertakingRef): Future[Unit] =
     for {
       _ <- undertakingCache.deleteUndertaking(ref)
