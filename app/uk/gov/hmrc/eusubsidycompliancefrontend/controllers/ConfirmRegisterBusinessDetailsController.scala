@@ -68,7 +68,7 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
         Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm, None))
     }
   }
-  
+
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
     confirmRegisterBusinessDetailsForm
       .bindFromRequest()
@@ -87,7 +87,8 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
                     } else {
                       logger.info("Beneficiary validations failed.")
                       Redirect(
-                        routes.HMRCEmailController.showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
+                        routes.HMRCEmailController
+                          .showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
                       )
                     }
                   }

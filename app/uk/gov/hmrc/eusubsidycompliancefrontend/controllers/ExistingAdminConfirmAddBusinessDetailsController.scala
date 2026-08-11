@@ -56,12 +56,16 @@ class ExistingAdminConfirmAddBusinessDetailsController @Inject() (
     store.get[SubsidyJourney].flatMap {
       case Some(journey) if journey.addClaimEori.value.flatMap(_.value).isDefined =>
         val claimEori = journey.addClaimEori.value.flatMap(_.value).get
-        escService.beneficiaryIDValidate(BeneficiaryIDRequest(idType = "EORI", idValue = claimEori, requestType = "R", beneficiaryInfo = None)).map {
-          case Right(Some(resp)) =>
-            Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, Some(resp)))
-          case _ =>
-            Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, None))
-        }
+        escService
+          .beneficiaryIDValidate(
+            BeneficiaryIDRequest(idType = "EORI", idValue = claimEori, requestType = "R", beneficiaryInfo = None)
+          )
+          .map {
+            case Right(Some(resp)) =>
+              Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, Some(resp)))
+            case _ =>
+              Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, None))
+          }
       case _ =>
         Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, None)).toFuture
     }
