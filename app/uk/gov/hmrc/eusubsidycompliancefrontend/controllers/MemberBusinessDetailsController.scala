@@ -42,6 +42,6 @@ class MemberBusinessDetailsController @Inject() (
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Redirect(routes.BeneficiaryNotificationController.showPage()).toFuture
+    Redirect(routes.AccountController.getAccountPage).toFuture
   }
 }

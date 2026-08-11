@@ -23,7 +23,7 @@
 
 @this(layout: Layout)
 @(businessEntities: List[BusinessEntity], eori: EORI, beneficiaryData: Option[BeneficiaryIDResponse] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(pageTitle = Some(messages("needRegistrationNumberBusinesses.title")), backLinkEnabled = true) {
+@layout(pageTitle = Some(messages("needRegistrationNumberBusinesses.title")), backLinkEnabled = false) {
 
     @H1(messages("needRegistrationNumberBusinesses.title"), Some("govuk-heading-xl"))
 
