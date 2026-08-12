@@ -90,7 +90,7 @@ class ConfirmBusinessDetailsController @Inject() (
       escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
         case Right(Some(resp)) =>
           logger.info(s"Beneficiary ID Response = $resp")
-          if(resp.beneficiaryInfo.getOrElse(Seq.empty).exists(_.validated.contains(false))) {
+          if (resp.beneficiaryInfo.getOrElse(Seq.empty).exists(_.validated.contains(false))) {
             Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), resp))
           } else {
             Redirect(routes.AccountController.getAccountPage)
