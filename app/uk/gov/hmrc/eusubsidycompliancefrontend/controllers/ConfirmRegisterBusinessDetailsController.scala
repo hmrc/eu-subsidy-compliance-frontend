@@ -60,7 +60,7 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
       case Left(error) =>
         logger.error(s"Error = $error")
         Redirect(
-          routes.HMRCEmailController.showPage(
+          routes.NeedRegistrationNumberBusinessController.showPage(
             routes.ConfirmRegisterBusinessDetailsController.showPage().url
           )
         )
