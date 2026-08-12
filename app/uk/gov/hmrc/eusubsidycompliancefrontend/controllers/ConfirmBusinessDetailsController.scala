@@ -62,7 +62,11 @@ class ConfirmBusinessDetailsController @Inject() (
       escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
         case Right(Some(resp)) =>
           logger.info(s"Beneficiary ID Response = $resp")
-          Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, false, Some(resp)))
+          if (resp.beneficiaryInfo.getOrElse(Seq.empty).exists(_.validated.contains(false))) {
+            Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, false, Some(resp)))
+          } else {
+            Redirect(routes.AccountController.getAccountPage)
+          }
         case Right(None) =>
           logger.info("No Beneficiary ID Response.")
           Redirect(
@@ -86,7 +90,11 @@ class ConfirmBusinessDetailsController @Inject() (
       escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
         case Right(Some(resp)) =>
           logger.info(s"Beneficiary ID Response = $resp")
-          Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), resp))
+          if(resp.beneficiaryInfo.getOrElse(Seq.empty).exists(_.validated.contains(false))) {
+            Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), resp))
+          } else {
+            Redirect(routes.AccountController.getAccountPage)
+          }
         case Right(None) =>
           logger.info("No Beneficiary ID Response.")
           Redirect(
