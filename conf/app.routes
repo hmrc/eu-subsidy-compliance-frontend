@@ -914,10 +914,11 @@ GET        /need-registration-number-business                                   
 GET        /need-registration-number-businesses                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NeedRegistrationNumberBusinessesController.showPage()
 GET        /notification-changes-data                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BenNotificationController.showPage()
 POST       /notification-changes-data                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BenNotificationController.submitPage()
-
-
-GET        /cannot-use-service-contact-administrator                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.CannotUseServiceContactAdministratorController.show()
+GET        /how-we-use-your-data-member                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BenNotificationController.showPageMember()
+POST       /how-we-use-your-data                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BeneficiaryNotificationController.submitPage()
 
 GET        /how-we-use-your-data                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BeneficiaryNotificationController.showPage()
 POST       /how-we-use-your-data                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BeneficiaryNotificationController.submitPage()
+
+GET        /cannot-use-service-contact-administrator                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.CannotUseServiceContactAdministratorController.show()
 

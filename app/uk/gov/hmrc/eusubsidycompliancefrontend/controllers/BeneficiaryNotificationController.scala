@@ -44,17 +44,20 @@ class BeneficiaryNotificationController @Inject() (
   private val howWeUseForm = play.api.data.Form(play.api.data.Forms.single("continue" -> play.api.data.Forms.text))
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(howWeUseYourDataPage(howWeUseForm, routes.UndertakingController.getAddBusiness.url)).toFuture
+    logger.info("------------- show page on beneficiary notification controller - new")
+    Ok(howWeUseYourDataPage(howWeUseForm, routes.UndertakingController.getAddBusiness.url, "new")).toFuture
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) if !journey.isSubmitted =>
+        logger.info("------------- submit on page on beneficiary notification controller - new - first case")
         store.update[UndertakingJourney](_.setHowWeUseData(true)).map { _ =>
           Redirect(routes.UndertakingController.getCheckAnswers)
         }
       case _ =>
+        logger.info("------------- submit on page on beneficiary notification controller - new - default case")
         Redirect(routes.AccountController.getAccountPage).toFuture
     }
   }

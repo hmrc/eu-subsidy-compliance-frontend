@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleM
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.BenNotificationPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HowWeUseYourDataPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -32,7 +33,8 @@ import scala.concurrent.ExecutionContext
 class BenNotificationController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  benNotificationPage: BenNotificationPage
+  benNotificationPage: BenNotificationPage,
+  howWeUseYourDataPage: HowWeUseYourDataPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -43,8 +45,15 @@ class BenNotificationController @Inject() (
   private val benNotificationForm: Form[FormValues] =
     formWithSingleMandatoryField("benNotification")
 
+  private val howWeUseForm = play.api.data.Form(play.api.data.Forms.single("continue" -> play.api.data.Forms.text))
+
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(benNotificationPage(routes.ConfirmBusinessDetailsController.showPage())).toFuture
+  }
+
+  def showPageMember(): Action[AnyContent] = enrolled.async { implicit request =>
+    logger.info("------------- show on page on beneficiary notification controller - member")
+    Ok(howWeUseYourDataPage(howWeUseForm, routes.AccountController.getAccountPage.url, "member")).toFuture
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
