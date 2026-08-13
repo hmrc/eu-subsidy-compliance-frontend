@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.DoYouClaimFormPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, MemberNotificationJourney, NilReturnJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
@@ -167,7 +167,6 @@ class AccountController @Inject() (
         .flatMap(b => renderAccountPage(undertaking, subsidies, b))
         .toContext
     } yield result
-
     result.getOrElse {
       logger.info(s"handling missing session data for $undertaking")
       handleMissingSessionData("Account Home - Existing Undertaking -")
@@ -273,7 +272,7 @@ class AccountController @Inject() (
                   if resp.beneficiaryInfo.exists(
                     _.forall(bi => !bi.benIDType.isDefined || bi.validated.contains(true))
                   ) =>
-                logger.info("showing nonLeadAccountPage for non lead — admin has validated")
+                logger.info("showing nonLeadAccountPage — admin validated")
                 Ok(
                   nonLeadAccountPage(
                     undertaking = undertaking,
@@ -295,6 +294,7 @@ class AccountController @Inject() (
               case _ =>
                 Future.successful(Redirect(routes.CannotUseServiceContactAdministratorController.show()))
             }
+
         }
       }
 

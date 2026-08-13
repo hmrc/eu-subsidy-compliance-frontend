@@ -21,6 +21,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.MemberNotificationJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HowWeUseYourDataPage
@@ -55,7 +56,9 @@ class BeneficiaryNotificationController @Inject() (
           Redirect(routes.UndertakingController.getCheckAnswers)
         }
       case _ =>
-        Redirect(routes.AccountController.getAccountPage).toFuture
+        store.put[MemberNotificationJourney](MemberNotificationJourney(seen = true)).flatMap { _ =>
+          Redirect(routes.AccountController.getAccountPage).toFuture
+        }
     }
   }
 }

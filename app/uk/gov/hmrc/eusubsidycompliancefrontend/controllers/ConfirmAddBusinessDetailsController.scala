@@ -81,106 +81,46 @@ class ConfirmAddBusinessDetailsController @Inject() (
         {
           case FormValues("yes") =>
             store.get[BusinessEntityJourney].flatMap {
-              case Some(journey) =>
-                journey.eori.value match {
-                  case Some(businessEori) =>
-                    escService.getUndertaking(eori).flatMap { undertaking =>
-                      val businessEntity = BusinessEntity(businessEori, leadEORI = false)
-                      for {
-                        _ <- escService.addMember(undertaking.reference, businessEntity)
-
-                        beneficiaryResponse <- escService.beneficiaryIDValidate(
-                          BeneficiaryIDRequest(
-                            idType = "EORI",
-                            idValue = businessEori.toString,
-                            requestType = "R",
-                            beneficiaryInfo = None
+              case Some(journey) if journey.eori.value.isDefined =>
+                val businessEori = journey.eori.value.get
+                escService.getUndertaking(eori).flatMap { undertaking =>
+                  val businessEntity = BusinessEntity(businessEori, leadEORI = false)
+                  escService.addMember(undertaking.reference, businessEntity).flatMap { _ =>
+                    // R-call to get beneficiary details
+                    escService.getBeneficiaryIDValidation(businessEori.toString, "U", None).flatMap {
+                      case Right(Some(resp)) =>
+                        val beneficiaryInfo = resp.beneficiaryInfo
+                          .flatMap(_.find(_.eori.contains(businessEori)))
+                          .map(bi =>
+                            BeneficiaryInfo(benName = bi.benName, benIDType = bi.benIDType, benIDValue = bi.benIDValue)
                           )
-                        )
-
-                        validationResponse <- beneficiaryResponse match {
-                          case Right(Some(resp)) =>
-                            val beneficiaryInfo =
-                              resp.beneficiaryInfo
-                                .flatMap(_.find(_.eori.contains(businessEori)))
-                                .map { beneficiary =>
-                                  BeneficiaryInfo(
-                                    benName = beneficiary.benName,
-                                    benIDType = beneficiary.benIDType,
-                                    benIDValue = beneficiary.benIDValue
-                                  )
-                                }
-
-                            escService.getBeneficiaryIDValidation(
-                              businessEori.toString,
-                              "E",
-                              beneficiaryInfo
-                            )
-
-                          case Right(None) =>
-                            Redirect(
-                              routes.HMRCEmailController
-                                .showPage(routes.AddBusinessEntityController.getAddBusinessEntity().url)
-                            ).toFuture
-
-                          case Left(error) =>
-                            Redirect(
-                              routes.HMRCEmailController
-                                .showPage(routes.AddBusinessEntityController.getAddBusinessEntity().url)
-                            ).toFuture
-                        }
-
-                        result <- validationResponse match {
-                          case Right(Some(resp)) =>
-                            escService.validateBeneficiaries(resp).map { isValid =>
-                              if (isValid) {
+                        // V-call with the details from R
+                        escService.getBeneficiaryIDValidation(businessEori.toString, "E", beneficiaryInfo).flatMap {
+                          case Right(Some(vResp)) =>
+                            escService.validateBeneficiaries(vResp).map { isValid =>
+                              if (isValid)
                                 Redirect(
                                   routes.AddBusinessEntityController.getAddBusinessEntity(businessAdded = Some(true))
                                 )
-                              } else {
+                              else
                                 Redirect(
-                                  routes.HMRCEmailController.showPage(
-                                    routes.AddBusinessEntityController
-                                      .getAddBusinessEntity()
-                                      .url
-                                  )
+                                  routes.HMRCEmailController
+                                    .showPage(routes.AddBusinessEntityController.getAddBusinessEntity().url)
                                 )
-                              }
                             }
-
-                          case Right(None) =>
+                          case _ =>
                             Redirect(
-                              routes.HMRCEmailController.showPage(
-                                routes.AddBusinessEntityController
-                                  .getAddBusinessEntity()
-                                  .url
-                              )
-                            ).toFuture
-
-                          case Left(error) =>
-                            logger.error(s"Validation failed: $error")
-
-                            Redirect(
-                              routes.HMRCEmailController.showPage(
-                                routes.AddBusinessEntityController
-                                  .getAddBusinessEntity()
-                                  .url
-                              )
+                              routes.AddBusinessEntityController.getAddBusinessEntity(businessAdded = Some(true))
                             ).toFuture
                         }
-
-                      } yield result
-                      // add member need to validate and redirect
-                      // escService.addMember(undertaking.reference, businessEntity).map { _ =>
-                      // Redirect(routes.AddBusinessEntityController.getAddBusinessEntity(businessAdded = Some(true)))
-                      // }
+                      case _ =>
+                        Redirect(
+                          routes.AddBusinessEntityController.getAddBusinessEntity(businessAdded = Some(true))
+                        ).toFuture
                     }
-                  case None =>
-                    Redirect(
-                      routes.AddBusinessEntityController.getAddBusinessEntity(businessAdded = Some(true))
-                    ).toFuture
+                  }
                 }
-              case None =>
+              case _ =>
                 Redirect(routes.AddBusinessEntityController.getAddBusinessEntity(businessAdded = Some(true))).toFuture
             }
 
