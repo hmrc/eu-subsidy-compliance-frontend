@@ -45,7 +45,7 @@ class BeneficiaryNotificationController @Inject() (
   private val howWeUseForm = play.api.data.Form(play.api.data.Forms.single("continue" -> play.api.data.Forms.text))
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(howWeUseYourDataPage(howWeUseForm, routes.UndertakingController.getAddBusiness.url)).toFuture
+    Ok(howWeUseYourDataPage(howWeUseForm, routes.UndertakingController.getAddBusiness.url, "new")).toFuture
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
