@@ -15,36 +15,34 @@
  */
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
-
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.NeedRegistrationNumberBusinessPage
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
-
 @Singleton
 class NeedRegistrationNumberBusinessController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
+  store: Store,
   needRegistrationNumberBusinessPage: NeedRegistrationNumberBusinessPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
-
   import actionBuilders._
-
   def showPage(previous: String): Action[AnyContent] = verifiedEori.async { implicit request =>
-    val eori = request.eoriNumber
-
-    Ok(
-      needRegistrationNumberBusinessPage(
-        eori.value,
-        previous
-      )
-    ).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    store.get[BusinessEntityJourney].map {
+      case Some(journey) if journey.eori.value.isDefined =>
+        Ok(needRegistrationNumberBusinessPage(journey.eori.value.get.toString, previous))
+      case _ =>
+        Ok(needRegistrationNumberBusinessPage(eori.toString, previous))
+    }
   }
 }
