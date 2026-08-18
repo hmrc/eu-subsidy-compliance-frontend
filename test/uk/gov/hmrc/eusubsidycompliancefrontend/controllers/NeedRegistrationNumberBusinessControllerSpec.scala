@@ -43,7 +43,7 @@ class NeedRegistrationNumberBusinessControllerSpec
 
     "handling request to show page" must {
 
-      def performAction = controller.showPage()(FakeRequest())
+      def performAction = controller.showPage("string.url")(FakeRequest())
 
       behave like authBehaviour(() => performAction)
 
