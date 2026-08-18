@@ -900,7 +900,7 @@ POST       /confirm-business-details-first-Journey                              
 GET        /confirm-details-add-business                                                 @uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmAddBusinessDetailsController.showPage()
 POST       /confirm-details-add-business                                                 @uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConfirmAddBusinessDetailsController.submitPage()
 
-GET        /email-hmrc-update-business-details                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HMRCEmailController.showPage()
+# GET        /email-hmrc-update-business-details                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HMRCEmailController.showPage()
 
 GET        /existing-admin-confirm-details-add-business                                  @uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ExistingAdminConfirmAddBusinessDetailsController.showPage()
 POST       /existing-admin-confirm-details-add-business                                  @uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ExistingAdminConfirmAddBusinessDetailsController.submitPage()
