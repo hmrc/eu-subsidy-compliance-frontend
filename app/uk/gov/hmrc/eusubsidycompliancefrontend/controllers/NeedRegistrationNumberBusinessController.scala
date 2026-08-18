@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{BusinessEntityJourney, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -38,11 +38,16 @@ class NeedRegistrationNumberBusinessController @Inject() (
   import actionBuilders._
   def showPage(previous: String): Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[BusinessEntityJourney].map {
+    store.get[BusinessEntityJourney].flatMap {
       case Some(journey) if journey.eori.value.isDefined =>
-        Ok(needRegistrationNumberBusinessPage(journey.eori.value.get.toString, previous))
+        Ok(needRegistrationNumberBusinessPage(journey.eori.value.get.toString, previous)).toFuture
       case _ =>
-        Ok(needRegistrationNumberBusinessPage(eori.toString, previous))
+        store.get[SubsidyJourney].map {
+          case Some(journey) if journey.addClaimEori.value.flatMap(_.value).isDefined =>
+            Ok(needRegistrationNumberBusinessPage(journey.addClaimEori.value.flatMap(_.value).get, previous))
+          case _ =>
+            Ok(needRegistrationNumberBusinessPage(eori.toString, previous))
+        }
     }
   }
 }
