@@ -61,10 +61,10 @@ class ExistingAdminConfirmAddBusinessDetailsController @Inject() (
             BeneficiaryIDRequest(idType = "EORI", idValue = claimEori, requestType = "R", beneficiaryInfo = None)
           )
           .map {
-            case Right(Some(resp)) =>
+            case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(_.benIDType.isDefined)) =>
               Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, Some(resp)))
             case _ =>
-              Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, None))
+              Redirect(routes.NeedRegistrationNumberBusinessController.showPage(routes.ExistingAdminConfirmAddBusinessDetailsController.showPage().url))
           }
       case _ =>
         Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, None)).toFuture
