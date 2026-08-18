@@ -70,7 +70,10 @@ class ExistingAdminConfirmAddBusinessDetailsController @Inject() (
               )
           }
       case _ =>
-        Redirect(routes.NeedRegistrationNumberBusinessController.showPage(routes.ExistingAdminConfirmAddBusinessDetailsController.showPage().url)).toFuture
+        Redirect(
+          routes.NeedRegistrationNumberBusinessController
+            .showPage(routes.ExistingAdminConfirmAddBusinessDetailsController.showPage().url)
+        ).toFuture
     }
   }
 
