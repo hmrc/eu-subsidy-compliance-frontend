@@ -17,14 +17,19 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse, BeneficiaryInfo, BeneficiaryInfoResp, ConnectorError, FormValues, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmBusinessDetailsPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmMultipleBusinessDetailsPage
+import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.Future
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -33,6 +38,7 @@ import scala.concurrent.ExecutionContext
 class ConfirmBusinessDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
+  escService: EscService,
   confirmBusinessDetailsPage: ConfirmBusinessDetailsPage,
   confirmMultipleBusinessDetailsPage: ConfirmMultipleBusinessDetailsPage
 )(implicit
@@ -45,28 +51,155 @@ class ConfirmBusinessDetailsController @Inject() (
   private val confirmBusinessDetailsForm: Form[FormValues] =
     formWithSingleMandatoryField("confirmBusinessDetails")
 
-  private def multipleEoris: Boolean = true // placeholder
-  private def isSuspended: Boolean = true // placeholder
+  private def multipleEoris(undertaking: Undertaking): Boolean =
+    undertaking.getAllNonLeadEORIs.nonEmpty
 
-  def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    if (multipleEoris) {
-      Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended)).toFuture
-    } else {
-      Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended)).toFuture
+  private def isSuspended(undertaking: Undertaking): Boolean =
+    undertaking.isAutoSuspended
+
+  def showPageNew(): Action[AnyContent] = enrolled.async { implicit request =>
+    escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
+      escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
+        case Right(Some(resp)) =>
+          logger.info(s"Beneficiary ID Response = $resp")
+          if (resp.beneficiaryInfo.getOrElse(Seq.empty).exists(_.validated.contains(false))) {
+            Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, false, Some(resp)))
+          } else {
+            Redirect(routes.AccountController.getAccountPage)
+          }
+        case Right(None) =>
+          logger.info("No Beneficiary ID Response.")
+          Redirect(
+            routes.HMRCEmailController.showPage(
+              routes.ConfirmBusinessDetailsController.showPage().url
+            )
+          )
+        case Left(error) =>
+          logger.error(s"Error = $error")
+          Redirect(
+            routes.HMRCEmailController.showPage(
+              routes.ConfirmBusinessDetailsController.showPage().url
+            )
+          )
+      }
     }
   }
 
-  def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
+  def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
+    escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
+      escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
+        case Right(Some(resp)) =>
+          logger.info(s"Beneficiary ID Response = $resp")
+          if (resp.beneficiaryInfo.getOrElse(Seq.empty).exists(_.validated.contains(false))) {
+            Ok(confirmMultipleBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), resp))
+          } else {
+            Redirect(routes.AccountController.getAccountPage)
+          }
+        case Right(None) =>
+          logger.info("No Beneficiary ID Response.")
+          Redirect(
+            routes.HMRCEmailController.showPage(
+              routes.ConfirmBusinessDetailsController.showPage().url
+            )
+          )
+        case Left(error) =>
+          logger.error(s"Error = $error")
+          Redirect(
+            routes.HMRCEmailController.showPage(
+              routes.ConfirmBusinessDetailsController.showPage().url
+            )
+          )
+      }
+    }
+  }
+
+  def submitPageNew(): Action[AnyContent] = enrolled.async { implicit request =>
+    logger.info("----- completing submit page new -----------")
     confirmBusinessDetailsForm
       .bindFromRequest()
       .fold(
-        formWithErrors =>
-          if (multipleEoris) {
-            BadRequest(confirmMultipleBusinessDetailsPage(formWithErrors, isSuspended)).toFuture
-          } else {
-            BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended)).toFuture
-          },
-        _ => Redirect(routes.ConfirmBusinessDetailsController.showPage()).toFuture
+        formWithErrors => BadRequest(confirmBusinessDetailsPage(formWithErrors, false)).toFuture,
+        form =>
+          if (form.value == "yes") {
+            escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).flatMap {
+              case Right(Some(resp)) =>
+                logger.info(s"Beneficiary ID Response = $resp")
+                escService.validateBeneficiaries(resp).map { allValidationsSuccessful =>
+                  if (allValidationsSuccessful) {
+                    logger.info("All beneficiary validations successful. Redirecting to BenNotificationController.")
+                    Redirect(routes.UndertakingController.getAboutUndertaking.url)
+                  } else {
+                    logger.info("Beneficiary validations failed.")
+                    Redirect(
+                      routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPageNew().url)
+                    )
+                  }
+                }
+              case Right(None) =>
+                logger.info("No Beneficiary ID Response from UTID validation.")
+                Redirect(
+                  routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
+                ).toFuture
+              case Left(error) =>
+                logger.error(s"Error while calling Beneficiary ID validation = $error")
+                Redirect(
+                  routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
+                ).toFuture
+            }
+
+          } else
+            Redirect(
+              routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPageNew().url)
+            ).toFuture
       )
   }
+
+  def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
+    escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
+      confirmBusinessDetailsForm
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            if (multipleEoris(undertaking)) {
+              BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended(undertaking))).toFuture
+            } else {
+              BadRequest(confirmBusinessDetailsPage(formWithErrors, isSuspended(undertaking))).toFuture
+            },
+          form =>
+            if (form.value == "yes") {
+
+              escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).flatMap {
+                case Right(Some(resp)) =>
+                  logger.info(s"Beneficiary ID Response = $resp")
+                  escService.validateBeneficiaries(resp).map { allValidationsSuccessful =>
+                    if (allValidationsSuccessful) {
+                      logger.info("All beneficiary validations successful. Redirecting to BenNotificationController.")
+                      Redirect(routes.BenNotificationController.showPage())
+                    } else {
+                      logger.info("Beneficiary validations failed.")
+                      Redirect(
+                        routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
+                      )
+                    }
+                  }
+                case Right(None) =>
+                  logger.info("No Beneficiary ID Response from UTID validation.")
+                  Redirect(
+                    routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
+                  ).toFuture
+                case Left(error) =>
+                  logger.error(s"Error while calling Beneficiary ID validation = $error")
+                  Redirect(
+                    routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
+                  ).toFuture
+              }
+            } else {
+              Redirect(
+                routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
+              ).toFuture
+            }
+        )
+    }
+  }
+
 }

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.FlatMap.nonInheritedOps.toFlatMapOps
 import cats.data.OptionT
 import cats.implicits.catsSyntaxOptionId
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -23,21 +24,22 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.DoYouClaimFormPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, MemberNotificationJourney, NilReturnJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.toEuros
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.BeneficiaryIDRequest
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -74,15 +76,16 @@ class AccountController @Inject() (
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
     logger.info("handleUndertakingNotCreated")
     suspendedPageFlag = false
+
     val result = getOrCreateJourneys().map {
       case (eligibilityJourney, undertakingJourney) if !eligibilityJourney.isComplete && undertakingJourney.isEmpty =>
         logger.info(
-          "Eligibility journey is not complete but and undertakingJourney is empty so redirecting to Eligibility first empty page"
+          "Eligibility journey is not complete and undertakingJourney is empty so redirecting to Eligibility first empty page"
         )
         Redirect(routes.EligibilityFirstEmptyPageController.firstEmptyPage)
       case (_, undertakingJourney) if !undertakingJourney.isComplete =>
         logger.info(
-          "Eligibility journey is not complete but and undertakingJourney is not empty so redirecting to Undertaking first empty page"
+          "Eligibility journey is not complete but undertakingJourney is not empty so redirecting to Undertaking first empty page"
         )
         Redirect(routes.UndertakingController.firstEmptyPage)
       case _ =>
@@ -164,7 +167,6 @@ class AccountController @Inject() (
         .flatMap(b => renderAccountPage(undertaking, subsidies, b))
         .toContext
     } yield result
-
     result.getOrElse {
       logger.info(s"handling missing session data for $undertaking")
       handleMissingSessionData("Account Home - Existing Undertaking -")
@@ -176,7 +178,6 @@ class AccountController @Inject() (
   )(implicit e: EORI): OptionT[Future, (EligibilityJourney, UndertakingJourney)] = {
     logger.info("getOrCreateJourneys")
     for {
-      // At this point the user has an ECC enrolment so they must be eligible to use the service.
       eligibilityJourney <- store
         .getOrCreate[EligibilityJourney](EligibilityJourney(doYouClaim = DoYouClaimFormPage(true.some)))
         .toContext
@@ -194,81 +195,128 @@ class AccountController @Inject() (
     implicit val eori: EORI = r.eoriNumber
 
     if (undertaking.isManuallySuspended)
-      // if its 5 take them to the manual suspend page
       Future.successful(Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url))
     else {
-      val today = timeProvider.today
+      def needRegistrationRedirect: Future[Result] =
+        if (undertaking.getAllNonLeadEORIs.nonEmpty)
+          Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
+        else
+          Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage(r.uri)))
 
-      val lastSubmitted = undertaking.lastSubsidyUsageUpdt.orElse(undertakingSubsidies.lastSubmitted)
-      val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
-      val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted.getOrElse(today)).toDisplayFormat
-      val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
-      val isSuspended = undertaking.isAutoSuspended
-      val startDate = today.toEarliestTaxYearStart
+      def dashboard: Future[Result] = {
+        val today = timeProvider.today
 
-      val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
-        undertaking,
-        undertakingSubsidies,
-        balance,
-        today
-      )
-      def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] = {
-        if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
-        else n.toFuture
-      }
-      var agriOtherFlag: Boolean = true
-      if (undertaking.industrySector.toString.take(2).equals(Sector.FishingAndAquaculture.toString)) {
-        agriOtherFlag = false
-      }
-      if (undertaking.isLeadEORI(eori)) {
-        logger.info("showing account page for lead")
-        val result = for {
-          nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
-          _ <- updateNilReturnJourney(nilReturnJourney).toContext
-        } yield Ok(
-          leadAccountPage(
-            undertaking = undertaking,
-            eori = eori,
-            isNonLeadEORIPresent = undertaking.getAllNonLeadEORIs.nonEmpty,
-            isTimeToReport = isTimeToReport,
-            dueDate = dueDate,
-            isOverdue = isOverdue,
-            isNilReturnDoneRecently = nilReturnJourney.displayNotification,
-            lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
-            neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
-            allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-            totalSubsidies = summary.overall.total.value.toEuros,
-            remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
-            currentPeriodStart = startDate.toDisplayFormat,
-            isOverAllowance = summary.overall.allowanceExceeded,
-            isSuspended = isSuspended,
-            scp08IssuesExist = summary.scp08IssuesExist,
-            agriOtherFlag = agriOtherFlag
-          )
+        val lastSubmitted = undertaking.lastSubsidyUsageUpdt.orElse(undertakingSubsidies.lastSubmitted)
+        val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
+        val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted.getOrElse(today)).toDisplayFormat
+        val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
+        val isSuspended = undertaking.isAutoSuspended
+        val startDate = today.toEarliestTaxYearStart
+
+        val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
+          undertaking,
+          undertakingSubsidies,
+          balance,
+          today
         )
-        result.getOrElse(handleMissingSessionData("Nil Return Journey"))
-      } else {
-        logger.info("showing nonLeadAccountPage for non lead")
-        Ok(
-          nonLeadAccountPage(
-            undertaking = undertaking,
-            eori = undertaking.getLeadEORI,
-            isLead = false,
-            dueDate = dueDate,
-            isOverdue = isOverdue,
-            lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
-            neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
-            allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-            totalSubsidies = summary.overall.total.value.toEuros,
-            remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
-            currentPeriodStart = startDate.toDisplayFormat,
-            isSuspended = isSuspended,
-            scp08IssuesExist = summary.scp08IssuesExist,
-            agriOtherFlag = agriOtherFlag
+
+        def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] = {
+          if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
+          else n.toFuture
+        }
+
+        var agriOtherFlag: Boolean = true
+        if (undertaking.industrySector.toString.take(2).equals(Sector.FishingAndAquaculture.toString)) {
+          agriOtherFlag = false
+        }
+        if (undertaking.isLeadEORI(eori)) {
+          logger.info("showing account page for lead")
+          val result = for {
+            nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
+            _ <- updateNilReturnJourney(nilReturnJourney).toContext
+          } yield Ok(
+            leadAccountPage(
+              undertaking = undertaking,
+              eori = eori,
+              isNonLeadEORIPresent = undertaking.getAllNonLeadEORIs.nonEmpty,
+              isTimeToReport = isTimeToReport,
+              dueDate = dueDate,
+              isOverdue = isOverdue,
+              isNilReturnDoneRecently = nilReturnJourney.displayNotification,
+              lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
+              neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
+              allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+              totalSubsidies = summary.overall.total.value.toEuros,
+              remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
+              currentPeriodStart = startDate.toDisplayFormat,
+              isOverAllowance = summary.overall.allowanceExceeded,
+              isSuspended = isSuspended,
+              scp08IssuesExist = summary.scp08IssuesExist,
+              agriOtherFlag = agriOtherFlag
+            )
           )
-        ).toFuture
+          result.getOrElse(handleMissingSessionData("Nil Return Journey"))
+        } else {
+          // SCP22: check if admin has validated all beneficiary IDs for the undertaking
+          escService
+            .beneficiaryIDValidate(
+              BeneficiaryIDRequest(
+                idType = "UTID",
+                idValue = s"${undertaking.getLeadEORI}",
+                requestType = "R",
+                beneficiaryInfo = None
+              )
+            )
+            .flatMap {
+              case Right(Some(resp))
+                  if resp.beneficiaryInfo.exists(
+                    _.forall(bi => !bi.benIDType.isDefined || bi.validated.contains(true))
+                  ) =>
+                logger.info("showing nonLeadAccountPage — admin validated")
+                Ok(
+                  nonLeadAccountPage(
+                    undertaking = undertaking,
+                    eori = undertaking.getLeadEORI,
+                    isLead = false,
+                    dueDate = dueDate,
+                    isOverdue = isOverdue,
+                    lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
+                    neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
+                    allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+                    totalSubsidies = summary.overall.total.value.toEuros,
+                    remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
+                    currentPeriodStart = startDate.toDisplayFormat,
+                    isSuspended = isSuspended,
+                    scp08IssuesExist = summary.scp08IssuesExist,
+                    agriOtherFlag = agriOtherFlag
+                  )
+                ).toFuture
+              case _ =>
+                Future.successful(Redirect(routes.CannotUseServiceContactAdministratorController.show()))
+            }
+
+        }
       }
+
+      if (undertaking.isLeadEORI(eori))
+        escService
+          .beneficiaryIDValidate(
+            BeneficiaryIDRequest(idType = "UTID", idValue = s"$eori", requestType = "R", beneficiaryInfo = None)
+          )
+          .flatMap {
+            // SCP22: if any EORI with a known ID has validated=false, route to confirm page. EORIs without an ID (benIDType undefined) are excluded — they are need-registration cases, not confirm cases.
+            case Right(None) => needRegistrationRedirect
+            case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(bi => !bi.benIDType.isDefined)) =>
+              needRegistrationRedirect
+            case Right(Some(resp))
+                if resp.beneficiaryInfo.exists(
+                  _.exists(bi => bi.benIDType.isDefined && bi.validated.contains(false))
+                ) =>
+              Future.successful(Redirect(routes.ConfirmBusinessDetailsController.showPage()))
+            case _ => dashboard
+          }
+      else dashboard
+
     }
   }
-
 }

@@ -20,9 +20,9 @@ import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
-import play.api.libs.json.{JsPath, JsonValidationError, Reads}
+import play.api.libs.json.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.UndertakingCache
@@ -287,6 +287,96 @@ class EscService @Inject() (
           s"removeSubsidy UndertakingRef:$undertakingRef, NonHmrcSubsidy:$nonHmrcSubsidy returned UndertakingRef:$undertaking",
         errorMessage = s"removeSubsidy failed UndertakingRef:$undertakingRef, NonHmrcSubsidy:$nonHmrcSubsidy"
       )
+
+  def beneficiaryIDValidate(
+    beneficiaryIDRequest: BeneficiaryIDRequest
+  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]] = {
+    escConnector.beneficiaryIDValidation(beneficiaryIDRequest).map {
+      case Left(ConnectorError(_, WithStatusCode(NOT_FOUND))) => Right(None)
+      case Left(error) => Left(error)
+      case Right(response) if response.status == OK =>
+        Json.parse(response.body).validate[BeneficiaryIDResponse] match {
+          case JsSuccess(value, _) => Right(Some(value))
+          case JsError(parseError) =>
+            Left(ConnectorError(s"Error parsing Beneficiary ID validation response: $parseError"))
+        }
+      case Right(response) =>
+        Left(ConnectorError(s"Beneficiary ID validation failed. Response status: ${response.status}"))
+    }
+  }
+
+  def getBeneficiaryIDValidation(id: String, idType: String, beneficiaryInfo: Option[BeneficiaryInfo])(implicit
+    hc: HeaderCarrier
+  ): Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]] = {
+    beneficiaryIDValidate(beneficiaryIDRequest(id, idType, beneficiaryInfo)).map {
+      case Right(Some(resp)) =>
+        Right(Some(resp))
+      case Right(None) =>
+        Left(ConnectorError("No Beneficiary ID Response"))
+      case Left(error) =>
+        Left(error)
+    }
+  }
+
+  def beneficiaryIDRequest(
+    id: String,
+    idType: String,
+    beneficiaryInfo: Option[BeneficiaryInfo]
+  ): BeneficiaryIDRequest = {
+    BeneficiaryIDRequest(
+      idType = idType match {
+        case "U" => "UTID"
+        case "E" => "EORI"
+      },
+      idValue = s"$id",
+      requestType = idType match {
+        case "U" => "R"
+        case "E" => "V"
+      },
+      beneficiaryInfo = if (idType == "E") {
+        beneficiaryInfo
+      } else None
+    )
+  }
+
+  def validateBeneficiaries(resp: BeneficiaryIDResponse)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val beneficiaries: Seq[BeneficiaryInfoResp] = resp.beneficiaryInfo.getOrElse(Seq.empty)
+    beneficiaries.foreach { beneficiary =>
+      logger.info(s"Beneficiary record: eori=${beneficiary.eori}, validated=${beneficiary.validated}")
+    }
+    val beneficiariesToValidate: Seq[(String, BeneficiaryInfoResp)] = beneficiaries.flatMap { beneficiary =>
+      beneficiary.eori.collect {
+        case eori if beneficiary.validated.contains(false) => eori -> beneficiary
+      }
+    }
+    logger.info(s"Beneficiaries requiring validation count = ${beneficiariesToValidate.size}")
+    if (beneficiariesToValidate.isEmpty) {
+      Future.successful(true)
+    } else {
+      val validationCalls = beneficiariesToValidate.map { case (eori, beneficiary) =>
+        getBeneficiaryIDValidation(
+          id = eori,
+          idType = "E",
+          beneficiaryInfo = Some(
+            BeneficiaryInfo(
+              benName = beneficiary.benName,
+              benIDType = beneficiary.benIDType,
+              benIDValue = beneficiary.benIDValue
+            )
+          )
+        )
+      }
+      Future.sequence(validationCalls).map { results =>
+        results.forall {
+          case Right(Some(_)) => true
+          case Right(None) => false
+          case Left(error) =>
+            logger.error(s"EORI validation failed: $error")
+            false
+        }
+      }
+    }
+  }
 
   def clearUndertakingCache(ref: UndertakingRef): Future[Unit] =
     for {

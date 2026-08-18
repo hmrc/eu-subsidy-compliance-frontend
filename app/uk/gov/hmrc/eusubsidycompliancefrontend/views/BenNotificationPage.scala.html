@@ -65,5 +65,7 @@ backLink = Some(previous.url),
 @P(messages("beneficiaryNotification.p10"))
 @P(messages("beneficiaryNotification.p11"))
 
+@formHelper(action = controllers.routes.BenNotificationController.submitPage()) {
 @button("common.continue.only")
+}
 }

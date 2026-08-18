@@ -15,49 +15,38 @@
  */
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
-
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.MemberNotificationJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{BusinessEntityJourney, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HowWeUseYourDataPage
-
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.NeedRegistrationNumberBusinessPage
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
-
 @Singleton
-class BeneficiaryNotificationController @Inject() (
+class NeedRegistrationNumberBusinessController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  howWeUseYourDataPage: HowWeUseYourDataPage,
-  store: Store
+  store: Store,
+  needRegistrationNumberBusinessPage: NeedRegistrationNumberBusinessPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
-
   import actionBuilders._
-
-  private val howWeUseForm = play.api.data.Form(play.api.data.Forms.single("continue" -> play.api.data.Forms.text))
-
-  def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(howWeUseYourDataPage(howWeUseForm, routes.UndertakingController.getAddBusiness.url, "new")).toFuture
-  }
-
-  def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
+  def showPage(previous: String): Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[UndertakingJourney].flatMap {
-      case Some(journey) if !journey.isSubmitted =>
-        store.update[UndertakingJourney](_.setHowWeUseData(true)).map { _ =>
-          Redirect(routes.UndertakingController.getCheckAnswers)
-        }
+    store.get[BusinessEntityJourney].flatMap {
+      case Some(journey) if journey.eori.value.isDefined =>
+        Ok(needRegistrationNumberBusinessPage(journey.eori.value.get.toString, previous)).toFuture
       case _ =>
-        store.put[MemberNotificationJourney](MemberNotificationJourney(seen = true)).flatMap { _ =>
-          Redirect(routes.AccountController.getAccountPage).toFuture
+        store.get[SubsidyJourney].map {
+          case Some(journey) if journey.addClaimEori.value.flatMap(_.value).isDefined =>
+            Ok(needRegistrationNumberBusinessPage(journey.addClaimEori.value.flatMap(_.value).get, previous))
+          case _ =>
+            Ok(needRegistrationNumberBusinessPage(eori.toString, previous))
         }
     }
   }

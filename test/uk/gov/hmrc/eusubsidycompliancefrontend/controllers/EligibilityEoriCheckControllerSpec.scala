@@ -196,7 +196,7 @@ class EligibilityEoriCheckControllerSpec
         }
 
         "yes is selected" in {
-          testRedirection(input = true, routes.UndertakingController.getAboutUndertaking.url)
+          testRedirection(input = true, routes.ConfirmRegisterBusinessDetailsController.showPage().url)
         }
 
         "no is selected" in {

@@ -16,12 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.EmailHMRCPage
 
@@ -40,7 +37,7 @@ class HMRCEmailController @Inject() (
 
   import actionBuilders._
 
-  def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(emailHMRCPage(routes.ConfirmAddBusinessDetailsController.showPage())).toFuture
+  def showPage(previous: String): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(emailHMRCPage(previous)).toFuture
   }
 }

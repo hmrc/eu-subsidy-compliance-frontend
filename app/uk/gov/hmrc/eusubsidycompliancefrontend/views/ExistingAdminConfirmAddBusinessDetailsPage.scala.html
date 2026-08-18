@@ -20,8 +20,8 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.BeneficiaryIDResponse
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
     layout: Layout,
@@ -32,23 +32,27 @@
     govukErrorSummary: GovukErrorSummary
 )
 
-@(form: Form[_], isSuspended: Boolean, beneficiaryIDResponse: BeneficiaryIDResponse)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], beneficiaryData: Option[BeneficiaryIDResponse] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"confirmBusinessDetails"}
+@fieldName = @{"existingAdminConfirmAddBusinessDetails"}
 
 @layout(
-    pageTitle = Some(messages("confirmMultipleBusinessDetails.title")),
-    hasErrors = form.hasErrors
+    pageTitle = Some(messages("confirmAddBusinessDetails.title")),
+    hasErrors = form.hasErrors,
+    backLinkEnabled = true,
+    backLink = Some(
+        routes.AddClaimBusinessController.getAddClaimBusiness.url
+    )
 ) {
 
-    @formHelper(action = routes.ConfirmBusinessDetailsController.submitPage()) {
+    @formHelper(action = routes.ExistingAdminConfirmAddBusinessDetailsController.submitPage()) {
 
         @if(form.hasErrors) {
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(
                     ErrorLink(
                         href = Some(s"#$fieldName"),
-                        content = Text(messages("confirmMultipleBusinessDetails.error.required"))
+                        content = Text(messages("confirmAddBusinessDetails.error.required"))
                     )
                 ),
                 title = Text(messages("common.error.summary.title"))
@@ -56,27 +60,24 @@
         }
 
         @H1(
-            messages("confirmMultipleBusinessDetails.h1"),
+            messages("confirmAddBusinessDetails.h1"),
             Some("govuk-heading-xl"),
             id = Some("undertaking-inactive-banner-title")
         )
 
-            @P(messages("confirmMultipleBusinessDetails.suspended.p1"))
-            @P(messages("confirmMultipleBusinessDetails.suspended.p2"))
+        @P(messages("confirmAddBusinessDetails.p1"))
 
         @govukTable(Table(
             head = Some(Seq(
-                HeadCell(content = Text(messages("confirmMultipleBusinessDetails.eoriNumber"))),
-                HeadCell(content = Text(messages("confirmMultipleBusinessDetails.typeOfId"))),
-                HeadCell(content = Text(messages("confirmMultipleBusinessDetails.idNumber")))
+                HeadCell(content = Text(messages("confirmAddBusinessDetails.eoriNumber"))),
+                HeadCell(content = Text(messages("confirmAddBusinessDetails.typeOfId"))),
+                HeadCell(content = Text(messages("confirmAddBusinessDetails.idNumber")))
             )),
-            rows = beneficiaryIDResponse.beneficiaryInfo
-                   .getOrElse(Seq.empty)
-                   .map { info =>
+                rows = beneficiaryData.flatMap(_.beneficiaryInfo).getOrElse(Seq.empty).map { info =>
                 Seq(
-                    TableRow(content = Text(info.eori.getOrElse("None Found"))),
-                    TableRow(content = Text(info.benIDType.getOrElse("None Found"))),
-                    TableRow(content = Text(info.benIDValue.getOrElse("None Found")))
+                    TableRow(content = Text(info.eori.getOrElse(""))),
+                    TableRow(content = Text(info.benIDType.getOrElse(messages("needRegistrationNumberBusinesses.table.noneFound")))),
+                    TableRow(content = Text(info.benIDValue.getOrElse(messages("needRegistrationNumberBusinesses.table.noneFound"))))
                 )
             }
         ))
@@ -84,7 +85,7 @@
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {
                 Some(ErrorMessage(
-                    content = Text(messages("confirmBusiconfirmMultipleBusinessDetailsnessDetails.error.required"))
+                    content = Text(messages("confirmAddBusinessDetails.error.required"))
                 ))
             } else None,
             classes = "govuk-radios--inline",
@@ -92,7 +93,7 @@
             name = fieldName,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("confirmMultipleBusinessDetails.radio.heading")),
+                    content = Text(messages("confirmAddBusinessDetails.radio.heading")),
                     classes = "govuk-fieldset__legend--m"
                 ))
             )),

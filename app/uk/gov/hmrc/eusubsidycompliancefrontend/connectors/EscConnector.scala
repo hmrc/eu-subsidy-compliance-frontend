@@ -54,6 +54,7 @@ class EscConnector @Inject() (
   private lazy val retrieveSubsidyUrl = url"$escUrl/eu-subsidy-compliance/subsidy/retrieve"
   private lazy val getUndertakingBalanceUrl = url"$escUrl/eu-subsidy-compliance/undertaking/balance"
   private lazy val getExchangeRateUrl = url"$escUrl/eu-subsidy-compliance/retrieve-exchange-rate"
+  private lazy val beneficiaryIdValidation = url"$escUrl/eu-subsidy-compliance/beneficiary-id-validation"
 
   def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(
@@ -142,6 +143,13 @@ class EscConnector @Inject() (
         logger.warn(s"undertaking balance for eori: $eori not found. Exception: $e", e)
         None
       }
+  }
+
+  def beneficiaryIDValidation(
+    beneficiaryIDRequest: BeneficiaryIDRequest
+  )(implicit hc: HeaderCarrier): ConnectorResult = {
+    logger.info(s"Beneficiary ID requested.")
+    makeRequest(_.post(beneficiaryIdValidation).withBody(Json.toJson(beneficiaryIDRequest)).execute[HttpResponse])
   }
 
   def getExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): Future[Option[MonthlyExchangeRate]] = {

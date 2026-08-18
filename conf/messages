@@ -326,6 +326,8 @@ lead-account-homepage-never-submitted-overdue=You have created an undertaking, b
 lead-account-homepage.under-taking.p1= Your balance is calculated over a rolling 3-year period. For more information,
 account-homepage.scp08Issues.text=Your undertaking balance may show a temporary difference to your own records, which will be amended here within 24 hours.
 
+
+
 non-lead-account-homepage.title = Your undertaking
 non-lead-account-homepage.p1 = Your undertaking’s next report is due by <strong>{0}</strong>.
 non-lead-account-homepage.p1.is-overdue = Your undertaking’s report was due by {0}.
@@ -342,6 +344,9 @@ non-lead-account-homepage.ul1-li1 = View summary of your allowance (customs and 
 non-lead-account-homepage.h2-4 = Undertaking administration
 non-lead-account-homepage.ul2-li1 = Become the undertaking administrator
 non-lead-account-homepage.ul2-li2 = Leave the undertaking
+non-lead-account-homepage.h2-5 = Your details
+non-lead-account-homepage.ul3-li1 = Your business details
+non-lead-account-homepage.ul3-li2 = How we use your data
 
 non-lead-account-homepage.link2 = View financial dashboard for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
@@ -705,6 +710,9 @@ undertakingSuspendedBen.p2=You may want to contact your administrator and ask th
 undertakingSuspendedBen.p3=When this is done, you will be able to sign in to your account.
 
 beneficiaryNotification.title = Notification of changes to how we use your data
+beneficiaryNotification.title.alt = How we use your data
+beneficiaryNotification.p1.start = From 1 January 2026,
+beneficiaryNotification.p1.main =Commission Regulation (EU) 2023/2831 requires all de minimis state aid granted to undertakings to be recorded in a central, publicly accessible register. This includes de minimis aid granted under the Customs Duty Waiver Scheme.
 beneficiaryNotification.p1 = From 1 January 2026, Commission Regulation (EU) 2023/2831 requires all de minimis state aid granted to undertakings to be recorded in a central, publicly accessible register. This includes de minimis aid granted under the Customs Duty Waiver Scheme.
 beneficiaryNotification.p2 = To meet this requirement, HMRC must publish some information about de minimis aid awards on <a class="govuk-link" target="_blank" href="https://aid-register.ec.europa.eu/home">the EU eAidRegister (opens in new tab)</a>.
 beneficiaryNotification.h1 =The information we will publish
@@ -727,16 +735,26 @@ beneficiaryNotification.p9 =HMRC processes personal data in accordance with the 
 beneficiaryNotification.p10 =You can find more information about how HMRC uses personal data, including details of how to exercise your data protection rights, in <a class="govuk-link" target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/about/personal-information-charter">HMRC’s personal information charter (opens in new tab)</a>.
 beneficiaryNotification.p11 =By continuing you confirm you understand all the information on this page.
 
-emailHMRC.title = Email HMRC to update your business details
-emailHMRC.p1 = You have told us your business details are wrong.
+emailHMRC.title.new = Email HMRC to update your business details
+emailHMRC.title.existing = Email HMRC to update business details
+emailHMRC.p1.new = You have told us your business details are wrong.
+emailHMRC.p1.existing = You have told us the business details are wrong.
 emailHMRC.p2 = To update them, email <a href="mailto:customs.duty-waivers@hmrc.gov.uk"> customs.duty-waivers@hmrc.gov.uk </a> and include:
-emailHMRC.p2.ul1 = your EORI number
-emailHMRC.p2.ul2 = the company registration number (CRN) for the business connected to your EORI number
+emailHMRC.p2.ul1.new = your EORI number
+emailHMRC.p2.ul2.new = the company registration number (CRN) for the business connected to your EORI number
+emailHMRC.p2.ul1.existing = your undertaking’s EORI number
+emailHMRC.p2.ul2.existing = the EORI number of the business you want to add to your undertaking
+emailHMRC.p2.ul3.existing = the company registration number (CRN) for the business you want to add to your undertaking
 emailHMRC.p3 = If the business does not have a CRN, you can provide its VAT registration number, National Insurance number or charity number.
 emailHMRC.h1 = After we get your email
-emailHMRC.p4 = A caseworker will contact you within 5 working days. They will help update your details.
-emailHMRC.p5 = Once this is complete, we’ll email you a confirmation. You can then sign in and continue registering for this online service.<br> <br>
-emailHMRC.url = Back to confirm your details
+emailHMRC.p4 = A caseworker will contact you within 5 working days. They will help update
+emailHMRC.p4.ending.new = your details.
+emailHMRC.p4.ending.existing = the business details.
+emailHMRC.p5 = Once this is complete, we’ll email you a confirmation. You can then sign in and
+emailHMRC.p5.ending.new =continue registering for this online service.<br> <br>
+emailHMRC.p5.ending.existing =add this business to your undertaking.<br> <br>
+emailHMRC.url.new = Back to confirm your details
+emailHMRC.url.existing = Back to confirm your business details
 
 #Undertaking suspended page
 NACE.undertakingSuspended.title=You cannot use this service until you update your undertaking information
@@ -796,8 +814,6 @@ industrySectorResearchBanner.visually.hidden = Hide message. I do not want to ta
 
 confirmBusinessDetails.title = Confirm your business details
 confirmBusinessDetails.h1 = Confirm your business details
-confirmBusinessDetails.noSuspend.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page before DATE PLACEHOLDER
-confirmBusinessDetails.noSuspend.p2 = If you do not, your undertaking will not be able to claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty
 confirmBusinessDetails.suspended.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page.
 confirmBusinessDetails.suspended.p2 = Until you do this, your undertaking cannot claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
 confirmBusinessDetails.radio.heading = Are these details correct?
@@ -826,8 +842,6 @@ confirmRegisterBusinessDetails.error.required = Select yes if these details are 
 
 confirmMultipleBusinessDetails.title = Confirm details for all EORI numbers in your undertaking
 confirmMultipleBusinessDetails.h1 = Confirm details for all EORI numbers in your undertaking
-confirmMultipleBusinessDetails.noSuspend.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page before DATE PLACEHOLDER
-confirmMultipleBusinessDetails.noSuspend.p2 = If you do not, your undertaking will not be able to claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
 confirmMultipleBusinessDetails.suspended.p1 = Due to a change in EU regulations, you need to review and confirm the details on this page.
 confirmMultipleBusinessDetails.suspended.p2 = Until you do this, your undertaking cannot claim waivers. This means you can still trade, but you cannot use state aid to waive customs duty.
 confirmMultipleBusinessDetails.radio.heading = Are all these details correct?
@@ -838,7 +852,7 @@ confirmMultipleBusinessDetails.error.required= Select yes if all these details a
 
 confirmedMemberBusinessDetails.title = Your business details
 confirmedMemberBusinessDetails.h1 = Your business details
-confirmedMemberBusinessDetails.p1 = Your undertaking administrator confirmed these details for your business on DATE PLACEHOLDER.
+confirmedMemberBusinessDetails.p1 = Your undertaking administrator confirmed these details for your business.
 confirmedMemberBusinessDetails.p2 = If any of your details are wrong, contact your administrator.
 confirmedMemberBusinessDetails.eoriNumber = EORI number
 confirmedMemberBusinessDetails.typeOfId = Type of ID

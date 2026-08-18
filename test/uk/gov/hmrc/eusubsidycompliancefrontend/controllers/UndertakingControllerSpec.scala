@@ -104,7 +104,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
           }
-          checkIsRedirect(performAction(), routes.AddBusinessEntityController.getAddBusinessEntity().url)
+          checkIsRedirect(performAction(), routes.BeneficiaryNotificationController.showPage().url)
         }
 
         "undertaking journey is present and  is not None and is not complete" when {
@@ -155,7 +155,7 @@ class UndertakingControllerSpec
                 hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
                 addBusiness = UndertakingAddBusinessFormPage(false.some)
               ),
-              routes.UndertakingController.getCheckAnswers.url
+              routes.BeneficiaryNotificationController.showPage().url
             )
           }
 
@@ -168,7 +168,7 @@ class UndertakingControllerSpec
                 addBusiness = UndertakingAddBusinessFormPage(false.some),
                 cya = UndertakingCyaFormPage(true.some)
               ),
-              routes.UndertakingController.postConfirmation.url
+              routes.BeneficiaryNotificationController.showPage().url
             )
           }
 
@@ -182,7 +182,7 @@ class UndertakingControllerSpec
                 addBusiness = UndertakingAddBusinessFormPage(false.some),
                 confirmation = UndertakingConfirmationFormPage(true.some)
               ),
-              routes.AddBusinessEntityController.getAddBusinessEntity().url
+              routes.BeneficiaryNotificationController.showPage().url
             )
           }
 
@@ -1073,7 +1073,7 @@ class UndertakingControllerSpec
           }
           checkIsRedirect(
             performAction("addBusinessIntent" -> "false"),
-            routes.UndertakingController.getCheckAnswers.url
+            routes.BeneficiaryNotificationController.showPage().url
           )
         }
 
@@ -1087,7 +1087,7 @@ class UndertakingControllerSpec
           }
           checkIsRedirect(
             performAction("addBusinessIntent" -> "true"),
-            routes.UndertakingController.getCheckAnswers.url
+            routes.BeneficiaryNotificationController.showPage().url
           )
         }
 

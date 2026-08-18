@@ -15,33 +15,44 @@
  */
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
-
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.BeneficiaryIDRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmedMemberBusinessDetailsPage
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
-
 @Singleton
 class MemberBusinessDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
+  escService: EscService,
   memberBusinessDetailsPage: ConfirmedMemberBusinessDetailsPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
-
   import actionBuilders._
-
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(memberBusinessDetailsPage()).toFuture
+    escService
+      .beneficiaryIDValidate(
+        BeneficiaryIDRequest(
+          idType = "EORI",
+          idValue = request.eoriNumber.toString,
+          requestType = "R",
+          beneficiaryInfo = None
+        )
+      )
+      .map {
+        case Right(Some(resp)) =>
+          Ok(memberBusinessDetailsPage(Some(resp)))
+        case _ =>
+          Ok(memberBusinessDetailsPage(None))
+      }
   }
-
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Redirect(routes.BeneficiaryNotificationController.showPage()).toFuture
+    Redirect(routes.AccountController.getAccountPage).toFuture
   }
 }

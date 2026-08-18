@@ -24,6 +24,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleM
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmRegisterBusinessDetailsPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -32,6 +34,7 @@ import scala.concurrent.ExecutionContext
 class ConfirmRegisterBusinessDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
+  escService: EscService,
   confirmRegisterBusinessDetailsPage: ConfirmRegisterBusinessDetailsPage
 )(implicit
   val appConfig: AppConfig,
@@ -44,7 +47,26 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
     formWithSingleMandatoryField("confirmRegisterBusinessDetails")
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm)).toFuture
+    escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
+      case Right(Some(resp)) =>
+        logger.info(s"Beneficiary ID Response = $resp")
+        Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm, Some(resp)))
+      case Right(None) =>
+        logger.info("No Beneficiary ID Response.")
+        Redirect(
+          routes.NeedRegistrationNumberBusinessController
+            .showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
+        )
+      case Left(error) =>
+        logger.error(s"Error = $error")
+        Redirect(
+          routes.NeedRegistrationNumberBusinessController.showPage(
+            routes.ConfirmRegisterBusinessDetailsController.showPage().url
+          )
+        )
+      case _ =>
+        Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm, None))
+    }
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -52,7 +74,43 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(confirmRegisterBusinessDetailsPage(formWithErrors)).toFuture,
-        _ => Redirect(routes.ConfirmRegisterBusinessDetailsController.showPage()).toFuture
+        formValues =>
+          formValues.value match {
+            case "yes" => {
+              escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).flatMap {
+                case Right(Some(resp)) =>
+                  logger.info(s"Beneficiary ID Response = $resp")
+                  escService.validateBeneficiaries(resp).map { allValidationsSuccessful =>
+                    if (allValidationsSuccessful) {
+                      logger.info("All beneficiary validations successful. Redirecting to BenNotificationController.")
+                      Redirect(routes.UndertakingController.getAboutUndertaking.url)
+                    } else {
+                      logger.info("Beneficiary validations failed.")
+                      Redirect(
+                        routes.HMRCEmailController
+                          .showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
+                      )
+                    }
+                  }
+                case Right(None) =>
+                  logger.info("No Beneficiary ID Response from UTID validation.")
+                  Redirect(
+                    routes.HMRCEmailController.showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
+                  ).toFuture
+                case Left(error) =>
+                  logger.error(s"Error while calling Beneficiary ID validation = $error")
+                  Redirect(
+                    routes.HMRCEmailController.showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
+                  ).toFuture
+              }
+            }
+            case "no" =>
+              Redirect(
+                routes.HMRCEmailController.showPage(
+                  routes.ConfirmRegisterBusinessDetailsController.showPage().url
+                )
+              ).toFuture
+          }
       )
   }
 }

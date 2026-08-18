@@ -16,25 +16,25 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.MemberNotificationJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.BenNotificationPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HowWeUseYourDataPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class BeneficiaryNotificationController @Inject() (
+class BenNotificationController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  howWeUseYourDataPage: HowWeUseYourDataPage,
-  store: Store
+  benNotificationPage: BenNotificationPage,
+  howWeUseYourDataPage: HowWeUseYourDataPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -42,23 +42,21 @@ class BeneficiaryNotificationController @Inject() (
 
   import actionBuilders._
 
+  private val benNotificationForm: Form[FormValues] =
+    formWithSingleMandatoryField("benNotification")
+
   private val howWeUseForm = play.api.data.Form(play.api.data.Forms.single("continue" -> play.api.data.Forms.text))
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(howWeUseYourDataPage(howWeUseForm, routes.UndertakingController.getAddBusiness.url, "new")).toFuture
+    Ok(benNotificationPage(routes.ConfirmBusinessDetailsController.showPage())).toFuture
+  }
+
+  def showPageMember(): Action[AnyContent] = enrolled.async { implicit request =>
+    logger.info("------------- show on page on beneficiary notification controller - member")
+    Ok(howWeUseYourDataPage(howWeUseForm, routes.AccountController.getAccountPage.url, "member")).toFuture
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[UndertakingJourney].flatMap {
-      case Some(journey) if !journey.isSubmitted =>
-        store.update[UndertakingJourney](_.setHowWeUseData(true)).map { _ =>
-          Redirect(routes.UndertakingController.getCheckAnswers)
-        }
-      case _ =>
-        store.put[MemberNotificationJourney](MemberNotificationJourney(seen = true)).flatMap { _ =>
-          Redirect(routes.AccountController.getAccountPage).toFuture
-        }
-    }
+    Redirect(routes.AccountController.getAccountPage).toFuture
   }
 }

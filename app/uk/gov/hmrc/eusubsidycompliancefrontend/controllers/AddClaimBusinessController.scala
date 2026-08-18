@@ -50,6 +50,9 @@ class AddClaimBusinessController @Inject() (
 
   private val addClaimBusinessForm = formWithSingleMandatoryField("add-claim-business")
 
+  // Temporary until the ID lookup API is implemented
+  private val businessIdFound = true
+
   def getAddClaimBusiness: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
@@ -67,11 +70,26 @@ class AddClaimBusinessController @Inject() (
 
       def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] =
         for {
-          updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
-          next <- updatedJourney.next.toContext
-          updateBusiness = updatedJourney.getAddBusiness
-        } yield if (updateBusiness) next else Redirect(routes.AddClaimEoriController.getAddClaimEori)
+          updatedJourney <- store
+            .update[SubsidyJourney](_.setAddBusiness(f.value.isTrue))
+            .toContext
 
+          addBusiness = updatedJourney.getAddBusiness
+        } yield {
+          if (!addBusiness) {
+            Redirect(routes.AddClaimEoriController.getAddClaimEori)
+          } else if (businessIdFound) {
+            Redirect(
+              routes.ExistingAdminConfirmAddBusinessDetailsController.showPage()
+            )
+          } else {
+            Redirect(
+              routes.NeedRegistrationNumberBusinessController.showPage(
+                routes.AddClaimBusinessController.getAddClaimBusiness.url
+              )
+            )
+          }
+        }
       processFormSubmission[SubsidyJourney] { journey =>
         addClaimBusinessForm
           .bindFromRequest()
