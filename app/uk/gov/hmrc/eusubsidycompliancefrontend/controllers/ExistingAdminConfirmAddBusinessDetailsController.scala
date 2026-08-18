@@ -64,7 +64,10 @@ class ExistingAdminConfirmAddBusinessDetailsController @Inject() (
             case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(_.benIDType.isDefined)) =>
               Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, Some(resp)))
             case _ =>
-              Redirect(routes.NeedRegistrationNumberBusinessController.showPage(routes.ExistingAdminConfirmAddBusinessDetailsController.showPage().url))
+              Redirect(
+                routes.NeedRegistrationNumberBusinessController
+                  .showPage(routes.ExistingAdminConfirmAddBusinessDetailsController.showPage().url)
+              )
           }
       case _ =>
         Ok(existingAdminConfirmAddBusinessDetailsPage(existingAdminConfirmAddBusinessDetailsForm, None)).toFuture

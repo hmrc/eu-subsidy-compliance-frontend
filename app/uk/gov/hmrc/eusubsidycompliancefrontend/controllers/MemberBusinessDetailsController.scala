@@ -36,12 +36,21 @@ class MemberBusinessDetailsController @Inject() (
 ) extends BaseController(mcc) {
   import actionBuilders._
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    escService.beneficiaryIDValidate(BeneficiaryIDRequest(idType = "EORI", idValue = request.eoriNumber.toString, requestType = "R", beneficiaryInfo = None)).map {
-      case Right(Some(resp)) =>
-        Ok(memberBusinessDetailsPage(Some(resp)))
-      case _ =>
-        Ok(memberBusinessDetailsPage(None))
-    }
+    escService
+      .beneficiaryIDValidate(
+        BeneficiaryIDRequest(
+          idType = "EORI",
+          idValue = request.eoriNumber.toString,
+          requestType = "R",
+          beneficiaryInfo = None
+        )
+      )
+      .map {
+        case Right(Some(resp)) =>
+          Ok(memberBusinessDetailsPage(Some(resp)))
+        case _ =>
+          Ok(memberBusinessDetailsPage(None))
+      }
   }
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
     Redirect(routes.AccountController.getAccountPage).toFuture
