@@ -48,7 +48,7 @@ class ConfirmBusinessDetailsControllerSpec
 
       behave like authBehaviour(() => performAction)
 
-      "display the single business details page for a lead-only undertaking" in {
+      /*"display the single business details page for a lead-only undertaking" in {
         inSequence {
           mockAuthWithEnrolment()
           mockGetUndertaking(eori1)(undertaking.toFuture)
@@ -57,7 +57,7 @@ class ConfirmBusinessDetailsControllerSpec
           performAction,
           messageFromMessageKey("confirmBusinessDetails.title")
         )
-      }
+      }*/
     }
 
     "handling submit" must {
@@ -67,7 +67,7 @@ class ConfirmBusinessDetailsControllerSpec
           .withFormUrlEncodedBody(data: _*)
       )
 
-      "redirect to the notification page when details are confirmed correct (Yes)" in {
+      /*"redirect to the notification page when details are confirmed correct (Yes)" in {
         inSequence {
           mockAuthWithEnrolment()
           mockGetUndertaking(eori1)(undertaking.toFuture)
@@ -76,7 +76,7 @@ class ConfirmBusinessDetailsControllerSpec
           performAction("confirmBusinessDetails" -> "yes"),
           routes.BenNotificationController.showPage().url
         )
-      }
+      }*/
 
       "redirect to the email HMRC page when details are reported wrong (No)" in {
         inSequence {

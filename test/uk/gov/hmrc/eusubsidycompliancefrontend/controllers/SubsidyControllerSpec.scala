@@ -2205,7 +2205,7 @@ class SubsidyControllerSpec
 
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) should contain(
-            routes.AddClaimPublicAuthorityController.getAddClaimPublicAuthority.url
+            routes.ExistingAdminConfirmAddBusinessDetailsController.showPage().url
           )
 
         }

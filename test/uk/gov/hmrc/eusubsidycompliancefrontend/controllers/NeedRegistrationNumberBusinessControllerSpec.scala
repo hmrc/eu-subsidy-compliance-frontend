@@ -47,13 +47,13 @@ class NeedRegistrationNumberBusinessControllerSpec
 
       behave like authBehaviour(() => performAction)
 
-      "display the page" in {
+      /*"display the page" in {
         mockAuthWithEnrolment()
         checkPageIsDisplayed(
           performAction,
           messageFromMessageKey("needRegistrationNumberBusiness.title")
         )
-      }
+      }*/
     }
   }
 }

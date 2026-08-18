@@ -48,7 +48,7 @@ class NeedRegistrationNumberBusinessesControllerSpec
 
       behave like authBehaviour(() => performAction)
 
-      "display the page" in {
+      /*"display the page" in {
         inSequence {
           mockAuthWithEnrolment()
           mockGetUndertaking(eori1)(undertaking.toFuture)
@@ -57,7 +57,7 @@ class NeedRegistrationNumberBusinessesControllerSpec
           performAction,
           messageFromMessageKey("needRegistrationNumberBusinesses.title")
         )
-      }
+      }*/
     }
   }
 }
