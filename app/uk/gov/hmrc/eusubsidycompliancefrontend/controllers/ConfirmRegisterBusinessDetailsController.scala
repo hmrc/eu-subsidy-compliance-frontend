@@ -47,7 +47,7 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
     formWithSingleMandatoryField("confirmRegisterBusinessDetails")
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
+      escService.beneficiaryIDValidate(BeneficiaryIDRequest(idType = "EORI", idValue = request.eoriNumber.toString, requestType = "R", beneficiaryInfo = None)).map {
       case Right(Some(resp)) =>
         logger.info(s"Beneficiary ID Response = $resp")
         Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm, Some(resp)))
@@ -77,7 +77,7 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
         formValues =>
           formValues.value match {
             case "yes" => {
-              escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).flatMap {
+              escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "E", None).flatMap {
                 case Right(Some(resp)) =>
                   logger.info(s"Beneficiary ID Response = $resp")
                   escService.validateBeneficiaries(resp).map { allValidationsSuccessful =>

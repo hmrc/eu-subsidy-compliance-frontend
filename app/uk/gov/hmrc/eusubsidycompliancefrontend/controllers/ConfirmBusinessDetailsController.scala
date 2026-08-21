@@ -59,7 +59,7 @@ class ConfirmBusinessDetailsController @Inject() (
 
   def showPageNew(): Action[AnyContent] = enrolled.async { implicit request =>
     escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
-      escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
+      escService.getBeneficiaryIDValidation(undertaking.reference.toString, "U", None).map {
         case Right(Some(resp)) =>
           logger.info(s"Beneficiary ID Response = $resp")
           if (resp.beneficiaryInfo.getOrElse(Seq.empty).exists(_.validated.contains(false))) {
@@ -87,7 +87,7 @@ class ConfirmBusinessDetailsController @Inject() (
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
     escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
-      escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
+      escService.getBeneficiaryIDValidation(undertaking.reference.toString, "U", None).map {
         case Right(Some(resp)) =>
           logger.info(s"Beneficiary ID Response = $resp")
           if (resp.beneficiaryInfo.getOrElse(Seq.empty).exists(_.validated.contains(false))) {
@@ -115,13 +115,14 @@ class ConfirmBusinessDetailsController @Inject() (
 
   def submitPageNew(): Action[AnyContent] = enrolled.async { implicit request =>
     logger.info("----- completing submit page new -----------")
+    escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
     confirmBusinessDetailsForm
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(confirmBusinessDetailsPage(formWithErrors, false)).toFuture,
         form =>
           if (form.value == "yes") {
-            escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).flatMap {
+            escService.getBeneficiaryIDValidation(undertaking.reference.toString, "U", None).flatMap {
               case Right(Some(resp)) =>
                 logger.info(s"Beneficiary ID Response = $resp")
                 escService.validateBeneficiaries(resp).map { allValidationsSuccessful =>
@@ -152,7 +153,10 @@ class ConfirmBusinessDetailsController @Inject() (
               routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPageNew().url)
             ).toFuture
       )
+    }
   }
+
+
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
     escService.getUndertaking(request.eoriNumber).flatMap { undertaking =>
@@ -168,7 +172,7 @@ class ConfirmBusinessDetailsController @Inject() (
           form =>
             if (form.value == "yes") {
 
-              escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).flatMap {
+              escService.getBeneficiaryIDValidation(undertaking.reference.toString, "U", None).flatMap {
                 case Right(Some(resp)) =>
                   logger.info(s"Beneficiary ID Response = $resp")
                   escService.validateBeneficiaries(resp).map { allValidationsSuccessful =>

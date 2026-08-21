@@ -87,7 +87,7 @@ class ConfirmAddBusinessDetailsController @Inject() (
                   val businessEntity = BusinessEntity(businessEori, leadEORI = false)
                   escService.addMember(undertaking.reference, businessEntity).flatMap { _ =>
                     // R-call to get beneficiary details
-                    escService.getBeneficiaryIDValidation(businessEori.toString, "U", None).flatMap {
+                      escService.beneficiaryIDValidate(BeneficiaryIDRequest(idType = "EORI", idValue = businessEori.toString, requestType = "R", beneficiaryInfo = None)).flatMap {
                       case Right(Some(resp)) =>
                         val beneficiaryInfo = resp.beneficiaryInfo
                           .flatMap(_.find(_.eori.contains(businessEori)))
