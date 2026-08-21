@@ -301,7 +301,12 @@ class AccountController @Inject() (
       if (undertaking.isLeadEORI(eori))
         escService
           .beneficiaryIDValidate(
-                      BeneficiaryIDRequest(idType = "UTID", idValue = undertaking.reference.toString, requestType = "R", beneficiaryInfo = None)
+            BeneficiaryIDRequest(
+              idType = "UTID",
+              idValue = undertaking.reference.toString,
+              requestType = "R",
+              beneficiaryInfo = None
+            )
           )
           .flatMap {
             // SCP22: if any EORI with a known ID has validated=false, route to confirm page. EORIs without an ID (benIDType undefined) are excluded — they are need-registration cases, not confirm cases.
