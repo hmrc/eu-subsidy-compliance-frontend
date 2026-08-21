@@ -46,7 +46,7 @@ class NeedRegistrationNumberBusinessesController @Inject() (
         .beneficiaryIDValidate(
           BeneficiaryIDRequest(
             idType = "UTID",
-            idValue = request.eoriNumber.toString,
+            idValue = undertaking.reference.toString,
             requestType = "R",
             beneficiaryInfo = None
           )

@@ -47,26 +47,35 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
     formWithSingleMandatoryField("confirmRegisterBusinessDetails")
 
   def showPage(): Action[AnyContent] = enrolled.async { implicit request =>
-    escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).map {
-      case Right(Some(resp)) =>
-        logger.info(s"Beneficiary ID Response = $resp")
-        Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm, Some(resp)))
-      case Right(None) =>
-        logger.info("No Beneficiary ID Response.")
-        Redirect(
-          routes.NeedRegistrationNumberBusinessController
-            .showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
+    escService
+      .beneficiaryIDValidate(
+        BeneficiaryIDRequest(
+          idType = "EORI",
+          idValue = request.eoriNumber.toString,
+          requestType = "R",
+          beneficiaryInfo = None
         )
-      case Left(error) =>
-        logger.error(s"Error = $error")
-        Redirect(
-          routes.NeedRegistrationNumberBusinessController.showPage(
-            routes.ConfirmRegisterBusinessDetailsController.showPage().url
+      )
+      .map {
+        case Right(Some(resp)) =>
+          logger.info(s"Beneficiary ID Response = $resp")
+          Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm, Some(resp)))
+        case Right(None) =>
+          logger.info("No Beneficiary ID Response.")
+          Redirect(
+            routes.NeedRegistrationNumberBusinessController
+              .showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
           )
-        )
-      case _ =>
-        Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm, None))
-    }
+        case Left(error) =>
+          logger.error(s"Error = $error")
+          Redirect(
+            routes.NeedRegistrationNumberBusinessController.showPage(
+              routes.ConfirmRegisterBusinessDetailsController.showPage().url
+            )
+          )
+        case _ =>
+          Ok(confirmRegisterBusinessDetailsPage(confirmRegisterBusinessDetailsForm, None))
+      }
   }
 
   def submitPage(): Action[AnyContent] = enrolled.async { implicit request =>
@@ -77,7 +86,7 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
         formValues =>
           formValues.value match {
             case "yes" => {
-              escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "U", None).flatMap {
+              escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "E", None).flatMap {
                 case Right(Some(resp)) =>
                   logger.info(s"Beneficiary ID Response = $resp")
                   escService.validateBeneficiaries(resp).map { allValidationsSuccessful =>
