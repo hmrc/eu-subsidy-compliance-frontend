@@ -38,7 +38,7 @@ class NeedRegistrationNumberBusinessController @Inject() (
 ) extends BaseController(mcc) {
   import actionBuilders._
 
-    def showPage(previous: String): Action[AnyContent] = verifiedEori.async { implicit request =>
+  def showPage(previous: String): Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     // If coming from registration confirm page, clear eligibility journey so user can't bypass on next login
     val clearJourney = if (previous.contains("confirm-business-details-register")) {
