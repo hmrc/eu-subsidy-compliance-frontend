@@ -18,7 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{BusinessEntityJourney, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{BusinessEntityJourney, EligibilityJourney, SubsidyJourney, UndertakingJourney}
+import scala.concurrent.Future
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -36,18 +37,27 @@ class NeedRegistrationNumberBusinessController @Inject() (
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
   import actionBuilders._
+
   def showPage(previous: String): Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[BusinessEntityJourney].flatMap {
-      case Some(journey) if journey.eori.value.isDefined =>
-        Ok(needRegistrationNumberBusinessPage(journey.eori.value.get.toString, previous)).toFuture
-      case _ =>
-        store.get[SubsidyJourney].map {
-          case Some(journey) if journey.addClaimEori.value.flatMap(_.value).isDefined =>
-            Ok(needRegistrationNumberBusinessPage(journey.addClaimEori.value.flatMap(_.value).get, previous))
-          case _ =>
-            Ok(needRegistrationNumberBusinessPage(eori.toString, previous))
-        }
+    // If coming from registration confirm page, clear eligibility journey so user can't bypass on next login
+    val clearJourney = if (previous.contains("confirm-business-details-register")) {
+      store.delete[EligibilityJourney].flatMap(_ => store.delete[UndertakingJourney])
+    } else {
+      Future.successful(())
+    }
+    clearJourney.flatMap { _ =>
+      store.get[BusinessEntityJourney].flatMap {
+        case Some(journey) if journey.eori.value.isDefined =>
+          Ok(needRegistrationNumberBusinessPage(journey.eori.value.get.toString, previous)).toFuture
+        case _ =>
+          store.get[SubsidyJourney].map {
+            case Some(journey) if journey.addClaimEori.value.flatMap(_.value).isDefined =>
+              Ok(needRegistrationNumberBusinessPage(journey.addClaimEori.value.flatMap(_.value).get, previous))
+            case _ =>
+              Ok(needRegistrationNumberBusinessPage(eori.toString, previous))
+          }
+      }
     }
   }
 }
