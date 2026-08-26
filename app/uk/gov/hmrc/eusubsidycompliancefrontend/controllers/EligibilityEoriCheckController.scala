@@ -61,7 +61,7 @@ class EligibilityEoriCheckController @Inject() (
         .withDoYouClaim(false)
         .withWillYouClaim(true)
 
-      store.getOrCreate[EligibilityJourney](eligibilityJourney).map { journey =>
+      store.put[EligibilityJourney](eligibilityJourney).map { journey =>
         val form =
           journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck => eoriCheckForm.fill(FormValues(eoriCheck.toString)))
 
