@@ -86,32 +86,43 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
         formValues =>
           formValues.value match {
             case "yes" => {
-              escService.getBeneficiaryIDValidation(request.eoriNumber.toString, "E", None).flatMap {
-                case Right(Some(resp)) =>
-                  logger.info(s"Beneficiary ID Response = $resp")
-                  escService.validateBeneficiaries(resp).map { allValidationsSuccessful =>
-                    if (allValidationsSuccessful) {
-                      logger.info("All beneficiary validations successful. Redirecting to BenNotificationController.")
-                      Redirect(routes.UndertakingController.getAboutUndertaking.url)
-                    } else {
-                      logger.info("Beneficiary validations failed.")
-                      Redirect(
-                        routes.HMRCEmailController
-                          .showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
-                      )
+              escService
+                .beneficiaryIDValidate(
+                  BeneficiaryIDRequest(
+                    idType = "EORI",
+                    idValue = request.eoriNumber.toString,
+                    requestType = "R",
+                    beneficiaryInfo = None
+                  )
+                )
+                .flatMap {
+                  case Right(Some(resp)) =>
+                    logger.info(s"Beneficiary ID Response = $resp")
+                    escService.validateBeneficiaries(resp).map { allValidationsSuccessful =>
+                      if (allValidationsSuccessful) {
+                        logger.info("All beneficiary validations successful. Redirecting to BenNotificationController.")
+                        Redirect(routes.UndertakingController.getAboutUndertaking.url)
+                      } else {
+                        logger.info("Beneficiary validations failed.")
+                        Redirect(
+                          routes.HMRCEmailController
+                            .showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
+                        )
+                      }
                     }
-                  }
-                case Right(None) =>
-                  logger.info("No Beneficiary ID Response from UTID validation.")
-                  Redirect(
-                    routes.HMRCEmailController.showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
-                  ).toFuture
-                case Left(error) =>
-                  logger.error(s"Error while calling Beneficiary ID validation = $error")
-                  Redirect(
-                    routes.HMRCEmailController.showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
-                  ).toFuture
-              }
+                  case Right(None) =>
+                    logger.info("No Beneficiary ID Response from UTID validation.")
+                    Redirect(
+                      routes.HMRCEmailController
+                        .showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
+                    ).toFuture
+                  case Left(error) =>
+                    logger.error(s"Error while calling Beneficiary ID validation = $error")
+                    Redirect(
+                      routes.HMRCEmailController
+                        .showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
+                    ).toFuture
+                }
             }
             case "no" =>
               Redirect(
