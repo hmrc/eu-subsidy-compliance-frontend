@@ -520,7 +520,7 @@ class AccountControllerSpec
                 mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
                 mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
               }
-              checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage)
+              checkIsRedirect(performAction(), routes.EligibilityEoriCheckController.getEoriCheck)
             }
 
             "eligibility Journey  and undertaking Journey are  complete" in {
