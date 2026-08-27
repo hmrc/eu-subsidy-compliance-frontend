@@ -38,6 +38,8 @@
 
 @layout(
     pageTitle = Some(messages("confirmMultipleBusinessDetails.title")),
+    backLinkEnabled = true,
+    backLink = Some(routes.AccountController.getAccountPage.url),
     hasErrors = form.hasErrors
 ) {
 

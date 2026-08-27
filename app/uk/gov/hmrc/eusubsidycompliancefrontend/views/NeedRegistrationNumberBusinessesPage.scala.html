@@ -20,11 +20,11 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.BeneficiaryIDResponse
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 
 @this(layout: Layout)
 @(businessEntities: List[BusinessEntity], eori: EORI, beneficiaryData: Option[BeneficiaryIDResponse] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(pageTitle = Some(messages("needRegistrationNumberBusinesses.title")), backLinkEnabled = false) {
-
+@layout(pageTitle = Some(messages("needRegistrationNumberBusinesses.title")), backLinkEnabled = true, backLink = Some(routes.AccountController.getAccountPage.url)) {
     @H1(messages("needRegistrationNumberBusinesses.title"), Some("govuk-heading-xl"))
 
     @P(messages("needRegistrationNumberBusinesses.p1"))

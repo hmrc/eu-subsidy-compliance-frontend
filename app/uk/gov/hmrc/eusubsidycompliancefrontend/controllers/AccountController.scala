@@ -78,11 +78,12 @@ class AccountController @Inject() (
     suspendedPageFlag = false
 
     val result = getOrCreateJourneys().map {
+
       case (eligibilityJourney, undertakingJourney) if !eligibilityJourney.isComplete && undertakingJourney.isEmpty =>
         logger.info(
-          "Eligibility journey is not complete and undertakingJourney is empty so redirecting to Eligibility first empty page"
+          "Eligibility journey is not complete and undertakingJourney is empty so redirecting to EORI check"
         )
-        Redirect(routes.EligibilityFirstEmptyPageController.firstEmptyPage)
+        Redirect(routes.EligibilityEoriCheckController.getEoriCheck)
       case (_, undertakingJourney) if !undertakingJourney.isComplete =>
         logger.info(
           "Undertaking journey is not complete, redirecting to EORI check"

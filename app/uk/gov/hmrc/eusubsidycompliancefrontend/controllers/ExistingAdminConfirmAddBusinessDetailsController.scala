@@ -66,13 +66,13 @@ class ExistingAdminConfirmAddBusinessDetailsController @Inject() (
             case _ =>
               Redirect(
                 routes.NeedRegistrationNumberBusinessController
-                  .showPage(routes.ExistingAdminConfirmAddBusinessDetailsController.showPage().url)
+                  .showPage(routes.AddClaimBusinessController.getAddClaimBusiness.url)
               )
           }
       case _ =>
         Redirect(
           routes.NeedRegistrationNumberBusinessController
-            .showPage(routes.ExistingAdminConfirmAddBusinessDetailsController.showPage().url)
+            .showPage(routes.AddClaimBusinessController.getAddClaimBusiness.url)
         ).toFuture
     }
   }

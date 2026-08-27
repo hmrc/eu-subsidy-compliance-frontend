@@ -64,13 +64,13 @@ class ConfirmRegisterBusinessDetailsController @Inject() (
           logger.info("No Beneficiary ID Response.")
           Redirect(
             routes.NeedRegistrationNumberBusinessController
-              .showPage(routes.ConfirmRegisterBusinessDetailsController.showPage().url)
+              .showPage(routes.EligibilityEoriCheckController.getEoriCheck.url)
           )
         case Left(error) =>
           logger.error(s"Error = $error")
           Redirect(
             routes.NeedRegistrationNumberBusinessController.showPage(
-              routes.ConfirmRegisterBusinessDetailsController.showPage().url
+              routes.EligibilityEoriCheckController.getEoriCheck.url
             )
           )
         case _ =>
