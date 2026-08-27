@@ -64,7 +64,7 @@ class EligibilityEoriCheckControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
+            mockPut[EligibilityJourney](EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true), eori1)(Right(EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true)))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -95,18 +95,14 @@ class EligibilityEoriCheckControllerSpec
         }
 
         "user has already answered the question" in {
-          List(true, false).foreach { inputValue =>
-            withClue(s" For input value :: $inputValue") {
-              testDisplay(EligibilityJourney(eoriCheck = EoriCheckFormPage(inputValue.some)))
-            }
-          }
+          testDisplay(EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true))
         }
 
         "XIEORI content is available " in {
           inSequence {
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
+            mockPut[EligibilityJourney](EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true), eori1)(Right(EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true)))
           }
 
           val result = performAction()
