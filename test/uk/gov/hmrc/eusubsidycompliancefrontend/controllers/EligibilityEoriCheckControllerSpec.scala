@@ -64,7 +64,9 @@ class EligibilityEoriCheckControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
-            mockPut[EligibilityJourney](EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true), eori1)(Right(EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true)))
+            mockPut[EligibilityJourney](EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true), eori1)(
+              Right(EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true))
+            )
           }
           checkPageIsDisplayed(
             performAction(),
@@ -102,7 +104,9 @@ class EligibilityEoriCheckControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
-            mockPut[EligibilityJourney](EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true), eori1)(Right(EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true)))
+            mockPut[EligibilityJourney](EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true), eori1)(
+              Right(EligibilityJourney().withDoYouClaim(false).withWillYouClaim(true))
+            )
           }
 
           val result = performAction()
