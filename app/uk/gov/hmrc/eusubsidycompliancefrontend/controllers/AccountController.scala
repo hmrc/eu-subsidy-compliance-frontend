@@ -102,12 +102,48 @@ class AccountController @Inject() (
     undertaking: Undertaking
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     logger.info("handleExistingUndertaking")
+    if (undertaking.isLeadEORI(eori)) {
+      escService
+        .beneficiaryIDValidate(
+          BeneficiaryIDRequest(
+            idType = "UTID",
+            idValue = undertaking.reference.toString,
+            requestType = "R",
+            beneficiaryInfo = None
+          )
+        )
+        .flatMap {
+          case Right(None) =>
+            logger.info("SCP22: No beneficiary ID found — redirecting to need-reg")
+            if (undertaking.getAllNonLeadEORIs.nonEmpty)
+              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
+            else
+              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage(r.uri)))
+          case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(bi => !bi.benIDType.isDefined)) =>
+            logger.info("SCP22: Missing beneficiary ID type — redirecting to need-reg")
+            if (undertaking.getAllNonLeadEORIs.nonEmpty)
+              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
+            else
+              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage(r.uri)))
+          case Right(Some(resp))
+              if resp.beneficiaryInfo.exists(_.exists(bi => bi.benIDType.isDefined && bi.validated.contains(false))) =>
+            logger.info("SCP22: Unvalidated beneficiary ID — redirecting to confirm page")
+            Future.successful(Redirect(routes.ConfirmBusinessDetailsController.showPage()))
+          case _ =>
+            logger.info("SCP22: All validated — proceeding to status/NACE checks")
+            proceedToStatusAndNaceChecks(undertaking)
+        }
+    } else {
+      proceedToStatusAndNaceChecks(undertaking)
+    }
+  }
 
+  private def proceedToStatusAndNaceChecks(
+    undertaking: Undertaking
+  )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     val isUpdated = undertaking.industrySector.toString.length == 5
-
     for {
       result <- undertaking.undertakingStatus match {
-
         case Some(UndertakingStatus.SuspendedUndertaking) =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)
@@ -119,7 +155,6 @@ class AccountController @Inject() (
                 .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
             )
           }
-
         case Some(UndertakingStatus.Inactive) =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)
@@ -131,7 +166,6 @@ class AccountController @Inject() (
                 .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
             )
           }
-
         case Some(UndertakingStatus.SuspendedAutomated) =>
           if (suspendedPageFlag) {
             proceedToAccountPage(undertaking)
@@ -144,7 +178,6 @@ class AccountController @Inject() (
                 .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
             )
           }
-
         case _ =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)
