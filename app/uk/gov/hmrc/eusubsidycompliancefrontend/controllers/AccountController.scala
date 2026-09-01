@@ -133,7 +133,7 @@ class AccountController @Inject() (
             logger.info("SCP22: All validated — proceeding to status/NACE checks")
             proceedToStatusAndNaceChecks(undertaking)
         }
-        } else {
+    } else {
       escService
         .beneficiaryIDValidate(
           BeneficiaryIDRequest(
@@ -249,7 +249,7 @@ class AccountController @Inject() (
 
     if (undertaking.isManuallySuspended)
       Future.successful(Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url))
-        else {
+    else {
       val today = timeProvider.today
       val lastSubmitted = undertaking.lastSubsidyUsageUpdt.orElse(undertakingSubsidies.lastSubmitted)
       val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
@@ -257,7 +257,8 @@ class AccountController @Inject() (
       val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
       val isSuspended = undertaking.isAutoSuspended
       val startDate = today.toEarliestTaxYearStart
-      val summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, undertakingSubsidies, balance, today)
+      val summary =
+        FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, undertakingSubsidies, balance, today)
 
       def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] = {
         if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
