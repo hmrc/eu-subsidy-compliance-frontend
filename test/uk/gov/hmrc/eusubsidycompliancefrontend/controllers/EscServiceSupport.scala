@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
@@ -132,5 +133,13 @@ trait EscServiceSupport { this: ControllerSpec =>
       .clearUndertakingCache(_: UndertakingRef))
       .expects(*)
       .returning(Future.successful(()))
+
+  def mockBeneficiaryIDValidate(
+    request: BeneficiaryIDRequest
+  )(result: Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]]) =
+    (mockEscService
+      .beneficiaryIDValidate(_: BeneficiaryIDRequest)(_: HeaderCarrier))
+      .expects(request, *)
+      .returning(result)
 
 }

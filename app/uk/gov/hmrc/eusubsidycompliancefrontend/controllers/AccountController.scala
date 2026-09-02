@@ -102,12 +102,67 @@ class AccountController @Inject() (
     undertaking: Undertaking
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     logger.info("handleExistingUndertaking")
+    if (undertaking.isLeadEORI(eori)) {
+      escService
+        .beneficiaryIDValidate(
+          BeneficiaryIDRequest(
+            idType = "UTID",
+            idValue = undertaking.reference.toString,
+            requestType = "R",
+            beneficiaryInfo = None
+          )
+        )
+        .flatMap {
+          case Right(None) =>
+            logger.info("SCP22: No beneficiary ID found — redirecting to need-reg")
+            if (undertaking.getAllNonLeadEORIs.nonEmpty)
+              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
+            else
+              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage(r.uri)))
+          case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(bi => !bi.benIDType.isDefined)) =>
+            logger.info("SCP22: Missing beneficiary ID type — redirecting to need-reg")
+            if (undertaking.getAllNonLeadEORIs.nonEmpty)
+              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
+            else
+              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage(r.uri)))
+          case Right(Some(resp))
+              if resp.beneficiaryInfo.exists(_.exists(bi => bi.benIDType.isDefined && bi.validated.contains(false))) =>
+            logger.info("SCP22: Unvalidated beneficiary ID — redirecting to confirm page")
+            Future.successful(Redirect(routes.ConfirmBusinessDetailsController.showPage()))
+          case _ =>
+            logger.info("SCP22: All validated — proceeding to status/NACE checks")
+            proceedToStatusAndNaceChecks(undertaking)
+        }
+    } else {
+      escService
+        .beneficiaryIDValidate(
+          BeneficiaryIDRequest(
+            idType = "UTID",
+            idValue = undertaking.reference.toString,
+            requestType = "R",
+            beneficiaryInfo = None
+          )
+        )
+        .flatMap {
+          case Right(Some(resp))
+              if resp.beneficiaryInfo.exists(
+                _.forall(bi => !bi.benIDType.isDefined || bi.validated.contains(true))
+              ) =>
+            logger.info("SCP22: Admin validated — proceeding to status/NACE checks for non-lead")
+            proceedToStatusAndNaceChecks(undertaking)
+          case _ =>
+            logger.info("SCP22: Admin not validated — non-lead cannot use service")
+            Future.successful(Redirect(routes.CannotUseServiceContactAdministratorController.show()))
+        }
+    }
+  }
 
+  private def proceedToStatusAndNaceChecks(
+    undertaking: Undertaking
+  )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     val isUpdated = undertaking.industrySector.toString.length == 5
-
     for {
       result <- undertaking.undertakingStatus match {
-
         case Some(UndertakingStatus.SuspendedUndertaking) =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)
@@ -119,7 +174,6 @@ class AccountController @Inject() (
                 .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
             )
           }
-
         case Some(UndertakingStatus.Inactive) =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)
@@ -131,7 +185,6 @@ class AccountController @Inject() (
                 .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
             )
           }
-
         case Some(UndertakingStatus.SuspendedAutomated) =>
           if (suspendedPageFlag) {
             proceedToAccountPage(undertaking)
@@ -144,7 +197,6 @@ class AccountController @Inject() (
                 .addingToSession("reportDue" -> undertaking.lastSubsidyUsageUpdt.getOrElse("").toString)
             )
           }
-
         case _ =>
           if (isUpdated) {
             proceedToAccountPage(undertaking)
@@ -198,131 +250,75 @@ class AccountController @Inject() (
     if (undertaking.isManuallySuspended)
       Future.successful(Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url))
     else {
-      def needRegistrationRedirect: Future[Result] =
-        if (undertaking.getAllNonLeadEORIs.nonEmpty)
-          Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
-        else
-          Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage(r.uri)))
+      val today = timeProvider.today
+      val lastSubmitted = undertaking.lastSubsidyUsageUpdt.orElse(undertakingSubsidies.lastSubmitted)
+      val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
+      val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted.getOrElse(today)).toDisplayFormat
+      val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
+      val isSuspended = undertaking.isAutoSuspended
+      val startDate = today.toEarliestTaxYearStart
+      val summary =
+        FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, undertakingSubsidies, balance, today)
 
-      def dashboard: Future[Result] = {
-        val today = timeProvider.today
-
-        val lastSubmitted = undertaking.lastSubsidyUsageUpdt.orElse(undertakingSubsidies.lastSubmitted)
-        val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
-        val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted.getOrElse(today)).toDisplayFormat
-        val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
-        val isSuspended = undertaking.isAutoSuspended
-        val startDate = today.toEarliestTaxYearStart
-
-        val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
-          undertaking,
-          undertakingSubsidies,
-          balance,
-          today
-        )
-
-        def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] = {
-          if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
-          else n.toFuture
-        }
-
-        var agriOtherFlag: Boolean = true
-        if (undertaking.industrySector.toString.take(2).equals(Sector.FishingAndAquaculture.toString)) {
-          agriOtherFlag = false
-        }
-        if (undertaking.isLeadEORI(eori)) {
-          logger.info("showing account page for lead")
-          val result = for {
-            nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
-            _ <- updateNilReturnJourney(nilReturnJourney).toContext
-          } yield Ok(
-            leadAccountPage(
-              undertaking = undertaking,
-              eori = eori,
-              isNonLeadEORIPresent = undertaking.getAllNonLeadEORIs.nonEmpty,
-              isTimeToReport = isTimeToReport,
-              dueDate = dueDate,
-              isOverdue = isOverdue,
-              isNilReturnDoneRecently = nilReturnJourney.displayNotification,
-              lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
-              neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
-              allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-              totalSubsidies = summary.overall.total.value.toEuros,
-              remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
-              currentPeriodStart = startDate.toDisplayFormat,
-              isOverAllowance = summary.overall.allowanceExceeded,
-              isSuspended = isSuspended,
-              scp08IssuesExist = summary.scp08IssuesExist,
-              agriOtherFlag = agriOtherFlag
-            )
-          )
-          result.getOrElse(handleMissingSessionData("Nil Return Journey"))
-        } else {
-          // SCP22: check if admin has validated all beneficiary IDs for the undertaking
-          escService
-            .beneficiaryIDValidate(
-              BeneficiaryIDRequest(
-                idType = "UTID",
-                idValue = undertaking.reference.toString,
-                requestType = "R",
-                beneficiaryInfo = None
-              )
-            )
-            .flatMap {
-              case Right(Some(resp))
-                  if resp.beneficiaryInfo.exists(
-                    _.forall(bi => !bi.benIDType.isDefined || bi.validated.contains(true))
-                  ) =>
-                logger.info("showing nonLeadAccountPage — admin validated")
-                Ok(
-                  nonLeadAccountPage(
-                    undertaking = undertaking,
-                    eori = undertaking.getLeadEORI,
-                    isLead = false,
-                    dueDate = dueDate,
-                    isOverdue = isOverdue,
-                    lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
-                    neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
-                    allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-                    totalSubsidies = summary.overall.total.value.toEuros,
-                    remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
-                    currentPeriodStart = startDate.toDisplayFormat,
-                    isSuspended = isSuspended,
-                    scp08IssuesExist = summary.scp08IssuesExist,
-                    agriOtherFlag = agriOtherFlag
-                  )
-                ).toFuture
-              case _ =>
-                Future.successful(Redirect(routes.CannotUseServiceContactAdministratorController.show()))
-            }
-
-        }
+      def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] = {
+        if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
+        else n.toFuture
       }
 
-      if (undertaking.isLeadEORI(eori))
-        escService
-          .beneficiaryIDValidate(
-            BeneficiaryIDRequest(
-              idType = "UTID",
-              idValue = undertaking.reference.toString,
-              requestType = "R",
-              beneficiaryInfo = None
-            )
-          )
-          .flatMap {
-            // SCP22: if any EORI with a known ID has validated=false, route to confirm page. EORIs without an ID (benIDType undefined) are excluded — they are need-registration cases, not confirm cases.
-            case Right(None) => needRegistrationRedirect
-            case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(bi => !bi.benIDType.isDefined)) =>
-              needRegistrationRedirect
-            case Right(Some(resp))
-                if resp.beneficiaryInfo.exists(
-                  _.exists(bi => bi.benIDType.isDefined && bi.validated.contains(false))
-                ) =>
-              Future.successful(Redirect(routes.ConfirmBusinessDetailsController.showPage()))
-            case _ => dashboard
-          }
-      else dashboard
+      var agriOtherFlag: Boolean = true
+      if (undertaking.industrySector.toString.take(2).equals(Sector.FishingAndAquaculture.toString)) {
+        agriOtherFlag = false
+      }
 
+      if (undertaking.isLeadEORI(eori)) {
+        logger.info("showing account page for lead")
+        val result = for {
+          nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
+          _ <- updateNilReturnJourney(nilReturnJourney).toContext
+        } yield Ok(
+          leadAccountPage(
+            undertaking = undertaking,
+            eori = eori,
+            isNonLeadEORIPresent = undertaking.getAllNonLeadEORIs.nonEmpty,
+            isTimeToReport = isTimeToReport,
+            dueDate = dueDate,
+            isOverdue = isOverdue,
+            isNilReturnDoneRecently = nilReturnJourney.displayNotification,
+            lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
+            neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
+            allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+            totalSubsidies = summary.overall.total.value.toEuros,
+            remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
+            currentPeriodStart = startDate.toDisplayFormat,
+            isOverAllowance = summary.overall.allowanceExceeded,
+            isSuspended = isSuspended,
+            scp08IssuesExist = summary.scp08IssuesExist,
+            agriOtherFlag = agriOtherFlag
+          )
+        )
+        result.getOrElse(handleMissingSessionData("Nil Return Journey"))
+      } else {
+        logger.info("showing nonLeadAccountPage")
+        Ok(
+          nonLeadAccountPage(
+            undertaking = undertaking,
+            eori = undertaking.getLeadEORI,
+            isLead = false,
+            dueDate = dueDate,
+            isOverdue = isOverdue,
+            lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
+            neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
+            allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+            totalSubsidies = summary.overall.total.value.toEuros,
+            remainingAmount = summary.undertakingBalanceEUR.value.toEuros,
+            currentPeriodStart = startDate.toDisplayFormat,
+            isSuspended = isSuspended,
+            scp08IssuesExist = summary.scp08IssuesExist,
+            agriOtherFlag = agriOtherFlag
+          )
+        ).toFuture
+      }
     }
+
   }
 }
