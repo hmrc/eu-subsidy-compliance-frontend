@@ -27,6 +27,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse, BeneficiaryInfoResp}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NonHmrcSubsidy, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -85,6 +86,18 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(
+              Right(
+                Some(
+                  BeneficiaryIDResponse(
+                    None,
+                    Some(
+                      Seq(BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(true)))
+                    )
+                  )
+                )
+              ).toFuture
+            )
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockTimeProviderToday(fixedDate)
@@ -127,6 +140,18 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(
+              Right(
+                Some(
+                  BeneficiaryIDResponse(
+                    None,
+                    Some(
+                      Seq(BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(true)))
+                    )
+                  )
+                )
+              ).toFuture
+            )
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
 
@@ -204,6 +229,18 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockRetrieveUndertaking(eori1)(agricultureUndertaking.some.toFuture)
+            mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(
+              Right(
+                Some(
+                  BeneficiaryIDResponse(
+                    None,
+                    Some(
+                      Seq(BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(true)))
+                    )
+                  )
+                )
+              ).toFuture
+            )
           }
 
           checkIsRedirect(
@@ -218,6 +255,18 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockRetrieveUndertaking(eori1)(otherUndertaking.some.toFuture)
+            mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(
+              Right(
+                Some(
+                  BeneficiaryIDResponse(
+                    None,
+                    Some(
+                      Seq(BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(true)))
+                    )
+                  )
+                )
+              ).toFuture
+            )
           }
 
           checkIsRedirect(
@@ -268,6 +317,20 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
               mockRetrieveUndertaking(eori1)(agricultureUndertaking.some.toFuture)
+              mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(
+                Right(
+                  Some(
+                    BeneficiaryIDResponse(
+                      None,
+                      Some(
+                        Seq(
+                          BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(true))
+                        )
+                      )
+                    )
+                  )
+                ).toFuture
+              )
             }
 
             val result = performActionWithSession()
@@ -285,6 +348,20 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
               mockRetrieveUndertaking(eori1)(otherUndertaking.some.toFuture)
+              mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(
+                Right(
+                  Some(
+                    BeneficiaryIDResponse(
+                      None,
+                      Some(
+                        Seq(
+                          BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(true))
+                        )
+                      )
+                    )
+                  )
+                ).toFuture
+              )
             }
 
             val result = performActionWithSession()
@@ -361,6 +438,20 @@ class AccountControllerSpec
               mockRetrieveUndertaking(eori4)(
                 undertaking1.copy(undertakingStatus = Some(UndertakingStatus.SuspendedAutomated)).some.toFuture
               )
+              mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(
+                Right(
+                  Some(
+                    BeneficiaryIDResponse(
+                      None,
+                      Some(
+                        Seq(
+                          BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(true))
+                        )
+                      )
+                    )
+                  )
+                ).toFuture
+              )
             }
             val result = performAction()
             status(result) shouldBe SEE_OTHER
@@ -378,6 +469,18 @@ class AccountControllerSpec
             mockAuthWithEnrolmentAndNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(
               inactiveUndertaking.copy(undertakingStatus = Some(UndertakingStatus.Inactive)).some.toFuture
+            )
+            mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(
+              Right(
+                Some(
+                  BeneficiaryIDResponse(
+                    None,
+                    Some(
+                      Seq(BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(true)))
+                    )
+                  )
+                )
+              ).toFuture
             )
           }
           val result = performAction()
@@ -455,6 +558,20 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
               mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+              mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(
+                Right(
+                  Some(
+                    BeneficiaryIDResponse(
+                      None,
+                      Some(
+                        Seq(
+                          BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(true))
+                        )
+                      )
+                    )
+                  )
+                ).toFuture
+              )
               mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
             }
             assertThrows[Exception](await(performAction()))
@@ -465,6 +582,20 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
               mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+              mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(
+                Right(
+                  Some(
+                    BeneficiaryIDResponse(
+                      None,
+                      Some(
+                        Seq(
+                          BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(true))
+                        )
+                      )
+                    )
+                  )
+                ).toFuture
+              )
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
             }
@@ -476,6 +607,20 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
               mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+              mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(
+                Right(
+                  Some(
+                    BeneficiaryIDResponse(
+                      None,
+                      Some(
+                        Seq(
+                          BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(true))
+                        )
+                      )
+                    )
+                  )
+                ).toFuture
+              )
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
