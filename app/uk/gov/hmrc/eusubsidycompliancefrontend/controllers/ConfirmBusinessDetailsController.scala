@@ -91,14 +91,18 @@ class ConfirmBusinessDetailsController @Inject() (
         case Right(Some(resp)) =>
           logger.info(s"Beneficiary ID Response = $resp")
           if (resp.beneficiaryInfo.getOrElse(Seq.empty).exists(_.validated.contains(false))) {
-            Ok(
-              confirmMultipleBusinessDetailsPage(
-                confirmBusinessDetailsForm,
-                isSuspended(undertaking),
-                resp,
-                request.eoriNumber.toString
+            if (undertaking.getAllNonLeadEORIs.nonEmpty) {
+              Ok(
+                confirmMultipleBusinessDetailsPage(
+                  confirmBusinessDetailsForm,
+                  isSuspended(undertaking),
+                  resp,
+                  request.eoriNumber.toString
+                )
               )
-            )
+            } else {
+              Ok(confirmBusinessDetailsPage(confirmBusinessDetailsForm, isSuspended(undertaking), Some(resp)))
+            }
           } else {
             Redirect(routes.AccountController.getAccountPage)
           }
