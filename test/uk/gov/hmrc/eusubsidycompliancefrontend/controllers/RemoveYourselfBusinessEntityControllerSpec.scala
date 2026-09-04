@@ -216,7 +216,7 @@ class RemoveYourselfBusinessEntityControllerSpec
           }
           checkIsRedirect(
             performAction("removeYourselfBusinessEntity" -> "true"),
-            routes.SignOutController.signOut().url
+            routes.SignOutController.leaveSignedOut().url
           )
         }
 
