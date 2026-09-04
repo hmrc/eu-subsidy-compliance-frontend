@@ -37,15 +37,16 @@
 @(
     form: Form[_],
     viewModel: NaceCheckDetailsViewModel,
-    naceLevel4Notes: NaceLevel4
+    naceLevel4Notes: NaceLevel4,
+    previous: String = ""
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @key = @{"NACE.check-details"}
 
 @layout(
     pageTitle = Some(messages(s"$key.title")),
-    backLinkEnabled = false,
-    hasErrors = form.hasErrors
+    backLinkEnabled = previous.nonEmpty,
+    backLink = Some(previous),
 ) {
 
     @H1(messages(s"$key.title"))
