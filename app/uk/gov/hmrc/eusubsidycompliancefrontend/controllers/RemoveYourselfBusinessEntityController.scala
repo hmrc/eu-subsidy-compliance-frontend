@@ -116,7 +116,7 @@ class RemoveYourselfBusinessEntityController @Inject() (
           _ = auditService.sendEvent(
             BusinessEntityRemovedSelf(undertaking.reference, request.authorityId, undertaking.getLeadEORI, eori)
           )
-        } yield Redirect(routes.SignOutController.signOut())
+        } yield Redirect(routes.SignOutController.leaveSignedOut())
       } else Redirect(routes.AccountController.getAccountPage).toContext
 
     val result = for {
