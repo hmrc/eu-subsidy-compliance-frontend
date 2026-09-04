@@ -85,7 +85,7 @@ class ConfirmBusinessDetailsControllerSpec
         }
         checkIsRedirect(
           performAction("confirmBusinessDetails" -> "no"),
-          routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url).url
+          routes.HMRCEmailController.showPageEmail(routes.ConfirmBusinessDetailsController.showPage().url).url
         )
       }
     }
