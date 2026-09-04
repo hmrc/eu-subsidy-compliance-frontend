@@ -19,8 +19,8 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 
 @this(layout: Layout)
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(pageTitle = Some(messages("emailHMRCUpdateBusinessDetails.title")), backLinkEnabled = true) {
+@(previous: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@layout(pageTitle = Some(messages("emailHMRCUpdateBusinessDetails.title")), backLinkEnabled = true, backLink = Some(previous)) {
 
     @H1(messages("emailHMRCUpdateBusinessDetails.title"), Some("govuk-heading-xl"))
 
