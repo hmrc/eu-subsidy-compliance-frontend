@@ -54,7 +54,9 @@ case class UndertakingJourney(
     confirmation
   )
   private lazy val previousMap: Map[String, Uri] = Map(
-    routes.UndertakingController.getAboutUndertaking.url -> routes.EligibilityEoriCheckController.getEoriCheck.url,
+    routes.UndertakingController.getAboutUndertaking.url -> routes.ConfirmRegisterBusinessDetailsController
+      .showPage()
+      .url,
     routes.UndertakingController.getSector.url -> routes.UndertakingController.getAboutUndertaking.url
   )
 
