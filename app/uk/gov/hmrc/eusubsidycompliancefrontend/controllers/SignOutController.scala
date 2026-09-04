@@ -23,12 +23,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.TimedOut
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.SignOutPage
 
 @Singleton
 class SignOutController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  timedOutPage: TimedOut
+  timedOutPage: TimedOut,
+  SignOutPage: SignOutPage
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc)
     with I18nSupport {
@@ -41,5 +43,9 @@ class SignOutController @Inject() (
 
   val signOut: Action[AnyContent] = enrolled.async { implicit request =>
     Redirect(appConfig.signOutUrl(Some(appConfig.exitSurveyUrl))).toFuture
+  }
+
+  val leaveSignedOut: Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(SignOutPage()).toFuture
   }
 }
