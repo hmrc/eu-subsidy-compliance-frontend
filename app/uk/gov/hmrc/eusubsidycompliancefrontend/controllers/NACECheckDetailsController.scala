@@ -279,7 +279,8 @@ class NACECheckDetailsController @Inject() (
           .fromMessages(usersLastAnswer)(messages)
           .getOrElse(throw new IllegalStateException(s"No notes found for Level 4 code $usersLastAnswer"))
 
-        Ok(naceCYAView(confirmDetailsForm, viewModel, naceLevel4Notes)(request, messages, appConfig)).toFuture
+        val previous = request.headers.get("Referer").getOrElse("")
+        Ok(naceCYAView(confirmDetailsForm, viewModel, naceLevel4Notes, previous)(request, messages, appConfig)).toFuture
       } else {
         Redirect(routes.UndertakingController.getSector).toFuture
       }
