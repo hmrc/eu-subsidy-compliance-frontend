@@ -866,6 +866,7 @@ POST       /lead-undertaking-non-customs-subsidy-nil-return                     
 GET        /lead-undertaking-non-customs-subsidy-nil-return-confirmation                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNotificationConfirmation(isSuspended: Boolean ?= false)
 
 GET        /sign-out                                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
+GET        /leave-sign-out                                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.leaveSignedOut()
 
 GET        /timed-out                                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOutFromTimeout()
 
