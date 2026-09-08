@@ -20,7 +20,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.EmailHMRCPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.{EmailHMRCPage, EmailHMRCUpdateBusinessDetailsPage}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -29,7 +29,8 @@ import scala.concurrent.ExecutionContext
 class HMRCEmailController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  emailHMRCPage: EmailHMRCPage
+  emailHMRCPage: EmailHMRCPage,
+  emailHMRCUpdateBusinessDetailsPage: EmailHMRCUpdateBusinessDetailsPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -40,4 +41,9 @@ class HMRCEmailController @Inject() (
   def showPage(previous: String): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(emailHMRCPage(previous)).toFuture
   }
+
+  def showPageEmail(previous: String): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(emailHMRCUpdateBusinessDetailsPage(previous)).toFuture
+  }
+
 }
