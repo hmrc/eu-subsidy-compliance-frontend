@@ -138,8 +138,8 @@ trait EscServiceSupport { this: ControllerSpec =>
     request: BeneficiaryIDRequest
   )(result: Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]]) =
     (mockEscService
-      .beneficiaryIDValidate(_: BeneficiaryIDRequest)(_: HeaderCarrier))
-      .expects(request, *)
+      .beneficiaryIDValidate(_: BeneficiaryIDRequest, _: Option[EORI])(_: HeaderCarrier))
+      .expects(request, *, *)
       .returning(result)
 
 }

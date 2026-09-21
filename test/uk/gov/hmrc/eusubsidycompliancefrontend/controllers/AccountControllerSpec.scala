@@ -28,7 +28,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse, BeneficiaryInfoResp}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingStatus}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NonHmrcSubsidy, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -40,6 +40,8 @@ import org.scalatest.OptionValues._
 
 import java.time.LocalDate
 import scala.concurrent.Future
+import scala.reflect.ClassTag
+import play.api.libs.json.{OWrites, Reads, Writes}
 
 class AccountControllerSpec
     extends ControllerSpec

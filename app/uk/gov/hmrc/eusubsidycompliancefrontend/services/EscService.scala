@@ -289,6 +289,30 @@ class EscService @Inject() (
       )
 
   def beneficiaryIDValidate(
+    beneficiaryIDRequest: BeneficiaryIDRequest,
+    cacheEori: Option[EORI] = None
+  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]] = {
+    if (beneficiaryIDRequest.requestType == "R" && cacheEori.isDefined) {
+      val eori = cacheEori.get
+      undertakingCache.get[BeneficiaryIDResponse](eori).flatMap {
+        case Some(cached) =>
+          logger.info(s"SCP22 cache hit for $eori")
+          Future.successful(Right(Some(cached)))
+        case None =>
+          callBeneficiaryIDValidate(beneficiaryIDRequest).flatMap {
+            case Right(Some(resp))
+                if resp.beneficiaryInfo
+                  .exists(_.forall(bi => !bi.benIDType.isDefined || bi.validated.contains(true))) =>
+              undertakingCache.put[BeneficiaryIDResponse](eori, resp).map(_ => Right(Some(resp)))
+            case other => Future.successful(other)
+          }
+      }
+    } else {
+      callBeneficiaryIDValidate(beneficiaryIDRequest)
+    }
+  }
+
+  private def callBeneficiaryIDValidate(
     beneficiaryIDRequest: BeneficiaryIDRequest
   )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[BeneficiaryIDResponse]]] = {
     escConnector.beneficiaryIDValidation(beneficiaryIDRequest).map {

@@ -110,7 +110,8 @@ class AccountController @Inject() (
             idValue = undertaking.reference.toString,
             requestType = "R",
             beneficiaryInfo = None
-          )
+          ),
+          cacheEori = Some(eori)
         )
         .flatMap {
           case Right(None) =>
@@ -141,7 +142,8 @@ class AccountController @Inject() (
             idValue = undertaking.reference.toString,
             requestType = "R",
             beneficiaryInfo = None
-          )
+          ),
+          cacheEori = Some(eori)
         )
         .flatMap {
           case Right(Some(resp))
