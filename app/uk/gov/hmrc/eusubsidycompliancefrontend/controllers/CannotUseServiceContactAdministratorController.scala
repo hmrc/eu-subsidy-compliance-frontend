@@ -21,7 +21,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.cannotUseServiceContactAdministratorPage
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
@@ -35,7 +34,7 @@ class CannotUseServiceContactAdministratorController @Inject() (
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def show(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(cannotUseServiceContactAdministratorPage()).toFuture

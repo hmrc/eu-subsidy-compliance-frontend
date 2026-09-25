@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import play.api.data.validation.{Constraint, Invalid, Valid}
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.mandatory
@@ -27,12 +27,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.I
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalTraderRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef.TraderRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.AddTraderReferencePage
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
@@ -52,7 +50,7 @@ class AddClaimReferenceController @Inject() (
     with ControllerFormHelpers
     with SubsidyJourneySupport {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   private val enteredTradingRefIsValid = Constraint[String] { (traderRef: String) =>
     if (traderRef.matches(TraderRef.regex.regex)) Valid

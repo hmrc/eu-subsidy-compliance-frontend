@@ -23,18 +23,17 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceLevel4Catalogue
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModel
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UpdateConfirmationPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.ConfirmDetailsPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.{NaceCheckDetailsViewModel, NaceLevel4Catalogue}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -53,7 +52,7 @@ class NACECheckDetailsController @Inject() (
     extends BaseController(mcc)
     with Logging {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   private val confirmDetailsForm: Form[FormValues] = formWithSingleMandatoryField("confirmDetails")
 

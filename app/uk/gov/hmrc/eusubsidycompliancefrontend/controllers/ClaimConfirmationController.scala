@@ -16,12 +16,11 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.ReportReminderHelpers
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ClaimConfirmationPage
 
 import javax.inject.{Inject, Singleton}
@@ -36,7 +35,7 @@ class ClaimConfirmationController @Inject() (
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def getClaimConfirmationPage(isSuspended: Boolean = false): Action[AnyContent] = verifiedEori.async {
     implicit request =>

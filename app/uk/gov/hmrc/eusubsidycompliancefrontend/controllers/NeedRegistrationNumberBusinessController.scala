@@ -19,13 +19,13 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{BusinessEntityJourney, EligibilityJourney, SubsidyJourney, UndertakingJourney}
-import scala.concurrent.Future
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.NeedRegistrationNumberBusinessPage
+
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class NeedRegistrationNumberBusinessController @Inject() (
   mcc: MessagesControllerComponents,
@@ -36,7 +36,7 @@ class NeedRegistrationNumberBusinessController @Inject() (
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
-  import actionBuilders._
+  import actionBuilders.*
 
   def showPage(previous: String): Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

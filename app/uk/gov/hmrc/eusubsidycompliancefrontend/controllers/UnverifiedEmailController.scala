@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
@@ -33,7 +33,7 @@ class UnverifiedEmailController @Inject() (
   val appConfig: AppConfig
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def unverifiedEmail: Action[AnyContent] = enrolled.async { implicit request =>
     Future.successful(Ok(unverifiedEmailPage()))

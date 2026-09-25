@@ -17,19 +17,14 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse, BeneficiaryInfo, BeneficiaryInfoResp, ConnectorError, FormValues, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmBusinessDetailsPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ConfirmMultipleBusinessDetailsPage
-import uk.gov.hmrc.http.HeaderCarrier
-
-import scala.concurrent.Future
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.{ConfirmBusinessDetailsPage, ConfirmMultipleBusinessDetailsPage}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -46,7 +41,7 @@ class ConfirmBusinessDetailsController @Inject() (
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   private val confirmBusinessDetailsForm: Form[FormValues] =
     formWithSingleMandatoryField("confirmBusinessDetails")

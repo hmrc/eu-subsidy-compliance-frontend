@@ -29,11 +29,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmission
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,7 +52,7 @@ class NoClaimNotificationController @Inject() (
     extends BaseController(mcc)
     with ControllerFormHelpers
     with LeadOnlyUndertakingSupport {
-  import actionBuilders._
+  import actionBuilders.*
 
   private val noClaimForm: Form[FormValues] = formWithSingleMandatoryField("noClaimNotification")
 

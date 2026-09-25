@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -41,7 +41,7 @@ class NoBusinessPresentController @Inject() (
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def getNoBusinessPresent: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { _ =>

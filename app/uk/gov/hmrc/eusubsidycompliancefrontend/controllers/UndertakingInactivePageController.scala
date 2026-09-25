@@ -33,7 +33,7 @@ class UndertakingInactivePageController @Inject() (
   val appConfig: AppConfig
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def showPage: Action[AnyContent] = enrolled.async { implicit request =>
     Future.successful(Ok(undertakingInactivePage()))

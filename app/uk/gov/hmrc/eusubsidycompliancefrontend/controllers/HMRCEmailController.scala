@@ -35,7 +35,7 @@ class HMRCEmailController @Inject() (
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def showPage(previous: String): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(emailHMRCPage(previous)).toFuture

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import play.api.Logging
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.Connector.ConnectorSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.Connector.ConnectorSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HttpResponse, UpstreamErrorResponse}

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ReportedPaymentsPage
 
@@ -44,7 +44,7 @@ class ReportedPaymentsController @Inject() (
     with LeadOnlyUndertakingSupport
     with ControllerFormHelpers {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def getReportedPayments: Action[AnyContent] = verifiedEori.async { implicit request =>
     logger.info("ReportedPaymentsController.getReportedPayments")

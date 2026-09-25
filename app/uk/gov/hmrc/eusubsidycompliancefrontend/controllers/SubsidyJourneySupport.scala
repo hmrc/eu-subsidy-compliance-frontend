@@ -22,7 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnr
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.*
 
 import scala.concurrent.{ExecutionContext, Future}
 

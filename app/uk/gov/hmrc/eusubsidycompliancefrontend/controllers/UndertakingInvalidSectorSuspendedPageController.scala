@@ -38,7 +38,7 @@ class UndertakingInvalidSectorSuspendedPageController @Inject() (
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def showPage: Action[AnyContent] = enrolled { implicit request =>
     request.session.get("suspensionCode") match {

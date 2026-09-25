@@ -23,8 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.BenNotificationPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HowWeUseYourDataPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.{BenNotificationPage, HowWeUseYourDataPage}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -40,7 +39,7 @@ class BenNotificationController @Inject() (
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   private val benNotificationForm: Form[FormValues] =
     formWithSingleMandatoryField("benNotification")

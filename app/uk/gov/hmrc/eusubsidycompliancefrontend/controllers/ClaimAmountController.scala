@@ -18,18 +18,17 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
 import play.api.data.{Form, FormError}
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.{Errors, Fields}
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{Journey, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.{AddClaimAmountPage, AddEuroOnlyClaimAmountPage}
 
 import javax.inject.{Inject, Singleton}
@@ -48,7 +47,7 @@ class ClaimAmountController @Inject() (
     with LeadOnlyUndertakingSupport
     with ControllerFormHelpers {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def getClaimAmount: Action[AnyContent] = subsidyJourney.async { implicit request =>
     withLeadUndertaking { _ =>

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
@@ -43,7 +43,7 @@ class ReportedNoCustomSubsidyController @Inject() (
     with LeadOnlyUndertakingSupport
     with SubsidyJourneySupport {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   private val reportedPaymentNonCustomSubsidyForm = formWithSingleMandatoryField("reportNonCustomSubsidy")
 

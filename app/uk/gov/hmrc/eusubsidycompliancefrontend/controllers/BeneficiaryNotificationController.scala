@@ -19,10 +19,9 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.MemberNotificationJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{MemberNotificationJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HowWeUseYourDataPage
 
@@ -40,7 +39,7 @@ class BeneficiaryNotificationController @Inject() (
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   private val howWeUseForm = play.api.data.Form(play.api.data.Forms.single("continue" -> play.api.data.Forms.text))
 

@@ -19,20 +19,18 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.mvc.Http.Status
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
-import uk.gov.hmrc.http.client.HttpClientV2
-
 import java.time.LocalDate
-
-import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EscConnector @Inject() (
