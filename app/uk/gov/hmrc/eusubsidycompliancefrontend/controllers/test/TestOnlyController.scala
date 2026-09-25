@@ -22,8 +22,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.{BaseController, ControllerFormHelpers, LeadOnlyUndertakingSupport}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.services._
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,7 +43,7 @@ class TestOnlyController @Inject() (
     with LeadOnlyUndertakingSupport
     with ControllerFormHelpers {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def testHome: Action[AnyContent] = enrolled.async { implicit request =>
     Future.successful(Ok(testHomePage()))

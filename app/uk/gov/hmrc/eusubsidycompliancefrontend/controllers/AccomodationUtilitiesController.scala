@@ -24,14 +24,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.accomodation._
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.electricity._
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.water._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.accomodation.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.electricity.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.water.*
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -59,7 +59,7 @@ class AccomodationUtilitiesController @Inject() (
   val executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
   override val messagesApi: MessagesApi = mcc.messagesApi
 
   private val AccommodationFoodLvl2Form: Form[FormValues] = formWithSingleMandatoryField("accommodation2")

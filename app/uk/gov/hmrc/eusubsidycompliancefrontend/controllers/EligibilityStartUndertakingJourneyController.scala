@@ -34,7 +34,7 @@ class EligibilityStartUndertakingJourneyController @Inject() (
 )(implicit val appConfig: AppConfig, override val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with ControllerFormHelpers {
-  import actionBuilders._
+  import actionBuilders.*
 
   def startUndertakingJourney: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

@@ -43,7 +43,7 @@ class EligibilityWillYouClaimController @Inject() (
   override val executionContext: ExecutionContext
 ) extends BaseController(mcc)
     with ControllerFormHelpers {
-  import actionBuilders._
+  import actionBuilders.*
 
   private val willYouClaimUrl = routes.EligibilityWillYouClaimController.getWillYouClaim.url
   private val doYouClaimUrl = routes.EligibilityDoYouClaimController.getDoYouClaim.url

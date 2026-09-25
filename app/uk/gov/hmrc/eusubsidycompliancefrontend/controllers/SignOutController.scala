@@ -22,8 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.TimedOut
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.SignOutPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.{SignOutPage, TimedOut}
 
 @Singleton
 class SignOutController @Inject() (
@@ -35,7 +34,7 @@ class SignOutController @Inject() (
     extends BaseController(mcc)
     with I18nSupport {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   val signOutFromTimeout: Action[AnyContent] = Action { implicit request =>
     Ok(timedOutPage()).withNewSession

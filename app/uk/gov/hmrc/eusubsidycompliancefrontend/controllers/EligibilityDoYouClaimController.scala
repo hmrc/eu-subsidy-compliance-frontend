@@ -26,10 +26,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.RequestSyntax.RequestOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
-
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.DoYouClaimPage
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.DoYouClaimPage
 
 @Singleton
 class EligibilityDoYouClaimController @Inject() (
@@ -42,7 +41,7 @@ class EligibilityDoYouClaimController @Inject() (
   override val executionContext: ExecutionContext
 ) extends BaseController(mcc)
     with ControllerFormHelpers {
-  import actionBuilders._
+  import actionBuilders.*
   private val doYouClaimUrl = routes.EligibilityDoYouClaimController.getDoYouClaim.url
   private val willYouClaimUrl = routes.EligibilityWillYouClaimController.getWillYouClaim.url
 

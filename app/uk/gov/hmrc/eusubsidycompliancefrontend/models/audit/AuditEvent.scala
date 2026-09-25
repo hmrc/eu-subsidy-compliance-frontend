@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit
 
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingCreate, UndertakingCreateWithSectorLimit}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityAddeed.BusinessDetailsAdded
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoteItself.BusinessEntityPromoteItselfDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoted.LeadPromoteDetails
@@ -31,7 +30,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef.SubsidyRe
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.TraderRef.TraderRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName.UndertakingName
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingCreate, UndertakingCreateWithSectorLimit}
 
 import java.time.{LocalDate, LocalDateTime}
 

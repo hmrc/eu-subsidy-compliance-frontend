@@ -41,7 +41,7 @@ class FinancialDashboardController @Inject() (
 )(implicit val appConfig: AppConfig, ec: ExecutionContext)
     extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def getFinancialDashboard: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

@@ -37,7 +37,7 @@ class NaceUndertakingCategoryIntroController @Inject() (
   ec: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def showPage: Action[AnyContent] = enrolled.async { implicit request =>
     val eori = request.eoriNumber

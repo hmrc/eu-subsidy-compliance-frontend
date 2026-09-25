@@ -28,7 +28,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.{CheckEoriPage, IncorrectEoriPage}
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
@@ -45,7 +44,7 @@ class EligibilityEoriCheckController @Inject() (
   override val executionContext: ExecutionContext
 ) extends BaseController(mcc)
     with ControllerFormHelpers {
-  import actionBuilders._
+  import actionBuilders.*
 
   private val eoriCheckForm = formWithSingleMandatoryField("eoricheck")
   private val doYouClaimUrl = routes.EligibilityDoYouClaimController.getDoYouClaim.url

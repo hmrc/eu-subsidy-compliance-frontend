@@ -32,7 +32,7 @@ class UndertakingSuspendedPageController @Inject() (
   val appConfig: AppConfig
 ) extends BaseController(mcc) {
 
-  import actionBuilders._
+  import actionBuilders.*
 
   def showPage(isLead: Boolean): Action[AnyContent] = enrolled.async { implicit request =>
     Future.successful(Ok(undertakingSuspendedPage(isLead)))
