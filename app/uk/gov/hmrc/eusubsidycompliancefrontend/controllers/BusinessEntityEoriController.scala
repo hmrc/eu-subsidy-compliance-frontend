@@ -64,7 +64,7 @@ class BusinessEntityEoriController @Inject() (
   }
 
   private val isEoriValid = Constraint[String] { (eori: String) =>
-    if (eori.replaceAll(" ", "").matches("""^(gb|Gb|gB|GB)[0-9]{12,15}$""")) Valid
+    if (eori.replaceAll(" ", "").matches("""^((gb|Gb|gB|GB)|(xi|Xi|xI|XI))[0-9]{12,15}$""")) Valid
     else Invalid("businessEntityEori.regex.error")
   }
 
