@@ -21,12 +21,12 @@ import cats.implicits.catsSyntaxOptionId
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.DoYouClaimFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingStatus}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, Undertaking, UndertakingBalance, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BeneficiaryIDResponse, Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -49,7 +49,8 @@ class AccountController @Inject() (
   escService: EscService,
   leadAccountPage: LeadAccountPage,
   nonLeadAccountPage: NonLeadAccountPage,
-  timeProvider: TimeProvider
+  timeProvider: TimeProvider,
+  errorHandler: ErrorHandler
 )(implicit
   val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -95,64 +96,70 @@ class AccountController @Inject() (
     result.getOrElse(handleMissingSessionData("Account Home - Undertaking not created -"))
   }
 
+  private def allBeneficiariesValidated(resp: BeneficiaryIDResponse): Boolean =
+    resp.beneficiaryInfo.exists(infos =>
+      infos.nonEmpty && infos.forall(bi => !bi.benIDType.isDefined || bi.validated.contains(true))
+    )
+
+  private def hasUnvalidatedBeneficiary(resp: BeneficiaryIDResponse): Boolean =
+    resp.beneficiaryInfo.exists(_.exists(bi => bi.benIDType.isDefined && bi.validated.contains(false)))
+
+  private def scp22ErrorPage(reason: String)(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
+    logger.error(s"SCP22: $reason - showing error page")
+    errorHandler.internalServerErrorTemplate(r).map(InternalServerError(_))
+  }
+
   private def handleExistingUndertaking(
     undertaking: Undertaking
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     logger.info("handleExistingUndertaking")
+    val request = BeneficiaryIDRequest(
+      idType = "UTID",
+      idValue = undertaking.reference.toString,
+      requestType = "R",
+      beneficiaryInfo = None
+    )
     if (undertaking.isLeadEORI(eori)) {
-      escService
-        .beneficiaryIDValidate(
-          BeneficiaryIDRequest(
-            idType = "UTID",
-            idValue = undertaking.reference.toString,
-            requestType = "R",
-            beneficiaryInfo = None
-          ),
-          cacheEori = Some(eori)
-        )
-        .flatMap {
-          case Right(None) =>
-            logger.info("SCP22: No beneficiary ID found — redirecting to need-reg")
-            if (undertaking.getAllNonLeadEORIs.nonEmpty)
-              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
-            else
-              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage(r.uri)))
-          case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(bi => !bi.benIDType.isDefined)) =>
-            logger.info("SCP22: Missing beneficiary ID type — redirecting to need-reg")
-            if (undertaking.getAllNonLeadEORIs.nonEmpty)
-              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
-            else
-              Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage(r.uri)))
-          case Right(Some(resp))
-              if resp.beneficiaryInfo.exists(_.exists(bi => bi.benIDType.isDefined && bi.validated.contains(false))) =>
-            logger.info("SCP22: Unvalidated beneficiary ID — redirecting to confirm page")
-            Future.successful(Redirect(routes.ConfirmBusinessDetailsController.showPage()))
-          case _ =>
-            logger.info("SCP22: All validated — proceeding to status/NACE checks")
-            proceedToStatusAndNaceChecks(undertaking)
-        }
+      escService.beneficiaryIDValidate(request, cacheEori = Some(eori)).flatMap {
+        case Left(error) =>
+          scp22ErrorPage(s"lead call failed for undertaking ${undertaking.reference}: ${error.toString}")
+        case Right(None) =>
+          logger.info("SCP22: No beneficiary ID found - redirecting to need-reg")
+          if (undertaking.getAllNonLeadEORIs.nonEmpty)
+            Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
+          else
+            Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage(r.uri)))
+        case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(bi => !bi.benIDType.isDefined)) =>
+          logger.info("SCP22: Missing beneficiary ID type - redirecting to need-reg")
+          if (undertaking.getAllNonLeadEORIs.nonEmpty)
+            Future.successful(Redirect(routes.NeedRegistrationNumberBusinessesController.showPage()))
+          else
+            Future.successful(Redirect(routes.NeedRegistrationNumberBusinessController.showPage(r.uri)))
+        case Right(Some(resp)) if hasUnvalidatedBeneficiary(resp) =>
+          logger.info("SCP22: Unvalidated beneficiary ID - redirecting to confirm page")
+          Future.successful(Redirect(routes.ConfirmBusinessDetailsController.showPage()))
+        case Right(Some(resp)) if allBeneficiariesValidated(resp) =>
+          logger.info("SCP22: All validated - proceeding to status/NACE checks")
+          proceedToStatusAndNaceChecks(undertaking)
+        case Right(Some(_)) =>
+          scp22ErrorPage(s"lead response undeterminable for undertaking ${undertaking.reference}")
+      }
     } else {
-      escService
-        .beneficiaryIDValidate(
-          BeneficiaryIDRequest(
-            idType = "UTID",
-            idValue = undertaking.reference.toString,
-            requestType = "R",
-            beneficiaryInfo = None
-          ),
-          cacheEori = Some(eori)
-        )
-        .flatMap {
-          case Right(Some(resp))
-              if resp.beneficiaryInfo.exists(
-                _.forall(bi => !bi.benIDType.isDefined || bi.validated.contains(true))
-              ) =>
-            logger.info("SCP22: Admin validated — proceeding to status/NACE checks for non-lead")
-            proceedToStatusAndNaceChecks(undertaking)
-          case _ =>
-            logger.info("SCP22: Admin not validated — non-lead cannot use service")
-            Future.successful(Redirect(routes.CannotUseServiceContactAdministratorController.show()))
-        }
+      escService.beneficiaryIDValidate(request, cacheEori = Some(eori)).flatMap {
+        case Left(error) =>
+          scp22ErrorPage(s"non-lead call failed for undertaking ${undertaking.reference}: ${error.toString}")
+        case Right(Some(resp)) if allBeneficiariesValidated(resp) =>
+          logger.info("SCP22: Admin validated - proceeding to status/NACE checks for non-lead")
+          proceedToStatusAndNaceChecks(undertaking)
+        case Right(None) =>
+          logger.info("SCP22: No beneficiary ID yet - non-lead cannot use service")
+          Future.successful(Redirect(routes.CannotUseServiceContactAdministratorController.show()))
+        case Right(Some(resp)) if hasUnvalidatedBeneficiary(resp) =>
+          logger.info("SCP22: Admin not validated - non-lead cannot use service")
+          Future.successful(Redirect(routes.CannotUseServiceContactAdministratorController.show()))
+        case Right(Some(_)) =>
+          scp22ErrorPage(s"non-lead response undeterminable for undertaking ${undertaking.reference}")
+      }
     }
   }
 
