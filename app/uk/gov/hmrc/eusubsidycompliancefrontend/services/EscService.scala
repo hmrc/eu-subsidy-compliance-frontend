@@ -302,7 +302,9 @@ class EscService @Inject() (
           callBeneficiaryIDValidate(beneficiaryIDRequest).flatMap {
             case Right(Some(resp))
                 if resp.beneficiaryInfo
-                  .exists(_.forall(bi => !bi.benIDType.isDefined || bi.validated.contains(true))) =>
+                  .exists(infos =>
+                    infos.nonEmpty && infos.forall(bi => !bi.benIDType.isDefined || bi.validated.contains(true))
+                  ) =>
               undertakingCache.put[BeneficiaryIDResponse](eori, resp).map(_ => Right(Some(resp)))
             case other => Future.successful(other)
           }

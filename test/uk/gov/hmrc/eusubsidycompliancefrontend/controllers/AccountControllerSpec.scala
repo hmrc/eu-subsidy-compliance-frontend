@@ -223,6 +223,113 @@ class AccountControllerSpec
 
       }
 
+      "show the technical error page for a lead" when {
+
+        def testLeadErrorPage(scp22Result: Either[ConnectorError, Option[BeneficiaryIDResponse]]): Unit = {
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(scp22Result.toFuture)
+          }
+          val result = performAction()
+          status(result) shouldBe INTERNAL_SERVER_ERROR
+          redirectLocation(result) shouldBe None
+        }
+
+        "SCP22 call fails" in {
+          testLeadErrorPage(Left(ConnectorError("SCP22 500 Invalid JSON document")))
+        }
+
+        "SCP22 returns an empty beneficiary list" in {
+          testLeadErrorPage(Right(Some(BeneficiaryIDResponse(None, Some(Seq.empty)))))
+        }
+
+        "SCP22 returns no beneficiary list" in {
+          testLeadErrorPage(Right(Some(BeneficiaryIDResponse(None, None))))
+        }
+
+        "SCP22 returns a beneficiary with an undetermined validated flag" in {
+          testLeadErrorPage(
+            Right(
+              Some(
+                BeneficiaryIDResponse(
+                  None,
+                  Some(Seq(BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), None)))
+                )
+              )
+            )
+          )
+        }
+      }
+
+      "handle SCP22 outcomes for a non-lead" when {
+
+        def nonLeadResult(scp22Result: Either[ConnectorError, Option[BeneficiaryIDResponse]]) = {
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification(eori4)
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            mockBeneficiaryIDValidate(BeneficiaryIDRequest("UTID", "UR123456", "R", None))(scp22Result.toFuture)
+          }
+          performAction()
+        }
+
+        def testNonLeadErrorPage(scp22Result: Either[ConnectorError, Option[BeneficiaryIDResponse]]): Unit = {
+          val result = nonLeadResult(scp22Result)
+          status(result) shouldBe INTERNAL_SERVER_ERROR
+          redirectLocation(result) shouldBe None
+        }
+
+        def testNonLeadContactAdmin(scp22Result: Either[ConnectorError, Option[BeneficiaryIDResponse]]): Unit = {
+          val result = nonLeadResult(scp22Result)
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(routes.CannotUseServiceContactAdministratorController.show().url)
+        }
+
+        "show the technical error page when SCP22 call fails" in {
+          testNonLeadErrorPage(Left(ConnectorError("SCP22 500 Invalid JSON document")))
+        }
+
+        "show the technical error page when SCP22 returns an empty beneficiary list" in {
+          testNonLeadErrorPage(Right(Some(BeneficiaryIDResponse(None, Some(Seq.empty)))))
+        }
+
+        "show the technical error page when SCP22 returns no beneficiary list" in {
+          testNonLeadErrorPage(Right(Some(BeneficiaryIDResponse(None, None))))
+        }
+
+        "show the technical error page when SCP22 returns an undetermined validated flag" in {
+          testNonLeadErrorPage(
+            Right(
+              Some(
+                BeneficiaryIDResponse(
+                  None,
+                  Some(Seq(BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), None)))
+                )
+              )
+            )
+          )
+        }
+
+        "redirect to contact administrator when no beneficiary ID exists yet" in {
+          testNonLeadContactAdmin(Right(None))
+        }
+
+        "redirect to contact administrator when the admin has not validated" in {
+          testNonLeadContactAdmin(
+            Right(
+              Some(
+                BeneficiaryIDResponse(
+                  None,
+                  Some(
+                    Seq(BeneficiaryInfoResp(Some("GB123456789012"), None, Some("CRN"), Some("01234567"), Some(false)))
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+
       "redirect to NACE Undertaking Category Intro page" when {
 
         "user has undertaking with agriculture sector" in {
