@@ -30,7 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
-class AccomodationUtilitiesControllerSpec
+class AccommodationUtilitiesControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
@@ -46,7 +46,7 @@ class AccomodationUtilitiesControllerSpec
     inject.bind[TimeProvider].toInstance(fakeTimeProvider)
   )
 
-  private val controller = instanceOf[AccomodationUtilitiesController]
+  private val controller = instanceOf[AccommodationUtilitiesController]
   private val navigator = instanceOf[Navigator]
 
   private object SectorCodes {
@@ -116,8 +116,8 @@ class AccomodationUtilitiesControllerSpec
 
   import SectorCodes._
 
-  "AccomodationUtilitiesController" should {
-    /* ------------------------- Accomodation Views  -------------------------*/
+  "AccommodationUtilitiesController" should {
+    /* ------------------------- Accommodation Views  -------------------------*/
     "loadAccommodationFoodLvl2Page" should {
       "return OK and render expected radio options" in {
         inSequence {
@@ -125,7 +125,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadAccommodationFoodLvl2Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadAccommodationFoodLvl2Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadAccommodationFoodLvl2Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -157,7 +157,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitAccommodationFoodLvl2Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitAccommodationFoodLvl2Page().url
+                routes.AccommodationUtilitiesController.submitAccommodationFoodLvl2Page().url
               )
                 .withFormUrlEncodedBody("accommodation2" -> value)
             )
@@ -171,7 +171,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitAccommodationFoodLvl2Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitAccommodationFoodLvl2Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitAccommodationFoodLvl2Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -190,7 +190,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadAccommodationLvl3Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadAccommodationLvl3Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadAccommodationLvl3Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -228,7 +228,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitAccommodationLvl3Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitAccommodationLvl3Page().url
+                routes.AccommodationUtilitiesController.submitAccommodationLvl3Page().url
               )
                 .withFormUrlEncodedBody("accommodation3" -> value)
             )
@@ -242,7 +242,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitAccommodationLvl3Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitAccommodationLvl3Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitAccommodationLvl3Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -261,7 +261,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadFoodBeverageActivitiesLvl3Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadFoodBeverageActivitiesLvl3Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadFoodBeverageActivitiesLvl3Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -306,7 +306,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitFoodBeverageActivitiesLvl3Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitFoodBeverageActivitiesLvl3Page().url
+                routes.AccommodationUtilitiesController.submitFoodBeverageActivitiesLvl3Page().url
               )
                 .withFormUrlEncodedBody("foodActs3" -> value)
             )
@@ -320,7 +320,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitFoodBeverageActivitiesLvl3Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitFoodBeverageActivitiesLvl3Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitFoodBeverageActivitiesLvl3Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -339,7 +339,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadEventCateringOtherFoodActivitiesLvl4Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadEventCateringOtherFoodActivitiesLvl4Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadEventCateringOtherFoodActivitiesLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -371,7 +371,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitEventCateringOtherFoodActivitiesLvl4Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitEventCateringOtherFoodActivitiesLvl4Page().url
+                routes.AccommodationUtilitiesController.submitEventCateringOtherFoodActivitiesLvl4Page().url
               )
                 .withFormUrlEncodedBody("catering4" -> value)
             )
@@ -387,7 +387,7 @@ class AccomodationUtilitiesControllerSpec
           controller.submitEventCateringOtherFoodActivitiesLvl4Page()(
             FakeRequest(
               POST,
-              routes.AccomodationUtilitiesController.submitEventCateringOtherFoodActivitiesLvl4Page().url
+              routes.AccommodationUtilitiesController.submitEventCateringOtherFoodActivitiesLvl4Page().url
             )
           )
         status(result) shouldBe BAD_REQUEST
@@ -408,7 +408,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadRestaurantFoodServicesLvl4Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadRestaurantFoodServicesLvl4Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadRestaurantFoodServicesLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -440,7 +440,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitRestaurantFoodServicesLvl4Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitRestaurantFoodServicesLvl4Page().url
+                routes.AccommodationUtilitiesController.submitRestaurantFoodServicesLvl4Page().url
               )
                 .withFormUrlEncodedBody("restaurant4" -> value)
             )
@@ -454,7 +454,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitRestaurantFoodServicesLvl4Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitRestaurantFoodServicesLvl4Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitRestaurantFoodServicesLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -474,7 +474,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadElectricityLvl3Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadElectricityLvl3Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadElectricityLvl3Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -513,7 +513,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitElectricityLvl3Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitElectricityLvl3Page().url
+                routes.AccommodationUtilitiesController.submitElectricityLvl3Page().url
               )
                 .withFormUrlEncodedBody("electricity3" -> value)
             )
@@ -527,7 +527,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitElectricityLvl3Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitElectricityLvl3Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitElectricityLvl3Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -547,7 +547,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadElectricityLvl4Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadElectricityLvl4Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadElectricityLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -587,7 +587,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitElectricityLvl4Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitElectricityLvl4Page().url
+                routes.AccommodationUtilitiesController.submitElectricityLvl4Page().url
               )
                 .withFormUrlEncodedBody("electricity4" -> value)
             )
@@ -601,7 +601,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitElectricityLvl4Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitElectricityLvl4Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitElectricityLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -620,7 +620,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadGasManufactureLvl4Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadGasManufactureLvl4Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadGasManufactureLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -656,7 +656,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitGasManufactureLvl4Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitGasManufactureLvl4Page().url
+                routes.AccommodationUtilitiesController.submitGasManufactureLvl4Page().url
               )
                 .withFormUrlEncodedBody("gas4" -> value)
             )
@@ -670,7 +670,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitGasManufactureLvl4Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitGasManufactureLvl4Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitGasManufactureLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -690,7 +690,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadWaterLvl2Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadWaterLvl2Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadWaterLvl2Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -726,7 +726,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitWaterLvl2Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitWaterLvl2Page().url
+                routes.AccommodationUtilitiesController.submitWaterLvl2Page().url
               )
                 .withFormUrlEncodedBody("water2" -> value)
             )
@@ -740,7 +740,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitWaterLvl2Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitWaterLvl2Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitWaterLvl2Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -760,7 +760,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadWasteCollectionRecoveryLvl3Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadWasteCollectionRecoveryLvl3Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadWasteCollectionRecoveryLvl3Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -794,7 +794,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitWasteCollectionRecoveryLvl3Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitWasteCollectionRecoveryLvl3Page().url
+                routes.AccommodationUtilitiesController.submitWasteCollectionRecoveryLvl3Page().url
               )
                 .withFormUrlEncodedBody("wasteCollection3" -> value)
             )
@@ -808,7 +808,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitWasteCollectionRecoveryLvl3Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitWasteCollectionRecoveryLvl3Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitWasteCollectionRecoveryLvl3Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -828,7 +828,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadWasteDisposalLvl4Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadWasteDisposalLvl4Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadWasteDisposalLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -862,7 +862,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitWasteDisposalLvl4Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitWasteDisposalLvl4Page().url
+                routes.AccommodationUtilitiesController.submitWasteDisposalLvl4Page().url
               )
                 .withFormUrlEncodedBody("wasteDisposal4" -> value)
             )
@@ -876,7 +876,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitWasteDisposalLvl4Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitWasteDisposalLvl4Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitWasteDisposalLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -895,7 +895,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadWasteCollectionLvl4Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadWasteCollectionLvl4Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadWasteCollectionLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -927,7 +927,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitWasteCollectionLvl4Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitWasteCollectionLvl4Page().url
+                routes.AccommodationUtilitiesController.submitWasteCollectionLvl4Page().url
               )
                 .withFormUrlEncodedBody("wasteCollection4" -> value)
             )
@@ -941,7 +941,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitWasteCollectionLvl4Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitWasteCollectionLvl4Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitWasteCollectionLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))
@@ -960,7 +960,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.loadWasteRecoveryLvl4Page()(
-            FakeRequest(GET, routes.AccomodationUtilitiesController.loadWasteRecoveryLvl4Page().url)
+            FakeRequest(GET, routes.AccommodationUtilitiesController.loadWasteRecoveryLvl4Page().url)
           )
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
@@ -994,7 +994,7 @@ class AccomodationUtilitiesControllerSpec
             controller.submitWasteRecoveryLvl4Page()(
               FakeRequest(
                 POST,
-                routes.AccomodationUtilitiesController.submitWasteRecoveryLvl4Page().url
+                routes.AccommodationUtilitiesController.submitWasteRecoveryLvl4Page().url
               )
                 .withFormUrlEncodedBody("wasteRecovery4" -> value)
             )
@@ -1008,7 +1008,7 @@ class AccomodationUtilitiesControllerSpec
         }
         val result =
           controller.submitWasteRecoveryLvl4Page()(
-            FakeRequest(POST, routes.AccomodationUtilitiesController.submitWasteRecoveryLvl4Page().url)
+            FakeRequest(POST, routes.AccommodationUtilitiesController.submitWasteRecoveryLvl4Page().url)
           )
         status(result) shouldBe BAD_REQUEST
         val document = Jsoup.parse(contentAsString(result))

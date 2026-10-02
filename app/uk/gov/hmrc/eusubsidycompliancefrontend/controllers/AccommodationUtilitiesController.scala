@@ -36,24 +36,24 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.water.*
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AccomodationUtilitiesController @Inject() (
+class AccommodationUtilitiesController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  AccommodationFoodLvl2Page: AccommodationFoodLvl2Page,
-  AccommodationLvl3Page: AccommodationLvl3Page,
-  EventCateringOtherFoodActivitiesLvl4Page: EventCateringOtherFoodActivitiesLvl4Page,
-  FoodBeverageActivitiesLvl3Page: FoodBeverageActivitiesLvl3Page,
-  RestaurantFoodServicesLvl4Page: RestaurantFoodServicesLvl4Page,
-  ElectricityLvl3Page: ElectricityLvl3Page,
-  ElectricityLvl4Page: ElectricityLvl4Page,
-  GasManufactureLvl4Page: GasManufactureLvl4Page,
-  WasteCollectionLvl4Page: WasteCollectionLvl4Page,
-  WasteCollectionRecoveryLvl3Page: WasteCollectionRecoveryLvl3Page,
-  WasteDisposalLvl4Page: WasteDisposalLvl4Page,
-  WasteRecoveryLvl4Page: WasteRecoveryLvl4Page,
-  WaterLvl2Page: WaterLvl2Page
+  accommodationFoodLvl2Page: AccommodationFoodLvl2Page,
+  accommodationLvl3Page: AccommodationLvl3Page,
+  eventCateringOtherFoodActivitiesLvl4Page: EventCateringOtherFoodActivitiesLvl4Page,
+  foodBeverageActivitiesLvl3Page: FoodBeverageActivitiesLvl3Page,
+  restaurantFoodServicesLvl4Page: RestaurantFoodServicesLvl4Page,
+  electricityLvl3Page: ElectricityLvl3Page,
+  electricityLvl4Page: ElectricityLvl4Page,
+  gasManufactureLvl4Page: GasManufactureLvl4Page,
+  wasteCollectionLvl4Page: WasteCollectionLvl4Page,
+  wasteCollectionRecoveryLvl3Page: WasteCollectionRecoveryLvl3Page,
+  wasteDisposalLvl4Page: WasteDisposalLvl4Page,
+  wasteRecoveryLvl4Page: WasteRecoveryLvl4Page,
+  waterLvl2Page: WaterLvl2Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -84,7 +84,7 @@ class AccomodationUtilitiesController @Inject() (
         case None => ""
       }
       val form = if (sector == "I") AccommodationFoodLvl2Form else AccommodationFoodLvl2Form.fill(FormValues(sector))
-      Ok(AccommodationFoodLvl2Page(form, journey.mode)).toFuture
+      Ok(accommodationFoodLvl2Page(form, journey.mode)).toFuture
     }
   }
 
@@ -93,7 +93,7 @@ class AccomodationUtilitiesController @Inject() (
     AccommodationFoodLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AccommodationFoodLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(accommodationFoodLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -132,7 +132,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(AccommodationLvl3Page(AccommodationLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(accommodationLvl3Page(AccommodationLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -141,7 +141,7 @@ class AccomodationUtilitiesController @Inject() (
     AccommodationLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AccommodationLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(accommodationLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -181,7 +181,7 @@ class AccomodationUtilitiesController @Inject() (
         case None => ""
       }
       Ok(
-        EventCateringOtherFoodActivitiesLvl4Page(
+        eventCateringOtherFoodActivitiesLvl4Page(
           EventCateringOtherFoodActivitiesLvl4Form.fill(FormValues(sector)),
           journey.mode
         )
@@ -194,7 +194,7 @@ class AccomodationUtilitiesController @Inject() (
     EventCateringOtherFoodActivitiesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(EventCateringOtherFoodActivitiesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(eventCateringOtherFoodActivitiesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -209,7 +209,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(FoodBeverageActivitiesLvl3Page(FoodBeverageActivitiesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(foodBeverageActivitiesLvl3Page(FoodBeverageActivitiesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -218,7 +218,7 @@ class AccomodationUtilitiesController @Inject() (
     FoodBeverageActivitiesLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FoodBeverageActivitiesLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(foodBeverageActivitiesLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -257,7 +257,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(RestaurantFoodServicesLvl4Page(RestaurantFoodServicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(restaurantFoodServicesLvl4Page(RestaurantFoodServicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -266,7 +266,7 @@ class AccomodationUtilitiesController @Inject() (
     RestaurantFoodServicesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(RestaurantFoodServicesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(restaurantFoodServicesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -281,7 +281,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(ElectricityLvl3Page(ElectricityLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(electricityLvl3Page(ElectricityLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -290,7 +290,7 @@ class AccomodationUtilitiesController @Inject() (
     ElectricityLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ElectricityLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(electricityLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -329,7 +329,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(ElectricityLvl4Page(ElectricityLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(electricityLvl4Page(ElectricityLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -338,7 +338,7 @@ class AccomodationUtilitiesController @Inject() (
     ElectricityLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ElectricityLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(electricityLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -353,7 +353,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(GasManufactureLvl4Page(GasManufactureLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(gasManufactureLvl4Page(GasManufactureLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -362,7 +362,7 @@ class AccomodationUtilitiesController @Inject() (
     GasManufactureLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(GasManufactureLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(gasManufactureLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -377,7 +377,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(WasteCollectionLvl4Page(WasteCollectionLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(wasteCollectionLvl4Page(WasteCollectionLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -386,7 +386,7 @@ class AccomodationUtilitiesController @Inject() (
     WasteCollectionLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WasteCollectionLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(wasteCollectionLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -402,7 +402,7 @@ class AccomodationUtilitiesController @Inject() (
         case None => ""
       }
       Ok(
-        WasteCollectionRecoveryLvl3Page(WasteCollectionRecoveryLvl3Form.fill(FormValues(sector)), journey.mode)
+        wasteCollectionRecoveryLvl3Page(WasteCollectionRecoveryLvl3Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -412,7 +412,7 @@ class AccomodationUtilitiesController @Inject() (
     WasteCollectionRecoveryLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WasteCollectionRecoveryLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(wasteCollectionRecoveryLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -451,7 +451,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(WasteDisposalLvl4Page(WasteDisposalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(wasteDisposalLvl4Page(WasteDisposalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -460,7 +460,7 @@ class AccomodationUtilitiesController @Inject() (
     WasteDisposalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WasteDisposalLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(wasteDisposalLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -475,7 +475,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(WasteRecoveryLvl4Page(WasteRecoveryLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(wasteRecoveryLvl4Page(WasteRecoveryLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -484,7 +484,7 @@ class AccomodationUtilitiesController @Inject() (
     WasteRecoveryLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WasteRecoveryLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(wasteRecoveryLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -499,7 +499,7 @@ class AccomodationUtilitiesController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      Ok(WaterLvl2Page(WaterLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(waterLvl2Page(WaterLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -508,7 +508,7 @@ class AccomodationUtilitiesController @Inject() (
     WaterLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WaterLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(waterLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
