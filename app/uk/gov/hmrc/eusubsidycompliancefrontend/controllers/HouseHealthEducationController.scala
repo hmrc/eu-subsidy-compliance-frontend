@@ -41,20 +41,20 @@ class HouseHealthEducationController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  HouseholdsLvl2Page: HouseholdsLvl2Page,
-  UndifferentiatedProducingActivitiesLvl4Page: UndifferentiatedProducingActivitiesLvl4Page,
-  HumanHealthLvl2Page: HumanHealthLvl2Page,
-  HumanHealthLvl3Page: HumanHealthLvl3Page,
-  MedicalDentalLvl4Page: MedicalDentalLvl4Page,
-  OtherHumanHealthLvl4Page: OtherHumanHealthLvl4Page,
-  OtherResidentialCareLvl4Page: OtherResidentialCareLvl4Page,
-  OtherSocialWorkLvl4Page: OtherSocialWorkLvl4Page,
-  ResidentialCareLvl3Page: ResidentialCareLvl3Page,
-  SocialWorkLvl3Page: SocialWorkLvl3Page,
-  EducationalSupportLvl4Page: EducationalSupportLvl4Page,
-  EducationLvl3Page: EducationLvl3Page,
-  OtherEducationLvl4Page: OtherEducationLvl4Page,
-  SecondaryEducationLvl4Page: SecondaryEducationLvl4Page
+  householdsLvl2Page: HouseholdsLvl2Page,
+  undifferentiatedProducingActivitiesLvl4Page: UndifferentiatedProducingActivitiesLvl4Page,
+  humanHealthLvl2Page: HumanHealthLvl2Page,
+  humanHealthLvl3Page: HumanHealthLvl3Page,
+  medicalDentalLvl4Page: MedicalDentalLvl4Page,
+  otherHumanHealthLvl4Page: OtherHumanHealthLvl4Page,
+  otherResidentialCareLvl4Page: OtherResidentialCareLvl4Page,
+  otherSocialWorkLvl4Page: OtherSocialWorkLvl4Page,
+  residentialCareLvl3Page: ResidentialCareLvl3Page,
+  socialWorkLvl3Page: SocialWorkLvl3Page,
+  educationalSupportLvl4Page: EducationalSupportLvl4Page,
+  educationLvl3Page: EducationLvl3Page,
+  otherEducationLvl4Page: OtherEducationLvl4Page,
+  secondaryEducationLvl4Page: SecondaryEducationLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -87,7 +87,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      Ok(HouseholdsLvl2Page(HouseholdsLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(householdsLvl2Page(HouseholdsLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -96,7 +96,7 @@ class HouseHealthEducationController @Inject() (
     HouseholdsLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(HouseholdsLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(householdsLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -135,7 +135,7 @@ class HouseHealthEducationController @Inject() (
         case None => ""
       }
       Ok(
-        UndifferentiatedProducingActivitiesLvl4Page(
+        undifferentiatedProducingActivitiesLvl4Page(
           UndifferentiatedProducingActivitiesLvl4Form.fill(FormValues(sector)),
           journey.mode
         )
@@ -148,7 +148,7 @@ class HouseHealthEducationController @Inject() (
     UndifferentiatedProducingActivitiesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(UndifferentiatedProducingActivitiesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(undifferentiatedProducingActivitiesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -162,7 +162,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      Ok(HumanHealthLvl2Page(HumanHealthLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(humanHealthLvl2Page(HumanHealthLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -171,7 +171,7 @@ class HouseHealthEducationController @Inject() (
     HumanHealthLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(HumanHealthLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(humanHealthLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -210,7 +210,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(HumanHealthLvl3Page(HumanHealthLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(humanHealthLvl3Page(HumanHealthLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -219,7 +219,7 @@ class HouseHealthEducationController @Inject() (
     HumanHealthLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(HumanHealthLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(humanHealthLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -258,7 +258,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(MedicalDentalLvl4Page(MedicalDentalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(medicalDentalLvl4Page(MedicalDentalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -267,7 +267,7 @@ class HouseHealthEducationController @Inject() (
     MedicalDentalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MedicalDentalLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(medicalDentalLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -281,7 +281,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherHumanHealthLvl4Page(OtherHumanHealthLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherHumanHealthLvl4Page(OtherHumanHealthLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -290,7 +290,7 @@ class HouseHealthEducationController @Inject() (
     OtherHumanHealthLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherHumanHealthLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherHumanHealthLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -304,7 +304,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherResidentialCareLvl4Page(OtherResidentialCareLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherResidentialCareLvl4Page(OtherResidentialCareLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -313,7 +313,7 @@ class HouseHealthEducationController @Inject() (
     OtherResidentialCareLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherResidentialCareLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherResidentialCareLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -328,7 +328,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherSocialWorkLvl4Page(OtherSocialWorkLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherSocialWorkLvl4Page(OtherSocialWorkLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -337,7 +337,7 @@ class HouseHealthEducationController @Inject() (
     OtherSocialWorkLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherSocialWorkLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherSocialWorkLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -352,7 +352,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(ResidentialCareLvl3Page(ResidentialCareLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(residentialCareLvl3Page(ResidentialCareLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -361,7 +361,7 @@ class HouseHealthEducationController @Inject() (
     ResidentialCareLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ResidentialCareLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(residentialCareLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -400,7 +400,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(SecondaryEducationLvl4Page(SecondaryEducationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(secondaryEducationLvl4Page(SecondaryEducationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -409,7 +409,7 @@ class HouseHealthEducationController @Inject() (
     SecondaryEducationLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SecondaryEducationLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(secondaryEducationLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -423,7 +423,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherEducationLvl4Page(OtherEducationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherEducationLvl4Page(OtherEducationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -432,7 +432,7 @@ class HouseHealthEducationController @Inject() (
     OtherEducationLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherEducationLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherEducationLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -446,7 +446,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(EducationLvl3Page(EducationLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(educationLvl3Page(EducationLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -455,7 +455,7 @@ class HouseHealthEducationController @Inject() (
     EducationLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(EducationLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(educationLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -494,7 +494,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(EducationalSupportLvl4Page(EducationalSupportLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(educationalSupportLvl4Page(EducationalSupportLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -503,7 +503,7 @@ class HouseHealthEducationController @Inject() (
     EducationalSupportLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(EducationalSupportLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(educationalSupportLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -517,7 +517,7 @@ class HouseHealthEducationController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(SocialWorkLvl3Page(SocialWorkLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(socialWorkLvl3Page(SocialWorkLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -526,7 +526,7 @@ class HouseHealthEducationController @Inject() (
     SocialWorkLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SocialWorkLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(socialWorkLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {

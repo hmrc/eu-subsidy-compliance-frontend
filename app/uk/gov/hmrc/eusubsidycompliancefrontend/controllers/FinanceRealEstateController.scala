@@ -40,20 +40,20 @@ class FinanceRealEstateController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  FeeContractLvl4Page: FeeContractLvl4Page,
-  PropertyDevelopmentLvl4Page: PropertyDevelopmentLvl4Page,
-  RealEstateLvl3Page: RealEstateLvl3Page,
-  AuxiliaryFinancialLvl3Page: AuxiliaryFinancialLvl3Page,
-  AuxiliaryInsuranceLvl4Page: AuxiliaryInsuranceLvl4Page,
-  AuxiliaryNonInsuranceLvl4Page: AuxiliaryNonInsuranceLvl4Page,
-  FinanceInsuranceLvl2Page: FinanceInsuranceLvl2Page,
-  FinancialServicesLvl3Page: FinancialServicesLvl3Page,
-  HoldingCompaniesLvl4Page: HoldingCompaniesLvl4Page,
-  InsuranceLvl3Page: InsuranceLvl3Page,
-  InsuranceTypeLvl4Page: InsuranceTypeLvl4Page,
-  MonetaryIntermediationLvl4Page: MonetaryIntermediationLvl4Page,
-  OtherFinancialLvl4Page: OtherFinancialLvl4Page,
-  TrustsFundsLvl4Page: TrustsFundsLvl4Page
+  feeContractLvl4Page: FeeContractLvl4Page,
+  propertyDevelopmentLvl4Page: PropertyDevelopmentLvl4Page,
+  realEstateLvl3Page: RealEstateLvl3Page,
+  auxiliaryFinancialLvl3Page: AuxiliaryFinancialLvl3Page,
+  auxiliaryInsuranceLvl4Page: AuxiliaryInsuranceLvl4Page,
+  auxiliaryNonInsuranceLvl4Page: AuxiliaryNonInsuranceLvl4Page,
+  financeInsuranceLvl2Page: FinanceInsuranceLvl2Page,
+  financialServicesLvl3Page: FinancialServicesLvl3Page,
+  holdingCompaniesLvl4Page: HoldingCompaniesLvl4Page,
+  insuranceLvl3Page: InsuranceLvl3Page,
+  insuranceTypeLvl4Page: InsuranceTypeLvl4Page,
+  monetaryIntermediationLvl4Page: MonetaryIntermediationLvl4Page,
+  otherFinancialLvl4Page: OtherFinancialLvl4Page,
+  trustsFundsLvl4Page: TrustsFundsLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -84,7 +84,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(FeeContractLvl4Page(FeeContractLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(feeContractLvl4Page(FeeContractLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -93,7 +93,7 @@ class FinanceRealEstateController @Inject() (
     FeeContractLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FeeContractLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(feeContractLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -107,7 +107,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(PropertyDevelopmentLvl4Page(PropertyDevelopmentLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(propertyDevelopmentLvl4Page(PropertyDevelopmentLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -116,7 +116,7 @@ class FinanceRealEstateController @Inject() (
     PropertyDevelopmentLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PropertyDevelopmentLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(propertyDevelopmentLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -130,7 +130,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(RealEstateLvl3Page(RealEstateLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(realEstateLvl3Page(RealEstateLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -139,7 +139,7 @@ class FinanceRealEstateController @Inject() (
     RealEstateLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(RealEstateLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(realEstateLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -178,7 +178,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(AuxiliaryFinancialLvl3Page(AuxiliaryFinancialLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(auxiliaryFinancialLvl3Page(AuxiliaryFinancialLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -187,7 +187,7 @@ class FinanceRealEstateController @Inject() (
     AuxiliaryFinancialLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AuxiliaryFinancialLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(auxiliaryFinancialLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -226,7 +226,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(AuxiliaryInsuranceLvl4Page(AuxiliaryInsuranceLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(auxiliaryInsuranceLvl4Page(AuxiliaryInsuranceLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -235,7 +235,7 @@ class FinanceRealEstateController @Inject() (
     AuxiliaryInsuranceLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AuxiliaryInsuranceLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(auxiliaryInsuranceLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -250,7 +250,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(AuxiliaryNonInsuranceLvl4Page(AuxiliaryNonInsuranceLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(auxiliaryNonInsuranceLvl4Page(AuxiliaryNonInsuranceLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -259,7 +259,7 @@ class FinanceRealEstateController @Inject() (
     AuxiliaryNonInsuranceLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AuxiliaryNonInsuranceLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(auxiliaryNonInsuranceLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -273,7 +273,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      Ok(FinanceInsuranceLvl2Page(FinanceInsuranceLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(financeInsuranceLvl2Page(FinanceInsuranceLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -282,7 +282,7 @@ class FinanceRealEstateController @Inject() (
     FinanceInsuranceLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FinanceInsuranceLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(financeInsuranceLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -321,7 +321,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(FinancialServicesLvl3Page(FinancialServicesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(financialServicesLvl3Page(FinancialServicesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -330,7 +330,7 @@ class FinanceRealEstateController @Inject() (
     FinancialServicesLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FinancialServicesLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(financialServicesLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -369,7 +369,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(HoldingCompaniesLvl4Page(HoldingCompaniesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(holdingCompaniesLvl4Page(HoldingCompaniesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -378,7 +378,7 @@ class FinanceRealEstateController @Inject() (
     HoldingCompaniesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(HoldingCompaniesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(holdingCompaniesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -393,7 +393,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(TrustsFundsLvl4Page(TrustsFundsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(trustsFundsLvl4Page(TrustsFundsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -402,7 +402,7 @@ class FinanceRealEstateController @Inject() (
     TrustsFundsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(TrustsFundsLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(trustsFundsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -417,7 +417,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherFinancialLvl4Page(OtherFinancialLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherFinancialLvl4Page(OtherFinancialLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -426,7 +426,7 @@ class FinanceRealEstateController @Inject() (
     OtherFinancialLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherFinancialLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherFinancialLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -441,7 +441,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(MonetaryIntermediationLvl4Page(MonetaryIntermediationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(monetaryIntermediationLvl4Page(MonetaryIntermediationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -450,7 +450,7 @@ class FinanceRealEstateController @Inject() (
     MonetaryIntermediationLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MonetaryIntermediationLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(monetaryIntermediationLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -465,7 +465,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(InsuranceTypeLvl4Page(InsuranceTypeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(insuranceTypeLvl4Page(InsuranceTypeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -474,7 +474,7 @@ class FinanceRealEstateController @Inject() (
     InsuranceTypeLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(InsuranceTypeLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(insuranceTypeLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -488,7 +488,7 @@ class FinanceRealEstateController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(InsuranceLvl3Page(InsuranceLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(insuranceLvl3Page(InsuranceLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -497,7 +497,7 @@ class FinanceRealEstateController @Inject() (
     InsuranceLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(InsuranceLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(insuranceLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
