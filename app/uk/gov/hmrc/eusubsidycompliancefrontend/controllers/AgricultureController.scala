@@ -41,15 +41,15 @@ class AgricultureController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  AgricultureLvl3Page: AgricultureLvl3Page,
-  AnimalProductionLvl4Page: AnimalProductionLvl4Page,
-  NonPerennialCropLvl4Page: NonPerennialCropLvl4Page,
-  PerennialCropLvl4Page: PerennialCropLvl4Page,
-  SupportActivitiesLvl4Page: SupportActivitiesLvl4Page,
-  ForestryLvl3Page: ForestryLvl3Page,
-  FishingAndAquacultureLvl3Page: FishingAndAquacultureLvl3Page,
-  AquacultureLvl4Page: AquacultureLvl4Page,
-  FishingLvl4Page: FishingLvl4Page
+  agricultureLvl3Page: AgricultureLvl3Page,
+  animalProductionLvl4Page: AnimalProductionLvl4Page,
+  nonPerennialCropLvl4Page: NonPerennialCropLvl4Page,
+  perennialCropLvl4Page: PerennialCropLvl4Page,
+  supportActivitiesLvl4Page: SupportActivitiesLvl4Page,
+  forestryLvl3Page: ForestryLvl3Page,
+  fishingAndAquacultureLvl3Page: FishingAndAquacultureLvl3Page,
+  aquacultureLvl4Page: AquacultureLvl4Page,
+  fishingLvl4Page: FishingLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -76,7 +76,7 @@ class AgricultureController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(AgricultureLvl3Page(AgricultureLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(agricultureLvl3Page(AgricultureLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -85,7 +85,7 @@ class AgricultureController @Inject() (
     AgricultureLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AgricultureLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(agricultureLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -125,7 +125,7 @@ class AgricultureController @Inject() (
         case None => ""
       }
       Ok(
-        SupportActivitiesLvl4Page(SupportActivitiesLvl4Form.fill(FormValues(sector)), journey.mode)
+        supportActivitiesLvl4Page(SupportActivitiesLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -135,7 +135,7 @@ class AgricultureController @Inject() (
     SupportActivitiesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SupportActivitiesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(supportActivitiesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -153,7 +153,7 @@ class AgricultureController @Inject() (
         case None => ""
       }
       Ok(
-        AnimalProductionLvl4Page(AnimalProductionLvl4Form.fill(FormValues(sector)), journey.mode)
+        animalProductionLvl4Page(AnimalProductionLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -163,7 +163,7 @@ class AgricultureController @Inject() (
     AnimalProductionLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AnimalProductionLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(animalProductionLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -181,7 +181,7 @@ class AgricultureController @Inject() (
         case None => ""
       }
       Ok(
-        PerennialCropLvl4Page(PerennialCropLvl4Form.fill(FormValues(sector)), journey.mode)
+        perennialCropLvl4Page(PerennialCropLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -191,7 +191,7 @@ class AgricultureController @Inject() (
     PerennialCropLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PerennialCropLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(perennialCropLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -209,7 +209,7 @@ class AgricultureController @Inject() (
         case None => ""
       }
       Ok(
-        NonPerennialCropLvl4Page(NonPerennialCropLvl4Form.fill(FormValues(sector)), journey.mode)
+        nonPerennialCropLvl4Page(NonPerennialCropLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -219,7 +219,7 @@ class AgricultureController @Inject() (
     NonPerennialCropLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(NonPerennialCropLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(nonPerennialCropLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -237,7 +237,7 @@ class AgricultureController @Inject() (
         case None => ""
       }
       Ok(
-        ForestryLvl3Page(ForestryLvl3Form.fill(FormValues(sector)), journey.mode)
+        forestryLvl3Page(ForestryLvl3Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -247,7 +247,7 @@ class AgricultureController @Inject() (
     ForestryLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ForestryLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(forestryLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -287,7 +287,7 @@ class AgricultureController @Inject() (
         case None => ""
       }
       Ok(
-        FishingAndAquacultureLvl3Page(FishingAndAquacultureLvl3Form.fill(FormValues(sector)), journey.mode)
+        fishingAndAquacultureLvl3Page(FishingAndAquacultureLvl3Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -297,7 +297,7 @@ class AgricultureController @Inject() (
     FishingAndAquacultureLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FishingAndAquacultureLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(fishingAndAquacultureLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -337,7 +337,7 @@ class AgricultureController @Inject() (
         case None => ""
       }
       Ok(
-        AquacultureLvl4Page(AquacultureLvl4Form.fill(FormValues(sector)), journey.mode)
+        aquacultureLvl4Page(AquacultureLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -347,7 +347,7 @@ class AgricultureController @Inject() (
     AquacultureLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AquacultureLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(aquacultureLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -364,7 +364,7 @@ class AgricultureController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(FishingLvl4Page(FishingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(fishingLvl4Page(FishingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -373,7 +373,7 @@ class AgricultureController @Inject() (
     FishingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FishingLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(fishingLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store

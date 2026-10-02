@@ -39,17 +39,17 @@ class ArtsController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  AmusementAndRecreationLvl4Page: AmusementAndRecreationLvl4Page,
-  ArtsCreationLvl4Page: ArtsCreationLvl4Page,
-  ArtsCreationPerformingLvl3Page: ArtsCreationPerformingLvl3Page,
-  ArtsPerformingSupportActivitiesLvl4Page: ArtsPerformingSupportActivitiesLvl4Page,
-  ArtsSportsRecreationLvl2Page: ArtsSportsRecreationLvl2Page,
-  BotanicalZoologicalReservesLvl4Page: BotanicalZoologicalReservesLvl4Page,
-  LibrariesArchivesCulturalLvl3Page: LibrariesArchivesCulturalLvl3Page,
-  LibrariesArchivesLvl4Page: LibrariesArchivesLvl4Page,
-  MuseumsCollectionsMonumentsLvl4Page: MuseumsCollectionsMonumentsLvl4Page,
-  SportsAmusementRecreationLvl3Page: SportsAmusementRecreationLvl3Page,
-  SportsLvl4Page: SportsLvl4Page
+  amusementAndRecreationLvl4Page: AmusementAndRecreationLvl4Page,
+  artsCreationLvl4Page: ArtsCreationLvl4Page,
+  artsCreationPerformingLvl3Page: ArtsCreationPerformingLvl3Page,
+  artsPerformingSupportActivitiesLvl4Page: ArtsPerformingSupportActivitiesLvl4Page,
+  artsSportsRecreationLvl2Page: ArtsSportsRecreationLvl2Page,
+  botanicalZoologicalReservesLvl4Page: BotanicalZoologicalReservesLvl4Page,
+  librariesArchivesCulturalLvl3Page: LibrariesArchivesCulturalLvl3Page,
+  librariesArchivesLvl4Page: LibrariesArchivesLvl4Page,
+  museumsCollectionsMonumentsLvl4Page: MuseumsCollectionsMonumentsLvl4Page,
+  sportsAmusementRecreationLvl3Page: SportsAmusementRecreationLvl3Page,
+  sportsLvl4Page: SportsLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -79,7 +79,7 @@ class ArtsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(AmusementAndRecreationLvl4Page(AmusementAndRecreationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(amusementAndRecreationLvl4Page(AmusementAndRecreationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -88,7 +88,7 @@ class ArtsController @Inject() (
     AmusementAndRecreationLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AmusementAndRecreationLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(amusementAndRecreationLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -104,7 +104,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       Ok(
-        ArtsCreationLvl4Page(ArtsCreationLvl4Form.fill(FormValues(sector)), journey.mode)
+        artsCreationLvl4Page(ArtsCreationLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -114,7 +114,7 @@ class ArtsController @Inject() (
     ArtsCreationLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArtsCreationLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(artsCreationLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -130,7 +130,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       Ok(
-        ArtsCreationPerformingLvl3Page(ArtsCreationPerformingLvl3Form.fill(FormValues(sector)), journey.mode)
+        artsCreationPerformingLvl3Page(ArtsCreationPerformingLvl3Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -140,7 +140,7 @@ class ArtsController @Inject() (
     ArtsCreationPerformingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArtsCreationPerformingLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(artsCreationPerformingLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -180,7 +180,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       Ok(
-        ArtsPerformingSupportActivitiesLvl4Page(
+        artsPerformingSupportActivitiesLvl4Page(
           ArtsPerformingSupportActivitiesLvl4Form.fill(FormValues(sector)),
           journey.mode
         )
@@ -193,7 +193,7 @@ class ArtsController @Inject() (
     ArtsPerformingSupportActivitiesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArtsPerformingSupportActivitiesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(artsPerformingSupportActivitiesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -209,7 +209,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       Ok(
-        ArtsSportsRecreationLvl2Page(ArtsSportsRecreationLvl2Form.fill(FormValues(sector)), journey.mode)
+        artsSportsRecreationLvl2Page(ArtsSportsRecreationLvl2Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -219,7 +219,7 @@ class ArtsController @Inject() (
     ArtsSportsRecreationLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArtsSportsRecreationLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(artsSportsRecreationLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -259,7 +259,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       Ok(
-        BotanicalZoologicalReservesLvl4Page(BotanicalZoologicalReservesLvl4Form.fill(FormValues(sector)), journey.mode)
+        botanicalZoologicalReservesLvl4Page(BotanicalZoologicalReservesLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -269,7 +269,7 @@ class ArtsController @Inject() (
     BotanicalZoologicalReservesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(BotanicalZoologicalReservesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(botanicalZoologicalReservesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -285,7 +285,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       Ok(
-        LibrariesArchivesCulturalLvl3Page(LibrariesArchivesCulturalLvl3Form.fill(FormValues(sector)), journey.mode)
+        librariesArchivesCulturalLvl3Page(LibrariesArchivesCulturalLvl3Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -295,7 +295,7 @@ class ArtsController @Inject() (
     LibrariesArchivesCulturalLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(LibrariesArchivesCulturalLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(librariesArchivesCulturalLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -335,7 +335,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       Ok(
-        LibrariesArchivesLvl4Page(LibrariesArchivesLvl4Form.fill(FormValues(sector)), journey.mode)
+        librariesArchivesLvl4Page(LibrariesArchivesLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -345,7 +345,7 @@ class ArtsController @Inject() (
     LibrariesArchivesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(LibrariesArchivesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(librariesArchivesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -361,7 +361,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       Ok(
-        MuseumsCollectionsMonumentsLvl4Page(MuseumsCollectionsMonumentsLvl4Form.fill(FormValues(sector)), journey.mode)
+        museumsCollectionsMonumentsLvl4Page(MuseumsCollectionsMonumentsLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -371,7 +371,7 @@ class ArtsController @Inject() (
     MuseumsCollectionsMonumentsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MuseumsCollectionsMonumentsLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(museumsCollectionsMonumentsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -387,7 +387,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       Ok(
-        SportsAmusementRecreationLvl3Page(SportsAmusementRecreationLvl3Form.fill(FormValues(sector)), journey.mode)
+        sportsAmusementRecreationLvl3Page(SportsAmusementRecreationLvl3Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -397,7 +397,7 @@ class ArtsController @Inject() (
     SportsAmusementRecreationLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SportsAmusementRecreationLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(sportsAmusementRecreationLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -437,7 +437,7 @@ class ArtsController @Inject() (
         case None => ""
       }
       Ok(
-        SportsLvl4Page(SportsLvl4Form.fill(FormValues(sector)), journey.mode)
+        sportsLvl4Page(SportsLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -447,7 +447,7 @@ class ArtsController @Inject() (
     SportsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SportsLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(sportsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture

@@ -39,20 +39,20 @@ class AdminController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  AdministrativeLvl2Page: AdministrativeLvl2Page,
-  BuildingsLvl3Page: BuildingsLvl3Page,
-  CleaningLvl4Page: CleaningLvl4Page,
-  EmploymentLvl3Page: EmploymentLvl3Page,
-  IntermediationServicesLvl4Page: IntermediationServicesLvl4Page,
-  InvestigationLvl4Page: InvestigationLvl4Page,
-  MachineryEquipmentLvl4Page: MachineryEquipmentLvl4Page,
-  MotorVehiclesLvl4Page: MotorVehiclesLvl4Page,
-  OfficeLvl3Page: OfficeLvl3Page,
-  OtherBusinessSupportLvl4Page: OtherBusinessSupportLvl4Page,
-  PersonalHouseholdLvl4Page: PersonalHouseholdLvl4Page,
-  RentalLvl3Page: RentalLvl3Page,
-  TravelAgencyLvl4Page: TravelAgencyLvl4Page,
-  TravelLvl3Page: TravelLvl3Page
+  administrativeLvl2Page: AdministrativeLvl2Page,
+  buildingsLvl3Page: BuildingsLvl3Page,
+  cleaningLvl4Page: CleaningLvl4Page,
+  employmentLvl3Page: EmploymentLvl3Page,
+  intermediationServicesLvl4Page: IntermediationServicesLvl4Page,
+  investigationLvl4Page: InvestigationLvl4Page,
+  machineryEquipmentLvl4Page: MachineryEquipmentLvl4Page,
+  motorVehiclesLvl4Page: MotorVehiclesLvl4Page,
+  officeLvl3Page: OfficeLvl3Page,
+  otherBusinessSupportLvl4Page: OtherBusinessSupportLvl4Page,
+  personalHouseholdLvl4Page: PersonalHouseholdLvl4Page,
+  rentalLvl3Page: RentalLvl3Page,
+  travelAgencyLvl4Page: TravelAgencyLvl4Page,
+  travelLvl3Page: TravelLvl3Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -83,7 +83,7 @@ class AdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(TravelLvl3Page(TravelLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(travelLvl3Page(TravelLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -92,7 +92,7 @@ class AdminController @Inject() (
     TravelLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(TravelLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(travelLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -131,7 +131,7 @@ class AdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(RentalLvl3Page(RentalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(rentalLvl3Page(RentalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -140,7 +140,7 @@ class AdminController @Inject() (
     RentalLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(RentalLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(rentalLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -179,7 +179,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(TravelAgencyLvl4Page(TravelAgencyLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(travelAgencyLvl4Page(TravelAgencyLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -188,7 +188,7 @@ class AdminController @Inject() (
     TravelAgencyLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(TravelAgencyLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(travelAgencyLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -203,7 +203,7 @@ class AdminController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      Ok(AdministrativeLvl2Page(AdministrativeLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(administrativeLvl2Page(AdministrativeLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -212,7 +212,7 @@ class AdminController @Inject() (
     AdministrativeLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AdministrativeLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(administrativeLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -251,7 +251,7 @@ class AdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(BuildingsLvl3Page(BuildingsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(buildingsLvl3Page(BuildingsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -260,7 +260,7 @@ class AdminController @Inject() (
     BuildingsLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(BuildingsLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(buildingsLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -299,7 +299,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(CleaningLvl4Page(CleaningLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(cleaningLvl4Page(CleaningLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -308,7 +308,7 @@ class AdminController @Inject() (
     CleaningLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(CleaningLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(cleaningLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -323,7 +323,7 @@ class AdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(EmploymentLvl3Page(EmploymentLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(employmentLvl3Page(EmploymentLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -332,7 +332,7 @@ class AdminController @Inject() (
     EmploymentLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(EmploymentLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(employmentLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -371,7 +371,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(IntermediationServicesLvl4Page(IntermediationServicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(intermediationServicesLvl4Page(IntermediationServicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -380,7 +380,7 @@ class AdminController @Inject() (
     IntermediationServicesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(IntermediationServicesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(intermediationServicesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -395,7 +395,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(InvestigationLvl4Page(InvestigationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(investigationLvl4Page(InvestigationLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -404,7 +404,7 @@ class AdminController @Inject() (
     InvestigationLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(InvestigationLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(investigationLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -419,7 +419,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(MachineryEquipmentLvl4Page(MachineryEquipmentLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(machineryEquipmentLvl4Page(MachineryEquipmentLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -428,7 +428,7 @@ class AdminController @Inject() (
     MachineryEquipmentLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MachineryEquipmentLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(machineryEquipmentLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -443,7 +443,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(MotorVehiclesLvl4Page(MotorVehiclesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(motorVehiclesLvl4Page(MotorVehiclesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -452,7 +452,7 @@ class AdminController @Inject() (
     MotorVehiclesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MotorVehiclesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(motorVehiclesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -467,7 +467,7 @@ class AdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(OfficeLvl3Page(OfficeLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(officeLvl3Page(OfficeLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -476,7 +476,7 @@ class AdminController @Inject() (
     OfficeLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OfficeLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(officeLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -515,7 +515,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherBusinessSupportLvl4Page(OtherBusinessSupportLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherBusinessSupportLvl4Page(OtherBusinessSupportLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -524,7 +524,7 @@ class AdminController @Inject() (
     OtherBusinessSupportLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherBusinessSupportLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherBusinessSupportLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -539,7 +539,7 @@ class AdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(PersonalHouseholdLvl4Page(PersonalHouseholdLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(personalHouseholdLvl4Page(PersonalHouseholdLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -548,7 +548,7 @@ class AdminController @Inject() (
     PersonalHouseholdLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PersonalHouseholdLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(personalHouseholdLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
