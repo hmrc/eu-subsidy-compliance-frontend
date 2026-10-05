@@ -39,20 +39,20 @@ class ComputersElectronicsController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  ComponentsBoardsLvl4Page: ComponentsBoardsLvl4Page,
-  ComputersElectronicsOpticalLvl3Page: ComputersElectronicsOpticalLvl3Page,
-  DomesticAppliancesLvl4Page: DomesticAppliancesLvl4Page,
-  ElectricalEquipmentLvl3Page: ElectricalEquipmentLvl3Page,
-  GeneralPurposeLvl4Page: GeneralPurposeLvl4Page,
-  MeasuringTestingInstrumentsLvl4Page: MeasuringTestingInstrumentsLvl4Page,
-  MetalFormingLvl4Page: MetalFormingLvl4Page,
-  MotorsGeneratorsLvl4Page: MotorsGeneratorsLvl4Page,
-  OtherGeneralPurposeLvl4Page: OtherGeneralPurposeLvl4Page,
-  OtherMachineryLvl3Page: OtherMachineryLvl3Page,
-  OtherSpecialPurposeLvl4Page: OtherSpecialPurposeLvl4Page,
-  RepairMaintenanceLvl4Page: RepairMaintenanceLvl4Page,
-  RepairsMaintainInstallLvl3Page: RepairsMaintainInstallLvl3Page,
-  WiringAndDevicesLvl4Page: WiringAndDevicesLvl4Page
+  componentsBoardsLvl4Page: ComponentsBoardsLvl4Page,
+  computersElectronicsOpticalLvl3Page: ComputersElectronicsOpticalLvl3Page,
+  domesticAppliancesLvl4Page: DomesticAppliancesLvl4Page,
+  electricalEquipmentLvl3Page: ElectricalEquipmentLvl3Page,
+  generalPurposeLvl4Page: GeneralPurposeLvl4Page,
+  measuringTestingInstrumentsLvl4Page: MeasuringTestingInstrumentsLvl4Page,
+  metalFormingLvl4Page: MetalFormingLvl4Page,
+  motorsGeneratorsLvl4Page: MotorsGeneratorsLvl4Page,
+  otherGeneralPurposeLvl4Page: OtherGeneralPurposeLvl4Page,
+  otherMachineryLvl3Page: OtherMachineryLvl3Page,
+  otherSpecialPurposeLvl4Page: OtherSpecialPurposeLvl4Page,
+  repairMaintenanceLvl4Page: RepairMaintenanceLvl4Page,
+  repairsMaintainInstallLvl3Page: RepairsMaintainInstallLvl3Page,
+  wiringAndDevicesLvl4Page: WiringAndDevicesLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -86,7 +86,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(ComponentsBoardsLvl4Page(ComponentsBoardsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(componentsBoardsLvl4Page(ComponentsBoardsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -95,7 +95,7 @@ class ComputersElectronicsController @Inject() (
     ComponentsBoardsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ComponentsBoardsLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(componentsBoardsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -114,7 +114,7 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(
-        ComputersElectronicsOpticalLvl3Page(ComputersElectronicsOpticalLvl3Form.fill(FormValues(sector)), journey.mode)
+        computersElectronicsOpticalLvl3Page(ComputersElectronicsOpticalLvl3Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -124,7 +124,7 @@ class ComputersElectronicsController @Inject() (
     ComputersElectronicsOpticalLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ComputersElectronicsOpticalLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(computersElectronicsOpticalLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -164,7 +164,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(DomesticAppliancesLvl4Page(DomesticAppliancesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(domesticAppliancesLvl4Page(DomesticAppliancesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -173,7 +173,7 @@ class ComputersElectronicsController @Inject() (
     DomesticAppliancesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(DomesticAppliancesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(domesticAppliancesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -191,7 +191,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(ElectricalEquipmentLvl3Page(ElectricalEquipmentLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(electricalEquipmentLvl3Page(ElectricalEquipmentLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -200,7 +200,7 @@ class ComputersElectronicsController @Inject() (
     ElectricalEquipmentLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ElectricalEquipmentLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(electricalEquipmentLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -240,7 +240,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(GeneralPurposeLvl4Page(GeneralPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(generalPurposeLvl4Page(GeneralPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -249,7 +249,7 @@ class ComputersElectronicsController @Inject() (
     GeneralPurposeLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(GeneralPurposeLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(generalPurposeLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -268,7 +268,7 @@ class ComputersElectronicsController @Inject() (
         case None => ""
       }
       Ok(
-        MeasuringTestingInstrumentsLvl4Page(MeasuringTestingInstrumentsLvl4Form.fill(FormValues(sector)), journey.mode)
+        measuringTestingInstrumentsLvl4Page(MeasuringTestingInstrumentsLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -278,7 +278,7 @@ class ComputersElectronicsController @Inject() (
     MeasuringTestingInstrumentsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MeasuringTestingInstrumentsLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(measuringTestingInstrumentsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -296,7 +296,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(MetalFormingLvl4Page(MetalFormingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(metalFormingLvl4Page(MetalFormingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -305,7 +305,7 @@ class ComputersElectronicsController @Inject() (
     MetalFormingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MetalFormingLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(metalFormingLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -323,7 +323,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(MotorsGeneratorsLvl4Page(MotorsGeneratorsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(motorsGeneratorsLvl4Page(MotorsGeneratorsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -332,7 +332,7 @@ class ComputersElectronicsController @Inject() (
     MotorsGeneratorsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MotorsGeneratorsLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(motorsGeneratorsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -350,7 +350,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherGeneralPurposeLvl4Page(OtherGeneralPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherGeneralPurposeLvl4Page(OtherGeneralPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -359,7 +359,7 @@ class ComputersElectronicsController @Inject() (
     OtherGeneralPurposeLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherGeneralPurposeLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherGeneralPurposeLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -377,7 +377,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(OtherMachineryLvl3Page(OtherMachineryLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherMachineryLvl3Page(OtherMachineryLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -386,7 +386,7 @@ class ComputersElectronicsController @Inject() (
     OtherMachineryLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherMachineryLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherMachineryLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -426,7 +426,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherSpecialPurposeLvl4Page(OtherSpecialPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherSpecialPurposeLvl4Page(OtherSpecialPurposeLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -435,7 +435,7 @@ class ComputersElectronicsController @Inject() (
     OtherSpecialPurposeLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherSpecialPurposeLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherSpecialPurposeLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -453,7 +453,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(RepairMaintenanceLvl4Page(RepairMaintenanceLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(repairMaintenanceLvl4Page(RepairMaintenanceLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -462,7 +462,7 @@ class ComputersElectronicsController @Inject() (
     RepairMaintenanceLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(RepairMaintenanceLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(repairMaintenanceLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store
@@ -480,7 +480,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(RepairsMaintainInstallLvl3Page(RepairsMaintainInstallLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(repairsMaintainInstallLvl3Page(RepairsMaintainInstallLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -489,7 +489,7 @@ class ComputersElectronicsController @Inject() (
     RepairsMaintainInstallLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(RepairsMaintainInstallLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(repairsMaintainInstallLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -529,7 +529,7 @@ class ComputersElectronicsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(WiringAndDevicesLvl4Page(WiringAndDevicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(wiringAndDevicesLvl4Page(WiringAndDevicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -538,7 +538,7 @@ class ComputersElectronicsController @Inject() (
     WiringAndDevicesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WiringAndDevicesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(wiringAndDevicesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           val sectorEnum = Sector.fromCode(form.value)
           store

@@ -39,22 +39,22 @@ class MetalsChemicalsController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  BasicLvl4Page: BasicLvl4Page,
-  BasicMetalsLvl3Page: BasicMetalsLvl3Page,
-  CastingMetalsLvl4Page: CastingMetalsLvl4Page,
-  ChemicalsProductsLvl3Page: ChemicalsProductsLvl3Page,
-  CokePetroleumLvl3Page: CokePetroleumLvl3Page,
-  CutleryToolsHardwareLvl4Page: CutleryToolsHardwareLvl4Page,
-  FabricatedMetalsLvl3Page: FabricatedMetalsLvl3Page,
-  FirstProcessingSteelLvl4Page: FirstProcessingSteelLvl4Page,
-  OtherFabricatedProductsLvl4Page: OtherFabricatedProductsLvl4Page,
-  OtherProductsLvl4Page: OtherProductsLvl4Page,
-  PharmaceuticalsLvl3Page: PharmaceuticalsLvl3Page,
-  PreciousNonFerrousLvl4Page: PreciousNonFerrousLvl4Page,
-  StructuralMetalLvl4Page: StructuralMetalLvl4Page,
-  TanksReservoirsContainersLvl4Page: TanksReservoirsContainersLvl4Page,
-  TreatmentCoatingMachiningLvl4Page: TreatmentCoatingMachiningLvl4Page,
-  WashingLvl4Page: WashingLvl4Page
+  basicLvl4Page: BasicLvl4Page,
+  basicMetalsLvl3Page: BasicMetalsLvl3Page,
+  castingMetalsLvl4Page: CastingMetalsLvl4Page,
+  chemicalsProductsLvl3Page: ChemicalsProductsLvl3Page,
+  cokePetroleumLvl3Page: CokePetroleumLvl3Page,
+  cutleryToolsHardwareLvl4Page: CutleryToolsHardwareLvl4Page,
+  fabricatedMetalsLvl3Page: FabricatedMetalsLvl3Page,
+  firstProcessingSteelLvl4Page: FirstProcessingSteelLvl4Page,
+  otherFabricatedProductsLvl4Page: OtherFabricatedProductsLvl4Page,
+  otherProductsLvl4Page: OtherProductsLvl4Page,
+  pharmaceuticalsLvl3Page: PharmaceuticalsLvl3Page,
+  preciousNonFerrousLvl4Page: PreciousNonFerrousLvl4Page,
+  structuralMetalLvl4Page: StructuralMetalLvl4Page,
+  tanksReservoirsContainersLvl4Page: TanksReservoirsContainersLvl4Page,
+  treatmentCoatingMachiningLvl4Page: TreatmentCoatingMachiningLvl4Page,
+  washingLvl4Page: WashingLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -87,7 +87,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(PharmaceuticalsLvl3Page(PharmaceuticalsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(pharmaceuticalsLvl3Page(PharmaceuticalsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -96,7 +96,7 @@ class MetalsChemicalsController @Inject() (
     PharmaceuticalsLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PharmaceuticalsLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(pharmaceuticalsLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -134,7 +134,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(PreciousNonFerrousLvl4Page(PreciousNonFerrousLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(preciousNonFerrousLvl4Page(PreciousNonFerrousLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -143,7 +143,7 @@ class MetalsChemicalsController @Inject() (
     PreciousNonFerrousLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PreciousNonFerrousLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(preciousNonFerrousLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -157,7 +157,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(StructuralMetalLvl4Page(StructuralMetalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(structuralMetalLvl4Page(StructuralMetalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -166,7 +166,7 @@ class MetalsChemicalsController @Inject() (
     StructuralMetalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(StructuralMetalLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(structuralMetalLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -181,7 +181,7 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(
-        TanksReservoirsContainersLvl4Page(TanksReservoirsContainersLvl4Form.fill(FormValues(sector)), journey.mode)
+        tanksReservoirsContainersLvl4Page(TanksReservoirsContainersLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -191,7 +191,7 @@ class MetalsChemicalsController @Inject() (
     TanksReservoirsContainersLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(TanksReservoirsContainersLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(tanksReservoirsContainersLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -206,7 +206,7 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(
-        TreatmentCoatingMachiningLvl4Page(TreatmentCoatingMachiningLvl4Form.fill(FormValues(sector)), journey.mode)
+        treatmentCoatingMachiningLvl4Page(TreatmentCoatingMachiningLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -216,7 +216,7 @@ class MetalsChemicalsController @Inject() (
     TreatmentCoatingMachiningLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(TreatmentCoatingMachiningLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(treatmentCoatingMachiningLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -230,7 +230,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(WashingLvl4Page(WashingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(washingLvl4Page(WashingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -239,7 +239,7 @@ class MetalsChemicalsController @Inject() (
     WashingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WashingLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(washingLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -254,7 +254,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(BasicLvl4Page(BasicLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(basicLvl4Page(BasicLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -263,7 +263,7 @@ class MetalsChemicalsController @Inject() (
     BasicLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(BasicLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(basicLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -278,7 +278,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(BasicMetalsLvl3Page(BasicMetalsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(basicMetalsLvl3Page(BasicMetalsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -287,7 +287,7 @@ class MetalsChemicalsController @Inject() (
     BasicMetalsLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(BasicMetalsLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(basicMetalsLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -326,7 +326,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(CastingMetalsLvl4Page(CastingMetalsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(castingMetalsLvl4Page(CastingMetalsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -335,7 +335,7 @@ class MetalsChemicalsController @Inject() (
     CastingMetalsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(CastingMetalsLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(castingMetalsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -350,7 +350,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(ChemicalsProductsLvl3Page(ChemicalsProductsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(chemicalsProductsLvl3Page(ChemicalsProductsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -359,7 +359,7 @@ class MetalsChemicalsController @Inject() (
     ChemicalsProductsLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ChemicalsProductsLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(chemicalsProductsLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -398,7 +398,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(CokePetroleumLvl3Page(CokePetroleumLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(cokePetroleumLvl3Page(CokePetroleumLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -407,7 +407,7 @@ class MetalsChemicalsController @Inject() (
     CokePetroleumLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(CokePetroleumLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(cokePetroleumLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -446,7 +446,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(CutleryToolsHardwareLvl4Page(CutleryToolsHardwareLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(cutleryToolsHardwareLvl4Page(CutleryToolsHardwareLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -455,7 +455,7 @@ class MetalsChemicalsController @Inject() (
     CutleryToolsHardwareLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(CutleryToolsHardwareLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(cutleryToolsHardwareLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -470,7 +470,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(FabricatedMetalsLvl3Page(FabricatedMetalsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(fabricatedMetalsLvl3Page(FabricatedMetalsLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -479,7 +479,7 @@ class MetalsChemicalsController @Inject() (
     FabricatedMetalsLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FabricatedMetalsLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(fabricatedMetalsLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -518,7 +518,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(FirstProcessingSteelLvl4Page(FirstProcessingSteelLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(firstProcessingSteelLvl4Page(FirstProcessingSteelLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -527,7 +527,7 @@ class MetalsChemicalsController @Inject() (
     FirstProcessingSteelLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FirstProcessingSteelLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(firstProcessingSteelLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -543,7 +543,7 @@ class MetalsChemicalsController @Inject() (
         case None => ""
       }
       Ok(
-        OtherFabricatedProductsLvl4Page(OtherFabricatedProductsLvl4Form.fill(FormValues(sector)), journey.mode)
+        otherFabricatedProductsLvl4Page(OtherFabricatedProductsLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -553,7 +553,7 @@ class MetalsChemicalsController @Inject() (
     OtherFabricatedProductsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherFabricatedProductsLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherFabricatedProductsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -568,7 +568,7 @@ class MetalsChemicalsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherProductsLvl4Page(OtherProductsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherProductsLvl4Page(OtherProductsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -577,7 +577,7 @@ class MetalsChemicalsController @Inject() (
     OtherProductsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherProductsLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherProductsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture

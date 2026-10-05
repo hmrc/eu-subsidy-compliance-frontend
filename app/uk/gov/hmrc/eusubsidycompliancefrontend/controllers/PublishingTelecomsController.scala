@@ -40,19 +40,19 @@ class PublishingTelecomsController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  ComputerInfrastructureDataHostingLvl3Page: ComputerInfrastructureDataHostingLvl3Page,
-  ComputerProgrammingConsultancyLvl3Page: ComputerProgrammingConsultancyLvl3Page,
-  TelecommunicationLvl2Page: TelecommunicationLvl2Page,
-  TelecommunicationLvl3Page: TelecommunicationLvl3Page,
-  WebSearchPortalLvl4Page: WebSearchPortalLvl4Page,
-  BookPublishingLvl4Page: BookPublishingLvl4Page,
-  FilmMusicPublishingLvl3Page: FilmMusicPublishingLvl3Page,
-  FilmVideoActivitiesLvl4Page: FilmVideoActivitiesLvl4Page,
-  NewsOtherContentDistributionLvl4Page: NewsOtherContentDistributionLvl4Page,
-  ProgrammingBroadcastingDistributionLvl3Page: ProgrammingBroadcastingDistributionLvl3Page,
-  PublishingLvl2Page: PublishingLvl2Page,
-  PublishingLvl3Page: PublishingLvl3Page,
-  SoftwarePublishingLvl4Page: SoftwarePublishingLvl4Page
+  computerInfrastructureDataHostingLvl3Page: ComputerInfrastructureDataHostingLvl3Page,
+  computerProgrammingConsultancyLvl3Page: ComputerProgrammingConsultancyLvl3Page,
+  telecommunicationLvl2Page: TelecommunicationLvl2Page,
+  telecommunicationLvl3Page: TelecommunicationLvl3Page,
+  webSearchPortalLvl4Page: WebSearchPortalLvl4Page,
+  bookPublishingLvl4Page: BookPublishingLvl4Page,
+  filmMusicPublishingLvl3Page: FilmMusicPublishingLvl3Page,
+  filmVideoActivitiesLvl4Page: FilmVideoActivitiesLvl4Page,
+  newsOtherContentDistributionLvl4Page: NewsOtherContentDistributionLvl4Page,
+  programmingBroadcastingDistributionLvl3Page: ProgrammingBroadcastingDistributionLvl3Page,
+  publishingLvl2Page: PublishingLvl2Page,
+  publishingLvl3Page: PublishingLvl3Page,
+  softwarePublishingLvl4Page: SoftwarePublishingLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -86,7 +86,7 @@ class PublishingTelecomsController @Inject() (
         case None => ""
       }
       Ok(
-        ComputerInfrastructureDataHostingLvl3Page(
+        computerInfrastructureDataHostingLvl3Page(
           ComputerInfrastructureDataHostingLvl3Form.fill(FormValues(sector)),
           journey.mode
         )
@@ -99,7 +99,7 @@ class PublishingTelecomsController @Inject() (
     ComputerInfrastructureDataHostingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ComputerInfrastructureDataHostingLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(computerInfrastructureDataHostingLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -139,7 +139,7 @@ class PublishingTelecomsController @Inject() (
         case None => ""
       }
       Ok(
-        ComputerProgrammingConsultancyLvl3Page(
+        computerProgrammingConsultancyLvl3Page(
           ComputerProgrammingConsultancyLvl3Form.fill(FormValues(sector)),
           journey.mode
         )
@@ -152,7 +152,7 @@ class PublishingTelecomsController @Inject() (
     ComputerProgrammingConsultancyLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ComputerProgrammingConsultancyLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(computerProgrammingConsultancyLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -191,7 +191,7 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      Ok(TelecommunicationLvl2Page(TelecommunicationLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(telecommunicationLvl2Page(TelecommunicationLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -200,7 +200,7 @@ class PublishingTelecomsController @Inject() (
     TelecommunicationLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(TelecommunicationLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(telecommunicationLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -239,7 +239,7 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(TelecommunicationLvl3Page(TelecommunicationLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(telecommunicationLvl3Page(TelecommunicationLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -248,7 +248,7 @@ class PublishingTelecomsController @Inject() (
     TelecommunicationLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(TelecommunicationLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(telecommunicationLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -287,7 +287,7 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(WebSearchPortalLvl4Page(WebSearchPortalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(webSearchPortalLvl4Page(WebSearchPortalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -296,7 +296,7 @@ class PublishingTelecomsController @Inject() (
     WebSearchPortalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WebSearchPortalLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(webSearchPortalLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -311,7 +311,7 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(BookPublishingLvl4Page(BookPublishingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(bookPublishingLvl4Page(BookPublishingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -320,7 +320,7 @@ class PublishingTelecomsController @Inject() (
     BookPublishingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(BookPublishingLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(bookPublishingLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -335,7 +335,7 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(FilmMusicPublishingLvl3Page(FilmMusicPublishingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(filmMusicPublishingLvl3Page(FilmMusicPublishingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -344,7 +344,7 @@ class PublishingTelecomsController @Inject() (
     FilmMusicPublishingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FilmMusicPublishingLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(filmMusicPublishingLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -383,7 +383,7 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(FilmVideoActivitiesLvl4Page(FilmVideoActivitiesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(filmVideoActivitiesLvl4Page(FilmVideoActivitiesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -392,7 +392,7 @@ class PublishingTelecomsController @Inject() (
     FilmVideoActivitiesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FilmVideoActivitiesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(filmVideoActivitiesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -408,7 +408,7 @@ class PublishingTelecomsController @Inject() (
         case None => ""
       }
       Ok(
-        NewsOtherContentDistributionLvl4Page(
+        newsOtherContentDistributionLvl4Page(
           NewsOtherContentDistributionLvl4Form.fill(FormValues(sector)),
           journey.mode
         )
@@ -421,7 +421,7 @@ class PublishingTelecomsController @Inject() (
     NewsOtherContentDistributionLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(NewsOtherContentDistributionLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(newsOtherContentDistributionLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -437,7 +437,7 @@ class PublishingTelecomsController @Inject() (
         case None => ""
       }
       Ok(
-        ProgrammingBroadcastingDistributionLvl3Page(
+        programmingBroadcastingDistributionLvl3Page(
           ProgrammingBroadcastingDistributionLvl3Form.fill(FormValues(sector)),
           journey.mode
         )
@@ -450,7 +450,7 @@ class PublishingTelecomsController @Inject() (
     ProgrammingBroadcastingDistributionLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ProgrammingBroadcastingDistributionLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(programmingBroadcastingDistributionLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -489,7 +489,7 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      Ok(PublishingLvl2Page(PublishingLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(publishingLvl2Page(PublishingLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -498,7 +498,7 @@ class PublishingTelecomsController @Inject() (
     PublishingLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PublishingLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(publishingLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -537,7 +537,7 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(PublishingLvl3Page(PublishingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(publishingLvl3Page(PublishingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -546,7 +546,7 @@ class PublishingTelecomsController @Inject() (
     PublishingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PublishingLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(publishingLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -585,7 +585,7 @@ class PublishingTelecomsController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(SoftwarePublishingLvl4Page(SoftwarePublishingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(softwarePublishingLvl4Page(SoftwarePublishingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -594,7 +594,7 @@ class PublishingTelecomsController @Inject() (
     SoftwarePublishingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SoftwarePublishingLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(softwarePublishingLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture

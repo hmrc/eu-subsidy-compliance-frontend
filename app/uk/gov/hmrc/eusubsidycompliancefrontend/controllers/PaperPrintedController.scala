@@ -38,11 +38,11 @@ class PaperPrintedController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  ArticlesPaperPaperboardLvl4Page: ArticlesPaperPaperboardLvl4Page,
-  PaperLvl3Page: PaperLvl3Page,
-  PrintedLvl3Page: PrintedLvl3Page,
-  PrintingServicesLvl4Page: PrintingServicesLvl4Page,
-  PulpPaperPaperboardLvl4Page: PulpPaperPaperboardLvl4Page
+  articlesPaperPaperboardLvl4Page: ArticlesPaperPaperboardLvl4Page,
+  paperLvl3Page: PaperLvl3Page,
+  printedLvl3Page: PrintedLvl3Page,
+  printingServicesLvl4Page: PrintingServicesLvl4Page,
+  pulpPaperPaperboardLvl4Page: PulpPaperPaperboardLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -64,7 +64,7 @@ class PaperPrintedController @Inject() (
         case None => ""
       }
       Ok(
-        ArticlesPaperPaperboardLvl4Page(ArticlesPaperPaperboardLvl4Form.fill(FormValues(sector)), journey.mode)
+        articlesPaperPaperboardLvl4Page(ArticlesPaperPaperboardLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -74,7 +74,7 @@ class PaperPrintedController @Inject() (
     ArticlesPaperPaperboardLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArticlesPaperPaperboardLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(articlesPaperPaperboardLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -89,7 +89,7 @@ class PaperPrintedController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(PaperLvl3Page(PaperLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(paperLvl3Page(PaperLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -98,7 +98,7 @@ class PaperPrintedController @Inject() (
     PaperLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PaperLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(paperLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -137,7 +137,7 @@ class PaperPrintedController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(PrintedLvl3Page(PrintedLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(printedLvl3Page(PrintedLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -146,7 +146,7 @@ class PaperPrintedController @Inject() (
     PrintedLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PrintedLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(printedLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -185,7 +185,7 @@ class PaperPrintedController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(PrintingServicesLvl4Page(PrintingServicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(printingServicesLvl4Page(PrintingServicesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -194,7 +194,7 @@ class PaperPrintedController @Inject() (
     PrintingServicesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PrintingServicesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(printingServicesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -209,7 +209,7 @@ class PaperPrintedController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(PulpPaperPaperboardLvl4Page(PulpPaperPaperboardLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(pulpPaperPaperboardLvl4Page(PulpPaperPaperboardLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -218,7 +218,7 @@ class PaperPrintedController @Inject() (
     PulpPaperPaperboardLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PulpPaperPaperboardLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(pulpPaperPaperboardLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
