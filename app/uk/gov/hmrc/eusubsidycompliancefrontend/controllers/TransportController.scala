@@ -39,18 +39,18 @@ class TransportController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  AirTransportFreightAirLvl4Page: AirTransportFreightAirLvl4Page,
-  AirTransportLvl3Page: AirTransportLvl3Page,
-  LandTransportFreightTransportLvl4Page: LandTransportFreightTransportLvl4Page,
-  LandTransportLvl3Page: LandTransportLvl3Page,
-  LandTransportOtherPassengerLvl4Page: LandTransportOtherPassengerLvl4Page,
-  LandTransportPassengerRailLvl4Page: LandTransportPassengerRailLvl4Page,
-  PostalAndCourierLvl3Page: PostalAndCourierLvl3Page,
-  TransportLvl2Page: TransportLvl2Page,
-  WarehousingSupportActivitiesTransportLvl4Page: WarehousingSupportActivitiesTransportLvl4Page,
-  WarehousingIntermediationLvl4Page: WarehousingIntermediationLvl4Page,
-  WarehousingSupportLvl3Page: WarehousingSupportLvl3Page,
-  WaterTransportLvl3Page: WaterTransportLvl3Page
+  airTransportFreightAirLvl4Page: AirTransportFreightAirLvl4Page,
+  airTransportLvl3Page: AirTransportLvl3Page,
+  landTransportFreightTransportLvl4Page: LandTransportFreightTransportLvl4Page,
+  landTransportLvl3Page: LandTransportLvl3Page,
+  landTransportOtherPassengerLvl4Page: LandTransportOtherPassengerLvl4Page,
+  landTransportPassengerRailLvl4Page: LandTransportPassengerRailLvl4Page,
+  postalAndCourierLvl3Page: PostalAndCourierLvl3Page,
+  transportLvl2Page: TransportLvl2Page,
+  warehousingSupportActivitiesTransportLvl4Page: WarehousingSupportActivitiesTransportLvl4Page,
+  warehousingIntermediationLvl4Page: WarehousingIntermediationLvl4Page,
+  warehousingSupportLvl3Page: WarehousingSupportLvl3Page,
+  waterTransportLvl3Page: WaterTransportLvl3Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -81,7 +81,7 @@ class TransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(AirTransportFreightAirLvl4Page(AirTransportFreightAirLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(airTransportFreightAirLvl4Page(AirTransportFreightAirLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -90,7 +90,7 @@ class TransportController @Inject() (
     AirTransportFreightAirLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AirTransportFreightAirLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(airTransportFreightAirLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -105,7 +105,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(AirTransportLvl3Page(AirTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(airTransportLvl3Page(AirTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -114,7 +114,7 @@ class TransportController @Inject() (
     AirTransportLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AirTransportLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(airTransportLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -154,7 +154,7 @@ class TransportController @Inject() (
         case None => ""
       }
       Ok(
-        LandTransportFreightTransportLvl4Page(
+        landTransportFreightTransportLvl4Page(
           LandTransportFreightTransportLvl4Form.fill(FormValues(sector)),
           journey.mode
         )
@@ -167,7 +167,7 @@ class TransportController @Inject() (
     LandTransportFreightTransportLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(LandTransportFreightTransportLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(landTransportFreightTransportLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -182,7 +182,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(LandTransportLvl3Page(LandTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(landTransportLvl3Page(LandTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -191,7 +191,7 @@ class TransportController @Inject() (
     LandTransportLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(LandTransportLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(landTransportLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -231,7 +231,7 @@ class TransportController @Inject() (
         case None => ""
       }
       Ok(
-        LandTransportOtherPassengerLvl4Page(LandTransportOtherPassengerLvl4Form.fill(FormValues(sector)), journey.mode)
+        landTransportOtherPassengerLvl4Page(LandTransportOtherPassengerLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -241,7 +241,7 @@ class TransportController @Inject() (
     LandTransportOtherPassengerLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(LandTransportOtherPassengerLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(landTransportOtherPassengerLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -257,7 +257,7 @@ class TransportController @Inject() (
         case None => ""
       }
       Ok(
-        LandTransportPassengerRailLvl4Page(LandTransportPassengerRailLvl4Form.fill(FormValues(sector)), journey.mode)
+        landTransportPassengerRailLvl4Page(LandTransportPassengerRailLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -267,7 +267,7 @@ class TransportController @Inject() (
     LandTransportPassengerRailLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(LandTransportPassengerRailLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(landTransportPassengerRailLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -282,7 +282,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(PostalAndCourierLvl3Page(PostalAndCourierLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(postalAndCourierLvl3Page(PostalAndCourierLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -291,7 +291,7 @@ class TransportController @Inject() (
     PostalAndCourierLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PostalAndCourierLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(postalAndCourierLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -330,7 +330,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      Ok(TransportLvl2Page(TransportLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(transportLvl2Page(TransportLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -339,7 +339,7 @@ class TransportController @Inject() (
     TransportLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(TransportLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(transportLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -379,7 +379,7 @@ class TransportController @Inject() (
         case None => ""
       }
       Ok(
-        WarehousingSupportActivitiesTransportLvl4Page(
+        warehousingSupportActivitiesTransportLvl4Page(
           WarehousingSupportActivitiesTransportLvl4Form.fill(FormValues(sector)),
           journey.mode
         )
@@ -392,7 +392,7 @@ class TransportController @Inject() (
     WarehousingSupportActivitiesTransportLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WarehousingSupportActivitiesTransportLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(warehousingSupportActivitiesTransportLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -408,7 +408,7 @@ class TransportController @Inject() (
         case None => ""
       }
       Ok(
-        WarehousingIntermediationLvl4Page(WarehousingIntermediationLvl4Form.fill(FormValues(sector)), journey.mode)
+        warehousingIntermediationLvl4Page(WarehousingIntermediationLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -418,7 +418,7 @@ class TransportController @Inject() (
     WarehousingIntermediationLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WarehousingIntermediationLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(warehousingIntermediationLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -433,7 +433,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(WaterTransportLvl3Page(WaterTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(waterTransportLvl3Page(WaterTransportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -442,7 +442,7 @@ class TransportController @Inject() (
     WaterTransportLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WaterTransportLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(waterTransportLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -481,7 +481,7 @@ class TransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(WarehousingSupportLvl3Page(WarehousingSupportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(warehousingSupportLvl3Page(WarehousingSupportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -490,7 +490,7 @@ class TransportController @Inject() (
     WarehousingSupportLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(WarehousingSupportLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(warehousingSupportLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {

@@ -40,20 +40,20 @@ class ProfAndPAdminController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  PublicAdminDefenceLvl3Page: PublicAdminDefenceLvl3Page,
-  PublicAdminLvl4Page: PublicAdminLvl4Page,
-  ServiceProvisionLvl4Page: ServiceProvisionLvl4Page,
-  AdvertisingLvl3Page: AdvertisingLvl3Page,
-  AdvertisingLvl4Page: AdvertisingLvl4Page,
-  ArchitecturalLvl3Page: ArchitecturalLvl3Page,
-  ArchitecturalLvl4Page: ArchitecturalLvl4Page,
-  HeadOfficesLvl3Page: HeadOfficesLvl3Page,
-  LegalAndAccountingLvl3Page: LegalAndAccountingLvl3Page,
-  OtherProfessionalLvl3Page: OtherProfessionalLvl3Page,
-  OtherProfessionalLvl4Page: OtherProfessionalLvl4Page,
-  ProfessionalLvl2Page: ProfessionalLvl2Page,
-  ScientificRAndDLvl3Page: ScientificRAndDLvl3Page,
-  SpecialisedDesignLvl4Page: SpecialisedDesignLvl4Page
+  publicAdminDefenceLvl3Page: PublicAdminDefenceLvl3Page,
+  publicAdminLvl4Page: PublicAdminLvl4Page,
+  serviceProvisionLvl4Page: ServiceProvisionLvl4Page,
+  advertisingLvl3Page: AdvertisingLvl3Page,
+  advertisingLvl4Page: AdvertisingLvl4Page,
+  architecturalLvl3Page: ArchitecturalLvl3Page,
+  architecturalLvl4Page: ArchitecturalLvl4Page,
+  headOfficesLvl3Page: HeadOfficesLvl3Page,
+  legalAndAccountingLvl3Page: LegalAndAccountingLvl3Page,
+  otherProfessionalLvl3Page: OtherProfessionalLvl3Page,
+  otherProfessionalLvl4Page: OtherProfessionalLvl4Page,
+  professionalLvl2Page: ProfessionalLvl2Page,
+  scientificRAndDLvl3Page: ScientificRAndDLvl3Page,
+  specialisedDesignLvl4Page: SpecialisedDesignLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -85,7 +85,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(PublicAdminDefenceLvl3Page(PublicAdminDefenceLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(publicAdminDefenceLvl3Page(PublicAdminDefenceLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -94,7 +94,7 @@ class ProfAndPAdminController @Inject() (
     PublicAdminDefenceLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PublicAdminDefenceLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(publicAdminDefenceLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -133,7 +133,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(PublicAdminLvl4Page(PublicAdminLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(publicAdminLvl4Page(PublicAdminLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -142,7 +142,7 @@ class ProfAndPAdminController @Inject() (
     PublicAdminLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PublicAdminLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(publicAdminLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -157,7 +157,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(ServiceProvisionLvl4Page(ServiceProvisionLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(serviceProvisionLvl4Page(ServiceProvisionLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -166,7 +166,7 @@ class ProfAndPAdminController @Inject() (
     ServiceProvisionLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ServiceProvisionLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(serviceProvisionLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -181,7 +181,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(AdvertisingLvl3Page(AdvertisingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(advertisingLvl3Page(AdvertisingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -190,7 +190,7 @@ class ProfAndPAdminController @Inject() (
     AdvertisingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AdvertisingLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(advertisingLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -229,7 +229,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(AdvertisingLvl4Page(AdvertisingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(advertisingLvl4Page(AdvertisingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -238,7 +238,7 @@ class ProfAndPAdminController @Inject() (
     AdvertisingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AdvertisingLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(advertisingLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -253,7 +253,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(ArchitecturalLvl3Page(ArchitecturalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(architecturalLvl3Page(ArchitecturalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -262,7 +262,7 @@ class ProfAndPAdminController @Inject() (
     ArchitecturalLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArchitecturalLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(architecturalLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -301,7 +301,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(ArchitecturalLvl4Page(ArchitecturalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(architecturalLvl4Page(ArchitecturalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -310,7 +310,7 @@ class ProfAndPAdminController @Inject() (
     ArchitecturalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ArchitecturalLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(architecturalLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -325,7 +325,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(HeadOfficesLvl3Page(HeadOfficesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(headOfficesLvl3Page(HeadOfficesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -334,7 +334,7 @@ class ProfAndPAdminController @Inject() (
     HeadOfficesLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(HeadOfficesLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(headOfficesLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -373,7 +373,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(LegalAndAccountingLvl3Page(LegalAndAccountingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(legalAndAccountingLvl3Page(LegalAndAccountingLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -382,7 +382,7 @@ class ProfAndPAdminController @Inject() (
     LegalAndAccountingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(LegalAndAccountingLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(legalAndAccountingLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -421,7 +421,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(OtherProfessionalLvl3Page(OtherProfessionalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherProfessionalLvl3Page(OtherProfessionalLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -430,7 +430,7 @@ class ProfAndPAdminController @Inject() (
     OtherProfessionalLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherProfessionalLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherProfessionalLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -469,7 +469,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherProfessionalLvl4Page(OtherProfessionalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherProfessionalLvl4Page(OtherProfessionalLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -478,7 +478,7 @@ class ProfAndPAdminController @Inject() (
     OtherProfessionalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherProfessionalLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherProfessionalLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -493,7 +493,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      Ok(ProfessionalLvl2Page(ProfessionalLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(professionalLvl2Page(ProfessionalLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -502,7 +502,7 @@ class ProfAndPAdminController @Inject() (
     ProfessionalLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ProfessionalLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(professionalLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -541,7 +541,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(ScientificRAndDLvl3Page(ScientificRAndDLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(scientificRAndDLvl3Page(ScientificRAndDLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -550,7 +550,7 @@ class ProfAndPAdminController @Inject() (
     ScientificRAndDLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ScientificRAndDLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(scientificRAndDLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -589,7 +589,7 @@ class ProfAndPAdminController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(SpecialisedDesignLvl4Page(SpecialisedDesignLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(specialisedDesignLvl4Page(SpecialisedDesignLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -598,7 +598,7 @@ class ProfAndPAdminController @Inject() (
     SpecialisedDesignLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(SpecialisedDesignLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(specialisedDesignLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture

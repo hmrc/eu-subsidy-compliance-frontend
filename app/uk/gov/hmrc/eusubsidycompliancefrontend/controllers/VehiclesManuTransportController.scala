@@ -39,12 +39,12 @@ class VehiclesManuTransportController @Inject() (
   actionBuilders: ActionBuilders,
   val store: Store,
   navigator: Navigator,
-  AircraftSpacecraftLvl4Page: AircraftSpacecraftLvl4Page,
-  MotorVehiclesLvl3Page: MotorVehiclesLvl3Page,
-  OtherTransportEquipmentLvl3Page: OtherTransportEquipmentLvl3Page,
-  OtherTransportEquipmentLvl4Page: OtherTransportEquipmentLvl4Page,
-  PartsAccessoriesLvl4Page: PartsAccessoriesLvl4Page,
-  ShipsBoatsLvl4Page: ShipsBoatsLvl4Page
+  aircraftSpacecraftLvl4Page: AircraftSpacecraftLvl4Page,
+  motorVehiclesLvl3Page: MotorVehiclesLvl3Page,
+  otherTransportEquipmentLvl3Page: OtherTransportEquipmentLvl3Page,
+  otherTransportEquipmentLvl4Page: OtherTransportEquipmentLvl4Page,
+  partsAccessoriesLvl4Page: PartsAccessoriesLvl4Page,
+  shipsBoatsLvl4Page: ShipsBoatsLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -67,7 +67,7 @@ class VehiclesManuTransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(AircraftSpacecraftLvl4Page(AircraftSpacecraftLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(aircraftSpacecraftLvl4Page(AircraftSpacecraftLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -76,7 +76,7 @@ class VehiclesManuTransportController @Inject() (
     AircraftSpacecraftLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AircraftSpacecraftLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(aircraftSpacecraftLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -91,7 +91,7 @@ class VehiclesManuTransportController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(MotorVehiclesLvl3Page(MotorVehiclesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(motorVehiclesLvl3Page(MotorVehiclesLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -100,7 +100,7 @@ class VehiclesManuTransportController @Inject() (
     MotorVehiclesLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MotorVehiclesLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(motorVehiclesLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -140,7 +140,7 @@ class VehiclesManuTransportController @Inject() (
         case None => ""
       }
       Ok(
-        OtherTransportEquipmentLvl3Page(OtherTransportEquipmentLvl3Form.fill(FormValues(sector)), journey.mode)
+        otherTransportEquipmentLvl3Page(OtherTransportEquipmentLvl3Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -150,7 +150,7 @@ class VehiclesManuTransportController @Inject() (
     OtherTransportEquipmentLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherTransportEquipmentLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherTransportEquipmentLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -190,7 +190,7 @@ class VehiclesManuTransportController @Inject() (
         case None => ""
       }
       Ok(
-        OtherTransportEquipmentLvl4Page(OtherTransportEquipmentLvl4Form.fill(FormValues(sector)), journey.mode)
+        otherTransportEquipmentLvl4Page(OtherTransportEquipmentLvl4Form.fill(FormValues(sector)), journey.mode)
       ).toFuture
     }
   }
@@ -200,7 +200,7 @@ class VehiclesManuTransportController @Inject() (
     OtherTransportEquipmentLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherTransportEquipmentLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherTransportEquipmentLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -215,7 +215,7 @@ class VehiclesManuTransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(PartsAccessoriesLvl4Page(PartsAccessoriesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(partsAccessoriesLvl4Page(PartsAccessoriesLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -224,7 +224,7 @@ class VehiclesManuTransportController @Inject() (
     PartsAccessoriesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PartsAccessoriesLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(partsAccessoriesLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -239,7 +239,7 @@ class VehiclesManuTransportController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(ShipsBoatsLvl4Page(ShipsBoatsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(shipsBoatsLvl4Page(ShipsBoatsLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -248,7 +248,7 @@ class VehiclesManuTransportController @Inject() (
     ShipsBoatsLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(ShipsBoatsLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(shipsBoatsLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
