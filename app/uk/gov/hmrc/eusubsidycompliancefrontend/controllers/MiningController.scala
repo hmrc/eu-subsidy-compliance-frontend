@@ -35,19 +35,19 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class MiningController @Inject() (
-  mcc: MessagesControllerComponents,
-  actionBuilders: ActionBuilders,
-  val store: Store,
-  navigator: Navigator,
-  CoalMiningLvl3Page: CoalMiningLvl3Page,
-  GasMiningLvl3Page: GasMiningLvl3Page,
-  MetalMiningLvl3Page: MetalMiningLvl3Page,
-  MiningLvl2Page: MiningLvl2Page,
-  MiningSupportLvl3Page: MiningSupportLvl3Page,
-  NonFeMetalMiningLvl4Page: NonFeMetalMiningLvl4Page,
-  OtherMiningLvl3Page: OtherMiningLvl3Page,
-  OtherMiningLvl4Page: OtherMiningLvl4Page,
-  QuarryingLvl4Page: QuarryingLvl4Page
+                                   mcc: MessagesControllerComponents,
+                                   actionBuilders: ActionBuilders,
+                                   val store: Store,
+                                   navigator: Navigator,
+                                   coalMiningLvl3Page: CoalMiningLvl3Page,
+                                   gasMiningLvl3Page: GasMiningLvl3Page,
+                                   metalMiningLvl3Page: MetalMiningLvl3Page,
+                                   miningLvl2Page: MiningLvl2Page,
+                                   miningSupportLvl3Page: MiningSupportLvl3Page,
+                                   nonFeMetalMiningLvl4Page: NonFeMetalMiningLvl4Page,
+                                   otherMiningLvl3Page: OtherMiningLvl3Page,
+                                   otherMiningLvl4Page: OtherMiningLvl4Page,
+                                   quarryingLvl4Page: QuarryingLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -73,7 +73,7 @@ class MiningController @Inject() (
         case Some(value) => if (value.toString.length > 2) value.toString.take(2) else value.toString
         case None => ""
       }
-      Ok(MiningLvl2Page(MiningLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(miningLvl2Page(MiningLvl2Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -82,7 +82,7 @@ class MiningController @Inject() (
     MiningLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MiningLvl2Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(miningLvl2Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -120,7 +120,7 @@ class MiningController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(MiningSupportLvl3Page(MiningSupportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(miningSupportLvl3Page(MiningSupportLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -129,7 +129,7 @@ class MiningController @Inject() (
     MiningSupportLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MiningSupportLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(miningSupportLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -167,7 +167,7 @@ class MiningController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(NonFeMetalMiningLvl4Page(NonFeMetalMiningLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(nonFeMetalMiningLvl4Page(NonFeMetalMiningLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -176,7 +176,7 @@ class MiningController @Inject() (
     NonFeMetalMiningLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(NonFeMetalMiningLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(nonFeMetalMiningLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -191,7 +191,7 @@ class MiningController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(OtherMiningLvl3Page(OtherMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherMiningLvl3Page(OtherMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -200,7 +200,7 @@ class MiningController @Inject() (
     OtherMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherMiningLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherMiningLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -239,7 +239,7 @@ class MiningController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(OtherMiningLvl4Page(OtherMiningLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(otherMiningLvl4Page(OtherMiningLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -248,7 +248,7 @@ class MiningController @Inject() (
     OtherMiningLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherMiningLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(otherMiningLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -262,7 +262,7 @@ class MiningController @Inject() (
         case Some(value) => value.toString
         case None => ""
       }
-      Ok(QuarryingLvl4Page(QuarryingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(quarryingLvl4Page(QuarryingLvl4Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -271,7 +271,7 @@ class MiningController @Inject() (
     QuarryingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(QuarryingLvl4Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(quarryingLvl4Page(formWithErrors, "")).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(Sector.fromCode(form.value)))
           Redirect(navigator.nextPage(form.value, "")).toFuture
@@ -285,7 +285,7 @@ class MiningController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(CoalMiningLvl3Page(CoalMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(coalMiningLvl3Page(CoalMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -294,7 +294,7 @@ class MiningController @Inject() (
     CoalMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(CoalMiningLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(coalMiningLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -333,7 +333,7 @@ class MiningController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(GasMiningLvl3Page(GasMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(gasMiningLvl3Page(GasMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -342,7 +342,7 @@ class MiningController @Inject() (
     GasMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(GasMiningLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(gasMiningLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
@@ -381,7 +381,7 @@ class MiningController @Inject() (
         case Some(value) => if (value.toString.length > 4) value.toString.take(4) else value.toString
         case None => ""
       }
-      Ok(MetalMiningLvl3Page(MetalMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
+      Ok(metalMiningLvl3Page(MetalMiningLvl3Form.fill(FormValues(sector)), journey.mode)).toFuture
     }
   }
 
@@ -390,7 +390,7 @@ class MiningController @Inject() (
     MetalMiningLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MetalMiningLvl3Page(formWithErrors, "")).toFuture,
+        formWithErrors => BadRequest(metalMiningLvl3Page(formWithErrors, "")).toFuture,
         form => {
           store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
             val previousAnswer = journey.sector.value match {
