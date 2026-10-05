@@ -34,15 +34,15 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PaperPrintedController @Inject() (
-                                         mcc: MessagesControllerComponents,
-                                         actionBuilders: ActionBuilders,
-                                         val store: Store,
-                                         navigator: Navigator,
-                                         articlesPaperPaperboardLvl4Page: ArticlesPaperPaperboardLvl4Page,
-                                         paperLvl3Page: PaperLvl3Page,
-                                         printedLvl3Page: PrintedLvl3Page,
-                                         printingServicesLvl4Page: PrintingServicesLvl4Page,
-                                         pulpPaperPaperboardLvl4Page: PulpPaperPaperboardLvl4Page
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  articlesPaperPaperboardLvl4Page: ArticlesPaperPaperboardLvl4Page,
+  paperLvl3Page: PaperLvl3Page,
+  printedLvl3Page: PrintedLvl3Page,
+  printingServicesLvl4Page: PrintingServicesLvl4Page,
+  pulpPaperPaperboardLvl4Page: PulpPaperPaperboardLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext

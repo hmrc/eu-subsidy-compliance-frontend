@@ -35,19 +35,19 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class MiningController @Inject() (
-                                   mcc: MessagesControllerComponents,
-                                   actionBuilders: ActionBuilders,
-                                   val store: Store,
-                                   navigator: Navigator,
-                                   coalMiningLvl3Page: CoalMiningLvl3Page,
-                                   gasMiningLvl3Page: GasMiningLvl3Page,
-                                   metalMiningLvl3Page: MetalMiningLvl3Page,
-                                   miningLvl2Page: MiningLvl2Page,
-                                   miningSupportLvl3Page: MiningSupportLvl3Page,
-                                   nonFeMetalMiningLvl4Page: NonFeMetalMiningLvl4Page,
-                                   otherMiningLvl3Page: OtherMiningLvl3Page,
-                                   otherMiningLvl4Page: OtherMiningLvl4Page,
-                                   quarryingLvl4Page: QuarryingLvl4Page
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  val store: Store,
+  navigator: Navigator,
+  coalMiningLvl3Page: CoalMiningLvl3Page,
+  gasMiningLvl3Page: GasMiningLvl3Page,
+  metalMiningLvl3Page: MetalMiningLvl3Page,
+  miningLvl2Page: MiningLvl2Page,
+  miningSupportLvl3Page: MiningSupportLvl3Page,
+  nonFeMetalMiningLvl4Page: NonFeMetalMiningLvl4Page,
+  otherMiningLvl3Page: OtherMiningLvl3Page,
+  otherMiningLvl4Page: OtherMiningLvl4Page,
+  quarryingLvl4Page: QuarryingLvl4Page
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
