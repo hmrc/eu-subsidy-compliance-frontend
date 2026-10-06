@@ -92,7 +92,7 @@ class ExistingAdminConfirmAddBusinessDetailsController @Inject() (
 
           case FormValues("no") =>
             Redirect(
-              routes.HMRCEmailController.showPage(
+              routes.HMRCEmailController.showPageEmail(
                 routes.ExistingAdminConfirmAddBusinessDetailsController.showPage().url
               )
             ).toFuture
