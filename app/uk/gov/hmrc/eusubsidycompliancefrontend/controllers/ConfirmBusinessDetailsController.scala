@@ -156,7 +156,7 @@ class ConfirmBusinessDetailsController @Inject() (
 
             } else
               Redirect(
-                routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPageNew().url)
+                routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
               ).toFuture
         )
     }
@@ -203,7 +203,7 @@ class ConfirmBusinessDetailsController @Inject() (
               }
             } else {
               Redirect(
-                routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
+                routes.HMRCEmailController.showPageEmail(routes.ConfirmBusinessDetailsController.showPage().url)
               ).toFuture
             }
         )
