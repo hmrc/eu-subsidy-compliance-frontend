@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P, H2, Link}
 
 @this(
     layout: Layout
@@ -35,7 +35,28 @@
 
     @P(messages("cannotUseServiceContactAdministrator.p1"))
 
+    @H2(
+        messages("cannotUseServiceContactAdministrator.h2")
+    )
+
     @P(messages("cannotUseServiceContactAdministrator.p2"))
 
     @P(messages("cannotUseServiceContactAdministrator.p3"))
+
+    @H2(
+        messages("cannotUseServiceContactAdministrator.h3")
+    )
+
+    <p class="govuk-body">
+        @Html(messages("cannotUseServiceContactAdministrator.p4", Link(s"mailto:${appConfig.emailEnquiries}", appConfig.emailEnquiries)))
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li id="govuk-list--bullet1"> @messages("cannotUseServiceContactAdministrator.p4.bullet1") </li>
+        <li id="govuk-list--bullet2"> @messages("cannotUseServiceContactAdministrator.p4.bullet2") </li>
+        <li id="govuk-list--bullet3"> @messages("cannotUseServiceContactAdministrator.p4.bullet3") </li>
+    </ul>
+
+    @P(messages("cannotUseServiceContactAdministrator.p5"))
+
+    @P(messages("cannotUseServiceContactAdministrator.p6"))
 }

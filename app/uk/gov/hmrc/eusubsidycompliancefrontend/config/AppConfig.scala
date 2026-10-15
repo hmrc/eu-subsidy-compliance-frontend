@@ -38,6 +38,7 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
   lazy val userResearchUrl: String = config.get[String](s"urls.userResearchUrl")
   lazy val exitSurveyUrl: String = config.get[String]("urls.feedback-survey")
+  lazy val emailEnquiries: String = config.get[String]("urls.emailEnquiries")
 
   private lazy val contactFrontendUrl: String =
     contactFrontendConfig.baseUrl.getOrElse(sys.error("Could not find config for contact frontend url"))
