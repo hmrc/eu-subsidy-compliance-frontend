@@ -31,20 +31,28 @@ class UserResearchBannerSpec extends PlaySupport {
   private val request = FakeRequest()
   private val dueDate = LocalDate.of(2026, 12, 1)
 
-  private lazy val undertakingDisabledPage: UndertakingDisabledPage         = fakeApplication.injector.instanceOf[UndertakingDisabledPage]
-  private lazy val claimConfirmationPage: ClaimConfirmationPage             = fakeApplication.injector.instanceOf[ClaimConfirmationPage]
-  private lazy val noClaimConfirmationPage: NoClaimConfirmationPage         = fakeApplication.injector.instanceOf[NoClaimConfirmationPage]
-  private lazy val becomeAdminConfirmationPage: BecomeAdminConfirmationPage = fakeApplication.injector.instanceOf[BecomeAdminConfirmationPage]
-  private lazy val signOutPage: SignOutPage                                 = fakeApplication.injector.instanceOf[SignOutPage]
-  private lazy val confirmationPage: ConfirmationPage                       = fakeApplication.injector.instanceOf[ConfirmationPage]
+  private lazy val undertakingDisabledPage: UndertakingDisabledPage =
+    fakeApplication.injector.instanceOf[UndertakingDisabledPage]
+  private lazy val claimConfirmationPage: ClaimConfirmationPage =
+    fakeApplication.injector.instanceOf[ClaimConfirmationPage]
+  private lazy val noClaimConfirmationPage: NoClaimConfirmationPage =
+    fakeApplication.injector.instanceOf[NoClaimConfirmationPage]
+  private lazy val becomeAdminConfirmationPage: BecomeAdminConfirmationPage =
+    fakeApplication.injector.instanceOf[BecomeAdminConfirmationPage]
+  private lazy val signOutPage: SignOutPage = fakeApplication.injector.instanceOf[SignOutPage]
+  private lazy val confirmationPage: ConfirmationPage = fakeApplication.injector.instanceOf[ConfirmationPage]
 
   private def parse(html: Html): Document = Jsoup.parse(html.body)
 
   private val endPages: Seq[(String, () => Document)] = Seq(
-    "Undertaking disabled page"         -> (() => parse(undertakingDisabledPage()(request, messages, appConfig))),
-    "Claim confirmation page"           -> (() => parse(claimConfirmationPage(dueDate, isSuspended = true)(request, messages, appConfig))),
-    "No claim confirmation page"        -> (() => parse(noClaimConfirmationPage(dueDate, isSuspended = true)(request, messages, appConfig))),
-    "Become admin confirmation page"    -> (() => parse(becomeAdminConfirmationPage()(request, messages, appConfig))),
+    "Undertaking disabled page" -> (() => parse(undertakingDisabledPage()(request, messages, appConfig))),
+    "Claim confirmation page" -> (() =>
+      parse(claimConfirmationPage(dueDate, isSuspended = true)(request, messages, appConfig))
+    ),
+    "No claim confirmation page" -> (() =>
+      parse(noClaimConfirmationPage(dueDate, isSuspended = true)(request, messages, appConfig))
+    ),
+    "Become admin confirmation page" -> (() => parse(becomeAdminConfirmationPage()(request, messages, appConfig))),
     "Leave undertaking signed out page" -> (() => parse(signOutPage()(request, messages, appConfig)))
   )
 
@@ -52,7 +60,7 @@ class UserResearchBannerSpec extends PlaySupport {
     s"The $name" should {
 
       lazy val document = render()
-      lazy val banner   = document.select(".hmrc-user-research-banner")
+      lazy val banner = document.select(".hmrc-user-research-banner")
 
       "display the linear user research banner" in {
         banner.size() shouldBe 1
