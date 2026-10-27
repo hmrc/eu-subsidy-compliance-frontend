@@ -27,7 +27,7 @@
 @key = @{"signOut"}
 @title = @{messages(s"$key.title")}
 
-@layout(pageTitle = Some(title)) {
+@layout(pageTitle = Some(title), showResearchBanner = true) {
 
   @govukPanel(Panel(
     title = Text(title),
