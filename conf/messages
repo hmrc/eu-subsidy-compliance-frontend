@@ -226,7 +226,6 @@ businessEntityEori.hint = The first 2 letters are the country code, GB or XI. Th
 
 businessEntityEori.error.incorrect-length = EORI number of the business you want to add must start with GB or XI followed by 12 or 15 digits
 businessEntityEori.regex.error = EORI number of the business you want to add must only include letters GB or XI and numbers 0 to 9
-businessEntityEori.eoriInUse = The EORI number you entered is already part of another undertaking. Enter another EORI number.
 error.businessEntityEori.required = Enter the EORI number of the business you want to add
 
 businessEntityContact.title=What are the contact details of the business you want to add?
@@ -8562,3 +8561,14 @@ needRegistrationNumberAddBusiness.afterWeGetYourEmail.heading=After we get your 
 needRegistrationNumberAddBusiness.afterWeGetYourEmail.p1=A caseworker will contact you within 5 working days. They will help update the details.
 needRegistrationNumberAddBusiness.afterWeGetYourEmail.p2=Once this is complete, we''ll email you a confirmation. You can then sign in and add this business to your undertaking.
 needRegistrationNumberAddBusiness.backToBusinesses=Back to businesses in your undertaking
+
+eoriInAnotherUndertaking.title = You cannot add this EORI number to this undertaking
+eoriInAnotherUndertaking.p1 = You cannot use the EORI number you entered, {0}, as part of this undertaking. This is because it is already part of another undertaking.
+eoriInAnotherUndertaking.p2 = You must use the correct EORI number for the business you want to add to this undertaking. A business can have more than one EORI number.
+eoriInAnotherUndertaking.p3 = You can {0}.
+eoriInAnotherUndertaking.p3.link = try another EORI number
+eoriInAnotherUndertaking.help = If you need more help, you can:
+eoriInAnotherUndertaking.help.read-about = read about
+eoriInAnotherUndertaking.help.apply.link = applying for an EORI number
+eoriInAnotherUndertaking.help.change.link = reporting a change or cancelling an EORI number
+eoriInAnotherUndertaking.help.contact.link = contact HMRC

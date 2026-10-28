@@ -1,0 +1,44 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.H1
+
+@this(layout: Layout)
+
+@(eori: String, previous: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@tryAnotherLink = {<a class="govuk-link" id="try-another-eori" href="@controllers.routes.BusinessEntityEoriController.getEori.url">@messages("eoriInAnotherUndertaking.p3.link")</a>}
+
+@layout(
+  pageTitle = Some(messages("eoriInAnotherUndertaking.title")),
+  backLinkEnabled = true,
+  backLink = Some(previous)
+) {
+  @H1(messages("eoriInAnotherUndertaking.title"))
+
+  <p class="govuk-body" id="rejected-eori-p1">@messages("eoriInAnotherUndertaking.p1", eori)</p>
+  <p class="govuk-body">@messages("eoriInAnotherUndertaking.p2")</p>
+  <p class="govuk-body">@Html(messages("eoriInAnotherUndertaking.p3", tryAnotherLink))</p>
+
+  <p class="govuk-body">@messages("eoriInAnotherUndertaking.help")</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@messages("eoriInAnotherUndertaking.help.read-about") <a class="govuk-link" id="apply-eori-link" href="@appConfig.applyForEoriUrl">@messages("eoriInAnotherUndertaking.help.apply.link")</a></li>
+    <li>@messages("eoriInAnotherUndertaking.help.read-about") <a class="govuk-link" id="change-eori-link" href="@appConfig.changeOrCancelEoriUrl">@messages("eoriInAnotherUndertaking.help.change.link")</a></li>
+    <li><a class="govuk-link" id="contact-hmrc-link" href="@appConfig.contactHmrcImportsExportsUrl">@messages("eoriInAnotherUndertaking.help.contact.link")</a></li>
+  </ul>
+}

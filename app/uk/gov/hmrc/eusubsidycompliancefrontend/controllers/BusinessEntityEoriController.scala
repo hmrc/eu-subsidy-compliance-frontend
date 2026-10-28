@@ -48,7 +48,8 @@ class BusinessEntityEoriController @Inject() (
   override val escService: EscService,
   emailService: EmailService,
   auditService: AuditService,
-  eoriPage: BusinessEntityEoriPage
+  eoriPage: BusinessEntityEoriPage,
+  eoriInAnotherUndertakingPage: EoriInAnotherUndertakingPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -115,75 +116,80 @@ class BusinessEntityEoriController @Inject() (
         auditService.sendEvent(AuditEvent.BusinessEntityUpdated(ref, request.authorityId, eori, businessEori))
       else auditService.sendEvent(AuditEvent.BusinessEntityAdded(ref, request.authorityId, eori, businessEori))
 
-//    def handleValidEori(form: FormValues, previous: Uri, undertaking: Undertaking): Future[Result] = {
-//      val businessEori = EORI(formatEori(form.value))
-//      escService.retrieveUndertakingAndHandleErrors(businessEori).flatMap {
-//        case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
-//        case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
-//        case Right(None) =>
-//          val result = for {
-//            businessEntityJourney <- store.get[BusinessEntityJourney].toContext
-//            undertakingRef <- undertaking.reference.toContext
-//            _ <- updateOrCreateBusinessEntity(businessEntityJourney, undertakingRef, businessEori).toContext
-//            _ <- emailService.sendEmail(businessEori, AddMemberToBusinessEntity, undertaking).toContext
-//            _ <- emailService.sendEmail(eori, businessEori, AddMemberToLead, undertaking).toContext
-//            _ = sendAuditEvent(businessEntityJourney, undertakingRef, businessEori)
-//          } yield Redirect(
-//            routes.AddBusinessEntityController
-//              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(businessEori.value))
-//          )
-//
-//          result.fold(handleMissingSessionData("BusinessEntity Data"))(identity)
-//      }
-//    }
+    def handleValidEori(
+      form: FormValues,
+      previous: Uri,
+      undertaking: Undertaking
+    ): Future[Result] = {
+      val businessEori = EORI(formatEori(form.value))
 
-  def handleValidEori(
-    form: FormValues,
-    previous: Uri,
-    undertaking: Undertaking
-  ): Future[Result] = {
-    val businessEori = EORI(formatEori(form.value))
-    store.update[BusinessEntityJourney](_.setEori(businessEori)).flatMap { _ =>
-      escService
-        .beneficiaryIDValidate(
-          BeneficiaryIDRequest(
-            idType = "EORI",
-            idValue = businessEori.toString,
-            requestType = "R",
-            beneficiaryInfo = None
+      escService.retrieveUndertakingAndHandleErrors(businessEori).flatMap {
+        case Right(Some(other)) if other.reference != undertaking.reference =>
+          logger.info(
+            "BusinessEntityEoriController.postEori EORI belongs to another undertaking, redirecting to rejection page"
           )
-        )
-        .flatMap {
-          case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(_.benIDType.isDefined)) =>
-            Redirect(routes.ConfirmAddBusinessDetailsController.showPage()).toFuture
-          case _ =>
-            Redirect(
-              routes.NeedRegistrationNumberBusinessController.showPage(routes.BusinessEntityEoriController.getEori.url)
-            ).toFuture
+          Redirect(routes.BusinessEntityEoriController.getEoriInAnotherUndertaking)
+            .flashing(BusinessEntityEoriController.RejectedEoriKey -> businessEori.value)
+            .toFuture
+        case _ =>
+          store.update[BusinessEntityJourney](_.setEori(businessEori)).flatMap { _ =>
+            escService
+              .beneficiaryIDValidate(
+                BeneficiaryIDRequest(
+                  idType = "EORI",
+                  idValue = businessEori.toString,
+                  requestType = "R",
+                  beneficiaryInfo = None
+                )
+              )
+              .flatMap {
+                case Right(Some(resp)) if resp.beneficiaryInfo.exists(_.exists(_.benIDType.isDefined)) =>
+                  Redirect(routes.ConfirmAddBusinessDetailsController.showPage()).toFuture
+                case _ =>
+                  Redirect(
+                    routes.NeedRegistrationNumberBusinessController
+                      .showPage(routes.BusinessEntityEoriController.getEori.url)
+                  ).toFuture
+              }
+          }
+      }
+    }
+
+    withLeadUndertaking { undertaking =>
+      store
+        .get[BusinessEntityJourney]
+        .toContext
+        .foldF(Redirect(routes.AddBusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
+          runStepIfEligible(journey) {
+            eoriForm
+              .bindFromRequest()
+              .fold(
+                errors => {
+                  logger.warn("BusinessEntityEoriController.postEori failed validation, showing errors")
+                  BadRequest(eoriPage(errors, journey.previous)).toFuture
+                },
+                form => {
+                  logger.info("BusinessEntityEoriController.postEori succeeded validation")
+                  handleValidEori(form, journey.previous, undertaking)
+                }
+              )
+          }
         }
     }
   }
 
-  withLeadUndertaking { undertaking =>
-    store
-      .get[BusinessEntityJourney]
-      .toContext
-      .foldF(Redirect(routes.AddBusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
-        runStepIfEligible(journey) {
-          eoriForm
-            .bindFromRequest()
-            .fold(
-              errors => {
-                logger.warn("BusinessEntityEoriController.postEori failed validation, showing errors")
-                BadRequest(eoriPage(errors, journey.previous)).toFuture
-              },
-              form => {
-                logger.info("BusinessEntityEoriController.postEori succeeded validation")
-                handleValidEori(form, journey.previous, undertaking)
-              }
-            )
+  def getEoriInAnotherUndertaking: Action[AnyContent] = verifiedEori.async { implicit request =>
+    withLeadUndertaking { _ =>
+      logger.info("BusinessEntityEoriController.getEoriInAnotherUndertaking")
+      request.flash
+        .get(BusinessEntityEoriController.RejectedEoriKey)
+        .fold(Redirect(routes.BusinessEntityEoriController.getEori).toFuture) { rejectedEori =>
+          Ok(eoriInAnotherUndertakingPage(rejectedEori, routes.BusinessEntityEoriController.getEori.url)).toFuture
         }
-      }
+    }
   }
-  }
+}
+
+object BusinessEntityEoriController {
+  val RejectedEoriKey = "rejectedBusinessEori"
 }

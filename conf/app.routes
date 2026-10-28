@@ -801,6 +801,7 @@ POST       /lead-undertaking-add-business                                       
 
 GET        /lead-undertaking-add-eori                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityEoriController.getEori
 POST       /lead-undertaking-add-eori                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityEoriController.postEori
+GET        /lead-undertaking-add-eori/cannot-add                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityEoriController.getEoriInAnotherUndertaking
 
 GET        /lead-undertaking-remove-business-entity/:eori                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RemoveBusinessEntityController.getRemoveBusinessEntity(eori)
 POST       /lead-undertaking-remove-business-entity/:eori                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RemoveBusinessEntityController.postRemoveBusinessEntity(eori)

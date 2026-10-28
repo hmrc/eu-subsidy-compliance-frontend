@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
@@ -30,14 +31,16 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney.Fo
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BeneficiaryIDRequest, BusinessEntity, ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{businessEntityJourney, _}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.UpstreamErrorResponse
+
+import scala.concurrent.Future
 
 class BusinessEntityEoriControllerSpec
     extends ControllerSpec
@@ -276,19 +279,63 @@ class BusinessEntityEoriControllerSpec
           }
         }
 
-        /*"eori submitted is already in use" in {
-          testEORIvalidation("businessEntityEori" -> "GB123456789010")(
-            Right(undertaking1.some),
-            "businessEntityEori.eoriInUse"
-          )
-        }*/
-
         /*"eori submitted is not stored in SMTP" in {
           testEORIvalidation("businessEntityEori" -> "GB123456789010")(
             Left(ConnectorError(UpstreamErrorResponse("EORI not present in SMTP", 406))),
             "error.businessEntityEori.required"
           )
         }*/
+
+      }
+
+      "redirect to the EORI rejection page" when {
+
+        "the eori entered belongs to another undertaking" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockRetrieveUndertakingWithErrorResponse(eori4)(
+              Right(undertaking.copy(reference = UndertakingRef("UR999999")).some)
+            )
+          }
+
+          val result = performAction("businessEntityEori" -> eori4.value)
+
+          checkIsRedirect(result, routes.BusinessEntityEoriController.getEoriInAnotherUndertaking.url)
+          flash(result).get(BusinessEntityEoriController.RejectedEoriKey) shouldBe Some(eori4.value)
+        }
+
+      }
+
+      "continue to the beneficiary ID check" when {
+
+        def testFallThrough(retrieveResponse: Either[ConnectorError, Option[Undertaking]]): Unit = {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockRetrieveUndertakingWithErrorResponse(eori4)(retrieveResponse)
+            mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
+            mockBeneficiaryIDValidate(
+              BeneficiaryIDRequest(idType = "EORI", idValue = eori4.toString, requestType = "R", beneficiaryInfo = None)
+            )(Future.successful(Right(None)))
+          }
+          checkIsRedirect(
+            performAction("businessEntityEori" -> eori4.value),
+            routes.NeedRegistrationNumberBusinessController
+              .showPage(routes.BusinessEntityEoriController.getEori.url)
+              .url
+          )
+        }
+
+        "the eori entered is not part of any undertaking" in testFallThrough(Right(None))
+
+        "the eori entered is already part of this undertaking" in testFallThrough(Right(undertaking.some))
+
+        "the undertaking lookup returns an error" in testFallThrough(
+          Left(ConnectorError(UpstreamErrorResponse("EORI not present in SMTP", 406)))
+        )
 
       }
 
@@ -361,6 +408,49 @@ class BusinessEntityEoriControllerSpec
           )
         }*/
       }
+    }
+
+    "handling request to get EORI in another undertaking page" must {
+
+      def performAction(flashData: (String, String)*) = controller.getEoriInAnotherUndertaking(
+        FakeRequest(GET, routes.BusinessEntityEoriController.getEoriInAnotherUndertaking.url).withFlash(flashData: _*)
+      )
+
+      "display the page with the eori the user entered" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+        }
+
+        val result = performAction(BusinessEntityEoriController.RejectedEoriKey -> eori4.value)
+        status(result) shouldBe OK
+
+        val doc = Jsoup.parse(contentAsString(result))
+        doc.select("h1").first().text() shouldBe messageFromMessageKey("eoriInAnotherUndertaking.title")
+        doc.getElementById("rejected-eori-p1").text() should include(eori4.value)
+        doc.getElementById("try-another-eori").attr("href") shouldBe routes.BusinessEntityEoriController.getEori.url
+        doc.select(".govuk-back-link").attr("href") shouldBe routes.BusinessEntityEoriController.getEori.url
+        doc.getElementById("apply-eori-link").attr("href") shouldBe "https://www.gov.uk/eori/apply-for-eori"
+        doc
+          .getElementById("change-eori-link")
+          .attr("href") shouldBe "https://www.gov.uk/eori/change-or-cancel-EORI-number"
+        doc
+          .getElementById("contact-hmrc-link")
+          .attr("href") shouldBe "https://www.gov.uk/find-hmrc-contacts/imports-and-exports-enquiries"
+      }
+
+      "redirect to the business EORI page when no rejected eori is in flash" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+        }
+        checkIsRedirect(performAction(), routes.BusinessEntityEoriController.getEori.url)
+      }
+
+      "redirect to the account home page when the user is not the undertaking lead" in {
+        testLeadOnlyRedirect(() => performAction())
+      }
+
     }
 
   }
