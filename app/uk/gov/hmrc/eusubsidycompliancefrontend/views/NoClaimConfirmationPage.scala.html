@@ -40,7 +40,7 @@
     showResearchBanner = true
 ) {
 
-    @formHelper(action = controllers.routes.UndertakingController.postConfirmation) {
+    @formHelper(action = controllers.routes.UndertakingConfirmationController.postConfirmation) {
 
         @govukPanel(Panel(
             title = Text(messages("noClaimConfirmation.title")),

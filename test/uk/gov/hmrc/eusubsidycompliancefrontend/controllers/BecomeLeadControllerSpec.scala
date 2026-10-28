@@ -75,7 +75,8 @@ class BecomeLeadControllerSpec
   )
 
   private val controller = instanceOf[BecomeLeadController]
-  val verificationUrlBecomeLead = routes.UndertakingController.getAddEmailForVerification(EmailStatus.BecomeLead).url
+  val verificationUrlBecomeLead =
+    routes.UndertakingEmailController.getAddEmailForVerification(EmailStatus.BecomeLead).url
 
   "BecomeLeadControllerSpec" when {
 

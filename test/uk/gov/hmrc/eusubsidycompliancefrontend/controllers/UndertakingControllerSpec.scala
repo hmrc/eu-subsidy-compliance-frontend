@@ -39,6 +39,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.NaceCheckDetailsViewModelBuilder
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -75,8 +76,10 @@ class UndertakingControllerSpec
   )
 
   private val controller = instanceOf[UndertakingController]
-  val verificationUrlNew = routes.UndertakingController.getAddEmailForVerification(EmailStatus.New).url
-  val verificationUrlAmend = routes.UndertakingController.getAddEmailForVerification(EmailStatus.Amend).url
+  private val emailController = instanceOf[UndertakingEmailController]
+  private val viewModelBuilder = instanceOf[NaceCheckDetailsViewModelBuilder]
+  val verificationUrlNew = routes.UndertakingEmailController.getAddEmailForVerification(EmailStatus.New).url
+  val verificationUrlAmend = routes.UndertakingEmailController.getAddEmailForVerification(EmailStatus.Amend).url
   val exception = new Exception("oh no")
 
   "UndertakingController" when {
@@ -132,7 +135,7 @@ class UndertakingControllerSpec
                 about = AboutUndertakingFormPage("TestUndertaking".some),
                 sector = UndertakingSectorFormPage(Sector.fromCode("1").some)
               ),
-              routes.UndertakingController.getConfirmEmail.url
+              routes.UndertakingEmailController.getConfirmEmail.url
             )
           }
 
@@ -143,7 +146,7 @@ class UndertakingControllerSpec
                 sector = UndertakingSectorFormPage(Sector.fromCode("1").some),
                 hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
               ),
-              routes.UndertakingController.getAddBusiness.url
+              routes.UndertakingAddBusinessController.getAddBusiness.url
             )
           }
 
@@ -588,7 +591,7 @@ class UndertakingControllerSpec
         //        }
 
         //        "page is reached via normal undertaking creation process" in {
-        //          test(UndertakingJourney(), routes.UndertakingController.getConfirmEmail.url)
+        //          test(UndertakingJourney(), routes.UndertakingEmailController.getConfirmEmail.url)
         //        }
 
         //        "page is reached via normal undertaking creation process when all answers have been provided" in {
@@ -610,8 +613,8 @@ class UndertakingControllerSpec
 
     "handling request to get verify email" must {
 
-      def performAction(pendingVerificationId: String) = controller.getVerifyEmail(pendingVerificationId)(
-        FakeRequest(GET, routes.UndertakingController.getVerifyEmail(pendingVerificationId).url)
+      def performAction(pendingVerificationId: String) = emailController.getVerifyEmail(pendingVerificationId)(
+        FakeRequest(GET, routes.UndertakingEmailController.getVerifyEmail(pendingVerificationId).url)
       )
 
       "throw technical error" when {
@@ -648,7 +651,9 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourney))
           }
 
-          redirectLocation(performAction("id")) shouldBe Some(routes.UndertakingController.getAddBusiness.url)
+          redirectLocation(performAction("id")) shouldBe Some(
+            routes.UndertakingAddBusinessController.getAddBusiness.url
+          )
         }
       }
 
@@ -657,7 +662,7 @@ class UndertakingControllerSpec
     "handling request to get confirm email" must {
 
       def performAction() =
-        controller.getConfirmEmail(FakeRequest(GET, routes.UndertakingController.getConfirmEmail.url))
+        emailController.getConfirmEmail(FakeRequest(GET, routes.UndertakingEmailController.getConfirmEmail.url))
 
       "throw technical error" when {
 
@@ -770,8 +775,8 @@ class UndertakingControllerSpec
     "handling request to post confirm email call" must {
 
       def performAction(data: (String, String)*) =
-        controller.postConfirmEmail(
-          FakeRequest(POST, routes.UndertakingController.postConfirmEmail.url)
+        emailController.postConfirmEmail(
+          FakeRequest(POST, routes.UndertakingEmailController.postConfirmEmail.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -823,7 +828,7 @@ class UndertakingControllerSpec
           }
           checkIsRedirect(
             performAction("using-stored-email" -> "true"),
-            routes.UndertakingController.getAddBusiness.url
+            routes.UndertakingAddBusinessController.getAddBusiness.url
           )
         }
 
@@ -858,248 +863,6 @@ class UndertakingControllerSpec
         //            routes.RegistrationSubmittedController.registrationAlreadySubmitted.url
         //          )
         //        }
-      }
-
-    }
-
-    "handling request to get intention to add business" must {
-
-      def performAction() = controller.getAddBusiness(
-        FakeRequest(GET, routes.UndertakingController.getAddBusiness.url)
-      )
-
-      "throw technical error" when {
-
-        val exception = new Exception("oh no")
-        "call to fetch undertaking journey fails" in {
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
-            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-      }
-
-      "display the page" when {
-
-        "When Change of undertaking business is available in" in {
-          val undertakingJourney = UndertakingJourney(
-            about = AboutUndertakingFormPage("TestUndertaking1".some),
-            sector = UndertakingSectorFormPage(Sector.fromCode("2").some),
-            hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
-          )
-
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-          }
-
-          val result = performAction()
-          status(result) shouldBe OK
-          val document = Jsoup.parse(contentAsString(result))
-
-          val findTitle = document.getElementById("addBusinessTitleId").text()
-          findTitle shouldBe "Businesses in your undertaking"
-
-          val legendText: String =
-            document.getElementsByClass("govuk-fieldset__legend govuk-fieldset__legend--m").text()
-          legendText shouldBe "Are there other businesses in your undertaking?"
-
-        }
-
-        "addBusiness page has an intent" in {
-          val undertakingJourney = UndertakingJourney(
-            about = AboutUndertakingFormPage("TestUndertaking1".some),
-            sector = UndertakingSectorFormPage(Sector.fromCode("2").some),
-            hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
-          )
-          val previousCall = routes.UndertakingController.getConfirmEmail.url
-
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-          }
-          val document = Jsoup.parse(contentAsString(performAction()))
-          document.select(".govuk-back-link").attr("href") shouldBe previousCall
-          document.getElementById("intentId").text() shouldBe messageFromMessageKey("addBusinessIntent.p1")
-        }
-
-        "when question has not been answered" in {
-          val undertakingJourney = UndertakingJourney(
-            about = AboutUndertakingFormPage("TestUndertaking1".some),
-            sector = UndertakingSectorFormPage(Sector.fromCode("2").some),
-            hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
-          )
-          val previousCall = routes.UndertakingController.getConfirmEmail.url
-
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-          }
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("addBusinessIntent.title", undertakingJourney.about.value.getOrElse("")),
-            { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe previousCall
-
-              val form = doc.select("form")
-              form
-                .attr("action") shouldBe routes.UndertakingController.postAddBusiness.url
-            }
-          )
-
-        }
-
-        "when question has been answered" in {
-          val undertakingJourney = UndertakingJourney(
-            about = AboutUndertakingFormPage("TestUndertaking1".some),
-            sector = UndertakingSectorFormPage(Sector.fromCode("2").some),
-            hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
-            addBusiness = UndertakingAddBusinessFormPage(true.some)
-          )
-          val previousCall = routes.UndertakingController.getConfirmEmail.url
-
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-          }
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("addBusinessIntent.title", undertakingJourney.about.value.getOrElse("")),
-            { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe previousCall
-
-              val form = doc.select("form")
-              form
-                .attr("action") shouldBe routes.UndertakingController.postAddBusiness.url
-            }
-          )
-
-        }
-      }
-
-      "redirect to journey start page" when {
-
-        "call to fetch undertaking journey passes  but return no undertaking journey" in {
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney(eori1)
-            mockGet[UndertakingJourney](eori1)(Right(None))
-          }
-          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking.url)
-        }
-      }
-
-      "redirect to previous step" when {
-        "email question has not been answered" in {
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney(eori1)
-            mockGet[UndertakingJourney](eori1)(
-              Right(
-                UndertakingJourney(
-                  about = AboutUndertakingFormPage("TestUndertaking".some),
-                  sector = UndertakingSectorFormPage(Sector.fromCode("1").some)
-                ).some
-              )
-            )
-          }
-          checkIsRedirect(performAction(), routes.UndertakingController.getConfirmEmail.url)
-        }
-      }
-
-      "redirect to undertaking already submitted page" when {
-        "cya is true" in {
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndSubmittedUndertakingJourney(eori1)
-          }
-          checkIsRedirect(performAction(), routes.RegistrationSubmittedController.registrationAlreadySubmitted.url)
-        }
-      }
-
-    }
-
-    "handling request to post intention to add business" must {
-
-      def performAction(data: (String, String)*) = controller.postAddBusiness(
-        FakeRequest(POST, routes.UndertakingController.postAddBusiness.url).withFormUrlEncodedBody(data: _*)
-      )
-
-      "throw technical error" when {
-        val exception = new Exception("oh no")
-
-        "call to update journey fails" in {
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockUpdate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
-          }
-
-          assertThrows[Exception](await(performAction("addBusinessIntent" -> "true")))
-        }
-
-      }
-
-      "show a form error" when {
-
-        def displayErrorTest(data: (String, String)*)(errorMessage: String): Unit = {
-
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-          }
-
-          checkFormErrorIsDisplayed(
-            performAction(data: _*),
-            messageFromMessageKey("addBusinessIntent.title"),
-            messageFromMessageKey(errorMessage)
-          )
-        }
-
-        "nothing has been submitted" in {
-          displayErrorTest()("addBusinessIntent.error.required")
-        }
-
-      }
-
-      "redirect to the next page" when {
-
-        "user selected No" in {
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockUpdate[UndertakingJourney](eori1)(
-              Right(UndertakingJourney(addBusiness = UndertakingAddBusinessFormPage(false.some)))
-            )
-          }
-          checkIsRedirect(
-            performAction("addBusinessIntent" -> "false"),
-            routes.BeneficiaryNotificationController.showPage().url
-          )
-        }
-
-        "user selected Yes" in {
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockUpdate[UndertakingJourney](eori1)(
-              Right(UndertakingJourney(addBusiness = UndertakingAddBusinessFormPage(true.some)))
-            )
-          }
-          checkIsRedirect(
-            performAction("addBusinessIntent" -> "true"),
-            routes.BeneficiaryNotificationController.showPage().url
-          )
-        }
-
-      }
-
-      "redirect to undertaking already submitted page" when {
-        "cya is true" in {
-          inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndSubmittedUndertakingJourney(eori1)
-          }
-          checkIsRedirect(performAction(), routes.RegistrationSubmittedController.registrationAlreadySubmitted.url)
-        }
       }
 
     }
@@ -1297,7 +1060,8 @@ class UndertakingControllerSpec
           }
           checkIsRedirect(
             result = performAction("cya" -> "true"),
-            expectedRedirectLocation = routes.UndertakingController.getConfirmation(undertakingRef.value).url
+            expectedRedirectLocation =
+              routes.UndertakingConfirmationController.getConfirmation(undertakingRef.value).url
           )
         }
 
@@ -1314,90 +1078,6 @@ class UndertakingControllerSpec
           }
           checkIsRedirect(performAction(), routes.RegistrationSubmittedController.registrationAlreadySubmitted.url)
         }
-      }
-
-    }
-
-    "handling request to get confirmation" must {
-
-      def performAction() = controller.getConfirmation(undertakingRef.value)(
-        FakeRequest(GET, routes.UndertakingController.getConfirmation(undertakingRef.value).url)
-      )
-
-      "display the page" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
-          mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-        }
-
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("undertaking.confirmation.title")
-        )
-
-      }
-
-      "display the page with intent to add business" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
-          mockGet[UndertakingJourney](eori1)(
-            Right(undertakingJourneyComplete.copy(addBusiness = UndertakingAddBusinessFormPage(true.some)).some)
-          )
-        }
-
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("undertaking.confirmation.title")
-        )
-
-      }
-
-      "show confirmation page even if undertaking already submitted page" when {
-        "cya is true" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail(eori1)
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-          }
-
-          checkPageIsDisplayed(
-            performAction(),
-            "Undertaking registered"
-          )
-        }
-      }
-
-    }
-
-    "handling request to Post Confirmation page" must {
-
-      def performAction(data: (String, String)*) =
-        controller.postConfirmation(FakeRequest(POST, "/").withFormUrlEncodedBody(data: _*))
-
-      "throw technical error" when {
-
-        "confirmation form is empty" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to update undertaking confirmation fails" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockUpdate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction("confirm" -> "true")))
-        }
-      }
-
-      "redirect to next page" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
-          mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
-        }
-
-        checkIsRedirect(performAction("confirm" -> "true"), routes.AccountController.getAccountPage.url)
       }
 
     }
@@ -1514,259 +1194,10 @@ class UndertakingControllerSpec
     //
     //    }
 
-    "handling request to post Amend undertaking" must {
-
-      def performAction(data: (String, String)*) = controller
-        .postAmendUndertaking(
-          FakeRequest(POST, routes.UndertakingController.getAmendUndertakingDetails.url)
-            .withFormUrlEncodedBody(data: _*)
-        )
-
-      "throw technical error" when {
-        val exception = new Exception("oh no")
-
-        //        "call to update undertaking journey fails" in {
-        //          inSequence {
-        //            mockAuthWithEnrolmentAndValidEmail()
-        //            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        //            mockUpdate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
-        //          }
-        //          assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
-        //
-        //        }
-
-        "call to update undertaking journey passes but return undertaking with no name" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[UndertakingJourney](eori1)(
-              Right(undertakingJourneyComplete.copy(about = AboutUndertakingFormPage()))
-            )
-          }
-          assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
-
-        }
-
-        "call to update undertaking journey passes but return undertaking with no secctor" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[UndertakingJourney](eori1)(
-              Right(undertakingJourneyComplete.copy(about = AboutUndertakingFormPage()))
-            )
-          }
-          assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
-
-        }
-
-        //        "call to retrieve undertaking fails" in {
-        //          inSequence {
-        //            mockAuthWithEnrolmentAndValidEmail()
-        //            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        //            mockUpdate[UndertakingJourney](eori1)(
-        //              Right(undertakingJourneyComplete.copy(about = AboutUndertakingFormPage("true".some)))
-        //            )
-        //            mockRetrieveUndertaking(eori1)(Future.failed(exception))
-        //          }
-        //          assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
-        //        }
-
-        //        "call to retrieve undertaking passes but no undertaking was fetched" in {
-        //          inSequence {
-        //            mockAuthWithEnrolmentAndValidEmail()
-        //            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        //            mockUpdate[UndertakingJourney](eori1)(
-        //              Right(undertakingJourneyComplete.copy(about = AboutUndertakingFormPage("true".some)))
-        //            )
-        //            mockRetrieveUndertaking(eori1)(None.toFuture)
-        //          }
-        //          assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
-        //        }
-
-        //        "call to update undertaking fails" in {
-        //          val updatedUndertaking =
-        //            undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector.fromCode("1"))
-        //          inSequence {
-        //            mockAuthWithEnrolmentAndValidEmail()
-        //            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        //            mockUpdate[UndertakingJourney](eori1)(
-        //              Right(undertakingJourneyComplete.copy(isAmend = true))
-        //            )
-        //            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-        //            mockUpdateUndertaking(updatedUndertaking)(Left(ConnectorError(exception)))
-        //          }
-        //          assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
-        //        }
-
-      }
-
-      //      "redirect to next page" in {
-      //        val updatedUndertaking =
-      //          undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector.fromCode("1"))
-      //        inSequence {
-      //          mockAuthWithEnrolmentAndValidEmail()
-      //          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-      //          mockUpdate[UndertakingJourney](eori1)(
-      //            Right(undertakingJourneyComplete.copy(isAmend = true))
-      //          )
-      //          mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-      //          mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
-      //          mockSendAuditEvent(
-      //            UndertakingUpdated("1123", eori1, undertakingRef, undertaking1.name, undertaking1.industrySector)
-      //          )
-      //        }
-      //        checkIsRedirect(performAction("amendUndertaking" -> "true"), routes.AccountController.getAccountPage.url)
-      //      }
-
-    }
-
-    "handling request to get Disable undertaking warning" must {
-      def performAction() = controller.getDisableUndertakingWarning(FakeRequest())
-
-      "display the page" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        }
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("disableUndertakingWarning.title"),
-          doc => doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
-        )
-      }
-
-    }
-
-    "handling request to get Disable undertaking confirm" must {
-      def performAction() = controller.getDisableUndertakingConfirm(FakeRequest())
-
-      "display the page" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        }
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("disableUndertakingConfirm.title"),
-          { doc =>
-            doc
-              .select(".govuk-back-link")
-              .attr("href") shouldBe routes.UndertakingController.getDisableUndertakingWarning.url
-            val form = doc.select("form")
-            form
-              .attr("action") shouldBe routes.UndertakingController.postDisableUndertakingConfirm.url
-            val hintText: String = doc.getElementById("disableUndertakingConfirm-hint").text()
-            hintText shouldBe "This cannot be reversed. If you deregister an undertaking by mistake, you can register it again as a new undertaking."
-          }
-        )
-
-      }
-
-    }
-
-    "handling request to post Disable undertaking confirm" must {
-      def performAction(data: (String, String)*) = controller
-        .postDisableUndertakingConfirm(
-          FakeRequest(POST, routes.UndertakingController.getDisableUndertakingConfirm.url)
-            .withFormUrlEncodedBody(data: _*)
-        )
-
-      val currentDate = LocalDate.of(2022, 10, 9)
-      val formattedDate = "9 October 2022"
-
-      "throw technical error" when {
-        "call to remove disable fails" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockDisableUndertaking(undertaking1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction("disableUndertakingConfirm" -> "true")))
-        }
-      }
-
-      "display the error" when {
-
-        "Nothing is submitted" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          }
-          checkFormErrorIsDisplayed(
-            performAction(),
-            messageFromMessageKey("disableUndertakingConfirm.title"),
-            messageFromMessageKey("disableUndertakingConfirm.error.required")
-          )
-
-        }
-      }
-
-      "redirect to next page" when {
-
-        "user selected Yes" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockDisableUndertaking(undertaking1)(Right(undertakingRef))
-            mockDeleteAll(eori1)(Right(()))
-            mockDeleteAll(eori4)(Right(()))
-            mockTimeProviderToday(currentDate)
-            mockSendAuditEvent[UndertakingDisabled](
-              UndertakingDisabled("1123", undertakingRef, currentDate, undertaking1)
-            )
-            mockTimeProviderToday(currentDate)
-            mockSendEmail(eori1, DisableUndertakingToLead, undertaking1, formattedDate)(Right(EmailSent))
-            mockSendEmail(eori1, DisableUndertakingToBusinessEntity, undertaking1, formattedDate)(Right(EmailSent))
-          }
-          checkIsRedirect(
-            performAction("disableUndertakingConfirm" -> "true"),
-            routes.UndertakingController.getUndertakingDisabled.url
-          )
-        }
-
-        "user selected No" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          }
-          checkIsRedirect(
-            performAction("disableUndertakingConfirm" -> "false"),
-            routes.AccountController.getAccountPage.url
-          )
-        }
-      }
-
-    }
-
-    "handling request to get Undertaking Disabled" must {
-      def performAction() = controller.getUndertakingDisabled(FakeRequest())
-
-      "display the page" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
-        }
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("undertakingDisabled.title"),
-          { doc =>
-            doc.getElementById("undertakingDisabledParaOne").text shouldBe "We have sent you a confirmation email."
-            doc.getElementById("undertakingDisabledParaTwo").text shouldBe "You have been signed out."
-            doc.getElementById("undertakingDisabledFeedbackHeader").text shouldBe "Before you go"
-            doc
-              .getElementById("undertakingDisabledParaThree")
-              .text shouldBe "Your feedback helps us make our service better."
-            doc
-              .getElementById("undertakingDisabledParaFour")
-              .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
-          }
-        )
-      }
-    }
-
     "handling request to get add email for verification" must {
 
       def performAction(status: EmailStatus = EmailStatus.New) =
-        controller.getAddEmailForVerification(status)(FakeRequest(GET, "/some-url"))
+        emailController.getAddEmailForVerification(status)(FakeRequest(GET, "/some-url"))
 
       "display the page" when {
 
@@ -1781,11 +1212,13 @@ class UndertakingControllerSpec
             pageTitle,
             { doc =>
               doc.getElementById("inputEmail-h1").text shouldBe pageTitle
-              doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController.getConfirmEmail.url
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingEmailController.getConfirmEmail.url
 
               val form = doc.select("form")
               form
-                .attr("action") shouldBe routes.UndertakingController.postAddEmailForVerification(EmailStatus.New).url
+                .attr("action") shouldBe routes.UndertakingEmailController
+                .postAddEmailForVerification(EmailStatus.New)
+                .url
             }
           )
 
@@ -1806,7 +1239,7 @@ class UndertakingControllerSpec
 
               val form = doc.select("form")
               form
-                .attr("action") shouldBe routes.UndertakingController.postAddEmailForVerification(status).url
+                .attr("action") shouldBe routes.UndertakingEmailController.postAddEmailForVerification(status).url
             }
           )
 
@@ -1829,7 +1262,9 @@ class UndertakingControllerSpec
 
               val form = doc.select("form")
               form
-                .attr("action") shouldBe routes.UndertakingController.postAddEmailForVerification(EmailStatus.Amend).url
+                .attr("action") shouldBe routes.UndertakingEmailController
+                .postAddEmailForVerification(EmailStatus.Amend)
+                .url
             }
           )
 
@@ -1852,7 +1287,7 @@ class UndertakingControllerSpec
 
               val form = doc.select("form")
               form
-                .attr("action") shouldBe routes.UndertakingController
+                .attr("action") shouldBe routes.UndertakingEmailController
                 .postAddEmailForVerification(EmailStatus.BecomeLead)
                 .url
             }
@@ -1876,7 +1311,7 @@ class UndertakingControllerSpec
 
               val form = doc.select("form")
               form
-                .attr("action") shouldBe routes.UndertakingController
+                .attr("action") shouldBe routes.UndertakingEmailController
                 .postAddEmailForVerification(EmailStatus.CYA)
                 .url
             }
@@ -1891,7 +1326,7 @@ class UndertakingControllerSpec
     "handling request to post add email for verification" must {
 
       def performAction(status: EmailStatus, data: (String, String)*) =
-        controller.postAddEmailForVerification(status = status)(
+        emailController.postAddEmailForVerification(status = status)(
           FakeRequest(POST, "/some-url").withFormUrlEncodedBody(data: _*)
         )
 
@@ -1908,7 +1343,7 @@ class UndertakingControllerSpec
       }
 
       "redirect to add business page when status is EmailStatus.New" in {
-        val redirectUrl = routes.UndertakingController.getAddBusiness.url
+        val redirectUrl = routes.UndertakingAddBusinessController.getAddBusiness.url
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockMakeVerificationRequestAndRedirect(Redirect(redirectUrl).toFuture)
@@ -1920,156 +1355,156 @@ class UndertakingControllerSpec
     "deriving level 1 code from level 2 code" must {
 
       "return A for agriculture codes" in {
-        controller.deriveLevel1Code("01") shouldBe "A"
-        controller.deriveLevel1Code("02") shouldBe "A"
-        controller.deriveLevel1Code("03") shouldBe "A"
+        viewModelBuilder.deriveLevel1Code("01") shouldBe "A"
+        viewModelBuilder.deriveLevel1Code("02") shouldBe "A"
+        viewModelBuilder.deriveLevel1Code("03") shouldBe "A"
       }
 
       "return B for mining codes" in {
-        controller.deriveLevel1Code("05") shouldBe "B"
-        controller.deriveLevel1Code("06") shouldBe "B"
-        controller.deriveLevel1Code("07") shouldBe "B"
-        controller.deriveLevel1Code("08") shouldBe "B"
-        controller.deriveLevel1Code("09") shouldBe "B"
+        viewModelBuilder.deriveLevel1Code("05") shouldBe "B"
+        viewModelBuilder.deriveLevel1Code("06") shouldBe "B"
+        viewModelBuilder.deriveLevel1Code("07") shouldBe "B"
+        viewModelBuilder.deriveLevel1Code("08") shouldBe "B"
+        viewModelBuilder.deriveLevel1Code("09") shouldBe "B"
       }
 
       "return C for manufacturing codes" in {
-        controller.deriveLevel1Code("10") shouldBe "C"
-        controller.deriveLevel1Code("11") shouldBe "C"
-        controller.deriveLevel1Code("12") shouldBe "C"
-        controller.deriveLevel1Code("13") shouldBe "C"
-        controller.deriveLevel1Code("14") shouldBe "C"
-        controller.deriveLevel1Code("15") shouldBe "C"
-        controller.deriveLevel1Code("16") shouldBe "C"
-        controller.deriveLevel1Code("17") shouldBe "C"
-        controller.deriveLevel1Code("18") shouldBe "C"
-        controller.deriveLevel1Code("19") shouldBe "C"
-        controller.deriveLevel1Code("20") shouldBe "C"
-        controller.deriveLevel1Code("21") shouldBe "C"
-        controller.deriveLevel1Code("22") shouldBe "C"
-        controller.deriveLevel1Code("23") shouldBe "C"
-        controller.deriveLevel1Code("24") shouldBe "C"
-        controller.deriveLevel1Code("25") shouldBe "C"
-        controller.deriveLevel1Code("26") shouldBe "C"
-        controller.deriveLevel1Code("27") shouldBe "C"
-        controller.deriveLevel1Code("28") shouldBe "C"
-        controller.deriveLevel1Code("29") shouldBe "C"
-        controller.deriveLevel1Code("30") shouldBe "C"
-        controller.deriveLevel1Code("31") shouldBe "C"
-        controller.deriveLevel1Code("32") shouldBe "C"
-        controller.deriveLevel1Code("33") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("10") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("11") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("12") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("13") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("14") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("15") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("16") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("17") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("18") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("19") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("20") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("21") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("22") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("23") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("24") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("25") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("26") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("27") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("28") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("29") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("30") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("31") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("32") shouldBe "C"
+        viewModelBuilder.deriveLevel1Code("33") shouldBe "C"
       }
 
       "return D for electricity codes" in {
-        controller.deriveLevel1Code("35") shouldBe "D"
+        viewModelBuilder.deriveLevel1Code("35") shouldBe "D"
       }
 
       "return E for water supply codes" in {
-        controller.deriveLevel1Code("36") shouldBe "E"
-        controller.deriveLevel1Code("37") shouldBe "E"
-        controller.deriveLevel1Code("38") shouldBe "E"
-        controller.deriveLevel1Code("39") shouldBe "E"
+        viewModelBuilder.deriveLevel1Code("36") shouldBe "E"
+        viewModelBuilder.deriveLevel1Code("37") shouldBe "E"
+        viewModelBuilder.deriveLevel1Code("38") shouldBe "E"
+        viewModelBuilder.deriveLevel1Code("39") shouldBe "E"
       }
 
       "return F for construction codes" in {
-        controller.deriveLevel1Code("41") shouldBe "F"
-        controller.deriveLevel1Code("42") shouldBe "F"
-        controller.deriveLevel1Code("43") shouldBe "F"
+        viewModelBuilder.deriveLevel1Code("41") shouldBe "F"
+        viewModelBuilder.deriveLevel1Code("42") shouldBe "F"
+        viewModelBuilder.deriveLevel1Code("43") shouldBe "F"
       }
 
       "return G for wholesale and retail codes" in {
-        controller.deriveLevel1Code("46") shouldBe "G"
-        controller.deriveLevel1Code("47") shouldBe "G"
+        viewModelBuilder.deriveLevel1Code("46") shouldBe "G"
+        viewModelBuilder.deriveLevel1Code("47") shouldBe "G"
       }
 
       "return H for transport codes" in {
-        controller.deriveLevel1Code("49") shouldBe "H"
-        controller.deriveLevel1Code("50") shouldBe "H"
-        controller.deriveLevel1Code("51") shouldBe "H"
-        controller.deriveLevel1Code("52") shouldBe "H"
-        controller.deriveLevel1Code("53") shouldBe "H"
+        viewModelBuilder.deriveLevel1Code("49") shouldBe "H"
+        viewModelBuilder.deriveLevel1Code("50") shouldBe "H"
+        viewModelBuilder.deriveLevel1Code("51") shouldBe "H"
+        viewModelBuilder.deriveLevel1Code("52") shouldBe "H"
+        viewModelBuilder.deriveLevel1Code("53") shouldBe "H"
       }
 
       "return I for accommodation codes" in {
-        controller.deriveLevel1Code("55") shouldBe "I"
-        controller.deriveLevel1Code("56") shouldBe "I"
+        viewModelBuilder.deriveLevel1Code("55") shouldBe "I"
+        viewModelBuilder.deriveLevel1Code("56") shouldBe "I"
       }
 
       "return J for publishing codes" in {
-        controller.deriveLevel1Code("58") shouldBe "J"
-        controller.deriveLevel1Code("59") shouldBe "J"
-        controller.deriveLevel1Code("60") shouldBe "J"
+        viewModelBuilder.deriveLevel1Code("58") shouldBe "J"
+        viewModelBuilder.deriveLevel1Code("59") shouldBe "J"
+        viewModelBuilder.deriveLevel1Code("60") shouldBe "J"
       }
 
       "return K for telecommunications codes" in {
-        controller.deriveLevel1Code("61") shouldBe "K"
-        controller.deriveLevel1Code("62") shouldBe "K"
-        controller.deriveLevel1Code("63") shouldBe "K"
+        viewModelBuilder.deriveLevel1Code("61") shouldBe "K"
+        viewModelBuilder.deriveLevel1Code("62") shouldBe "K"
+        viewModelBuilder.deriveLevel1Code("63") shouldBe "K"
       }
 
       "return L for financial codes" in {
-        controller.deriveLevel1Code("64") shouldBe "L"
-        controller.deriveLevel1Code("65") shouldBe "L"
-        controller.deriveLevel1Code("66") shouldBe "L"
+        viewModelBuilder.deriveLevel1Code("64") shouldBe "L"
+        viewModelBuilder.deriveLevel1Code("65") shouldBe "L"
+        viewModelBuilder.deriveLevel1Code("66") shouldBe "L"
       }
 
       "return M for real estate codes" in {
-        controller.deriveLevel1Code("68") shouldBe "M"
+        viewModelBuilder.deriveLevel1Code("68") shouldBe "M"
       }
 
       "return N for professional codes" in {
-        controller.deriveLevel1Code("69") shouldBe "N"
-        controller.deriveLevel1Code("70") shouldBe "N"
-        controller.deriveLevel1Code("71") shouldBe "N"
-        controller.deriveLevel1Code("72") shouldBe "N"
-        controller.deriveLevel1Code("73") shouldBe "N"
-        controller.deriveLevel1Code("74") shouldBe "N"
-        controller.deriveLevel1Code("75") shouldBe "N"
+        viewModelBuilder.deriveLevel1Code("69") shouldBe "N"
+        viewModelBuilder.deriveLevel1Code("70") shouldBe "N"
+        viewModelBuilder.deriveLevel1Code("71") shouldBe "N"
+        viewModelBuilder.deriveLevel1Code("72") shouldBe "N"
+        viewModelBuilder.deriveLevel1Code("73") shouldBe "N"
+        viewModelBuilder.deriveLevel1Code("74") shouldBe "N"
+        viewModelBuilder.deriveLevel1Code("75") shouldBe "N"
       }
 
       "return O for administrative codes" in {
-        controller.deriveLevel1Code("77") shouldBe "O"
-        controller.deriveLevel1Code("78") shouldBe "O"
-        controller.deriveLevel1Code("79") shouldBe "O"
-        controller.deriveLevel1Code("80") shouldBe "O"
-        controller.deriveLevel1Code("81") shouldBe "O"
-        controller.deriveLevel1Code("82") shouldBe "O"
+        viewModelBuilder.deriveLevel1Code("77") shouldBe "O"
+        viewModelBuilder.deriveLevel1Code("78") shouldBe "O"
+        viewModelBuilder.deriveLevel1Code("79") shouldBe "O"
+        viewModelBuilder.deriveLevel1Code("80") shouldBe "O"
+        viewModelBuilder.deriveLevel1Code("81") shouldBe "O"
+        viewModelBuilder.deriveLevel1Code("82") shouldBe "O"
       }
 
       "return P for public administration codes" in {
-        controller.deriveLevel1Code("84") shouldBe "P"
+        viewModelBuilder.deriveLevel1Code("84") shouldBe "P"
       }
 
       "return Q for education codes" in {
-        controller.deriveLevel1Code("85") shouldBe "Q"
+        viewModelBuilder.deriveLevel1Code("85") shouldBe "Q"
       }
 
       "return R for health codes" in {
-        controller.deriveLevel1Code("86") shouldBe "R"
-        controller.deriveLevel1Code("87") shouldBe "R"
-        controller.deriveLevel1Code("88") shouldBe "R"
+        viewModelBuilder.deriveLevel1Code("86") shouldBe "R"
+        viewModelBuilder.deriveLevel1Code("87") shouldBe "R"
+        viewModelBuilder.deriveLevel1Code("88") shouldBe "R"
       }
 
       "return S for arts codes" in {
-        controller.deriveLevel1Code("90") shouldBe "S"
-        controller.deriveLevel1Code("91") shouldBe "S"
-        controller.deriveLevel1Code("92") shouldBe "S"
-        controller.deriveLevel1Code("93") shouldBe "S"
+        viewModelBuilder.deriveLevel1Code("90") shouldBe "S"
+        viewModelBuilder.deriveLevel1Code("91") shouldBe "S"
+        viewModelBuilder.deriveLevel1Code("92") shouldBe "S"
+        viewModelBuilder.deriveLevel1Code("93") shouldBe "S"
       }
 
       "return T for other service codes" in {
-        controller.deriveLevel1Code("94") shouldBe "T"
-        controller.deriveLevel1Code("95") shouldBe "T"
-        controller.deriveLevel1Code("96") shouldBe "T"
+        viewModelBuilder.deriveLevel1Code("94") shouldBe "T"
+        viewModelBuilder.deriveLevel1Code("95") shouldBe "T"
+        viewModelBuilder.deriveLevel1Code("96") shouldBe "T"
       }
 
       "return U for households codes" in {
-        controller.deriveLevel1Code("97") shouldBe "U"
-        controller.deriveLevel1Code("98") shouldBe "U"
+        viewModelBuilder.deriveLevel1Code("97") shouldBe "U"
+        viewModelBuilder.deriveLevel1Code("98") shouldBe "U"
       }
 
       "return V for extraterritorial codes" in {
-        controller.deriveLevel1Code("99") shouldBe "V"
+        viewModelBuilder.deriveLevel1Code("99") shouldBe "V"
       }
     }
   }
@@ -2077,7 +1512,7 @@ class UndertakingControllerSpec
 
     "correctly derive all NACE levels for a retail code (47.11)" in {
       val naceCode = "47.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
 
       viewModel.naceLevel4Code shouldBe "47.11"
       viewModel.naceLevel3Code shouldBe "47.1"
@@ -2088,14 +1523,14 @@ class UndertakingControllerSpec
 
     "set showLevel1 to true for non-agriculture sectors" in {
       val naceCode = "47.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
 
       viewModel.showLevel1 shouldBe true
     }
 
     "set showLevel1_1 correctly for manufacturing sector (C)" in {
       val naceCode = "10.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
 
       viewModel.naceLevel1Code shouldBe "C"
       viewModel.showLevel1_1 shouldBe true
@@ -2103,7 +1538,7 @@ class UndertakingControllerSpec
 
     "set showLevel1_1 to false for manufacturing code 32" in {
       val naceCode = "32.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
 
       viewModel.naceLevel1Code shouldBe "C"
       viewModel.showLevel1_1 shouldBe false
@@ -2111,14 +1546,14 @@ class UndertakingControllerSpec
 
     "set showLevel2 to true for other codes" in {
       val naceCode = "47.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
 
       viewModel.showLevel2 shouldBe true
     }
 
     "set showLevel3 to true when level3 code does not end with .0" in {
       val naceCode = "47.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
 
       viewModel.naceLevel3Code shouldBe "47.1"
       viewModel.showLevel3 shouldBe true
@@ -2126,14 +1561,14 @@ class UndertakingControllerSpec
 
     "set showLevel4 to true when last digits don't match" in {
       val naceCode = "47.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
 
       viewModel.showLevel4 shouldBe true
     }
 
     "generate correct change URLs" in {
       val naceCode = "47.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
 
       viewModel.changeSectorUrl shouldBe routes.UndertakingController.getSector.url
       viewModel.changeLevel1Url should not be empty
@@ -2493,7 +1928,7 @@ class UndertakingControllerSpec
           { doc =>
             doc
               .select(".govuk-back-link")
-              .attr("href") shouldBe routes.UndertakingController.backFromCheckYourAnswers.url
+              .attr("href") shouldBe routes.UndertakingAddBusinessController.backFromCheckYourAnswers.url
           }
         )
       }
@@ -2503,85 +1938,85 @@ class UndertakingControllerSpec
 
     "return correct URL for manufacturing (C)" in {
       val naceCode = "10.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for construction (F)" in {
       val naceCode = "41"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for retail (G)" in {
       val naceCode = "47.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for accommodation (I)" in {
       val naceCode = "55.1"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for publishing (J)" in {
       val naceCode = "58.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for administrative (O)" in {
       val naceCode = "77.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for health (R)" in {
       val naceCode = "86.1"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for households (U)" in {
       val naceCode = "97"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for transport (H)" in {
       val naceCode = "49.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for mining (B)" in {
       val naceCode = "05.10"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for professional (N)" in {
       val naceCode = "69.1"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for water supply (E)" in {
       val naceCode = "36"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for telecommunications (K)" in {
       val naceCode = "61.1"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
 
     "return correct URL for arts (S)" in {
       val naceCode = "90.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url should not be empty
     }
   }
@@ -2589,109 +2024,109 @@ class UndertakingControllerSpec
 
     "return correct URL for clothes/textiles/homeware - textiles (13)" in {
       val naceCode = "13.10"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
     }
 
     "return correct URL for clothes/textiles/homeware - leather (15)" in {
       val naceCode = "15.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
     }
 
     "return correct URL for clothes/textiles/homeware - wood (16)" in {
       val naceCode = "16.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
     }
 
     "return correct URL for clothes/textiles/homeware - rubber/plastic (22)" in {
       val naceCode = "22.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
     }
 
     "return correct URL for clothes/textiles/homeware - furniture (31)" in {
       val naceCode = "31"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadClothesTextilesHomewarePage().url
     }
 
     "return correct URL for computers/electronics/machinery - computers (26)" in {
       val naceCode = "26.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().url
     }
 
     "return correct URL for computers/electronics/machinery - electrical (27)" in {
       val naceCode = "27.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().url
     }
 
     "return correct URL for computers/electronics/machinery - other machinery (28)" in {
       val naceCode = "28.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadComputersElectronicsMachineryPage().url
     }
 
     "return correct URL for food/beverages/tobacco - food (10)" in {
       val naceCode = "10.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage().url
     }
 
     "return correct URL for food/beverages/tobacco - tobacco (12)" in {
       val naceCode = "12"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadFoodBeveragesTobaccoPage().url
     }
 
     "return correct URL for metals/chemicals/materials - chemicals (20)" in {
       val naceCode = "20.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().url
     }
 
     "return correct URL for metals/chemicals/materials - non-metallic (23)" in {
       val naceCode = "23.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().url
     }
 
     "return correct URL for metals/chemicals/materials - fabricated metal (25)" in {
       val naceCode = "25.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage().url
     }
 
     "return correct URL for paper/printed - paper (17)" in {
       val naceCode = "17.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage().url
     }
 
     "return correct URL for paper/printed - printing (18)" in {
       val naceCode = "18.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage().url
     }
 
     "return correct URL for vehicles/transport - other transport (30)" in {
       val naceCode = "30.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadVehiclesTransportPage().url
     }
 
     "return default URL for other manufacturing (32)" in {
       val naceCode = "32.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
     }
 
     "return default URL for repair/maintenance (33)" in {
       val naceCode = "33.11"
-      val viewModel = controller.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
+      val viewModel = viewModelBuilder.buildViewModel(naceCode)(messagesApi.preferred(Seq.empty))
       viewModel.changeLevel2Url shouldBe routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage().url
     }
   }
