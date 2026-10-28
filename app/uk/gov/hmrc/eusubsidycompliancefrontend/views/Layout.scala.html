@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.hmrcfrontend.views.Aliases.Header
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.IndustrySectorResearchBanner
+@import uk.gov.hmrc.hmrcfrontend.views.Aliases.{Cy, En, UserResearchBanner}
 
 @this(
         appConfig: AppConfig,
@@ -34,8 +34,7 @@
         beforeContentBlock: components.BeforeContent,
         scripts: components.Scripts,
         hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-        standardBetaBanner: StandardBetaBanner,
-        userResearchBanner: components.IndustrySectorResearchBanner
+        standardBetaBanner: StandardBetaBanner
 )
 
 @(pageTitle: Option[String] = None,
@@ -46,11 +45,22 @@
         showSignOutLink: Boolean = true,
         scriptsBlock: Option[Html] = None,
         printDialog: Option[Html] = None,
+        showResearchBanner: Boolean = false
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @serviceNameAndHeading = @{pageTitle.fold(messages("service.name"))(t => s"""$t - ${messages("service.name")}""")}
 @govTitle = @{serviceNameAndHeading + " - " + messages("gov.uk")}
 @documentTitle = @{if(hasErrors) { messages("generic.errorPrefix") + " " + govTitle } else { govTitle }}
+
+@userResearchBanner = @{
+    Option.when(showResearchBanner && appConfig.researchBannerEnabled)(
+        UserResearchBanner(
+            language = if(messages.lang.code == "cy") Cy else En,
+            url = appConfig.userResearchUrl,
+            hideCloseButton = true
+        )
+    )
+}
 
 @head = {
     @headBlock.getOrElse(Html(""))
@@ -92,6 +102,7 @@
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl  = Some(routes.AccountController.getAccountPage.url),
         signOutUrl = if(showSignOutLink) Some(appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))) else None,
+        userResearchBanner = userResearchBanner,
         phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrlNoAuth)),
         isWelshTranslationAvailable = false
     )),
