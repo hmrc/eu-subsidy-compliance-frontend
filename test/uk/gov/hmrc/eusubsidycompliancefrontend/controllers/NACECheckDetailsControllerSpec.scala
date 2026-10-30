@@ -186,7 +186,7 @@ class NACECheckDetailsControllerSpec
 
           checkIsRedirect(
             performAction("confirmDetails" -> "true"),
-            routes.UndertakingController.getAddBusiness.url
+            routes.UndertakingAddBusinessController.getAddBusiness.url
           )
         }
 

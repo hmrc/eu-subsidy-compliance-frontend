@@ -40,7 +40,7 @@
     hasErrors = form.hasErrors
 ) {
 
-    @formHelper(action = controllers.routes.UndertakingController.postAddEmailForVerification(status.getOrElse(New))) {
+    @formHelper(action = controllers.routes.UndertakingEmailController.postAddEmailForVerification(status.getOrElse(New))) {
       @if(form.hasErrors) {
           @govukErrorSummary(
               ErrorSummary(

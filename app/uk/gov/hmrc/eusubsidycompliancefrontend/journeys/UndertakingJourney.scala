@@ -119,10 +119,10 @@ object UndertakingJourney {
       def uri = controller.getSector.url
     }
     case class UndertakingConfirmEmailFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getConfirmEmail.url
+      def uri = routes.UndertakingEmailController.getConfirmEmail.url
     }
     case class UndertakingAddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getAddBusiness.url
+      def uri = routes.UndertakingAddBusinessController.getAddBusiness.url
     }
 
     case class UndertakingHowWeUseDataFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
@@ -133,7 +133,7 @@ object UndertakingJourney {
       def uri = controller.getCheckAnswers.url
     }
     case class UndertakingConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.postConfirmation.url
+      def uri = routes.UndertakingConfirmationController.postConfirmation.url
     }
 
     object AboutUndertakingFormPage {

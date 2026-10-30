@@ -321,7 +321,7 @@ class NACECheckDetailsController @Inject() (
               if (journey.isAmend || journey.mode == appConfig.UpdateNaceMode)
                 Redirect(routes.UndertakingController.postAmendUndertaking).toFuture
               else {
-                Redirect(routes.UndertakingController.getAddBusiness).toFuture
+                Redirect(routes.UndertakingAddBusinessController.getAddBusiness).toFuture
               }
             } else {
               for {

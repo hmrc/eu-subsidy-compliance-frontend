@@ -54,7 +54,7 @@ class EmailVerificationService @Inject() (
     email: String,
     previousPage: String,
     nextPageUrl: String => String,
-    reEnterEmailUrl: String = routes.UndertakingController.getConfirmEmail.url
+    reEnterEmailUrl: String = routes.UndertakingEmailController.getConfirmEmail.url
   )(implicit
     request: AuthenticatedEnrolledRequest[AnyContent],
     ec: ExecutionContext,
