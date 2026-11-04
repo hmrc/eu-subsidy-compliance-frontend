@@ -306,6 +306,20 @@ class BusinessEntityEoriControllerSpec
           flash(result).get(BusinessEntityEoriController.RejectedEoriKey) shouldBe Some(eori4.value)
         }
 
+        "the eori entered is already part of this undertaking" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockRetrieveUndertakingWithErrorResponse(eori4)(Right(undertaking.some))
+          }
+
+          val result = performAction("businessEntityEori" -> eori4.value)
+
+          checkIsRedirect(result, routes.BusinessEntityEoriController.getEoriInAnotherUndertaking.url)
+          flash(result).get(BusinessEntityEoriController.RejectedEoriKey) shouldBe Some(eori4.value)
+        }
+
       }
 
       "continue to the beneficiary ID check" when {
@@ -330,8 +344,6 @@ class BusinessEntityEoriControllerSpec
         }
 
         "the eori entered is not part of any undertaking" in testFallThrough(Right(None))
-
-        "the eori entered is already part of this undertaking" in testFallThrough(Right(undertaking.some))
 
         "the undertaking lookup returns an error" in testFallThrough(
           Left(ConnectorError(UpstreamErrorResponse("EORI not present in SMTP", 406)))

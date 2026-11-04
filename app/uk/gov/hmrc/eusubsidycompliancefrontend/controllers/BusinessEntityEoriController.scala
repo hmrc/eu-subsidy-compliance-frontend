@@ -124,7 +124,7 @@ class BusinessEntityEoriController @Inject() (
       val businessEori = EORI(formatEori(form.value))
 
       escService.retrieveUndertakingAndHandleErrors(businessEori).flatMap {
-        case Right(Some(other)) if other.reference != undertaking.reference =>
+        case Right(Some(_)) =>
           logger.info(
             "BusinessEntityEoriController.postEori EORI belongs to another undertaking, redirecting to rejection page"
           )
