@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
-import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
@@ -322,7 +321,7 @@ class BusinessEntityEoriControllerSpec
 
       }
 
-      "continue to the beneficiary ID check" when {
+      "redirect to the next page" when {
 
         def testFallThrough(retrieveResponse: Either[ConnectorError, Option[Undertaking]]): Unit = {
           inSequence {
@@ -428,39 +427,68 @@ class BusinessEntityEoriControllerSpec
         FakeRequest(GET, routes.BusinessEntityEoriController.getEoriInAnotherUndertaking.url).withFlash(flashData: _*)
       )
 
-      "display the page with the eori the user entered" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+      "throw technical error" when {
+        val exception = new Exception("oh no")
+
+        "call to retrieve undertaking fails" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(Future.failed(exception))
+          }
+          assertThrows[Exception](await(performAction(BusinessEntityEoriController.RejectedEoriKey -> eori4.value)))
         }
 
-        val result = performAction(BusinessEntityEoriController.RejectedEoriKey -> eori4.value)
-        status(result) shouldBe OK
-
-        val doc = Jsoup.parse(contentAsString(result))
-        doc.select("h1").first().text() shouldBe messageFromMessageKey("eoriInAnotherUndertaking.title")
-        doc.getElementById("rejected-eori-p1").text() should include(eori4.value)
-        doc.getElementById("try-another-eori").attr("href") shouldBe routes.BusinessEntityEoriController.getEori.url
-        doc.select(".govuk-back-link").attr("href") shouldBe routes.BusinessEntityEoriController.getEori.url
-        doc.getElementById("apply-eori-link").attr("href") shouldBe "https://www.gov.uk/eori/apply-for-eori"
-        doc
-          .getElementById("change-eori-link")
-          .attr("href") shouldBe "https://www.gov.uk/eori/change-or-cancel-EORI-number"
-        doc
-          .getElementById("contact-hmrc-link")
-          .attr("href") shouldBe "https://www.gov.uk/find-hmrc-contacts/imports-and-exports-enquiries"
       }
 
-      "redirect to the business EORI page when no rejected eori is in flash" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+      "display the page" when {
+
+        "the rejected eori is in flash" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          }
+
+          checkPageIsDisplayed(
+            performAction(BusinessEntityEoriController.RejectedEoriKey -> eori4.value),
+            messageFromMessageKey("eoriInAnotherUndertaking.title"),
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.BusinessEntityEoriController.getEori.url
+
+              doc.select("h1").text() shouldBe "You cannot add this EORI number to this undertaking"
+
+              doc.getElementById("rejected-eori-p1").text() shouldBe
+                messageFromMessageKey("eoriInAnotherUndertaking.p1", eori4.value)
+
+              doc
+                .getElementById("try-another-eori")
+                .attr("href") shouldBe routes.BusinessEntityEoriController.getEori.url
+              doc.getElementById("apply-eori-link").attr("href") shouldBe "https://www.gov.uk/eori/apply-for-eori"
+              doc
+                .getElementById("change-eori-link")
+                .attr("href") shouldBe "https://www.gov.uk/eori/change-or-cancel-EORI-number"
+              doc
+                .getElementById("contact-hmrc-link")
+                .attr("href") shouldBe "https://www.gov.uk/find-hmrc-contacts/imports-and-exports-enquiries"
+            }
+          )
         }
-        checkIsRedirect(performAction(), routes.BusinessEntityEoriController.getEori.url)
+
       }
 
-      "redirect to the account home page when the user is not the undertaking lead" in {
-        testLeadOnlyRedirect(() => performAction())
+      "redirect" when {
+
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction())
+        }
+
+        "no rejected eori is in flash" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          }
+          checkIsRedirect(performAction(), routes.BusinessEntityEoriController.getEori.url)
+        }
+
       }
 
     }
