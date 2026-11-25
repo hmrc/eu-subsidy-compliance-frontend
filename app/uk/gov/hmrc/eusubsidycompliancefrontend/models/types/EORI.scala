@@ -27,10 +27,21 @@ object EORI:
     Option(s)
       .map(normalize)
       .filter(valid)
-      .getOrElse(throw new IllegalArgumentException(s"$s is not a valid EORI"))
+      .getOrElse(throw new IllegalArgumentException(s"${mask(String.valueOf(s))} is not a valid EORI"))
   }
 
-  extension (x: EORI) def value: String = x
+  extension (x: EORI)
+    def value: String = x
+    def masked: String = maskEori(x)
+
+  private def maskEori(eori: String): String =
+    eori.take(7) + "X" * (eori.length - 11) + eori.takeRight(4)
+
+  def mask(text: String): String =
+    text
+      .split("(?<=[^A-Za-z0-9])|(?=[^A-Za-z0-9])")
+      .map(word => if (valid(word)) maskEori(word) else word)
+      .mkString
 
   private def valid(s: String): Boolean =
     s.matches("^(GB|XI)[0-9]{12,15}$")

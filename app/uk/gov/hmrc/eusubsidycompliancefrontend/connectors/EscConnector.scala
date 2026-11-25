@@ -21,6 +21,7 @@ import play.api.Logging
 import play.api.libs.json.Json
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.mvc.Http.Status
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
@@ -138,7 +139,7 @@ class EscConnector @Inject() (
         }
       }
       .recover { case e: NotFoundException =>
-        logger.warn(s"undertaking balance for eori: $eori not found. Exception: $e", e)
+        logger.warn(EORI.mask(s"undertaking balance for eori: $eori not found. Exception: $e"))
         None
       }
   }

@@ -21,6 +21,7 @@ import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
@@ -45,11 +46,11 @@ class EscService @Inject() (
 
   private implicit class LogFutureOps[A](eventualResult: Future[A]) {
     def logResult(successCall: A => String, errorMessage: => String): Future[A] = {
-      eventualResult.failed.foreach(logger.error(errorMessage, _))
+      eventualResult.failed.foreach(logger.error(EORI.mask(errorMessage), _))
 
       eventualResult.map { result =>
         val successMessage = successCall(result)
-        logger.info(successMessage)
+        logger.info(EORI.mask(successMessage))
 
         result
       }
@@ -134,19 +135,21 @@ class EscService @Inject() (
   )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[Undertaking]]] = {
     val eitherLogger = new ResponseParsingLogger[ConnectorError, Undertaking] {
       override def logSuccess(undertaking: Undertaking): Unit =
-        logger.info(s"retrieveUndertakingAndHandleErrors: Successfully received undertaking for EORI:$eori")
+        logger.info(EORI.mask(s"retrieveUndertakingAndHandleErrors: Successfully received undertaking for EORI:$eori"))
 
       override def logValidationFailure(
         response: HttpResponse,
         validationFailures: collection.Seq[(JsPath, collection.Seq[JsonValidationError])]
       ): Unit =
         logger.error(
-          s"retrieveUndertakingAndHandleErrors: Failed validation for eori:$eori response with $validationFailures"
+          EORI.mask(
+            s"retrieveUndertakingAndHandleErrors: Failed validation for eori:$eori response with $validationFailures"
+          )
         )
 
       override def logParsingFailure(response: HttpResponse, throwable: Throwable): Unit =
         logger.error(
-          s"retrieveUndertakingAndHandleErrors: Failed parsing for eori:$eori to Undertaking",
+          EORI.mask(s"retrieveUndertakingAndHandleErrors: Failed parsing for eori:$eori to Undertaking"),
           throwable
         )
     }
@@ -158,7 +161,7 @@ class EscService @Inject() (
         .parseJSON[Undertaking]
         .map(j => Right(j.some))
         .getOrElse {
-          sys.error(s"Error parsing EORI:$eori Undertaking from ESC")
+          sys.error(EORI.mask(s"Error parsing EORI:$eori Undertaking from ESC"))
         }
 
     escConnector.retrieveUndertaking(eori).map {
@@ -296,7 +299,7 @@ class EscService @Inject() (
       val eori = cacheEori.get
       undertakingCache.get[BeneficiaryIDResponse](eori).flatMap {
         case Some(cached) =>
-          logger.info(s"SCP22 cache hit for $eori")
+          logger.info(EORI.mask(s"SCP22 cache hit for $eori"))
           Future.successful(Right(Some(cached)))
         case None =>
           callBeneficiaryIDValidate(beneficiaryIDRequest).flatMap {
@@ -368,7 +371,7 @@ class EscService @Inject() (
   def validateBeneficiaries(resp: BeneficiaryIDResponse)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val beneficiaries: Seq[BeneficiaryInfoResp] = resp.beneficiaryInfo.getOrElse(Seq.empty)
     beneficiaries.foreach { beneficiary =>
-      logger.info(s"Beneficiary record: eori=${beneficiary.eori}, validated=${beneficiary.validated}")
+      logger.info(s"Beneficiary record: eori=${beneficiary.eori.map(EORI.mask)}, validated=${beneficiary.validated}")
     }
     val beneficiariesToValidate: Seq[(String, BeneficiaryInfoResp)] = beneficiaries.flatMap { beneficiary =>
       beneficiary.eori.collect {
@@ -397,7 +400,7 @@ class EscService @Inject() (
           case Right(Some(_)) => true
           case Right(None) => false
           case Left(error) =>
-            logger.error(s"EORI validation failed: $error")
+            logger.error(EORI.mask(s"EORI validation failed: $error"))
             false
         }
       }

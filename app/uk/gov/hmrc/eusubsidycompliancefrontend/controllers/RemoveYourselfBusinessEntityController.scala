@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
@@ -69,12 +70,14 @@ class RemoveYourselfBusinessEntityController @Inject() (
       .toContext
       .fold {
         logger.info(
-          s"Could not find undertaking for $eori, redirecting to AddBusinessEntityController.getAddBusinessEntity"
+          EORI.mask(
+            s"Could not find undertaking for $eori, redirecting to AddBusinessEntityController.getAddBusinessEntity"
+          )
         )
         Redirect(routes.AddBusinessEntityController.getAddBusinessEntity())
       } { undertaking =>
         logger.info(
-          s"Found undertaking for $eori, showing removeYourselfBEPage"
+          EORI.mask(s"Found undertaking for $eori, showing removeYourselfBEPage")
         )
         Ok(removeYourselfBEPage(removeYourselfBusinessForm, undertaking.getBusinessEntityByEORI(eori), previous))
       }
@@ -95,7 +98,11 @@ class RemoveYourselfBusinessEntityController @Inject() (
             ).toContext
           }, {
             logger
-              .info(s"Passed validating postRemoveYourselfBusinessEntity, handleValidFormSubmission for $undertaking")
+              .info(
+                EORI.mask(
+                  s"Passed validating postRemoveYourselfBusinessEntity, handleValidFormSubmission for $undertaking"
+                )
+              )
             handleValidFormSubmission(undertaking, businessEntity)
           }
         )

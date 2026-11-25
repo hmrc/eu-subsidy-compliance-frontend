@@ -21,6 +21,7 @@ import play.api.http.Status
 import play.api.libs.json.Json
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{RetrieveEmail, UpdateEmailRequest}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -59,7 +60,7 @@ class CustomsDataStoreConnector @Inject() (override protected val http: HttpClie
           case Status.NO_CONTENT => ()
           case _ =>
             throw new RuntimeException(
-              s"Error updating email address for eori: $eori, new email address: $emailAddress"
+              EORI.mask(s"Error updating email address for eori: $eori")
             )
         }
       }

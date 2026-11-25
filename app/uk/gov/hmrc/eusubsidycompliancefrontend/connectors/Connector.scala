@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 import play.api.Logging
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.Connector.ConnectorSyntax.*
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HttpResponse, UpstreamErrorResponse}
 
@@ -44,7 +45,7 @@ trait Connector extends Logging {
           Left(
             ConnectorError(
               UpstreamErrorResponse(
-                s"Unexpected response - got HTTP ${response.status} with body: ${response.body}",
+                EORI.mask(s"Unexpected response - got HTTP ${response.status} with body: ${response.body}"),
                 response.status
               )
             )

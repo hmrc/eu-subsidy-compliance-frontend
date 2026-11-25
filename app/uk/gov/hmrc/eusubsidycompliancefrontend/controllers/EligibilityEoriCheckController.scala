@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
@@ -68,7 +69,7 @@ class EligibilityEoriCheckController @Inject() (
           .get("Referer")
           .getOrElse(doYouClaimUrl)
 
-        logger.info(s"Showing checkEoriPage for $eori")
+        logger.info(EORI.mask(s"Showing checkEoriPage for $eori"))
 
         Ok(checkEoriPage(form, eori, backLink))
       }
@@ -80,7 +81,7 @@ class EligibilityEoriCheckController @Inject() (
       .retrieveUndertaking(eori)
       .toContext
       .foldF(renderPage) { _ =>
-        logger.info(s"Redirecting to AccountController.getAccountPage for eori:$eori")
+        logger.info(EORI.mask(s"Redirecting to AccountController.getAccountPage for eori:$eori"))
         Redirect(routes.AccountController.getAccountPage.url).toFuture
       }
 
@@ -95,7 +96,9 @@ class EligibilityEoriCheckController @Inject() (
       .bindFromRequest()
       .fold(
         errors => {
-          logger.info(s"BadRequest to AccountController.postEoriCheck for eori:$eori as a bad request ${errors.errors}")
+          logger.info(
+            EORI.mask(s"BadRequest to AccountController.postEoriCheck for eori:$eori as a bad request ${errors.errors}")
+          )
           val previousJourneyUrl = doYouClaimUrl
           BadRequest(checkEoriPage(errors, eori, previousJourneyUrl)).toFuture
         },
