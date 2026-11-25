@@ -20,6 +20,7 @@ import cats.implicits.{catsSyntaxOptionId, toFunctorOps}
 import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{CustomsDataStoreConnector, SendEmailConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.*
@@ -128,7 +129,7 @@ class EmailService @Inject() (
     retrieveEmailByEORI(eori).map { res =>
       res.emailAddress match {
         case Some(email) => email.value
-        case None => sys.error(s"Error in retrieving email address for eori: $eori")
+        case None => sys.error(EORI.mask(s"Error in retrieving email address for eori: $eori"))
       }
     }
 

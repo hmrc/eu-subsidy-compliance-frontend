@@ -20,6 +20,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.ErrorHandler
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
@@ -92,7 +93,7 @@ class SubsidyJourneyActionBuilder @Inject() (
           Future.successful(Redirect(routes.PaymentSubmittedController.paymentAlreadySubmitted.url))
         else f(enrolledRequest)
       case None =>
-        logger.error(s"No SubsidyJourney session data for EORI:$eori")
+        logger.error(EORI.mask(s"No SubsidyJourney session data for EORI:$eori"))
         errorHandler.internalServerErrorTemplate(enrolledRequest).map { html =>
           InternalServerError(html)
         }

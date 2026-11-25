@@ -20,6 +20,7 @@ import cats.implicits.toFunctorOps
 import org.mongodb.scala.model.{Filters, IndexModel, IndexOptions, Indexes, Updates}
 import play.api.Logging
 import play.api.libs.json.{Reads, Writes}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.PersistenceHelpers.dataKeyForType
@@ -65,12 +66,12 @@ class UndertakingCache @Inject() (
     call: Future[A]
   )(preMessage: String, successMessage: String, errorMessage: String)(implicit classTag: ClassTag[A]) = {
     val forMessage = s" (for $classTag)"
-    logger.info(preMessage + forMessage)
+    logger.info(EORI.mask(preMessage + forMessage))
 
-    call.failed.foreach(error => logger.error(s"$errorMessage - (${error.getMessage}) $forMessage", error))
+    call.failed.foreach(error => logger.error(EORI.mask(s"$errorMessage - (${error.getMessage}) $forMessage"), error))
 
     call.map { result =>
-      logger.info(successMessage.format(result))
+      logger.info(EORI.mask(successMessage.format(result)))
       result
     }
   }

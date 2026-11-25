@@ -177,6 +177,37 @@ class EORISpec extends AnyWordSpec with Matchers {
   }
 
   // -------------------------
+  // LOG MASKING
+  // -------------------------
+
+  "EORI.mask" should {
+
+    "mask the middle digits of a 12 digit GB EORI" in {
+      EORI.mask("GB455655007000") shouldBe "GB45565XXX7000"
+    }
+
+    "mask the middle digits of a 15 digit XI EORI" in {
+      EORI.mask("XI123456789012345") shouldBe "XI12345XXXXXX2345"
+    }
+
+    "mask every EORI inside a log message" in {
+      val msg =
+        "returned Some(Undertaking(NI050001885,Test2 Ltd,List(BusinessEntity(GB250822064064,false), BusinessEntity(GB455655007000,true)))) for  EORI 'GB455655007000'"
+
+      EORI.mask(msg) shouldBe
+        "returned Some(Undertaking(NI050001885,Test2 Ltd,List(BusinessEntity(GB25082XXX4064,false), BusinessEntity(GB45565XXX7000,true)))) for  EORI 'GB45565XXX7000'"
+    }
+
+    "leave text without an EORI unchanged" in {
+      EORI.mask("UndertakingRef:NI050001885 GB12345") shouldBe "UndertakingRef:NI050001885 GB12345"
+    }
+
+    "expose masked as an extension on EORI" in {
+      EORI("GB455655007000").masked shouldBe "GB45565XXX7000"
+    }
+  }
+
+  // -------------------------
   // REGEX IMPLEMENTATION SAFETY CHECK
   // -------------------------
 

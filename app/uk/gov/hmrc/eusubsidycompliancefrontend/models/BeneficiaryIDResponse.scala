@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
 case class BeneficiaryIDResponse(processingDate: Option[String], beneficiaryInfo: Option[Seq[BeneficiaryInfoResp]])
 
@@ -35,7 +36,10 @@ case class BeneficiaryInfoResp(
   benIDType: Option[String],
   benIDValue: Option[String],
   validated: Option[Boolean]
-)
+) {
+  override def toString: String =
+    s"BeneficiaryInfoResp(${eori.map(EORI.mask)},${benName.map(_ => "***")},$benIDType,${benIDValue.map(_ => "***")},$validated)"
+}
 
 object BeneficiaryInfoResp {
   implicit val reads: Reads[BeneficiaryInfoResp] = (

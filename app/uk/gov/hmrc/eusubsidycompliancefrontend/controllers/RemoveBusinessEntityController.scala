@@ -65,12 +65,14 @@ class RemoveBusinessEntityController @Inject() (
     withLeadUndertaking { _ =>
       escService.retrieveUndertaking(EORI(eoriEntered)).map {
         case Some(undertaking) =>
-          logger.info(s"Found undertaking for $eoriEntered")
+          logger.info(EORI.mask(s"Found undertaking for $eoriEntered"))
           val removeBE = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
           Ok(removeBusinessPage(removeBusinessForm, removeBE, routes.AddBusinessEntityController.startJourney().url))
         case _ =>
           logger.info(
-            s"Did not find undertaking for $eoriEntered, redirecting to AddBusinessEntityController.getAddBusinessEntity"
+            EORI.mask(
+              s"Did not find undertaking for $eoriEntered, redirecting to AddBusinessEntityController.getAddBusinessEntity"
+            )
           )
           Redirect(routes.AddBusinessEntityController.getAddBusinessEntity())
       }
@@ -105,7 +107,7 @@ class RemoveBusinessEntityController @Inject() (
     undertaking: Undertaking
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
     implicit val eori: EORI = request.eoriNumber
-    logger.info(s"handleValidBE for eoriEntered:$eoriEntered")
+    logger.info(EORI.mask(s"handleValidBE for eoriEntered:$eoriEntered"))
 
     if (form.value.isTrue) {
       logger.info("processing form as true is selected")

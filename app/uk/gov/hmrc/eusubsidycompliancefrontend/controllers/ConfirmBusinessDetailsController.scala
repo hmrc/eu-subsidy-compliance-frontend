@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
@@ -70,7 +71,7 @@ class ConfirmBusinessDetailsController @Inject() (
             )
           )
         case Left(error) =>
-          logger.error(s"Error = $error")
+          logger.error(EORI.mask(s"Error = $error"))
           Redirect(
             routes.HMRCEmailController.showPage(
               routes.ConfirmBusinessDetailsController.showPage().url
@@ -109,7 +110,7 @@ class ConfirmBusinessDetailsController @Inject() (
             )
           )
         case Left(error) =>
-          logger.error(s"Error = $error")
+          logger.error(EORI.mask(s"Error = $error"))
           Redirect(
             routes.HMRCEmailController.showPage(
               routes.ConfirmBusinessDetailsController.showPage().url
@@ -148,7 +149,7 @@ class ConfirmBusinessDetailsController @Inject() (
                     routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
                   ).toFuture
                 case Left(error) =>
-                  logger.error(s"Error while calling Beneficiary ID validation = $error")
+                  logger.error(EORI.mask(s"Error while calling Beneficiary ID validation = $error"))
                   Redirect(
                     routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
                   ).toFuture
@@ -196,7 +197,7 @@ class ConfirmBusinessDetailsController @Inject() (
                     routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
                   ).toFuture
                 case Left(error) =>
-                  logger.error(s"Error while calling Beneficiary ID validation = $error")
+                  logger.error(EORI.mask(s"Error while calling Beneficiary ID validation = $error"))
                   Redirect(
                     routes.HMRCEmailController.showPage(routes.ConfirmBusinessDetailsController.showPage().url)
                   ).toFuture

@@ -103,12 +103,14 @@ class UndertakingController @Inject() (
 
   def firstEmptyPage: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    logger.info(s"UndertakingController.firstEmptyPage attempting to find the journeys next step for EORI:$eori")
+    logger.info(
+      EORI.mask(s"UndertakingController.firstEmptyPage attempting to find the journeys next step for EORI:$eori")
+    )
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).map { journey =>
-      logger.info(s"UndertakingJourney for EORI:$eori is completed ${journey.isComplete}")
-      logger.info(s"UndertakingJourney's firstEmpty for EORI:$eori is ${journey.firstEmpty}")
+      logger.info(EORI.mask(s"UndertakingJourney for EORI:$eori is completed ${journey.isComplete}"))
+      logger.info(EORI.mask(s"UndertakingJourney's firstEmpty for EORI:$eori is ${journey.firstEmpty}"))
       journey.steps.foreach { step =>
-        logger.info(s"UndertakingJourney step for EORI:$eori ${step.uri}=${step.value.isDefined}")
+        logger.info(EORI.mask(s"UndertakingJourney step for EORI:$eori ${step.uri}=${step.value.isDefined}"))
       }
 
       journey.firstEmpty
@@ -361,7 +363,7 @@ class UndertakingController @Inject() (
         _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
       } yield Redirect(routes.UndertakingConfirmationController.getConfirmation(ref.value))
     ).recoverWith { case error: NotFoundException =>
-      logger.error(s"Error creating undertaking: $error")
+      logger.error(EORI.mask(s"Error creating undertaking: $error"))
       errorHandler.internalServerErrorTemplate(request).map { html =>
         InternalServerError(html)
       }

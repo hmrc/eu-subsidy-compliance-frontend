@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers.test
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.{BaseController, ControllerFormHelpers, LeadOnlyUndertakingSupport}
@@ -56,7 +57,7 @@ class TestOnlyController @Inject() (
         Ok(
           undertakingBalancePage(
             eori,
-            balance.getOrElse(throw new RuntimeException(s"error retrieving unndertaking with eori: $eori"))
+            balance.getOrElse(throw new RuntimeException(EORI.mask(s"error retrieving unndertaking with eori: $eori")))
           )
         )
       )

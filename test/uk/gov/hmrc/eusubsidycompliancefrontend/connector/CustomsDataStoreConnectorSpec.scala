@@ -99,7 +99,7 @@ class CustomsDataStoreConnectorSpec
         .futureValue
 
       exception shouldBe a[RuntimeException]
-      exception.getMessage shouldBe s"Error updating email address for eori: $eori1, new email address: $email"
+      exception.getMessage shouldBe "Error updating email address for eori: GB12345XXX9012"
     }
 
   }

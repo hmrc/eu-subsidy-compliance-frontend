@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.data.OptionT
 import cats.implicits.catsSyntaxOptionId
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.{AppConfig, ErrorHandler}
@@ -105,7 +106,7 @@ class AccountController @Inject() (
     resp.beneficiaryInfo.exists(_.exists(bi => bi.benIDType.isDefined && bi.validated.contains(false)))
 
   private def scp22ErrorPage(reason: String)(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
-    logger.error(s"SCP22: $reason - showing error page")
+    logger.error(EORI.mask(s"SCP22: $reason - showing error page"))
     errorHandler.internalServerErrorTemplate(r).map(InternalServerError(_))
   }
 
@@ -227,7 +228,7 @@ class AccountController @Inject() (
         .toContext
     } yield result
     result.getOrElse {
-      logger.info(s"handling missing session data for $undertaking")
+      logger.info(EORI.mask(s"handling missing session data for $undertaking"))
       handleMissingSessionData("Account Home - Existing Undertaking -")
     }
   }

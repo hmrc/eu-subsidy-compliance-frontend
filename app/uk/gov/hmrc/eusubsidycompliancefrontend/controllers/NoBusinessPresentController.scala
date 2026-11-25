@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
@@ -60,7 +61,9 @@ class NoBusinessPresentController @Inject() (
         .update[BusinessEntityJourney](_.copy(isLeadSelectJourney = true.some))
         .map { (businessEntityJourney: BusinessEntityJourney) =>
           logger.info(
-            s"NoBusinessPresentController.postNoBusinessPresent redirecting to businessEntityJourney eori:${businessEntityJourney.eori}"
+            EORI.mask(
+              s"NoBusinessPresentController.postNoBusinessPresent redirecting to businessEntityJourney eori:${businessEntityJourney.eori}"
+            )
           )
 
           Redirect(routes.AddBusinessEntityController.getAddBusinessEntity())
